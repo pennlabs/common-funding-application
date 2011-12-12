@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
 class Requester(models.Model):
     user = models.ForeignKey(models.User)
 
