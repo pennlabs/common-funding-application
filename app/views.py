@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.shortcuts import render_to_response
 
-from models.py import Application
+from models import Application
 
 
 def index(request):

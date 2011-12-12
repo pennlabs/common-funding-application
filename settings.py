@@ -4,6 +4,8 @@ import os
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -104,7 +106,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'Common_Funding_Application.urls'
 
 TEMPLATE_DIRS = (
-    os.getcwd() + "/media"
+    os.path.join(PROJECT_PATH, "media"),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
