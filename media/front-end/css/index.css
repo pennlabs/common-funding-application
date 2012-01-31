@@ -1,0 +1,11 @@
+#login input {
+  width:232px;
+}
+#login label {
+  margin: 10px 0px;
+  width:auto;
+}
+#login form, fieldset {
+  margin:0px;
+  padding:0px;
+}
