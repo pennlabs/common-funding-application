@@ -4,8 +4,7 @@ from django.conf.urls.defaults import patterns, include, url
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
-    url(r'^$', include('Common_Funding_Application.app.urls')),
+urlpatterns = patterns('app.views',
     # Examples:
     # url(r'^$', 'Common_Funding_Application.views.home', name='home'),
     # url(r'^Common_Funding_Application/', include('Common_Funding_Application.foo.urls')),
@@ -15,4 +14,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', 'index'),
+    url(r'^event/(?P<event_id>\d+)/questionnaire$', 'questionnaire'),
 )

@@ -11,10 +11,6 @@ DISPLAY_NAME = "common-funding-app-<USERNAME>" # i.e., pennapps.com/display_name
 DEV_ROOT = "/home/<USERNAME>/<USERNAME>_dev" # root of all apps you're working on
 APP_ROOT = os.path.join(DEV_ROOT, "Common_Funding_Application")
 
-
-
-
-
-
-
-
+DATABASE_NAME = ""
+DATABASE_USER = ""
+DATABASE_PASSWORD = ""
