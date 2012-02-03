@@ -67,5 +67,9 @@ def questionnaire(request, event_id):
     except Event.DoesNotExist:
         return render_to_response('error.html')
 
-def budget(request, event_id):
+#def budget(request, event_id):
     
+def apps_list(request):
+    apps = Event.objects.all()
+    return render_to_response('applist.html',
+                              {'apps': apps,})

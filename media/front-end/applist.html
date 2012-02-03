@@ -12,9 +12,9 @@
     <![endif]-->
 
     <!-- styles -->
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/applist.css">
+    <link rel="stylesheet" href="media/front-end/css/bootstrap.css">
+    <link rel="stylesheet" href="media/front-end/css/common.css">
+    <link rel="stylesheet" href="media/front-end/css/applist.css">
     
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="images/favicon.ico">
@@ -50,13 +50,14 @@
       </header>
       
       <div id="main">
+	{% for app in apps %}
         <div class="app-item-row">
           <div class="row">
             <div class="span6">
-              <span class="app-item-name">App Name</span>
+              <span class="app-item-name">{{ app.name }}</span>
             </div>
             <div class="span5">
-              <span class="app-item-date">Jan 26, 2012</span>
+              <span class="app-item-date">{{ app.date }}</span>
             </div>
             <div class="app-item-btns span5">
               <a class="btn" href="">View</a>
@@ -65,38 +66,7 @@
             </div>
           </div>
         </div>
-        
-        <div class="app-item-row">
-          <div class="row">
-            <div class="span6">
-              <span class="app-item-name">App Name</span>
-            </div>
-            <div class="span5">
-              <span class="app-item-date">Jan 26, 2012</span>
-            </div>
-            <div class="app-item-btns span5">
-              <a class="btn" href="">View</a>
-              <a class="btn info" href="">Edit</a>
-              <a class="btn danger" href="">Delete</a>
-            </div>
-          </div>
-        </div>
-        
-        <div class="app-item-row">
-          <div class="row">
-            <div class="span6">
-              <span class="app-item-name">App Name</span>
-            </div>
-            <div class="span5">
-              <span class="app-item-date">Jan 26, 2012</span>
-            </div>
-            <div class="app-item-btns span5">
-              <a class="btn" href="">View</a>
-              <a class="btn info" href="">Edit</a>
-              <a class="btn danger" href="">Delete</a>
-            </div>
-          </div>
-        </div>
+	{% endfor %}
         
       </div>
 

@@ -16,4 +16,5 @@ urlpatterns = patterns('app.views',
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'index'),
     url(r'^event/(?P<event_id>\d+)/questionnaire$', 'questionnaire'),
+    url(r'^apps$', 'apps_list'),
 )

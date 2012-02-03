@@ -23,7 +23,6 @@ class Event(models.Model):
     name = models.CharField(max_length=256)
     date = models.DateField()
     requester = models.ForeignKey(Requester)
-#    eligible_funders = models.ManyToManyField(Funder)
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),
