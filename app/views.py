@@ -73,3 +73,6 @@ def apps_list(request):
     apps = Event.objects.all()
     return render_to_response('applist.html',
                               {'apps': apps,})
+
+def form(request):
+    return render_to_response('form-requester.html')

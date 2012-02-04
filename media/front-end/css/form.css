@@ -1,0 +1,20 @@
+form {
+  margin-bottom: 0;
+}
+
+form legend {
+  margin-bottom: 0px;
+  border: none;
+}
+
+fieldset {
+  margin-bottom: 10px;
+}
+
+.form-actions {
+  margin-bottom: 0px;
+}
+
+#main {
+  margin-bottom: 0px;
+}

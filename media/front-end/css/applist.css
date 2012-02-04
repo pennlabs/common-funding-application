@@ -14,6 +14,6 @@ div.app-item-row > .row > div:last-child > *:last-child {
 div.app-item-btns {
   text-align: right;
 }
-div.app-item-btn .btn {
+div.app-item-btns .btn {
   margin-left:8px;
 }

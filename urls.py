@@ -17,4 +17,5 @@ urlpatterns = patterns('app.views',
     url(r'^$', 'index'),
     url(r'^event/(?P<event_id>\d+)/questionnaire$', 'questionnaire'),
     url(r'^apps$', 'apps_list'),
+    url(r'^form$', 'form'),
 )

@@ -1,80 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>The Common Funding App</title>
-    <meta name="description" content="The Common Funding App, University of Pennsylvania">
-    <meta name="author" content="PennApps Labs">
+{% extends "base-page.html" %}
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+{% block htmllink-styles %}
+<link rel="stylesheet" href="media/front-end/css/applist.css">
+{% endblock %}
 
-    <!-- styles -->
-    <link rel="stylesheet" href="media/front-end/css/bootstrap.css">
-    <link rel="stylesheet" href="media/front-end/css/common.css">
-    <link rel="stylesheet" href="media/front-end/css/applist.css">
-    
-    <!-- fav and touch icons -->
-    <link rel="shortcut icon" href="images/favicon.ico">
-  </head>
-
-  <body>
-    <div class="topbar">
-      <div class="fill">
-        <div class="container">
-          <a class="brand" href="#">The Common Funding App</a>
-
-          <div class="pull-right">
-            <ul class="nav">
-              <li class="active"><a href="applist.html">App List</a></li>
-              <li><a href="#">Settings</a></li>
-              <li><a href="#">Help</a></li>
-              <li><a href="#">Logout</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="container">
-      
-      <header>
-        <div class="btns pull-right">
-          <a class="btn primary" href="">Create New</a>
-        </div>
-        <div>
-          <h2>Current Applications</h2>
-        </div>       
-      </header>
-      
-      <div id="main">
-	{% for app in apps %}
-        <div class="app-item-row">
-          <div class="row">
-            <div class="span6">
-              <span class="app-item-name">{{ app.name }}</span>
-            </div>
-            <div class="span5">
-              <span class="app-item-date">{{ app.date }}</span>
-            </div>
-            <div class="app-item-btns span5">
-              <a class="btn" href="">View</a>
-              <a class="btn info" href="">Edit</a>
-              <a class="btn danger" href="">Delete</a>
-            </div>
-          </div>
-        </div>
-	{% endfor %}
-        
-      </div>
-
-      <footer>
-        <p>&copy; PennApps Labs 2012</p>
-      </footer>
-
-    </div> <!-- /container -->
-
-  </body>
-</html>
+{% block container %}
+	<header>
+		<div class="btns pull-right">
+			<a class="btn btn-primary" href="">Create New</a>
+		</div>
+		<div>
+			<h2>Current Applications</h2>
+		</div>       
+	</header>
+	
+	<div id="main">
+		
+		{% for app in apps %}
+		<div class="app-item-row">
+			<div class="row">
+				<div class="span5">
+					<span class="app-item-name">
+						<a href="{{ app.link }}">{{ app.name }}</a>
+					</span>
+				</div>
+				<div class="span3">
+					<span class="app-item-date">{{ app.date }}</span>
+				</div>
+				<div class="app-item-btns span4">
+					<a class="btn btn-info" href="">
+						<i class="icon-pencil icon-white"></i>
+						Edit
+					</a>
+					<a class="btn btn-danger" href="">
+						<i class="icon-trash icon-white"></i>
+						Delete
+					</a>
+				</div>
+			</div>
+		</div>
+		{% endfor %}
+		
+	</div>
+{% endblock %}

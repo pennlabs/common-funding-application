@@ -1,64 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>The Common Funding App</title>
-    <meta name="description" content="The Common Funding App, University of Pennsylvania">
-    <meta name="author" content="PennApps Labs">
-
-    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <!-- styles -->
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/applist.css">
+{% extends "base-page.html" %}
     
-    <!-- fav and touch icons -->
-    <link rel="shortcut icon" href="images/favicon.ico">
-  </head>
+{% block htmllink-styles %}
+<link rel="stylesheet" href="media/front-end/css/form.css">
+{% endblock %}
 
-  <body>
-    <div class="topbar">
-      <div class="fill">
-        <div class="container">
-          <a class="brand" href="#">The Common Funding App</a>
-
-          <div class="pull-right">
-            <ul class="nav">
-              <li><a href="applist.html">App List</a></li>
-              <li><a href="#">Settings</a></li>
-              <li><a href="#">Help</a></li>
-              <li><a href="#">Logout</a></li>
-            </ul>
+{% block container %}      
+  <header>
+    <div class="btns pull-right">
+      <a class="btn btn-primary" href="">Submit</a>
+      <a class="btn" href="">Cancel</a>
+    </div>
+    <div>
+      <h2>Edit Form</h2>
+    </div>       
+  </header>
+  
+  <div id="main">
+    
+    <form class="form-horizontal">
+      
+      <fieldset>
+        <legend>Form Group 1</legend>
+        <div class="control-group">
+          <label for="question01" class="control-label">Question 1</label>
+          <div class="controls">
+            <input type="text" id="question01" class="input-xlarge">
+            <p class="help-block">Help text for Question 1 goes here.</p>
           </div>
         </div>
-      </div>
-    </div>
-    
-    <div class="container">
-      
-      <header>
-        <div class="btns pull-right">
-          <a class="btn primary" href="">Submit</a>
-          <a class="btn" href="">Cancel</a>
+        <div class="control-group">
+          <label for="question02" class="control-label">Question 2</label>
+          <div class="controls">
+            <input type="text" id="question02" class="input-xlarge">
+            <p class="help-block">Help text for Question 2 goes here.</p>
+          </div>
+        </div>        
+        <div class="control-group">
+          <label for="select01" class="control-label">Select list</label>
+          <div class="controls">
+            <select id="select01">
+              <option>Option 1</option>
+              <option>Option 2</option>
+              <option>Option 3</option>
+              <option>Option 4</option>
+              <option>Option 5</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <h2>Edit Form</h2>
-        </div>       
-      </header>
+      </fieldset>
       
-      <div id="main">
-        
+      <fieldset>
+        <legend>Form Group 2</legend>
+        <div class="control-group">
+          <label for="optionsCheckboxList" class="control-label">Checkboxes</label>
+          <div class="controls">
+            <label class="checkbox">
+              <input type="checkbox" value="option1" name="optionsCheckboxList1">
+              Option one is this and that&mdash;be sure to include why it's great
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="option2" name="optionsCheckboxList2">
+              Option two can also be checked and included in form results
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" value="option3" name="optionsCheckboxList3">
+              Option three can&mdash;yes, you guessed it&mdash;also be checked and included in form results
+            </label>
+            <p class="help-block"><strong>Note:</strong> Labels surround all the options for much larger click areas and a more usable form.</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Radio buttons</label>
+          <div class="controls">
+            <label class="radio">
+              <input type="radio" checked="" value="option1" id="optionsRadios1" name="optionsRadios">
+              Option one is this and that&mdash;be sure to include why it's great
+            </label>
+            <label class="radio">
+              <input type="radio" value="option2" id="optionsRadios2" name="optionsRadios">
+              Option two can is something else and selecting it will deselect option one
+            </label>
+            <p class="help-block">Help text for radio buttons.</p>
+          </div>
+        </div>
+      </fieldset>
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="btn" type="reset">Cancel</button>
       </div>
-
-      <footer>
-        <p>&copy; PennApps Labs 2012</p>
-      </footer>
-
-    </div> <!-- /container -->
-
-  </body>
-</html>
+    </form>
+    
+  </div>      
+{% endblock %}

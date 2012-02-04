@@ -7,13 +7,16 @@
   border-radius: 6px;
 }
 
-.topbar {
-  position: relative;
+.navbar {
+  margin: 0px;
 }
-.topbar .brand {
+.navbar-inner {
+  border-radius: 0px;
+}
+.navbar .brand {
   
 }
-.topbar .nav {
+.navbar .nav {
   margin: 0px;
 }
 
@@ -31,6 +34,11 @@ header .btns {
 }
 header .btns .btn {
   margin-left:8px;
+}
+
+footer {
+  padding: 18px 0px;
+  border-top: 1px solid #eee;
 }
 
 #main {
