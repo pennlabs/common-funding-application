@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="container">
+        <a href="." class="brand">The Common Funding App</a>
+        <div class="pull-right">
+          <ul class="nav">
+            <li><a href="apps">App List</a></li>
+            <li><a href="#">Help</a></li>
+            <li><a href="#">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{ block.super }}
+
+{% endblock %}

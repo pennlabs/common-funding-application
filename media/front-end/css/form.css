@@ -18,3 +18,16 @@ fieldset {
 #main {
   margin-bottom: 0px;
 }
+
+/* FUNDING BAR */
+
+.funding.progress .bar {
+  float: left;
+  
+  background: #0E90D2;
+  border: 1px solid;
+  border-bottom-color: #0b72a4;
+  border-right-color: #0b72a4;
+  border-top-color: #44baf2;
+  border-left-color: #44baf2;
+}

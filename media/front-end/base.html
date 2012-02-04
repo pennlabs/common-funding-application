@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>The Common Funding App</title>
+    <meta name="description" content="The Common Funding App, University of Pennsylvania">
+    <meta name="author" content="PennApps Labs">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- styles -->
+    <link rel="stylesheet" href="media/front-end/css/bootstrap.css">
+    <link rel="stylesheet" href="media/front-end/css/common.css">
+    {% block htmllink-styles %}{% endblock %}
+    
+    <!-- fav and touch icons -->
+    <link rel="shortcut icon" href="img/favicon.ico">
+  </head>
+
+  <body>
+    
+    {% block body %}
+    
+    <div class="container">
+      
+      {% block container %}
+      {% endblock %}
+
+      <footer>
+        <p>&copy; PennApps Labs 2012</p>
+      </footer>
+
+    </div>
+    
+    {% endblock %}
+    
+    <!-- javascript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="media/front-end/js/bootstrap.js"></script>
+    {% block htmllink-js %}{% endblock %}
+
+  </body>
+</html>
