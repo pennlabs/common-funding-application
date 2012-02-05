@@ -107,7 +107,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'Common_Funding_Application.urls'
 
 TEMPLATE_DIRS = (
-    os.path.join(PROJECT_PATH, "media"),
     os.path.join(PROJECT_PATH, "media/front-end"),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.

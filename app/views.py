@@ -1,9 +1,10 @@
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.forms import Form
 from django.forms.fields import CharField, ChoiceField, DecimalField
 from django.forms.widgets import RadioSelect
 from django.forms.models import modelformset_factory
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from models import Event, Question
 
@@ -38,7 +39,25 @@ class BudgetForm(Form):
             DecimalField(max_digits=17, decimal_places=2)
 
 def index(request):
-    return render_to_response('index.html')
+    if request.user.is_authenticated():
+        return redirect('app.views.apps_list')
+    else:
+        return render_to_response('index.html',
+                                  context_instance=RequestContext(request))
+
+def login(request):
+    username = request.POST['user']
+    password = request.POST['pass']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        auth_login(request, user)
+        return redirect('app.views.apps_list')
+    else:
+        return redirect('app.views.index')
+
+def logout(request):
+    auth_logout(request)
+    return redirect('app.views.index')
 
 def questionnaire(request, event_id):
     try:
@@ -66,13 +85,15 @@ def questionnaire(request, event_id):
 
     except Event.DoesNotExist:
         return render_to_response('error.html')
-
-#def budget(request, event_id):
     
 def apps_list(request):
-    apps = Event.objects.all()
-    return render_to_response('applist.html',
-                              {'apps': apps,})
+    if request.user.is_authenticated():
+        apps = Event.objects.all()
+        return render_to_response('applist.html',
+                                  {'apps': apps,
+                                   'user': request.user.cfauser,})
+    else:
+        return redirect('app.views.index')
 
 def form(request):
     return render_to_response('form-requester.html')

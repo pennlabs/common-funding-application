@@ -16,7 +16,8 @@
     <div class="box">
       <h2>Login</h2>
       
-      <form>
+      <form action="login" method="post">
+	{% csrf_token %}
         <fieldset>              
           <div class="clearfix">
             <label for="user">Username</label>

@@ -6,9 +6,11 @@
 
 {% block container %}
 	<header>
+	        {% ifequal user.user_type "R" %}
 		<div class="btns pull-right">
 			<a class="btn btn-primary" href="">Create New</a>
 		</div>
+		{% endifequal %}
 		<div>
 			<h2>Current Applications</h2>
 		</div>
@@ -27,6 +29,7 @@
 				<div class="span3">
 					<span class="app-item-date">{{ app.date }}</span>
 				</div>
+				{% ifequal user.user_type "R" %}
 				<div class="app-item-btns span4">
 					<a class="btn btn-info" href="">
 						<i class="icon-pencil icon-white"></i>
@@ -37,6 +40,7 @@
 						Delete
 					</a>
 				</div>
+				{% endifequal %}
 			</div>
 		</div>
 		{% endfor %}
