@@ -1,0 +1,62 @@
+{% extends "base-page.html" %}
+
+{% block htmllink-styles %}
+<link rel="stylesheet" href="media/front-end/css/applist.css">
+<link rel="stylesheet" href="media/front-end/css/itemlist.css">
+{% endblock %}
+
+{% block htmllink-js %}
+	<script src="media/front-end/js/itemlist.js"></script>
+{% endblock %}
+
+{% block container %}
+	<header>
+		<div>
+			<h2>
+				Fund Items
+				<small>Select Items to Fund</small>
+			</h2>
+		</div>
+	</header>
+	
+	<div id="main">
+    
+    <form id="itemlist-form">
+      
+			<div class="app-item-row">
+				<div class="row">
+					<div class="span4">
+						<span>Item Name</span>
+					</div>
+					<div class="span1">
+						<span>$250</span>
+					</div>
+					<div class="span1">
+						<span>/</span>
+					</div>
+					<div class="span1">
+						<span>$1000</span>
+					</div>
+					
+					<div class="span5">
+						<input class="new pull-right" name="" type="text"
+									 value="Fund Amount..."
+									 onfocus="newInputClicked(this)"
+									 onblur="newInputCheck(this, 'Fund Amount...')"
+									 onkeydown="numericOnly(event)" />
+					</div>        
+				</div>
+			</div>
+			
+      {% if event_id %}
+      <input type="hidden" name="event_id" value="{{ event_id }}" />
+      {% endif %}
+    
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="btn" type="reset">Reset</button>
+      </div>
+    </form>
+    
+	</div>
+{% endblock %}

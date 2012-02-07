@@ -163,6 +163,9 @@ def form(request):
 def itemlist(request):
   return render_to_response('itemlist.html')
 
+def itemlist_funder(request):
+  return render_to_response('itemlist-funder.html')
+
 def delete_event(request):
   try:
     event = Event.objects.get(pk=request.GET['event_id'])
