@@ -10,6 +10,14 @@
   color: #999999;
 }
 
+.app-item-row .funders-list {
+  display: none;
+}
+
+.app-item-row .funders-list td {
+  padding-right: 15px;
+}
+
 /* FUNDING BAR */
 
 .funding.progress .bar {

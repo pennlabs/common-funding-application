@@ -42,6 +42,10 @@ function numericOnly(event) {
   }
 }
 
+function expandFunders(e) {
+  $(e).parents(".app-item-row").find(".funders-list").slideToggle(500);
+}
+
 $(document).ready(function() {
   addItem();
 });
