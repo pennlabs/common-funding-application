@@ -9,8 +9,15 @@ function addItem() {
 }
 
 function newInputClicked(e) {
-  $(e).removeClass("new")
-    .attr("value","");
+  if ($(e).hasClass("new"))
+    $(e).removeClass("new")
+      .attr("value","");
+}
+function newInputCheck(e,s) {
+  if ($(e).attr("value")=="") {    
+    $(e).addClass("new")
+      .attr("value",s);
+  }
 }
 
 function numericOnly(event) {

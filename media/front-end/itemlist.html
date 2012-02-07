@@ -44,12 +44,14 @@
         <div class="span4">
           <input class="new" name="" type="text"
                  onfocus="newInputClicked(this)"
+                 onblur="newInputCheck(this, 'Item Name...')"
                  value="Item Name..." />
         </div>
         <div class="span4">
           <input class="new" name="" type="text"
                  value="Request Amount..."
                  onfocus="newInputClicked(this)"
+                 onblur="newInputCheck(this, 'Request Amount...')"
                  onkeydown="numericOnly(event)" />
         </div>
         
