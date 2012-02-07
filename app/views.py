@@ -1,18 +1,33 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.forms import Form
-from django.forms.fields import CharField, ChoiceField, DecimalField
-from django.forms.widgets import RadioSelect
-from django.forms.models import modelformset_factory
-from django.http import HttpResponseRedirect
+from django.forms.fields import CharField, ChoiceField, DateField, DecimalField
+from django.forms.widgets import DateInput, RadioSelect
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
-from models import Event, Question
+from models import Event, Question, Answer
 
 
 YES_OR_NO = (
     ('Y', 'Yes'),
     ('N', 'No'),
 )
+
+class EventForm(Form):
+    def __init__(self, event_id, *args, **kwargs):
+        super(EventForm, self).__init__(*args, **kwargs)
+        self.fields['name'] = CharField(max_length=256)
+        self.fields['date'] = DateField(widget=DateInput(attrs={'class':'datepicker'}))
+        for question in Question.objects.all():
+            self.fields[unicode(question)] =\
+                ChoiceField(widget=RadioSelect, choices=YES_OR_NO)
+        try:
+            event = Event.objects.get(pk=event_id)
+            self.initial['name'] = event.name
+            self.initial['date'] = event.date
+            for answer in event.answer_set.all():
+                self.initial[unicode(answer.question)] = answer.answer
+        except Event.DoesNotExist:
+            pass
 
 class QuestionnaireForm(Form):
     def __init__(self, event, *args, **kwargs):
@@ -59,12 +74,53 @@ def logout(request):
     auth_logout(request)
     return redirect('app.views.index')
 
-def questionnaire(request, event_id):
+def modify_event(request):
     try:
-        event = Event.objects.get(pk=event_id)
         if request.method == 'POST':
+            event_id = request.POST.get('event_id', None)
+            if event_id:
+                event = Event.objects.get(pk=event_id)
+            else:
+                event = Event.objects.create(name=request.POST['name'], date=request.POST['date'], requester=request.user.cfauser)
             for (key, value) in request.POST.items():
-                if key != 'csrfmiddlewaretoken':
+                if key != 'csrfmiddlewaretoken' and key != 'event_id':
+                    if key == 'name':
+                        event.name = value
+                        event.save()
+                    elif key == 'date':
+                        event.date = value
+                        event.save()
+                    else:
+                        question = Question.objects.get(question=key)
+                        try:
+                            answer = event.answer_set.get(question=question)
+                            answer.answer = value
+                            answer.save()
+                        except Answer.DoesNotExist:
+                            event.answer_set.create(question=question,
+                                                    answer=value)
+            return redirect('app.views.apps_list')
+
+        else:
+            event_id = request.GET.get('event_id', None)
+            form = EventForm(event_id)
+    
+        return render_to_response('event-form.html',
+                                  {'form' : form, 'event_id' : event_id},
+                                  context_instance=RequestContext(request)
+                                 )
+
+    except Event.DoesNotExist:
+        return redirect('app.views.error')
+    
+
+def questionnaire(request):
+    try:
+        if request.method == 'POST':
+            event_id = request.POST['event_id']
+            event = Event.objects.get(pk=event_id)
+            for (key, value) in request.POST.items():
+                if key != 'csrfmiddlewaretoken' and key != 'event_id':
                     question = Question.objects.get(question=key)
                     try:
                         answer = event.answer_set.get(question=question)
@@ -73,9 +129,11 @@ def questionnaire(request, event_id):
                     except Answer.DoesNotExist:
                         event.answer_set.create(question=question,
                                                 answer=value)
-            return HttpResponseRedirect('/')
+            return redirect('app.views.apps_list')
 
         else:
+            event_id = request.GET['event_id']
+            event = Event.objects.get(pk=event_id)
             form = QuestionnaireForm(event)
     
         return render_to_response('questionnaire.html',
@@ -87,13 +145,28 @@ def questionnaire(request, event_id):
         return render_to_response('error.html')
     
 def apps_list(request):
-    if request.user.is_authenticated():
-        apps = Event.objects.all()
+    user = request.user
+    if user.is_authenticated():
+        if user.cfauser.is_requester():
+            apps = Event.objects.filter(requester=user.cfauser)
+        else:
+            apps = Event.objects.all()
         return render_to_response('applist.html',
                                   {'apps': apps,
-                                   'user': request.user.cfauser,})
+                                   'user': user.cfauser,})
     else:
         return redirect('app.views.index')
 
 def form(request):
     return render_to_response('form-requester.html')
+
+def delete_event(request):
+    try:
+        event = Event.objects.get(pk=request.GET['event_id'])
+        event.delete()
+        return redirect('app.views.apps_list')
+    except Event.DoesNotExist:
+        return redirect('app.views.error')
+
+def error(request):
+    return render_to_response('error.html')

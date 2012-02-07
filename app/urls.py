@@ -4,10 +4,13 @@ from views import *
 
 urlpatterns = patterns('',
     url(r'^$', index),
-    url(r'^event/(?P<event_id>\d+)/questionnaire$', questionnaire),
+    url(r'^questionnaire', questionnaire),
     url(r'^apps$', apps_list),
     url(r'^form$', form),
     url(r'^login$', login),
     url(r'^logout$', logout),
+    url(r'^delete_event', delete_event),
+    url(r'^event', modify_event),
+    url(r'^error', error),
 )
 

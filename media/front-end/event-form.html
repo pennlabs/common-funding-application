@@ -1,0 +1,32 @@
+{% extends "base-page.html" %}
+
+{% load widgets %}
+    
+{% block htmllink-styles %}
+<link rel="stylesheet" href="media/front-end/css/form.css">
+{% endblock %}
+
+{% block container %}      
+  <header>
+    <div>
+      <h2>Event</h2>
+    </div>       
+  </header>
+  
+  <div id="main">
+    
+    <form action="event" method="post" class="form-horizontal">
+      {% csrf_token %}
+      {{ form.as_p }}
+      {% if event_id %}
+      <input type="hidden" name="event_id" value="{{ event_id }}" />
+      {% endif %}
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="btn" type="reset">Reset</button>
+      </div>
+    </form>
+    
+  </div>      
+{% endblock %}

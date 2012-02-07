@@ -8,16 +8,16 @@
 	<header>
 	        {% ifequal user.user_type "R" %}
 		<div class="btns pull-right">
-			<a class="btn btn-primary" href="">Create New</a>
+			<a class="btn btn-primary" href="event">Create New</a>
 		</div>
 		{% endifequal %}
 		<div>
 			<h2>Current Applications</h2>
+			<h3>Hello, {{ user.user.username }}!</h3>
 		</div>
 	</header>
 	
 	<div id="main">
-		
 		{% for app in apps %}
 		<div class="app-item-row">
 			<div class="row">
@@ -31,11 +31,12 @@
 				</div>
 				{% ifequal user.user_type "R" %}
 				<div class="app-item-btns span4">
-					<a class="btn btn-info" href="">
+				        
+					<a class="btn btn-info" href="event?event_id={{ app.id }}">
 						<i class="icon-pencil icon-white"></i>
 						Edit
 					</a>
-					<a class="btn btn-danger" href="">
+					<a class="btn btn-danger" href="delete_event?event_id={{ app.id }}">
 						<i class="icon-trash icon-white"></i>
 						Delete
 					</a>
@@ -44,6 +45,8 @@
 			</div>
 		</div>
 		{% endfor %}
-		
+		{% if not apps %}
+		<div>You do not have any current applications.</div>
+		{% endif %}
 	</div>
 {% endblock %}
