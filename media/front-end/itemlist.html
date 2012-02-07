@@ -1,0 +1,66 @@
+{% extends "base-page.html" %}
+
+{% block htmllink-styles %}
+<link rel="stylesheet" href="media/front-end/css/applist.css">
+<link rel="stylesheet" href="media/front-end/css/itemlist.css">
+{% endblock %}
+
+{% block htmllink-js %}
+<script src="media/front-end/js/itemlist.js"></script>
+{% endblock %}
+
+{% block container %}
+	<header>	  
+		<div class="btns pull-right">
+			<a class="btn btn-success" href="javascript:addItem()">
+        <i class="icon-plus icon-white"></i>
+        Add Item
+      </a>
+		</div>		
+		<div>
+			<h2>Funding Items</h2>
+		</div>
+	</header>
+	
+	<div id="main">
+    
+    <form id="itemlist-form">
+            
+      {% if event_id %}
+      <input type="hidden" name="event_id" value="{{ event_id }}" />
+      {% endif %}
+    
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="btn" type="reset">Reset</button>
+      </div>
+    </form>
+    
+	</div>
+  
+  <div id="itemrow">
+    <div class="app-item-row">
+      <div class="row">
+        <div class="span4">
+          <input class="new" name="" type="text"
+                 onfocus="newInputClicked(this)"
+                 value="Item Name..." />
+        </div>
+        <div class="span4">
+          <input class="new" name="" type="text"
+                 value="Request Amount..."
+                 onfocus="newInputClicked(this)"
+                 onkeydown="numericOnly(event)" />
+        </div>
+        
+        <div class="app-item-btns span4">
+          <a class="btn btn-danger">
+            <i class="icon-minus icon-white"></i>
+            Remove
+          </a>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+{% endblock %}

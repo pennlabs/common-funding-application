@@ -160,6 +160,9 @@ def apps_list(request):
 def form(request):
   return render_to_response('form-requester.html')
 
+def itemlist(request):
+  return render_to_response('itemlist.html')
+
 def delete_event(request):
   try:
     event = Event.objects.get(pk=request.GET['event_id'])

@@ -1,0 +1,11 @@
+#main, form, .form-actions ,input{
+  margin-bottom: 0px;
+}
+
+#itemrow {
+  display: none;
+}
+
+.app-item-row input.new {
+  color: #999999;
+}
