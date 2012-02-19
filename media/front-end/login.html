@@ -6,10 +6,12 @@
 
 {% block container %}
 
+{% if login_failed %}
 <div id="login-error" class="alert alert-error">
 	<a class="close" onclick="$('#login-error').slideUp(500)">x</a>
 	<strong>Login Error!</strong> Incorrect username or password. Please try again.
 </div>
+{% endif %}
 
 <div id="main" class="row">	
   <div class="span7">

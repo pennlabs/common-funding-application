@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from models import Event, Question, Answer
 
+from sandbox_config import *
 
 YES_OR_NO = (
   ('Y', 'Yes'),
@@ -57,18 +58,25 @@ def index(request):
   if request.user.is_authenticated():
     return redirect('app.views.apps_list')
   else:
-    return render_to_response('index.html',
-                  context_instance=RequestContext(request))
+    return redirect('app.views.login')
+    #return render_to_response('index.html',
+    #                          context_instance=RequestContext(request))
 
 def login(request):
-  username = request.POST['user']
-  password = request.POST['pass']
-  user = authenticate(username=username, password=password)
-  if user is not None:
-    auth_login(request, user)
-    return redirect('app.views.apps_list')
+  if request.method == 'POST':
+    username = request.POST['user']
+    password = request.POST['pass']
+    user = authenticate(username=username, password=password)
+    if user is not None:
+      auth_login(request, user)
+      return redirect('app.views.apps_list')
+    else:
+      return render_to_response('login.html',
+                                {'login_failed' : True},
+                                context_instance=RequestContext(request))
   else:
-    return redirect('app.views.index')
+    return render_to_response('login.html',
+                              context_instance=RequestContext(request))
 
 def logout(request):
   auth_logout(request)
