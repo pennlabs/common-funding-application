@@ -56,11 +56,14 @@
 					</div>
 					
 					<div class="span4">
-						<input class="new pull-right" name="" type="text"
-									 value="Fund Amount..."
-									 onfocus="newInputClicked(this)"
-									 onblur="newInputCheck(this, 'Fund Amount...')"
-									 onkeydown="numericOnly(event)" />
+						<div class="input-prepend pull-right">
+							<span class="add-on"><strong>$</strong></span>
+							<input class="new" name="" type="text"
+										 value="Fund Amount..."
+										 onfocus="newInputClicked(this)"
+										 onblur="newInputCheck(this, 'Fund Amount...')"
+										 onkeydown="numericOnly(event)" />
+						</div>
 					</div>        
 				</div>
 			</div>

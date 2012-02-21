@@ -48,17 +48,20 @@
                  value="Item Name..." />
         </div>
         <div class="span4">
-          <input class="new" name="" type="text"
-                 value="Request Amount..."
-                 onfocus="newInputClicked(this)"
-                 onblur="newInputCheck(this, 'Request Amount...')"
-                 onkeydown="numericOnly(event)" />
+          <div class="input-prepend">
+            <span class="add-on"><strong>$</strong></span>
+            <input class="new inputIcon" name="" type="text"
+                   value="Request Amount..."
+                   onfocus="newInputClicked(this)"
+                   onblur="newInputCheck(this, 'Request Amount...')"
+                   onkeydown="numericOnly(event)" />
+          </div>
         </div>
         
         <div class="app-item-btns span4">
-          <a class="btn btn-danger">
-            <i class="icon-minus icon-white"></i>
-            Remove
+          <a class="btn btn"
+             onclick="removeItem(this)">
+            <i class="icon-remove"></i>
           </a>
         </div>
         

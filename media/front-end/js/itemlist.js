@@ -1,11 +1,10 @@
-var itemCount = 0;
-
 function addItem() {
   $("div.form-actions").before(
     $("#itemrow").html()
   );
-  
-  itemCount++;
+}
+function removeItem(e) {
+  $(e).parents(".app-item-row").remove();
 }
 
 function newInputClicked(e) {
