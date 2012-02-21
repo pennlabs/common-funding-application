@@ -1,5 +1,7 @@
 {% extends "base-page.html" %}
 
+{% load widgets %}
+
 {% block htmllink-styles %}
 <link rel="stylesheet" href="media/front-end/css/applist.css">
 <link rel="stylesheet" href="media/front-end/css/itemlist.css">
@@ -7,6 +9,7 @@
 
 {% block htmllink-js %}
 	<script src="media/front-end/js/itemlist.js"></script>
+	<script src="media/front-end/js/fundingbar.js"></script>
 {% endblock %}
 
 {% block container %}
@@ -26,33 +29,11 @@
 			<div class="app-item-row">
 				<div class="row">
 					<div class="span4">
-						<span>Item Name</span>
+						<span><a href="#" rel="tooltip" title="SAC">Item Name</a></span>
 					</div>
-					<div class="span2">
-						<p>$250 / $1000</p>
-						
-						<div class="funders-list">
-							<table>
-								<tr>
-									<td>SAC</td>
-									<td>$100</td>
-								</tr>
-								<tr>
-									<td>SPEC</td>
-									<td>$100</td>
-								</tr>
-								<tr>
-									<td>APSC</td>
-									<td>$50</td>
-								</tr>
-							</table>
-						</div>						
-					</div>
-					<div class="span2">
-						<a class="btn" onclick="expandFunders(this)">
-							<i class="icon-list"></i>
-							List
-						</a>
+					
+					<div class="span4">
+						{% fundingbar fundTotalAmount fundDict %}
 					</div>
 					
 					<div class="span4">

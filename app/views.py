@@ -172,7 +172,13 @@ def itemlist(request):
   return render_to_response('itemlist.html')
 
 def itemlist_funder(request):
-  return render_to_response('itemlist-funder.html')
+	# test code
+	fundDict = {'SAC': 800, 'SCUE': 500, 'APSC': 100}
+	fundTotalAmount = 2000
+	
+	return render_to_response('itemlist-funder.html',
+														{'fundDict': fundDict,
+														 'fundTotalAmount': fundTotalAmount})
 
 def delete_event(request):
   try:
