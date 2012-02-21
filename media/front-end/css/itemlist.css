@@ -20,6 +20,10 @@
 
 /* FUNDING BAR */
 
+.fundingbar.progress {
+  margin-bottom: 0px;
+}
+
 .fundingbar.progress .bar {
   float: left;
   
