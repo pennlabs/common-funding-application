@@ -8,7 +8,8 @@ Author: AMK, Dec 27, 2010"""
 import os
 
 DISPLAY_NAME = "common-funding-app-<USERNAME>" # i.e., pennapps.com/display_name
-DEV_ROOT = "/home/<USERNAME>/<USERNAME>_dev" # root of all apps you're working on
+URL_ROOT = "/" + DISPLAY_NAME
+DEV_ROOT = "/home/<USERNAME>/<USERNAME>_dev" # root of all apps you're working on, might not be exactly in this
 APP_ROOT = os.path.join(DEV_ROOT, "Common_Funding_Application")
 
 DATABASE_NAME = ""
