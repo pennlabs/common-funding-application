@@ -25,7 +25,7 @@
 
 <div id="main">
 
-  <form id="itemlist-form">{% csrf_token %}
+  <form id="itemlist-form" method="post">{% csrf_token %}
     {% if event_id %}
     <input type="hidden" name="event_id" value="{{ event_id }}" />
     {% endif %}
@@ -43,7 +43,8 @@
   <div class="app-item-row">
     <div class="row">
       <div class="span4">
-        <input class="new" name="" type="text"
+        <input class="new" name="" type="text" required
+	       pattern="^(?!Item Name\.\.\.)(.+)"
                onfocus="newInputClicked(this)"
                onblur="newInputCheck(this, 'Item Name...')"
                value="Item Name..." />
@@ -52,7 +53,7 @@
       <div class="span4">
         <div class="input-prepend">
           <span class="add-on"><strong>$</strong></span>
-          <input class="new inputIcon" name="" type="text"
+          <input class="new inputIcon" name="" type="text" required
                  value="Request Amount..."
 		 pattern="^\d*(\.\d{2}$)?"
 		 title="Please enter a valid dollar amount."
