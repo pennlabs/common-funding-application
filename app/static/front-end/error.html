@@ -7,18 +7,20 @@
 {% endblock %}
 
 {% block container %}
-	<header>
-		<div>
-			<h2>
-        Error
-        <small>Oops! Something went wrong.</small>
-      </h2>
-		</div>
-	</header>
+<header>
+  <div>
+    <h2>
+      Error
+      <small>Oops! Something went wrong.</small>
+    </h2>
+  </div>
+</header>
 	
-	<div id="main">
-    
-    <p>There's nothing here. Please go back.</p>
-    
-	</div>
+<div id="main">
+  {% if error_message %}
+  <p>{{ error_message }}</p>
+  {% else %}
+  <p>There's nothing here. Please go back.</p>
+  {% endif %}
+</div>
 {% endblock %}
