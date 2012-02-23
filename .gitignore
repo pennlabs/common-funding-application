@@ -1,2 +1,3 @@
 *.pyc
 sandbox_config.py
+/static
