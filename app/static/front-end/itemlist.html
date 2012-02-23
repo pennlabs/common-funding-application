@@ -1,45 +1,43 @@
 {% extends "base-page.html" %}
 
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{% static "front-end/css/applist.css" %}">
-<link rel="stylesheet" href="{% static "front-end/css/itemlist.css" %}">
+<link rel="stylesheet" href="{{ STATIC_URL }}front-end/css/applist.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}front-end/css/itemlist.css">
 {% endblock %}
 
 {% block htmllink-js %}
-<script src="{% static "front-end/js/itemlist.js" %}"></script>
-<script src="{% static "front-end/js/bootstrap-tooltip.js" %}"></script>
+<script src="{{ STATIC_URL }}front-end/js/itemlist.js"></script>
+<script src="{{ STATIC_URL }}front-end/js/bootstrap-tooltip.js"></script>
 {% endblock %}
 
 {% block container %}
-<header>	  
+<header>
   <div class="btns pull-right">
     <a class="btn btn-success" href="javascript:addItem()">
       <i class="icon-plus icon-white"></i>
       Add Item
     </a>
-  </div>		
+  </div>
   <div>
     <h2>Funding Items</h2>
   </div>
 </header>
-	
+
 <div id="main">
-    
-  <form id="itemlist-form">
-    {% csrf_token %}
-            
+
+  <form id="itemlist-form">{% csrf_token %}
     {% if event_id %}
     <input type="hidden" name="event_id" value="{{ event_id }}" />
     {% endif %}
-    
+
     <div class="form-actions">
       <button class="btn btn-primary" type="submit">Submit</button>
       <button class="btn" type="reset">Reset</button>
     </div>
   </form>
-    
+
 </div>
-  
+
 
 <div id="itemrow">
   <div class="app-item-row">
@@ -56,6 +54,8 @@
           <span class="add-on"><strong>$</strong></span>
           <input class="new inputIcon" name="" type="text"
                  value="Request Amount..."
+		 pattern="^\d*(\.\d{2}$)?"
+		 title="Please enter a valid dollar amount."
                  onfocus="newInputClicked(this)"
                  onblur="newInputCheck(this, 'Request Amount...')"
                  onkeydown="numericOnly(event)" />

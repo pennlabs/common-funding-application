@@ -1,54 +1,53 @@
 {% extends "base-page.html" %}
 
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{% static "front-end/css/applist.css" %}">
+<link rel="stylesheet" href="{{ STATIC_URL }}front-end/css/applist.css">
 {% endblock %}
 
 {% block container %}
-	<header>
-	        {% ifequal user.user_type "R" %}
-		<div class="btns pull-right">
-			<a class="btn btn-primary" href="event">Create New</a>
-		</div>
-		{% endifequal %}
-		<div>
-			<h2>
-				Current Applications
-				<small>Welcome, {{ user.user.username }}!</small>
-			</h2>
-		</div>
-	</header>
+<header>
+  {% ifequal user.user_type "R" %}
+  <div class="btns pull-right">
+    <a class="btn btn-primary" href="event">Create New</a>
+  </div>
+  {% endifequal %}
+  <div>
+    <h2>
+      Current Applications
+      <small>Welcome, {{ user.user.username }}!</small>
+    </h2>
+  </div>
+</header>
 	
-	<div id="main">
-		{% for app in apps %}
-		<div class="app-item-row">
-			<div class="row">
-				<div class="span5">
-					<span class="app-item-name">
-						<a href="event?event_id={{ app.id }}">{{ app.name }}</a>
-					</span>
-				</div>
-				<div class="span3">
-					<span class="app-item-date">{{ app.date }}</span>
-				</div>
-				{% ifequal user.user_type "R" %}
-				<div class="app-item-btns span4">
-				        
-					<a class="btn btn-info" href="event?event_id={{ app.id }}">
-						<i class="icon-pencil icon-white"></i>
-						Edit
-					</a>
-					<a class="btn btn-danger" href="delete_event?event_id={{ app.id }}">
-						<i class="icon-trash icon-white"></i>
-						Delete
-					</a>
-				</div>
-				{% endifequal %}
-			</div>
-		</div>
-		{% endfor %}
-		{% if not apps %}
-		<div>You do not have any current applications.</div>
-		{% endif %}
-	</div>
+<div id="main">
+  {% for app in apps %}
+  <div class="app-item-row">
+    <div class="row">
+      <div class="span5">
+	<span class="app-item-name">
+	  <a href="event?event_id={{ app.id }}">{{ app.name }}</a>
+	</span>
+      </div>
+      <div class="span3">
+	<span class="app-item-date">{{ app.date }}</span>
+      </div>
+      {% ifequal user.user_type "R" %}
+      <div class="app-item-btns span4">
+	<a class="btn btn-info" href="event?event_id={{ app.id }}">
+	  <i class="icon-pencil icon-white"></i>
+	  Edit
+	</a>
+	<a class="btn btn-danger" href="delete_event?event_id={{ app.id }}">
+	  <i class="icon-trash icon-white"></i>
+	  Delete
+	</a>
+      </div>
+      {% endifequal %}
+    </div>
+  </div>
+  {% endfor %}
+  {% if not apps %}
+  <div>You do not have any current applications.</div>
+  {% endif %}
+</div>
 {% endblock %}
