@@ -1,13 +1,13 @@
 {% extends "base-page.html" %}
 
 {% block htmllink-styles %}
-<link rel="stylesheet" href="static/front-end/css/applist.css">
-<link rel="stylesheet" href="static/front-end/css/itemlist.css">
+<link rel="stylesheet" href="{% static "front-end/css/applist.css" %}">
+<link rel="stylesheet" href="{% static "front-end/css/itemlist.css" %}">
 {% endblock %}
 
 {% block htmllink-js %}
-<script src="static/front-end/js/itemlist.js"></script>
-<script src="static/front-end/js/bootstrap-tooltip.js"></script>
+<script src="{% static "front-end/js/itemlist.js" %}"></script>
+<script src="{% static "front-end/js/bootstrap-tooltip.js" %}"></script>
 {% endblock %}
 
 {% block container %}
