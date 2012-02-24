@@ -21,31 +21,32 @@
     </h2>
   </div>
 </header>
-	
+  
 <div id="main">
     
   <form id="itemlist-form">
       
     <div class="app-item-row">
       <div class="row">
-	<div class="span4">
-	  <span>Item Name</span>
-	</div>
-	
-	<div class="span4">
-	  {% fundingbar fundTotalAmount fundDict %}
-	</div>
-	
-	<div class="span4">
-	  <div class="input-prepend pull-right">
-	    <span class="add-on"><strong>$</strong></span>
-	    <input class="new" name="" type="text"
-		   value="Fund Amount..."
-		   onfocus="newInputClicked(this)"
-		   onblur="newInputCheck(this, 'Fund Amount...')"
-		   onkeydown="numericOnly(event)" />
-	  </div>
-	</div>        
+        <div class="span3">
+          <span>Item Name</span>
+        </div>  
+        <div class="span2">
+          <span>$ 1400 / 2000</span>
+        </div>  
+        <div class="span4">
+          {% fundingbar fundTotalAmount fundDict %}
+        </div>  
+        <div class="span3">
+          <div class="input-prepend pull-right">
+            <span class="add-on"><strong>$</strong></span>
+            <input class="span2 new" name="" type="text"
+                  value="Fund Amount..."
+                  onfocus="newInputClicked(this)"
+                  onblur="newInputCheck(this, 'Fund Amount...')"
+                  onkeydown="numericOnly(event)" />
+          </div>
+        </div>        
       </div>
     </div>
     
