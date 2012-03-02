@@ -15,9 +15,9 @@ QUESTIONS = [
 
 
 def import_questions():
-    Question.objects.all().delete()
+    EligibilityQuestion.objects.all().delete()
     for question in QUESTIONS:
-        Question.objects.create(question=question)
+        EligibilityQuestion.objects.create(question=question)
 
 
 def import_users():
@@ -40,13 +40,13 @@ def import_users():
 def import_constraints():
     FunderConstraint.objects.all().delete()
     FunderConstraint.objects.create(funder=User.objects.get(username="testfunder1").cfauser,
-                                    question=Question.objects.get(question=QUESTIONS[2]),
+                                    question=EligibilityQuestion.objects.get(question=QUESTIONS[2]),
                                     answer='N')
     FunderConstraint.objects.create(funder=User.objects.get(username="testfunder2").cfauser,
-                                    question=Question.objects.get(question=QUESTIONS[2]),
+                                    question=EligibilityQuestion.objects.get(question=QUESTIONS[2]),
                                     answer='N')
     FunderConstraint.objects.create(funder=User.objects.get(username="testfunder2").cfauser,
-                                    question=Question.objects.get(question=QUESTIONS[4]),
+                                    question=EligibilityQuestion.objects.get(question=QUESTIONS[4]),
                                     answer='Y')
 
 

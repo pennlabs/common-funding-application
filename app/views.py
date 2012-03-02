@@ -8,7 +8,7 @@ from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
-from models import Event, Question, Answer
+from models import Event, EligibilityQuestion, EligibilityAnswer
 from sandbox_config import URL_ROOT
 
 
@@ -22,27 +22,28 @@ class EventForm(Form):
   def __init__(self, event_id, *args, **kwargs):
     super(EventForm, self).__init__(*args, **kwargs)
     self.fields['name'] = CharField(max_length=256)
-    self.fields['date'] = DateField(widget=DateInput(attrs={'class': 'datepicker'}))
-    for question in Question.objects.all():
+    self.fields['date'] =\
+        DateField(widget=DateInput(attrs={'class': 'datepicker'}))
+    for question in EligibilityQuestion.objects.all():
       self.fields[unicode(question)] =\
         ChoiceField(widget=RadioSelect, choices=YES_OR_NO)
     try:
       event = Event.objects.get(pk=event_id)
       self.initial['name'] = event.name
       self.initial['date'] = event.date
-      for answer in event.answer_set.all():
+      for answer in event.eligibilityanswer_set.all():
         self.initial[unicode(answer.question)] = answer.answer
     except Event.DoesNotExist:
       pass
 
 
-class QuestionnaireForm(Form):
+class EligibilityQuestionnaireForm(Form):
   def __init__(self, event, *args, **kwargs):
-    super(QuestionnaireForm, self).__init__(*args, **kwargs)
-    for question in Question.objects.all():
+    super(EligibilityQuestionnaireForm, self).__init__(*args, **kwargs)
+    for question in EligibilityQuestion.objects.all():
       self.fields[unicode(question)] = \
         ChoiceField(widget=RadioSelect, choices=YES_OR_NO)
-    for answer in event.answer_set.all():
+    for answer in event.eligibilityanswer_set.all():
       self.initial[unicode(answer.question)] = answer.answer
 
 
@@ -124,13 +125,13 @@ def modify_event(request):
             event.date = value
             event.save()
           else:
-            question = Question.objects.get(question=key)
+            question = EligibilityQuestion.objects.get(question=key)
             try:
-              answer = event.answer_set.get(question=question)
+              answer = event.eligibilityanswer_set.get(question=question)
               answer.answer = value
               answer.save()
-            except Answer.DoesNotExist:
-              event.answer_set.create(question=question,
+            except EligibilityAnswer.DoesNotExist:
+              event.eligibilityanswer_set.create(question=question,
                                       answer=value)
       return redirect(os.path.join(URL_ROOT, 'itemlist?event_id=' + str(event_id)))
 
