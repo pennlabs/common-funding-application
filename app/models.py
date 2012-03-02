@@ -31,8 +31,11 @@ class CFAUser(models.Model):
 class Event(models.Model):
     name = models.CharField(max_length=256)
     date = models.DateField()
-    requester = models.ForeignKey(CFAUser)
+    requester = models.ForeignKey(CFAUser, related_name='event_requester')
     organizations = models.CharField(max_length=256)
+    applied_funders =\
+        models.ManyToManyField(CFAUser,
+                               related_name='event_applied_funders')
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),
@@ -56,7 +59,7 @@ class EligibilityAnswer(models.Model):
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
 
     def __unicode__(self):
-        return unicode(self.question) + " " + self.answer
+        return "%s %s" % (unicode(self.question), self.answer)
 
     class Meta:
         unique_together = ("question", "event", "answer")
@@ -76,7 +79,7 @@ class FreeResponseAnswer(models.Model):
     answer = models.TextField()
     
     def __unicode__(self):
-        return unicode(self.question) + " " + self.answer
+        return "%s %s" % (unicode(self.question), self.answer)
 
     
 class Item(models.Model):
@@ -94,7 +97,9 @@ class Grant(models.Model):
     amount = models.DecimalField(max_digits=17, decimal_places=2)
 
     def __unicode__(self):
-        return unicode(self.item) + ", " + unicode(self.funder) + ", " + self.amount
+        return "%s, %s, %d" % (unicode(self.item),
+                               unicode(self.funder),
+                               self.amount)
 
     class Meta:
         unique_together = ("funder", "item")
@@ -106,7 +111,9 @@ class FunderConstraint(models.Model):
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
     
     def __unicode__(self):
-        return unicode(self.funder) + ", " + unicode(self.question) + ": " + self.answer
+        return "%s, %s %s" % (unicode(self.funder),
+                              unicode(self.question),
+                              self.answer)
 
     class Meta:
         unique_together = ("funder", "question")
