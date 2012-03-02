@@ -179,7 +179,7 @@ def apps_list(request):
 
 
 def form(request):
-  return render_to_response('form-funder.html',
+  return render_to_response('form-requester.html',
                             context_instance=RequestContext(request))
 
 
