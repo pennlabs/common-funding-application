@@ -4,7 +4,6 @@ from views import *
 
 urlpatterns = patterns('',
     url(r'^$', index),
-    url(r'^questionnaire', questionnaire),
     url(r'^apps$', apps_list),
     url(r'^form$', form),
     url(r'^itemlist$', itemlist),
@@ -14,5 +13,5 @@ urlpatterns = patterns('',
     url(r'^delete_event', delete_event),
     url(r'^event', modify_event),
     url(r'^error', error),
+    url(r'^funders', funders),
 )
-

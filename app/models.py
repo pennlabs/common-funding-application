@@ -12,6 +12,7 @@ REQUESTER_OR_FUNDER = (
     ('F', 'FUNDER'),
 )
 
+
 class CFAUser(models.Model):
     user = models.OneToOneField(User)
     user_type = models.CharField(max_length=1,
@@ -26,10 +27,12 @@ class CFAUser(models.Model):
     def is_requester(self):
         return self.user_type == 'R'
 
+
 class Event(models.Model):
     name = models.CharField(max_length=256)
     date = models.DateField()
     requester = models.ForeignKey(CFAUser)
+    organizations = models.CharField(max_length=256)
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),
@@ -39,14 +42,16 @@ class Event(models.Model):
     class Meta:
         unique_together = ("name", "date", "requester")
 
-class Question(models.Model):
+
+class EligibilityQuestion(models.Model):
     question = models.TextField()
     
     def __unicode__(self):
         return self.question
 
-class Answer(models.Model):
-    question = models.ForeignKey(Question)
+
+class EligibilityAnswer(models.Model):
+    question = models.ForeignKey(EligibilityQuestion)
     event = models.ForeignKey(Event)
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
 
@@ -55,6 +60,24 @@ class Answer(models.Model):
 
     class Meta:
         unique_together = ("question", "event", "answer")
+
+
+class FreeResponseQuestion(models.Model):
+    question = models.TextField()
+    funder = models.ForeignKey(CFAUser)
+
+    def __unicode__(self):
+        return unicode(self.question)
+
+
+class FreeResponseAnswer(models.Model):
+    question = models.ForeignKey(FreeResponseQuestion)
+    event = models.ForeignKey(Event)
+    answer = models.TextField()
+    
+    def __unicode__(self):
+        return unicode(self.question) + " " + self.answer
+
     
 class Item(models.Model):
     event = models.ForeignKey(Event)
@@ -63,6 +86,7 @@ class Item(models.Model):
 
     def __unicode__(self):
         return self.description
+
 
 class Grant(models.Model):
     funder = models.ForeignKey(CFAUser)
@@ -75,9 +99,10 @@ class Grant(models.Model):
     class Meta:
         unique_together = ("funder", "item")
 
+
 class FunderConstraint(models.Model):
     funder = models.ForeignKey(CFAUser)
-    question = models.ForeignKey(Question)
+    question = models.ForeignKey(EligibilityQuestion)
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
     
     def __unicode__(self):

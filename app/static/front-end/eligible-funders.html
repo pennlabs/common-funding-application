@@ -1,0 +1,46 @@
+{% extends "base-page.html" %}
+
+{% block htmllink-styles %}
+<link rel="stylesheet" href="{{ STATIC_URL }}front-end/css/applist.css">
+{% endblock %}
+
+{% block container %}
+<header>
+  <div>
+    <h2>
+      Eligible Funders
+      <small>{{ event.name }}</small>
+    </h2>
+  </div>
+</header>
+	
+<div id="main">
+  {% for funder, applied in funders %}
+  <div class="app-item-row">
+    <div class="row">
+      <div class="span3">
+	<span class="app-item-name">
+	  Funding Organization
+	</span>
+      </div>
+      
+      {% if applied %}
+      <div class="app-item-date">
+	Already Applied
+      </div>
+      {% else %}
+      <div class="app-item-btns span4">
+	<a class="btn btn-info" href="">
+	  <i class="icon-pencil icon-white"></i>
+	  Apply!
+	</a>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+  {% empty %}
+  <div>There are no valid funding organizations for your event.</div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -19,7 +19,7 @@
     </a>
   </div>
   <div>
-    <h2>Funding Items</h2>
+    <h2>{{ event_name }}</h2>
   </div>
 </header>
 
@@ -29,6 +29,45 @@
     {% if event_id %}
     <input type="hidden" name="event_id" value="{{ event_id }}" />
     {% endif %}
+
+    {% for name, amount in items %}
+
+    <div class="app-item-row">
+      <div class="row">
+	<div class="span4">
+          <input class="new" name="item_name" type="text"
+		 required
+		 pattern="^(?!Item Name\.\.\.)(.+)"
+		 onfocus="newInputClicked(this)"
+		 onblur="newInputCheck(this, 'Item Name...')"
+		 value="{{ name }}" />
+	</div>
+	
+	<div class="span4">
+          <div class="input-prepend">
+            <span class="add-on"><strong>$</strong></span>
+            <input class="new inputIcon" name="item_amount" type="text"
+		   required
+                   value="{{ amount }}"
+		   pattern="^\d*(\.\d{2}$)?"
+		   title="Please enter a valid dollar amount."
+                   onfocus="newInputClicked(this)"
+                   onblur="newInputCheck(this, 'Request Amount...')"
+                   onkeydown="numericOnly(event)" />
+          </div>
+	</div>
+	
+	<div class="app-item-btns span4">
+          <a class="btn"
+             onclick="removeItem(this)">
+            <i class="icon-remove"></i>
+          </a>
+	</div>
+      </div>
+    </div>
+    
+    {% endfor %}
+
     <div class="form-actions">
       <button class="btn btn-primary" type="submit">Submit</button>
       <button class="btn" type="reset">Reset</button>
@@ -37,27 +76,26 @@
 
 </div>
 
-
 <div id="itemrow">
   <div class="app-item-row">
     <div class="row">
       <div class="span4">
         <input class="new" name="item_name" type="text"
-	       required
-	       pattern="^(?!Item Name\.\.\.)(.+)"
+               required
+               pattern="^(?!Item Name\.\.\.)(.+)"
                onfocus="newInputClicked(this)"
                onblur="newInputCheck(this, 'Item Name...')"
                value="Item Name..." />
       </div>
-     
+      
       <div class="span4">
         <div class="input-prepend">
           <span class="add-on"><strong>$</strong></span>
           <input class="new inputIcon" name="item_amount" type="text"
-		 required
+                 required
                  value="Request Amount..."
-		 pattern="^\d*(\.\d{2}$)?"
-		 title="Please enter a valid dollar amount."
+                 pattern="^\d*(\.\d{2}$)?"
+                 title="Please enter a valid dollar amount."
                  onfocus="newInputClicked(this)"
                  onblur="newInputCheck(this, 'Request Amount...')"
                  onkeydown="numericOnly(event)" />
@@ -73,4 +111,5 @@
     </div>
   </div>
 </div>
+
 {% endblock %}

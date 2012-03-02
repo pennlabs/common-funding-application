@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.forms import Form
 from django.forms.fields import CharField, ChoiceField, DateField, DecimalField
@@ -7,8 +9,7 @@ from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
 from models import Event, Question, Answer
-
-from sandbox_config import *
+from sandbox_config import URL_ROOT
 
 
 YES_OR_NO = (
@@ -16,11 +17,12 @@ YES_OR_NO = (
   ('N', 'No'),
 )
 
+
 class EventForm(Form):
   def __init__(self, event_id, *args, **kwargs):
     super(EventForm, self).__init__(*args, **kwargs)
     self.fields['name'] = CharField(max_length=256)
-    self.fields['date'] = DateField(widget=DateInput(attrs={'class':'datepicker'}))
+    self.fields['date'] = DateField(widget=DateInput(attrs={'class': 'datepicker'}))
     for question in Question.objects.all():
       self.fields[unicode(question)] =\
         ChoiceField(widget=RadioSelect, choices=YES_OR_NO)
@@ -33,6 +35,7 @@ class EventForm(Form):
     except Event.DoesNotExist:
       pass
 
+
 class QuestionnaireForm(Form):
   def __init__(self, event, *args, **kwargs):
     super(QuestionnaireForm, self).__init__(*args, **kwargs)
@@ -41,6 +44,7 @@ class QuestionnaireForm(Form):
         ChoiceField(widget=RadioSelect, choices=YES_OR_NO)
     for answer in event.answer_set.all():
       self.initial[unicode(answer.question)] = answer.answer
+
 
 class BudgetForm(Form):
   def __init__(self, event, *args, **kwargs):
@@ -57,11 +61,13 @@ class BudgetForm(Form):
     self.fields["Amount %d", len(items) + 1] = \
       DecimalField(max_digits=17, decimal_places=2)
 
+
 def index(request):
   if request.user.is_authenticated():
-    return redirect('app.views.apps_list')
+    return redirect(os.path.join(URL_ROOT, 'apps'))
   else:
-    return redirect('app.views.login')
+    return redirect(os.path.join(URL_ROOT, 'login'))
+
 
 def login(request):
   if request.method == 'POST':
@@ -70,24 +76,28 @@ def login(request):
     user = authenticate(username=username, password=password)
     if user is not None:
       auth_login(request, user)
-      return redirect('app.views.apps_list')
+      return redirect(os.path.join(URL_ROOT, 'apps'))
     else:
       return render_to_response('login.html',
-                                {'login_failed' : True},
+                                {'login_failed': True},
                                 context_instance=RequestContext(request))
   else:
     return render_to_response('login.html',
                               context_instance=RequestContext(request))
 
+
 def logout(request):
   auth_logout(request)
-  return redirect('app.views.index')
+  return redirect(URL_ROOT)
+
 
 def modify_event(request):
   user = request.user
   if user.is_authenticated():
+    
     if request.method == 'POST':
       event_id = request.POST.get('event_id', None)
+      
       try:
         if event_id:
           event = Event.objects.get(pk=event_id)
@@ -97,12 +107,12 @@ def modify_event(request):
                                        requester=request.user.cfauser)
       except Event.DoesNotExist:
         return render_to_response('error.html',
-                                  {'error_message' : "Invalid event id."},
+                                  {'error_message': "Invalid event id."},
                                   context_instance=RequestContext(request))
 
       if user.cfauser != event.requester:
         return render_to_response('error.html',
-                                  {'error_message' : "You are not authorized to edit this event"},
+                                  {'error_message': "You are not authorized to edit this event"},
                                   context_instance=RequestContext(request))
 
       for key, value in request.POST.items():
@@ -122,27 +132,57 @@ def modify_event(request):
             except Answer.DoesNotExist:
               event.answer_set.create(question=question,
                                       answer=value)
-      return redirect('app.views.apps_list')
+      return redirect(os.path.join(URL_ROOT, 'itemlist?event_id=' + str(event_id)))
 
     elif request.method == 'GET':
-      if user.cfauser.is_requester() and user.cfauser != event.requester:
-        return render_to_response('error.html',
-                                  {'error_message' : "You are not authorized to view this event"},
-                                  context_instance=RequestContext(request))
-
       event_id = request.GET.get('event_id', None)
+      
+      try:
+        if event_id:
+          event = Event.objects.get(pk=event_id)
+          if user.cfauser.is_requester() and user.cfauser != event.requester:
+            return render_to_response('error.html',
+                                      {'error_message': "You are not authorized to view this event"},
+                                      context_instance=RequestContext(request))
+
+      except Event.DoesNotExist:
+        return render_to_response('error.html',
+                                  {'error_message': "Invalid event"},
+                                  context_instance=RequestContext(request))
+        
+      
       form = EventForm(event_id)
       return render_to_response('event-form.html',
-                                {'form' : form, 'event_id' : event_id},
+                                {'form': form, 'event_id': event_id},
                                 context_instance=RequestContext(request))
     else:
       return HttpResponseNotAllowed(['GET', 'POST'])
 
   else:
-    return redirect('app.views.index')
-  
+    return redirect(URL_ROOT)  
 
-def questionnaire(request):
+  
+def apps_list(request):
+  user = request.user
+  if user.is_authenticated():
+    if user.cfauser.is_requester():
+      apps = Event.objects.filter(requester=user.cfauser).extra(order_by=['date'])
+    else: #TODO: filter for funders once submitting functionality has been implemented
+      apps = Event.objects.all().extra(order_by=['date'])
+    return render_to_response('applist.html',
+                              {'apps': apps,
+                               'user': user.cfauser,},
+                              context_instance=RequestContext(request))
+  else:
+    return redirect(URL_ROOT)
+
+
+def form(request):
+  return render_to_response('form-funder.html',
+                            context_instance=RequestContext(request))
+
+
+def itemlist(request):
   user = request.user
   if user.is_authenticated():
     if request.method == 'POST':
@@ -151,71 +191,46 @@ def questionnaire(request):
         event = Event.objects.get(pk=event_id)
       except Event.DoesNotExist:
         return render_to_response('error.html',
-                                  {'error_message' : "Invalid event_id"},
+                                  {'error_message' : "Unable to modify event"},
                                   context_instance=RequestContext(request))
-      if 1 == 1:
+      if user.cfauser != event.requester:
         return render_to_response('error.html',
-                                  {'error_message' : "You are not authorized to modify this event"})
-      for key, value in request.POST.items():
-        if key != 'csrfmiddlewaretoken' and key != 'event_id':
-          question = Question.objects.get(question=key)
-          try:
-            answer = event.answer_set.get(question=question)
-            answer.answer = value
-            answer.save()
-          except Answer.DoesNotExist:
-            event.answer_set.create(question=question,
-                                    answer=value)
-      return redirect('app.views.apps_list')
-
-    elif request.method == "GET":
-      event_id = request.GET.get('event_id', None)
-      event = Event.objects.get(pk=event_id)
-      form = QuestionnaireForm(event)
-      return render_to_response('questionnaire.html',
-                                {'form' : form, 'event_id' : event_id},
-                                context_instance=RequestContext(request))
-    
-    else:
-      return HttpResponseNotAllowed(['GET', 'POST'])
-
-  else:
-    return redirect('app.views.index')
-  
-def apps_list(request):
-  user = request.user
-  if user.is_authenticated():
-    if user.cfauser.is_requester():
-      apps = Event.objects.filter(requester=user.cfauser)
-    else:
-      apps = Event.objects.all()
-    return render_to_response('applist.html',
-                              {'apps': apps,
-                               'user': user.cfauser,},
-                              context_instance=RequestContext(request))
-  else:
-    return redirect('app.views.index')
-
-def form(request):
-  return render_to_response('form-requester.html',
-                            context_instance=RequestContext(request))
-
-def itemlist(request):
-  user = request.user
-  if user.is_authenticated():
-    if request.method == 'POST':
+                                  {'error_message' : "You do not have permission to modify this event"},
+                                  context_instance=RequestContext(request))
       item_names = request.POST.getlist('item_name')
       item_amounts = request.POST.getlist('item_amount')
+      event.item_set.all().delete()
+      for name, amount in zip(item_names, item_amounts):
+        event.item_set.create(description=name, amount= amount)
+      return redirect(os.path.join(URL_ROOT, 'apps'))
     
     elif request.method == 'GET':
+      event_id = request.GET.get('event_id', None)
+      try:
+        event = Event.objects.get(pk=event_id)
+        event_name = event.name
+      except Event.DoesNotExist:
+        return render_to_response('error.html',
+                                  {'error_message' : "Unable to view event"},
+                                  context_instance=RequestContext(request))
+      items = event.item_set.all()
+      item_names = []
+      item_amounts = []
+      for item in items:
+        item_names.append(str(item.description))
+        item_amounts.append(str(item.amount))
       return render_to_response('itemlist.html',
+                                {'event_id': event_id,
+                                 'event_name': event_name,
+                                 'items': zip(item_names, item_amounts),},
                                 context_instance=RequestContext(request))
   
     else:
       return HttpResponseNotAllowed(['GET', 'POST'])
 
   else:
-    return redirect('app.views.index')
+    return redirect(URL_ROOT)
+
 
 def itemlist_funder(request):
   # test code
@@ -227,14 +242,21 @@ def itemlist_funder(request):
                              'fundTotalAmount': fundTotalAmount},
                             context_instance=RequestContext(request))
 
+
 def delete_event(request):
   try:
     event = Event.objects.get(pk=request.GET['event_id'])
     event.delete()
-    return redirect('app.views.apps_list')
+    return redirect(os.path.join(URL_ROOT, 'apps'))
   except Event.DoesNotExist:
-    return redirect('app.views.error')
+    return redirect(os.path.join(URL_ROOT, 'error'))
+
 
 def error(request):
   return render_to_response('error.html',
+                            context_instance=RequestContext(request))
+
+
+def funders(request):
+  return render_to_response('eligible-funders.html',
                             context_instance=RequestContext(request))
