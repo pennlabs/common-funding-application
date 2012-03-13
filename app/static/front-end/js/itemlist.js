@@ -49,5 +49,7 @@ function expandFunders(e) {
 }
 
 $(document).ready(function() {
-  addItem();
+  if ($(".app-item-row").length == 1) {
+    addItem();
+  }
 });

@@ -34,35 +34,35 @@
 
     <div class="app-item-row">
       <div class="row">
-	<div class="span4">
-          <input class="new" name="item_name" type="text"
-		 required
-		 pattern="^(?!Item Name\.\.\.)(.+)"
-		 onfocus="newInputClicked(this)"
-		 onblur="newInputCheck(this, 'Item Name...')"
-		 value="{{ name }}" />
-	</div>
+        <div class="span4">
+          <input name="item_name" type="text"
+           required
+           pattern="^(?!Item Name\.\.\.)(.+)"
+           onfocus="newInputClicked(this)"
+           onblur="newInputCheck(this, 'Item Name...')"
+           value="{{ name }}" />
+        </div>
 	
-	<div class="span4">
+        <div class="span4">
           <div class="input-prepend">
             <span class="add-on"><strong>$</strong></span>
-            <input class="new inputIcon" name="item_amount" type="text"
-		   required
-                   value="{{ amount }}"
-		   pattern="^\d*(\.\d{2}$)?"
-		   title="Please enter a valid dollar amount."
-                   onfocus="newInputClicked(this)"
-                   onblur="newInputCheck(this, 'Request Amount...')"
-                   onkeydown="numericOnly(event)" />
+            <input class="inputIcon" name="item_amount" type="text"
+              required
+              value="{{ amount }}"
+              pattern="^\d*(\.\d{2}$)?"
+              title="Please enter a valid dollar amount."
+              onfocus="newInputClicked(this)"
+              onblur="newInputCheck(this, 'Request Amount...')"
+              onkeydown="numericOnly(event)" />
           </div>
-	</div>
+        </div>
 	
-	<div class="app-item-btns span4">
+        <div class="app-item-btns span4">
           <a class="btn"
              onclick="removeItem(this)">
             <i class="icon-remove"></i>
           </a>
-	</div>
+        </div>
       </div>
     </div>
     
