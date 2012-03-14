@@ -24,28 +24,30 @@
   <div class="app-item-row">
     <div class="row">
       <div class="span3">
-	<span class="app-item-name">
-	  <a href="itemlist?event_id={{ app.id }}">{{ app.name }}</a>
-	</span>
+        <span class="app-item-name">
+          <a href="itemlist?event_id={{ app.id }}">{{ app.name }}</a>
+        </span>
       </div>
-      {% ifequal user.user_type "F" %}
       <div class="span3">
-	<span class="app-item-date">[Organization Name]</span>
-      </div>
-      {% endifequal %}
+        {% ifequal user.user_type "F" %}
+          <span class="app-item-date">[Organization Name]</span>
+        {% else %}
+          &nbsp;
+        {% endifequal %}
+      </div>      
       <div class="span2">
-	<span class="app-item-date">{{ app.date }}</span>
+        <span class="app-item-date">{{ app.date }}</span>
       </div>
       {% ifequal user.user_type "R" %}
       <div class="app-item-btns span4">
-	<a class="btn btn-info" href="event?event_id={{ app.id }}">
-	  <i class="icon-pencil icon-white"></i>
-	  Edit
-	</a>
-	<a class="btn btn-danger" href="delete_event?event_id={{ app.id }}">
-					<i class="icon-trash icon-white"></i>
-					Delete
-	</a>
+        <a class="btn btn-info" href="event?event_id={{ app.id }}">
+          <i class="icon-pencil icon-white"></i>
+          Edit
+        </a>
+        <a class="btn btn-danger" href="delete_event?event_id={{ app.id }}">
+          <i class="icon-trash icon-white"></i>
+          Delete
+        </a>
       </div>
       {% endifequal %}
     </div>
