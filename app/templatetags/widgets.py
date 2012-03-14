@@ -16,15 +16,11 @@ def fundingbar(context, totalAmount, fundDict):
   FundItem = namedtuple('FundItem', ['funder', 'amount', 'percent'])
   fundItems = []
   for k in fundDict:
-    fundItems.append(
-      FundItem(
-        k,
-        amount = fundDict[k],
-        percent = fundDict[k]*100.0/totalAmount
-        ))
+    fundItems.append(FundItem(k,
+                              amount=fundDict[k],
+                              percent=fundDict[k]*100/totalAmount))
     
-  new_context = {
-    'fundItems' : fundItems
-  }
+  new_context = {'fundItems': fundItems}
   
   return render_to_string('templatetags/fundingbar.html', new_context)
+

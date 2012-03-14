@@ -1,4 +1,5 @@
 import os
+from collections import namedtuple
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.forms import Form
@@ -8,7 +9,7 @@ from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
-from models import Event, EligibilityQuestion, EligibilityAnswer
+from models import *
 from sandbox_config import URL_ROOT
 
 
@@ -192,11 +193,11 @@ def itemlist(request):
         event = Event.objects.get(pk=event_id)
       except Event.DoesNotExist:
         return render_to_response('error.html',
-                                  {'error_message' : "Unable to modify event"},
+                                  {'error_message': "Unable to modify event"},
                                   context_instance=RequestContext(request))
       if user.cfauser != event.requester:
         return render_to_response('error.html',
-                                  {'error_message' : "You do not have permission to modify this event"},
+                                  {'error_message': "You do not have permission to modify this event"},
                                   context_instance=RequestContext(request))
       item_names = request.POST.getlist('item_name')
       item_amounts = request.POST.getlist('item_amount')
@@ -212,7 +213,7 @@ def itemlist(request):
         event_name = event.name
       except Event.DoesNotExist:
         return render_to_response('error.html',
-                                  {'error_message' : "Unable to view event"},
+                                  {'error_message': "Unable to view event"},
                                   context_instance=RequestContext(request))
       items = event.item_set.all()
       item_names = []
@@ -234,14 +235,64 @@ def itemlist(request):
 
 
 def itemlist_funder(request):
-  # test code
-  fundDict = {'SAC': 800, 'SCUE': 500, 'APSC': 100}
-  fundTotalAmount = 2000
-	
-  return render_to_response('itemlist-funder.html',
-                            {'fundDict': fundDict,
-                             'fundTotalAmount': fundTotalAmount},
-                            context_instance=RequestContext(request))
+  user = request.user
+  if user.is_authenticated():
+    if request.method == 'GET':
+      event_id = request.GET.get('event_id', None)
+      try:
+        event = Event.objects.get(pk=event_id)
+        event_name = event.name
+      except Event.DoesNotExist:
+        return render_to_response('error.html',
+                                  {'error_message': "Unable to view event"},
+                                  context_instance=RequestContext(request))
+      event_grants = []
+      EventGrant = namedtuple('EventGrant', ['item', 'currentAmount', 'totalAmount', 'grants'])
+      for item in event.item_set.all():
+        grants = Grant.objects.filter(item=item)
+        item_grants = {}
+        for grant in grants:
+          item_grants[grant.funder] = grant.amount
+        event_grants.append(EventGrant(item=item,
+                                       currentAmount=sum(int(v) for v in item_grants.itervalues()),
+                                       totalAmount=item.amount,
+                                       grants=item_grants))
+    
+    # test code, remove when you have test data
+    #  event_grants.append(EventGrant(item=Item.objects.get(description='asdf'),
+     #                                currentAmount=1400,
+      #                               totalAmount=2000,
+       #                              grants={'SAC': 800, 'SCUE': 500, 'APSC': 100}))
+
+      return render_to_response('itemlist-funder.html',
+                                {'event_grants': event_grants,
+                                 'event_id': event_id},
+                                context_instance=RequestContext(request))
+
+    elif request.method == 'POST':
+      event_id = request.POST.get('event_id', None)
+      try:
+        event = Event.objects.get(pk=event_id)
+      except Event.DoesNotExist:
+        return render_to_response('error.html',
+                                  {'error_message': "Unable to modify event"},
+                                  context_instance=RequestContext(request))
+      for item in event.item_set.all():
+        amount = request.POST.get("item_" + str(item.id), None)
+        if amount and int(amount):
+          amount = int(amount)
+          grant = Grant.objects.get_or_create(funder=user.cfauser,
+                                              item=item,
+                                              defaults={'amount': 0})[0]
+          grants = Grant.objects.filter(item=item)
+          amount_funded = sum(grant.amount for grant in grants)
+          if amount + amount_funded > item.amount:
+            amount = item.amount - amount_funded
+          grant.amount = grant.amount + amount
+          grant.save()
+      return redirect(os.path.join(URL_ROOT, 'apps'))
+  else:
+    return HttpResponseNotAllowed(['GET', 'POST'])
 
 
 def delete_event(request):

@@ -24,32 +24,39 @@
   
 <div id="main">
     
-  <form id="itemlist-form">
-      
+  <form id="itemlist-form" method="post">
+    {% csrf_token %}
+    {% for event_grant in event_grants %}
     <div class="app-item-row">
       <div class="row">
         <div class="span3">
-          <span>Item Name</span>
+          <span>{{ event_grant.item.description }}</span>
         </div>  
         <div class="span2">
-          <span>$ 1400 / 2000</span>
+          <span>$ {{ event_grant.currentAmount }} / {{ event_grant.totalAmount }}</span>
         </div>  
         <div class="span4">
-          {% fundingbar fundTotalAmount fundDict %}
+          {% fundingbar event_grant.totalAmount event_grant.grants %}
         </div>  
         <div class="span3">
           <div class="input-prepend pull-right">
             <span class="add-on"><strong>$</strong></span>
-            <input class="span2 new" name="" type="text"
-                  value="Fund Amount..."
+            <input class="span2 new" name="item_{{ event_grant.item.id }}" type="text"
+                  value="0"
+		  pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
                   onfocus="newInputClicked(this)"
-                  onblur="newInputCheck(this, 'Fund Amount...')"
-                  onkeydown="numericOnly(event)" />
+                  onblur="newInputCheck(this, '0')"
+                  onkeydown="numericOnly(event)"
+		  {% ifequal event_grant.currentAmount event_grant.totalAmount %}
+		  disabled="disabled"
+		  {% endifequal %}/>
           </div>
         </div>        
       </div>
     </div>
     
+    {% endfor %}
+
     {% if event_id %}
     <input type="hidden" name="event_id" value="{{ event_id }}" />
     {% endif %}
