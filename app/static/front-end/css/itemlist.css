@@ -18,6 +18,11 @@
   padding-right: 15px;
 }
 
+/* Fixed floating issue for Chrome */
+.app-item-row input.fund-amount {
+  float: right;
+}
+
 /* FUNDING BAR */
 
 .fundingbar.progress {

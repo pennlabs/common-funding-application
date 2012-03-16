@@ -41,7 +41,7 @@
         <div class="span3">
           <div class="input-prepend pull-right">
             <span class="add-on"><strong>$</strong></span>
-            <input class="span2 new" name="item_{{ event_grant.item.id }}" type="text"
+            <input class="fund-amount span2 new" name="item_{{ event_grant.item.id }}" type="text"
                   value="0"
 		  pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
                   onfocus="newInputClicked(this)"
@@ -54,6 +54,8 @@
         </div>        
       </div>
     </div>
+    {% empty %}
+    <p>No items found.</p>
     
     {% endfor %}
 
