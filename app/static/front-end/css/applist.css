@@ -11,6 +11,10 @@ div.app-item-row > .row > div:last-child > *:last-child {
   margin-right: 12px;
 }
 
+.eligible {
+  background-color: #FF0;
+}
+
 div.app-item-btns {
   text-align: right;
 }
