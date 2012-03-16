@@ -81,7 +81,7 @@ class FreeResponseAnswer(models.Model):
     def __unicode__(self):
         return "%s %s" % (unicode(self.question), self.answer)
 
-    
+
 class Item(models.Model):
     event = models.ForeignKey(Event)
     description = models.CharField(max_length=256)

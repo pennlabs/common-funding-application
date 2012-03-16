@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^logout$', logout),
     url(r'^delete_event', delete_event),
     url(r'^event', modify_event),
+    url(r'^free-response$', free_response),
     url(r'^error', error),
     url(r'^funders', funders),
 )
