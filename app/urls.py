@@ -13,5 +13,5 @@ urlpatterns = patterns('',
     url(r'^delete_event', delete_event),
     url(r'^event', modify_event),
     url(r'^error', error),
-    url(r'^funders', funders),
+    url(r'^funders/(\d)/$', funders),
 )
