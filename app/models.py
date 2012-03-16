@@ -32,7 +32,7 @@ class CFAUser(models.Model):
     def is_willing_to_fund(self, event):
         for constraint in self.funderconstraint_set.all():
             event_answer = event.eligibilityanswer_set.get(question=
-                constraint.question)
+                constraint.question).answer
             if not event_answer == constraint.answer:
                 return False
         return True
