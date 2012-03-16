@@ -309,6 +309,11 @@ def error(request):
                             context_instance=RequestContext(request))
 
 
-def funders(request):
-  return render_to_response('eligible-funders.html',
+def funders(request, event_id):
+  fs = CFAUser.objects.filter(user_type='F')
+  event = Event.objects.get(id=event_id)
+  funder_dict = dict()
+  for funder in fs:
+    funder_dict[funder.user.username] = funder.is_willing_to_fund(event)
+  return render_to_response('eligible-funders.html', {'funders': funder_dict},
                             context_instance=RequestContext(request))
