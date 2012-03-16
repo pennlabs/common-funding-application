@@ -15,13 +15,18 @@
 </header>
 	
 <div id="main">
-  {% for funder, applied in funders %}
+  {% for funder, eligible in funders.items %}
   <div class="app-item-row">
     <div class="row">
       <div class="span3">
-	<span class="app-item-name">
-	  Funding Organization
-	</span>
+        {% if eligible %}
+	        <span class="app-item-name eligible">
+        {% else %}
+	        <span class="app-item-name">
+        {% endif %}
+
+	        {{ funder }}
+	      </span>
       </div>
       
       {% if applied %}
