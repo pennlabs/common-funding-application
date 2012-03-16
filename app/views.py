@@ -142,7 +142,7 @@ def modify_event(request):
       try:
         if event_id:
           event = Event.objects.get(pk=event_id)
-          if user.cfauser.is_requester() and user.cfauser != event.requester:
+          if user.cfauser.is_requester and user.cfauser != event.requester:
             return render_to_response('error.html',
                                       {'error_message': "You are not authorized to view this event"},
                                       context_instance=RequestContext(request))
@@ -167,7 +167,7 @@ def modify_event(request):
 def apps_list(request):
   user = request.user
   if user.is_authenticated():
-    if user.cfauser.is_requester():
+    if user.cfauser.is_requester:
       apps = Event.objects.filter(requester=user.cfauser).extra(order_by=['date'])
     else: #TODO: filter for funders once submitting functionality has been implemented
       apps = Event.objects.all().extra(order_by=['date'])
