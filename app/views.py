@@ -10,7 +10,7 @@ from django.template import RequestContext
 from forms import EventForm, EligibilityQuestionnaireForm, BudgetForm, \
     FreeResponseForm
 from models import Event, EligibilityQuestion, EligibilityAnswer, \
-    FreeResponseQuestion, FreeResponseAnswer
+    FreeResponseQuestion, FreeResponseAnswer, Grant
 from sandbox_config import URL_ROOT
 
 
