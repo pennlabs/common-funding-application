@@ -21,11 +21,23 @@ class CFAUser(models.Model):
     def __unicode__(self):
         return unicode(self.user)
 
+    @property
     def is_funder(self):
         return self.user_type == 'F'
 
+    @property
     def is_requester(self):
-        return self.user_type == 'R'
+        return not self.is_funder
+
+    def is_willing_to_fund(self, event):
+        for constraint in self.funderconstraint_set.all():
+            event_answer = event.eligibilityanswer_set.get(question=
+                constraint.question)
+            if not event_answer == constraint.answer:
+                return False
+        return True
+
+      
 
 
 class Event(models.Model):
