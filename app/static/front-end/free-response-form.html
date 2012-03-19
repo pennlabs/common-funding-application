@@ -22,9 +22,13 @@
     <input type="hidden" name="funder_id" value="{{ funder_id }}" />
     
     <div class="form-actions">
+    {% if is_funder %}
       <button class="btn btn-primary" name="save" type="submit">Save</button>
       <button class="btn btn-primary" name="submit" type="submit">Submit</button>
       <button class="btn" type="reset">Reset</button>
+    {% else %}
+    <a class="btn btn-primary" href="./apps">Done</a>
+    {% endif %}
     </div>
   </form>
     
