@@ -279,13 +279,16 @@ def free_response(request):
                               context_instance=RequestContext(request))
   if request.method == 'POST':
     for key, value in request.POST.items():
-      if key not in ('csrfmiddlewaretoken', 'event_id', 'funder_id'):
+      if key not in ('csrfmiddlewaretoken', 'event_id', 'funder_id', 'save', 
+        'submit'):
         question = FreeResponseQuestion.objects.get(question=key)
         # update answer if it exists or make a new answer
         try:
           answer = event.freeresponseanswer_set.get(question=question)
           answer.answer = value
           answer.save()
+          if 'submit' in request.POST:
+            event.applied_funders.add(CFAUser.objects.get(id=funder_id))
         except FreeResponseAnswer.DoesNotExist:
           event.freeresponseanswer_set.create(question=question,
                                   answer=value)
