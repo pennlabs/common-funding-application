@@ -301,7 +301,7 @@ def free_response(request):
     return render_to_response('free-response-form.html',
                               {'form': form, 'event_id': event_id,
                               'funder_id': funder_id,
-                              'is_funder': user.cfauser.is_funder()},
+                              'is_funder': user.cfauser.is_funder},
                               context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])
