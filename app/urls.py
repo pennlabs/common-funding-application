@@ -14,5 +14,5 @@ urlpatterns = patterns('',
     url(r'^event', modify_event),
     url(r'^free-response$', free_response),
     url(r'^error', error),
-    url(r'^funders/(\d)/$', funders),
+    url(r'^funders/(\d+)/$', funders),
 )
