@@ -104,7 +104,9 @@ def modify_event(request):
 
     form = EventForm(event_id)
     return render_to_response('event-form.html',
-                              {'form': form, 'event_id': event_id},
+                              {'form': form, 'event_id': event_id, 
+                              'is_funder':user.cfauser.is_funder, 
+                              'cfauser_id': user.cfauser.id},
                               context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])
@@ -273,11 +275,11 @@ def free_response(request):
     return render_to_response('error.html',
                               {'error_message': "No funder id specified."},
                               context_instance=RequestContext(request))
-  if user.cfauser != event.requester:
-    return render_to_response('error.html',
-        {'error_message': "You: %s Requester: %s" % (user.cfauser, event.requester)},
-                              context_instance=RequestContext(request))
   if request.method == 'POST':
+    if user.cfauser != event.requester:
+      return render_to_response('error.html',
+        {'error_message': "You: %s Requester: %s" % (user.cfauser, event.requester)},
+        context_instance=RequestContext(request))
     for key, value in request.POST.items():
       if key not in ('csrfmiddlewaretoken', 'event_id', 'funder_id', 'save', 
         'submit'):
