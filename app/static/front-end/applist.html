@@ -44,6 +44,13 @@
       </div>
       {% ifequal user.user_type "R" %}
       <div class="app-item-btns span4">
+        {% if app.eligibilityanswer_set.all %}
+        <a class="btn btn-success" href="funders/{{ app.id }}">
+          <i class="icon-user icon-white"></i>
+            Funders
+        </a>
+        {% endif %}
+
         <a class="btn btn-info" href="event?event_id={{ app.id }}">
           <i class="icon-pencil icon-white"></i>
           Edit
