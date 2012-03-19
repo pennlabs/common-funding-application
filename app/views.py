@@ -116,7 +116,7 @@ def apps_list(request):
     if user.cfauser.is_requester:
       apps = Event.objects.filter(requester=user.cfauser).extra(order_by=['date'])
     else: #TODO: filter for funders once submitting functionality has been implemented
-      apps = Event.objects.all().extra(order_by=['date'])
+      apps = user.cfauser.event_applied_funders.all().extra(order_by=['date'])
     return render_to_response('applist.html',
                               {'apps': apps,
                                'user': user.cfauser,},
