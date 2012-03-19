@@ -10,7 +10,7 @@ from django.template import RequestContext
 from forms import EventForm, EligibilityQuestionnaireForm, BudgetForm, \
     FreeResponseForm
 from models import Event, EligibilityQuestion, EligibilityAnswer, \
-    FreeResponseQuestion, FreeResponseAnswer, Grant
+    FreeResponseQuestion, FreeResponseAnswer, Grant, CFAUser
 from sandbox_config import URL_ROOT
 
 
@@ -310,6 +310,9 @@ def funders(request, event_id):
   event = Event.objects.get(id=event_id)
   funder_dict = dict()
   for funder in fs:
-    funder_dict[funder.user.username] = funder.is_willing_to_fund(event)
-  return render_to_response('eligible-funders.html', {'funders': funder_dict},
+    funder_dict[funder.user.username] = {'id': funder.id,
+      'willing': funder.is_willing_to_fund(event), 
+      'applied': funder in event.applied_funders.all()}
+  return render_to_response('eligible-funders.html', {'funders': funder_dict,
+                            'event_id': event_id}, 
                             context_instance=RequestContext(request))

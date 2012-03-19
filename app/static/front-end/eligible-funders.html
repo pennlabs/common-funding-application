@@ -15,11 +15,11 @@
 </header>
 	
 <div id="main">
-  {% for funder, eligible in funders.items %}
+  {% for funder, funder_dict in funders.items %}
   <div class="app-item-row">
     <div class="row">
       <div class="span3">
-        {% if eligible %}
+        {% if funder_dict.willing %}
 	        <span class="app-item-name eligible">
         {% else %}
 	        <span class="app-item-name">
@@ -29,13 +29,13 @@
 	      </span>
       </div>
       
-      {% if applied %}
+      {% if funder_dict.applied %}
       <div class="app-item-date">
 	Already Applied
       </div>
       {% else %}
       <div class="app-item-btns span4">
-	<a class="btn btn-info" href="">
+	<a class="btn btn-info" href="../../free-response?event_id={{event_id}}&funder_id={{funder_dict.id}}">
 	  <i class="icon-pencil icon-white"></i>
 	  Apply!
 	</a>
