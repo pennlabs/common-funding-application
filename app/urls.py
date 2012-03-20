@@ -1,11 +1,10 @@
 from django.conf.urls.defaults import patterns, include, url
 
-import views
+from views import *
 
 
 urlpatterns = patterns('',
-    url(r'^$', views.shared.index),
-    url(r'^apps$', apps_list),
+    url(r'^$', index),
     url(r'^form$', form),
     url(r'^itemlist$', itemlist),
     url(r'^itemlist-funder$', itemlist_funder),

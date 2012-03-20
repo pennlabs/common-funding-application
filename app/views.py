@@ -16,29 +16,15 @@ from sandbox_config import URL_ROOT
 
 @login_required
 def index(request):
-  return redirect(os.path.join(URL_ROOT, 'apps'))
-
-
-def login(request):
-  if request.method == 'POST':
-    username = request.POST['user']
-    password = request.POST['pass']
-    user = authenticate(username=username, password=password)
-    if user is not None:
-      auth_login(request, user)
-      return redirect(os.path.join(URL_ROOT, 'apps'))
-    else:
-      return render_to_response('login.html',
-                                {'login_failed': True},
-                                context_instance=RequestContext(request))
-  else:
-    return render_to_response('login.html',
-                              context_instance=RequestContext(request))
-
-
-def logout(request):
-  auth_logout(request)
-  return redirect(URL_ROOT)
+  user = request.user
+  if user.cfauser.is_requester:
+    apps = Event.objects.filter(requester=user.cfauser).extra(order_by=['date'])
+  else: #TODO: filter for funders once submitting functionality has been implemented
+    apps = user.cfauser.event_applied_funders.all().extra(order_by=['date'])
+  return render_to_response('applist.html',
+                            {'apps': apps,
+                             'user': user.cfauser,},
+                            context_instance=RequestContext(request))
 
 
 @login_required
@@ -110,19 +96,6 @@ def modify_event(request):
                               context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])
-
-
-@login_required
-def apps_list(request):
-  user = request.user
-  if user.cfauser.is_requester:
-    apps = Event.objects.filter(requester=user.cfauser).extra(order_by=['date'])
-  else: #TODO: filter for funders once submitting functionality has been implemented
-    apps = user.cfauser.event_applied_funders.all().extra(order_by=['date'])
-  return render_to_response('applist.html',
-                            {'apps': apps,
-                             'user': user.cfauser,},
-                            context_instance=RequestContext(request))
 
 
 def form(request):

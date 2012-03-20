@@ -8,11 +8,6 @@ from django.template import RequestContext
 from sandbox_config import URL_ROOT
 
 
-@login_required
-def index(request):
-  return redirect(os.path.join(URL_ROOT, 'apps'))
-
-
 def login(request):
   if request.method == 'POST':
     username = request.POST['user']
@@ -20,7 +15,7 @@ def login(request):
     user = authenticate(username=username, password=password)
     if user is not None:
       auth_login(request, user)
-      return redirect(os.path.join(URL_ROOT, 'apps'))
+      return redirect(os.path.join(URL_ROOT))
     else:
       return render_to_response('login.html',
                                 {'login_failed': True},

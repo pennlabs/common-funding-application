@@ -5,12 +5,11 @@
 <div class="navbar">
   <div class="navbar-inner">
     <div class="container">
-      <a href="." class="brand">The Common Funding App</a>
+      <a href="{% url app.views.index %}" class="brand">The Common Funding App</a>
       <div class="pull-right">
         <ul class="nav">
-          <li><a href="apps">App List</a></li>
           <li><a href="#">Help</a></li>
-          <li><a href="logout">Logout</a></li>
+          <li><a href="{% url login.views.logout %}">Logout</a></li>
         </ul>
       </div>
     </div>
