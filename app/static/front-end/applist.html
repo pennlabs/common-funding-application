@@ -25,41 +25,38 @@
     <div class="row">
       <div class="span3">
         <span class="app-item-name">
-          {% if user.is_requester %}
-          <a href="itemlist?event_id={{ app.id }}">{{ app.name }}</a>
-          {% else %}
-          <a href="itemlist-funder?event_id={{ app.id }}">{{ app.name }}</a>
-          {% endif %}
+          {{ app.name }}
         </span>
       </div>
-      <div class="span3">
-        {% ifequal user.user_type "F" %}
-          <span class="app-item-date">[Organization Name]</span>
-        {% else %}
-          &nbsp;
-        {% endifequal %}
-      </div>      
       <div class="span2">
         <span class="app-item-date">{{ app.date }}</span>
       </div>
-      <div class="app-item-btns span4">
-      {% ifequal user.user_type "R" %}
+      {% if user.is_requester %}
+      <div class="app-item-btns span7">
+        <a class="btn btn-info" href="event?event_id={{ app.id }}">
+          <i class="icon-info-sign icon-white"></i>
+          Answers
+        </a>
+        <a class="btn btn-info" href="itemlist?event_id={{ app.id }}">
+          <i class="icon-pencil icon-white"></i>
+          Items
+        </a>
         {% if app.eligibilityanswer_set.all %}
         <a class="btn btn-success" href="funders/{{ app.id }}">
           <i class="icon-user icon-white"></i>
             Funders
         </a>
         {% endif %}
-
-        <a class="btn btn-info" href="event?event_id={{ app.id }}">
-          <i class="icon-pencil icon-white"></i>
-          Edit
-        </a>
         <a class="btn btn-danger" href="delete_event?event_id={{ app.id }}">
           <i class="icon-trash icon-white"></i>
           Delete
         </a>
+      </div>      
       {% else %}
+      <div class="span3">
+        <span class="app-item-date">[Organization Name]</span>
+      </div>      
+      <div class="span4">
       <a class="btn btn-info" href="event?event_id={{ app.id }}">
         <i class="icon-info-sign icon-white"></i>
           View
@@ -68,10 +65,8 @@
         <i class="icon-ok icon-white"></i>
         Fund
       </a>
-
-
-      {% endifequal %}
       </div>
+      {% endif %}
     </div>
   </div>
   {% endfor %}
