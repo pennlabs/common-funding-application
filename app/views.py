@@ -152,7 +152,7 @@ def itemlist(request):
       event.item_set.all().delete()
       for name, amount in zip(item_names, item_amounts):
         event.item_set.create(description=name, amount= amount)
-      return redirect(os.path.join(URL_ROOT, 'apps'))
+      return redirect(os.path.join(URL_ROOT, 'funders', event_id))
     
     elif request.method == 'GET':
       event_id = request.GET.get('event_id', None)
