@@ -14,11 +14,9 @@ from models import Event, EligibilityQuestion, EligibilityAnswer, \
 from sandbox_config import URL_ROOT
 
 
+@login_required
 def index(request):
-  if request.user.is_authenticated():
-    return redirect(os.path.join(URL_ROOT, 'apps'))
-  else:
-    return redirect(os.path.join(URL_ROOT, 'login'))
+  return redirect(os.path.join(URL_ROOT, 'apps'))
 
 
 def login(request):
@@ -56,6 +54,7 @@ def modify_event(request):
         event = Event.objects.create(name=request.POST['name'],
                                      date=request.POST['date'],
                                      requester=request.user.cfauser)
+        event_id = event.id
     except Event.DoesNotExist:
       return render_to_response('error.html',
                                 {'error_message': "Invalid event id."},
@@ -83,7 +82,8 @@ def modify_event(request):
           except EligibilityAnswer.DoesNotExist:
             event.eligibilityanswer_set.create(question=question,
                                     answer=value)
-    return redirect(os.path.join(URL_ROOT, 'itemlist?event_id=' + str(event_id)))
+    assert event_id is not None
+    return redirect(os.path.join(URL_ROOT, 'itemlist?event_id=%s' % event_id))
 
   elif request.method == 'GET':
     event_id = request.GET.get('event_id', None)
