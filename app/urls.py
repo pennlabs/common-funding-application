@@ -1,15 +1,14 @@
 from django.conf.urls.defaults import patterns, include, url
 
-from views import *
+import views
+
 
 urlpatterns = patterns('',
-    url(r'^$', index),
+    url(r'^$', views.shared.index),
     url(r'^apps$', apps_list),
     url(r'^form$', form),
     url(r'^itemlist$', itemlist),
     url(r'^itemlist-funder$', itemlist_funder),
-    url(r'^login$', login),
-    url(r'^logout$', logout),
     url(r'^delete_event', delete_event),
     url(r'^event', modify_event),
     url(r'^free-response$', free_response),

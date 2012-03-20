@@ -18,16 +18,14 @@
   <form action="event" method="post" class="form-horizontal">
     {% csrf_token %}
     {{ form.as_p }}
-    {% if event_id %}
     <input type="hidden" name="event_id" value="{{ event_id }}" />
-    {% endif %}
     
     <div class="form-actions">
       {% if is_funder %}
       <a class="btn btn-primary" href="free-response?event_id={{ event_id }}&funder_id={{ cfauser_id }}">Next</a>
       {% else %}
-      <button class="btn btn-primary" type="submit">Next</button>
-      <button class="btn" type="reset">Reset</button>
+      <button class="btn" type="submit" name="save">Save</button>
+      <button class="btn btn-primary" type="submit" name="continue">Continue</button>
       {% endif %}
     </div>
   </form>
