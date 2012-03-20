@@ -7,6 +7,9 @@ TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 
+LOGIN_URL = URL_ROOT + "/login"
+LOGOUT_URL = URL_ROOT + "/logout"
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
