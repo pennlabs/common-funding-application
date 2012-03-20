@@ -112,19 +112,17 @@ def modify_event(request):
     return HttpResponseNotAllowed(['GET', 'POST'])
 
 
+@login_required
 def apps_list(request):
   user = request.user
-  if user.is_authenticated():
-    if user.cfauser.is_requester:
-      apps = Event.objects.filter(requester=user.cfauser).extra(order_by=['date'])
-    else: #TODO: filter for funders once submitting functionality has been implemented
-      apps = user.cfauser.event_applied_funders.all().extra(order_by=['date'])
-    return render_to_response('applist.html',
-                              {'apps': apps,
-                               'user': user.cfauser,},
-                              context_instance=RequestContext(request))
-  else:
-    return redirect(URL_ROOT)
+  if user.cfauser.is_requester:
+    apps = Event.objects.filter(requester=user.cfauser).extra(order_by=['date'])
+  else: #TODO: filter for funders once submitting functionality has been implemented
+    apps = user.cfauser.event_applied_funders.all().extra(order_by=['date'])
+  return render_to_response('applist.html',
+                            {'apps': apps,
+                             'user': user.cfauser,},
+                            context_instance=RequestContext(request))
 
 
 def form(request):
@@ -194,27 +192,8 @@ def itemlist_funder(request):
         return render_to_response('error.html',
                                   {'error_message': "Unable to view event"},
                                   context_instance=RequestContext(request))
-      event_grants = []
-      EventGrant = namedtuple('EventGrant', ['item', 'currentAmount', 'totalAmount', 'grants'])
-      for item in event.item_set.all():
-        grants = Grant.objects.filter(item=item)
-        item_grants = {}
-        for grant in grants:
-          item_grants[grant.funder] = grant.amount
-        event_grants.append(EventGrant(item=item,
-                                       currentAmount=sum(int(v) for v in item_grants.itervalues()),
-                                       totalAmount=item.amount,
-                                       grants=item_grants))
-    
-    # test code, remove when you have test data
-    #  event_grants.append(EventGrant(item=Item.objects.get(description='asdf'),
-     #                                currentAmount=1400,
-      #                               totalAmount=2000,
-       #                              grants={'SAC': 800, 'SCUE': 500, 'APSC': 100}))
-
       return render_to_response('itemlist-funder.html',
-                                {'event_grants': event_grants,
-                                 'event_id': event_id},
+                                {'event': event},
                                 context_instance=RequestContext(request))
 
     elif request.method == 'POST':
@@ -238,7 +217,9 @@ def itemlist_funder(request):
             amount = item.amount - amount_funded
           grant.amount = grant.amount + amount
           grant.save()
-      return redirect(os.path.join(URL_ROOT, 'apps'))
+      return render_to_response('itemlist-funder.html',
+                                {'event': event},
+                                context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])
 
@@ -289,11 +270,11 @@ def free_response(request):
           answer = event.freeresponseanswer_set.get(question=question)
           answer.answer = value
           answer.save()
-          if 'submit' in request.POST:
-            event.applied_funders.add(CFAUser.objects.get(id=funder_id))
         except FreeResponseAnswer.DoesNotExist:
           event.freeresponseanswer_set.create(question=question,
                                   answer=value)
+      elif 'submit' in request.POST:
+        event.applied_funders.add(CFAUser.objects.get(id=funder_id))
     # TODO: Change this to something meaningful
     return redirect(URL_ROOT)
   elif request.method == 'GET':

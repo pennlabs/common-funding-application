@@ -1,3 +1,4 @@
+from collections import namedtuple
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -48,6 +49,18 @@ class Event(models.Model):
     applied_funders =\
         models.ManyToManyField(CFAUser,
                                related_name='event_applied_funders')
+
+    @property
+    def grants(self):
+      EventGrant = namedtuple('EventGrant', 'item currentAmount totalAmount grants')
+      for item in self.item_set.all():
+        grants = Grant.objects.filter(item=item)
+        item_grants = dict((grant.funder, grant.amount) for grant in grants)
+        yield EventGrant(item=item,
+            currentAmount=sum(int(v) for v in item_grants.itervalues()),
+            totalAmount=item.amount,
+            grants=item_grants)
+
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),

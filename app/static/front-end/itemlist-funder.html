@@ -26,7 +26,7 @@
     
   <form id="itemlist-form" method="post">
     {% csrf_token %}
-    {% for event_grant in event_grants %}
+    {% for event_grant in event.grants %}
     <div class="app-item-row">
       <div class="row">
         <div class="span3">
@@ -59,9 +59,7 @@
     
     {% endfor %}
 
-    {% if event_id %}
-    <input type="hidden" name="event_id" value="{{ event_id }}" />
-    {% endif %}
+    <input type="hidden" name="event_id" value="{{ event.id }}" />
     
     <div class="form-actions">
       <button class="btn btn-primary" type="submit">Submit</button>
