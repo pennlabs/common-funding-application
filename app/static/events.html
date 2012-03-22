@@ -8,7 +8,7 @@
 <header>
   {% ifequal user.user_type "R" %}
   <div class="btns pull-right">
-    <a class="btn btn-primary" href="event">Create New</a>
+    <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
   </div>
   {% endifequal %}
   <div>
@@ -33,7 +33,7 @@
       </div>
       {% if user.is_requester %}
       <div class="app-item-btns span7">
-        <a class="btn btn-info" href="{% url app.views.answers app.id %}">
+        <a class="btn btn-info" href="{% url app.views.event_edit app.id %}">
           <i class="icon-info-sign icon-white"></i>
           Answers
         </a>

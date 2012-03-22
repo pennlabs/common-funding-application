@@ -1,0 +1,33 @@
+{% extends "base-page.html" %}
+
+{% load widgets %}
+    
+{% block htmllink-styles %}
+<link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
+{% endblock %}
+
+{% block container %}      
+<header>
+  <div>
+    <h2>Event</h2>
+  </div>       
+</header>
+  
+<div id="main">
+    
+  <form action="{% url app.views.event_show event.id %}" method="post" class="form-horizontal">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <div class="form-actions">
+      {% if user.cfauser.is_funder %}
+      <a class="btn btn-primary" href="free-response?event_id={{ event.id }}&funder_id={{ user.cfauser.id }}">Next</a>
+      {% else %}
+      <button class="btn" type="submit" name="save">Save</button>
+      <button class="btn btn-primary" type="submit" name="continue">Continue</button>
+      {% endif %}
+    </div>
+  </form>
+    
+</div>      
+{% endblock %}

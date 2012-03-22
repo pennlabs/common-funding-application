@@ -1,0 +1,28 @@
+{% extends "base-page.html" %}
+
+{% load widgets %}
+    
+{% block htmllink-styles %}
+<link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
+{% endblock %}
+
+{% block container %}      
+<header>
+  <div>
+    <h2>Event</h2>
+  </div>       
+</header>
+  
+<div id="main">
+    
+  <form action="{% url app.views.events %}" method="post" class="form-horizontal">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+    </div>
+  </form>
+    
+</div>      
+{% endblock %}

@@ -32,10 +32,19 @@ def authorization_required(view):
 @login_required
 def events(request):
   if request.method == 'POST':
-    event = Event.objects.create(name=request.POST['name'],
-                                 date=request.POST['date'],
-                                 requester=request.user.cfauser)
-    return redirect('app.views.items', event_id)
+    form = EventForm(request.POST)
+    if form.is_valid():
+      event = Event.objects.create(name=form.cleaned_data['name'],
+                                   date=form.cleaned_data['date'],
+                                   requester=request.user.cfauser)
+      # handle questions
+      for key, value in request.POST.items():
+        if key.endswith("?"):
+          question = EligibilityQuestion.objects.get(question=key)
+          event.eligibilityanswer_set.create(question=question, answer=value)
+      return redirect('app.views.items', event.id)
+    else:
+      return redirect('app.views.event_new')
   elif request.method == 'GET':
     user = request.user
     if user.cfauser.is_requester:
@@ -52,7 +61,28 @@ def events(request):
 
 @login_required
 def event_new(request):
-  pass
+  """Form to create a new event."""
+  if request.method == 'GET':
+    form = EventForm()
+    return render_to_response('event-new.html',
+        {'form': form},
+        context_instance=RequestContext(request))
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+
+@login_required
+@authorization_required
+def event_edit(request, event_id):
+  user = request.user
+  if request.method == 'GET':
+    event = Event.objects.get(pk=event_id)
+    form = EventForm(event)
+    return render_to_response('event-edit.html',
+        {'event': event, 'form': form},
+        context_instance=RequestContext(request))
+  else:
+    return HttpResponseNotAllowed(['GET'])
 
 
 @login_required
@@ -83,32 +113,6 @@ def event_show(request, event_id):
     return redirect('app.views.items', event_id)
   else:
     return HttpResponseNotAllowed(['POST'])
-
-
-@login_required
-@authorization_required
-def answers(request, event_id):
-  user = request.user
-  if request.method == 'GET':
-    try:
-      event = Event.objects.get(pk=event_id)
-    except Event.DoesNotExist:
-      return render_to_response('error.html',
-                                {'error_message': "Invalid event"},
-                                context_instance=RequestContext(request))
-
-    form = EventForm(event_id)
-    return render_to_response('event-form.html',
-                              {'form': form,
-                              'event': event},
-                              context_instance=RequestContext(request))
-  else:
-    return HttpResponseNotAllowed(['GET'])
-
-
-def form(request):
-  return render_to_response('form-requester.html',
-                            context_instance=RequestContext(request))
 
 
 @login_required
@@ -201,6 +205,10 @@ def free_response(request):
     return render_to_response('error.html',
                               {'error_message': "Invalid event id."},
                               context_instance=RequestContext(request))
+
+  # ensure funder_id is specified
+  funder_id = request.GET.get('funder_id', None) or request.POST.get('funder_id', None)
+  event = Event.objects.get(pk=event_id)
 
   # ensure funder_id is specified
   funder_id = request.GET.get('funder_id', None) or request.POST.get('funder_id', None)

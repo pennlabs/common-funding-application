@@ -1,4 +1,4 @@
-from django.forms import Form, Textarea
+from django.forms import Form, Textarea, ModelForm
 from django.forms.fields import CharField, ChoiceField, DateField, DecimalField
 from django.forms.widgets import DateInput, RadioSelect
 
@@ -11,23 +11,12 @@ YES_OR_NO = (
 )
 
 
-class EventForm(Form):
-  def __init__(self, event_id, *args, **kwargs):
-    super(EventForm, self).__init__(*args, **kwargs)
-    self.fields['name'] = CharField(max_length=256)
-    self.fields['date'] =\
-        DateField(widget=DateInput(attrs={'class': 'datepicker'}))
-    for question in EligibilityQuestion.objects.all():
-      self.fields[unicode(question)] =\
-        ChoiceField(widget=RadioSelect, choices=YES_OR_NO)
-    try:
-      event = Event.objects.get(pk=event_id)
-      self.initial['name'] = event.name
-      self.initial['date'] = event.date
-      for answer in event.eligibilityanswer_set.all():
-        self.initial[unicode(answer.question)] = answer.answer
-    except Event.DoesNotExist:
-      pass
+class EventForm(ModelForm):
+  date = DateField(widget=DateInput(attrs={'class': 'datepicker'}))
+
+  class Meta:
+    model = Event
+    fields = ('name', 'date')
 
 
 class FreeResponseForm(Form):
