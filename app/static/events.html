@@ -33,21 +33,21 @@
       </div>
       {% if user.is_requester %}
       <div class="app-item-btns span7">
-        <a class="btn btn-info" href="event?event_id={{ app.id }}">
+        <a class="btn btn-info" href="{% url app.views.answers app.id %}">
           <i class="icon-info-sign icon-white"></i>
           Answers
         </a>
-        <a class="btn btn-info" href="itemlist?event_id={{ app.id }}">
+        <a class="btn btn-info" href="{% url app.views.items app.id %}">
           <i class="icon-pencil icon-white"></i>
           Items
         </a>
         {% if app.eligibilityanswer_set.all %}
-        <a class="btn btn-success" href="funders/{{ app.id }}">
+        <a class="btn btn-success" href="{% url app.views.funders app.id %}">
           <i class="icon-user icon-white"></i>
             Funders
         </a>
         {% endif %}
-        <a class="btn btn-danger" href="delete_event?event_id={{ app.id }}">
+        <a class="btn btn-danger" href="{% url app.views.event_destroy app.id %}">
           <i class="icon-trash icon-white"></i>
           Delete
         </a>

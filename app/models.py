@@ -38,7 +38,9 @@ class CFAUser(models.Model):
                 return False
         return True
 
-      
+    def requested(self, event):
+      """Check if a user requested an event."""
+      return self == event.requester
 
 
 class Event(models.Model):

@@ -19,18 +19,16 @@
     </a>
   </div>
   <div>
-    <h2>{{ event_name }}</h2>
+    <h2>{{ event.name }}</h2>
   </div>
 </header>
 
 <div id="main">
 
   <form id="itemlist-form" method="post">{% csrf_token %}
-    {% if event_id %}
-    <input type="hidden" name="event_id" value="{{ event_id }}" />
-    {% endif %}
+    <input type="hidden" name="event_id" value="{{ event.id }}" />
 
-    {% for name, amount in items %}
+    {% for item in event.item_set.all %}
 
     <div class="app-item-row">
       <div class="row">
@@ -40,7 +38,7 @@
            pattern="^(?!Item Name\.\.\.)(.+)"
            onfocus="newInputClicked(this)"
            onblur="newInputCheck(this, 'Item Name...')"
-           value="{{ name }}" />
+           value="{{ item.description }}" />
         </div>
 	
         <div class="span4">
@@ -48,7 +46,7 @@
             <span class="add-on"><strong>$</strong></span>
             <input class="inputIcon" name="item_amount" type="text"
               required
-              value="{{ amount }}"
+              value="{{ item.amount }}"
               pattern="^\d*(\.\d{2}$)?"
               title="Please enter a valid dollar amount."
               onfocus="newInputClicked(this)"
