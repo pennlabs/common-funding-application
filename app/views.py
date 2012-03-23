@@ -32,19 +32,16 @@ def authorization_required(view):
 @login_required
 def events(request):
   if request.method == 'POST':
-    form = EventForm(request.POST)
-    if form.is_valid():
-      event = Event.objects.create(name=form.cleaned_data['name'],
-                                   date=form.cleaned_data['date'],
-                                   requester=request.user.cfauser)
-      # handle questions
-      for key, value in request.POST.items():
-        if key.endswith("?"):
-          question = EligibilityQuestion.objects.get(question=key)
-          event.eligibilityanswer_set.create(question=question, answer=value)
-      return redirect('app.views.items', event.id)
-    else:
-      return redirect('app.views.event_new')
+    # handle Create
+    event = Event.objects.create(name=request.POST['name'],
+                                 date=request.POST['date'],
+                                 requester=request.user.cfauser)
+    # handle questions
+    for key, value in request.POST.items():
+      if key.endswith("?"):
+        question = EligibilityQuestion.objects.get(question=key)
+        event.eligibilityanswer_set.create(question=question, answer=value)
+    return redirect('app.views.items', event.id)
   elif request.method == 'GET':
     user = request.user
     if user.cfauser.is_requester:

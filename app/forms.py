@@ -29,7 +29,10 @@ class EventForm(ModelForm):
       self.fields[unicode(question)] = ChoiceField(
           widget=RadioSelect(attrs={'required': ''}),
             choices=YES_OR_NO)
+    assert event is None or isinstance(event, Event), event
     if event:
+      self.initial['name'] = event.name
+      self.initial['date'] = event.date
       for answer in event.eligibilityanswer_set.all():
         self.initial[unicode(answer.question)] = answer.answer
 
