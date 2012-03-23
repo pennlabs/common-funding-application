@@ -16,10 +16,22 @@ class EventForm(ModelForm):
   class Meta:
     model = Event
     fields = ('name', 'date')
+    # a required attribute is neccesary to make a field required
+    # however, it doesn't need any value so we pass the empty string
     widgets = {
         'name': TextInput(attrs={'required': ''}),
-      'date': DateInput(attrs={'required': '', 'class': 'datepicker'})
+        'date': DateInput(attrs={'required': '', 'class': 'datepicker'})
     }
+
+  def __init__(self, event=None, *args, **kwargs):
+    super(EventForm, self).__init__(*args, **kwargs)
+    for question in EligibilityQuestion.objects.all():
+      self.fields[unicode(question)] = ChoiceField(
+          widget=RadioSelect(attrs={'required': ''}),
+            choices=YES_OR_NO)
+    if event:
+      for answer in event.eligibilityanswer_set.all():
+        self.initial[unicode(answer.question)] = answer.answer
 
 
 class FreeResponseForm(Form):
