@@ -1,6 +1,6 @@
 from django.forms import Form, Textarea, ModelForm
 from django.forms.fields import CharField, ChoiceField, DateField, DecimalField
-from django.forms.widgets import DateInput, RadioSelect
+from django.forms.widgets import DateInput, RadioSelect, TextInput
 
 from models import Event, EligibilityQuestion, EligibilityAnswer, FreeResponseQuestion
 
@@ -12,11 +12,14 @@ YES_OR_NO = (
 
 
 class EventForm(ModelForm):
-  date = DateField(widget=DateInput(attrs={'class': 'datepicker'}))
 
   class Meta:
     model = Event
     fields = ('name', 'date')
+    widgets = {
+        'name': TextInput(attrs={'required': ''}),
+      'date': DateInput(attrs={'required': '', 'class': 'datepicker'})
+    }
 
 
 class FreeResponseForm(Form):
