@@ -245,11 +245,6 @@ def free_response(request):
     return HttpResponseNotAllowed(['GET', 'POST'])
 
 
-def error(request):
-  return render_to_response('error.html',
-                            context_instance=RequestContext(request))
-
-
 def funders(request, event_id):
   """List all the funders."""
   fs = CFAUser.objects.filter(user_type='F')
