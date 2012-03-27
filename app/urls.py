@@ -5,7 +5,7 @@ from views import *
 
 urlpatterns = patterns('',
     url(r'^$', index),
-    url(r'^itemlist-funder$', itemlist_funder),
+    url(r'^itemlist-funder/(\d+)/$', itemlist_funder),
     url(r'^free-response$', free_response),
     url(r'^events/$', events),
     url(r'^events/new/$', event_new),
