@@ -7,8 +7,14 @@ TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 
-LOGIN_URL = URL_ROOT + "/login"
-LOGOUT_URL = URL_ROOT + "/logout"
+ACCOUNT_ACTIVATION_DAYS = 7
+
+LOGIN_URL = URL_ROOT + "/accounts/login/"
+LOGOUT_URL = URL_ROOT + "/accounts/logout/"
+LOGIN_REDIRECT_URL = URL_ROOT
+
+AUTH_PROFILE_MODULE = "app.CFAUser"
+
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -110,6 +116,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
+    os.path.join(PROJECT_ROOT, "templates"),
     os.path.join(PROJECT_ROOT, "static"),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
@@ -128,7 +135,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'app',
-    'login',
+    'registration',
 )
 
 # A sample logging configuration. The only tangible logging

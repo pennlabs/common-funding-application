@@ -22,7 +22,7 @@ def authorization_required(view):
   def protected_view(request, event_id, *args, **kwargs):
     user = request.user
     event = Event.objects.get(pk=event_id)
-    if user.cfauser.requested(event):
+    if user.get_profile().requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
       return HttpResponse(status=401) # not authorized
@@ -44,13 +44,13 @@ def events(request):
     return redirect('app.views.items', event.id)
   elif request.method == 'GET':
     user = request.user
-    if user.cfauser.is_requester:
-      apps = Event.objects.filter(requester=user.cfauser).extra(order_by=['date'])
+    if user.get_profile().is_requester:
+      apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
     else: #TODO: filter for funders once submitting functionality has been implemented
-      apps = user.cfauser.event_applied_funders.all().extra(order_by=['date'])
+      apps = user.get_profile().event_applied_funders.all().extra(order_by=['date'])
     return render_to_response('events.html',
                               {'apps': apps,
-                               'user': user.cfauser,},
+                               'user': user.get_profile(),},
                               context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])

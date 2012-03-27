@@ -1,0 +1,23 @@
+
+
+{% extends "base-page.html" %}
+{% block htmllink-styles %}
+<link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
+{% endblock %}
+
+{% block container %}
+<div id="main" class="row">
+  <div id="register" class="span4 offset1">
+    <div class="box">
+      <h2>Sign up</h2>
+    <form method="post" class="form-horizotal">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
