@@ -59,9 +59,17 @@ def events(request):
       apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
     else: #TODO: filter for funders once submitting functionality has been implemented
       apps = user.get_profile().event_applied_funders.all().extra(order_by=['date'])
+    # TEST DATA
+    test_grant_total = 1200
+    test_grants = {'SCUE' : 600,
+                   'T-Change' : 300,
+                   'Faith Fund' : 50}
+      
     return render_to_response('app/events.html',
                               {'apps': apps,
-                               'user': user.get_profile(),},
+                               'user': user.get_profile(),
+                               'test_grant_total': test_grant_total,
+                               'test_grants': test_grants},
                               context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])

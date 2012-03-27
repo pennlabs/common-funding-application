@@ -24,12 +24,3 @@ div.app-item-btns .btn-group {
 div.app-item-btns div.btn-group {
   text-align: left;
 }
-
-div.app-item-fundingbar .dropdown-menu {
-  top: 18px;
-  max-width: 300px;
-  width: 300px;
-}
-div.app-item-fundingbar a {
-  outline: 0;
-}
