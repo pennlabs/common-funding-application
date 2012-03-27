@@ -59,7 +59,7 @@ def events(request):
       apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
     else: #TODO: filter for funders once submitting functionality has been implemented
       apps = user.get_profile().event_applied_funders.all().extra(order_by=['date'])
-    return render_to_response('events.html',
+    return render_to_response('app/events.html',
                               {'apps': apps,
                                'user': user.get_profile(),},
                               context_instance=RequestContext(request))
@@ -72,7 +72,7 @@ def event_new(request):
   """Form to create a new event."""
   if request.method == 'GET':
     form = EventForm()
-    return render_to_response('event-new.html',
+    return render_to_response('app/event-new.html',
         {'form': form},
         context_instance=RequestContext(request))
   else:
@@ -86,7 +86,7 @@ def event_edit(request, event_id):
   if request.method == 'GET':
     event = Event.objects.get(pk=event_id)
     form = EventForm(event)
-    return render_to_response('event-edit.html',
+    return render_to_response('app/event-edit.html',
         {'event': event, 'form': form},
         context_instance=RequestContext(request))
   else:
@@ -143,7 +143,7 @@ def event_show(request, event_id):
       other_form = FreeResponseForm(event_id, user.cfauser.id)
     else:
       other_form = None
-    return render_to_response('event-edit.html',
+    return render_to_response('app/event-edit.html',
       {'form': form, 'event': event, 'is_funder':user.cfauser.is_funder,
       'other_form': other_form, 'funder_id':user.cfauser.id,
       'cfauser_id': user.cfauser.id},
@@ -167,7 +167,7 @@ def items(request, event_id):
     return redirect('app.views.funders', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
-    return render_to_response('itemlist.html',
+    return render_to_response('app/itemlist.html',
                               {'event': event},
                               context_instance=RequestContext(request))
   else:
@@ -271,6 +271,6 @@ def funders(request, event_id):
     funder_dict[funder] = {'id': funder.id,
       'willing': funder.is_willing_to_fund(event), 
       'applied': funder in event.applied_funders.all()}
-  return render_to_response('eligible-funders.html', {'funders': funder_dict,
+  return render_to_response('app/eligible-funders.html', {'funders': funder_dict,
                             'event': event}, 
                             context_instance=RequestContext(request))

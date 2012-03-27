@@ -15,7 +15,7 @@ class EventForm(ModelForm):
 
   class Meta:
     model = Event
-    fields = ('name', 'date')
+    fields = ('name', 'date', 'location')
     # a required attribute is neccesary to make a field required
     # however, it doesn't need any value so we pass the empty string
     widgets = {

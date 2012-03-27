@@ -54,6 +54,7 @@ def create_profile(sender, instance, signal, created, **kwargs):
 class Event(models.Model):
     name = models.CharField(max_length=256)
     date = models.DateField()
+    location = models.CharField(max_length=256)
     requester = models.ForeignKey(CFAUser, related_name='event_requester')
     organizations = models.CharField(max_length=256)
     applied_funders =\
