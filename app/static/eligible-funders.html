@@ -25,7 +25,7 @@
 	        <span class="app-item-name">
         {% endif %}
 
-	        {{ funder }}
+        {{ funder }}
 	      </span>
       </div>
       
@@ -35,13 +35,11 @@
       </div>
       {% else %}
       <div class="app-item-btns span4">
-	<a class="btn btn-info" href="../../free-response?event_id={{event_id}}&funder_id={{funder_dict.id}}">
-	  <i class="icon-pencil icon-white"></i>
-	  Apply!
-	</a>
+        <a class="btn btn-info" href="{% url app.views.free_response event.id funder.id %}">
+          <i class="icon-pencil icon-white"></i>Apply!
+        </a>
       </div>
       {% endif %}
-
     </div>
   </div>
   {% empty %}

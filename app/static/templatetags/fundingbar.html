@@ -1,5 +1,4 @@
-<div class="fundingbar progress">
-  
+<div class="fundingbar progress">  
   {% for item in fundItems %}
     <div class="bar" rel="tooltip" title="{{item.funder}} : ${{item.amount}}" style="width: {{item.percent}}%;"></div>
   {% endfor %}

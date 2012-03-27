@@ -226,32 +226,10 @@ def event_destroy(request, event_id):
 
 
 @login_required
-def free_response(request):
+def free_response(request, event_id, funder_id):
   user = request.user
-
-  # ensure event exists
-  event_id = request.GET.get('event_id', None) or request.POST.get('event_id', None)
-  if event_id is None:
-    return render_to_response('error.html',
-                              {'error_message': "No event id specified."},
-                              context_instance=RequestContext(request))
-  try:
-    event = Event.objects.get(pk=event_id)
-  except Event.DoesNotExist:
-    return render_to_response('error.html',
-                              {'error_message': "Invalid event id."},
-                              context_instance=RequestContext(request))
-
-  # ensure funder_id is specified
-  funder_id = request.GET.get('funder_id', None) or request.POST.get('funder_id', None)
   event = Event.objects.get(pk=event_id)
 
-  # ensure funder_id is specified
-  funder_id = request.GET.get('funder_id', None) or request.POST.get('funder_id', None)
-  if funder_id is None:
-    return render_to_response('error.html',
-                              {'error_message': "No funder id specified."},
-                              context_instance=RequestContext(request))
   if request.method == 'POST':
     if user.cfauser != event.requester:
       return render_to_response('error.html',
@@ -290,9 +268,9 @@ def funders(request, event_id):
   event = Event.objects.get(id=event_id)
   funder_dict = dict()
   for funder in fs:
-    funder_dict[funder.user.username] = {'id': funder.id,
+    funder_dict[funder] = {'id': funder.id,
       'willing': funder.is_willing_to_fund(event), 
       'applied': funder in event.applied_funders.all()}
   return render_to_response('eligible-funders.html', {'funders': funder_dict,
-                            'event_id': event_id}, 
+                            'event': event}, 
                             context_instance=RequestContext(request))

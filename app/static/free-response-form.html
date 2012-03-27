@@ -15,7 +15,7 @@
   
 <div id="main">
     
-  <form action="free-response" method="post" class="form-horizontal">
+  <form action="{% url app.views.free_response event_id funder_id %}" method="post" class="form-horizontal">
     {% csrf_token %}
     {{ form.as_p }}
     <input type="hidden" name="event_id" value="{{ event_id }}" />
