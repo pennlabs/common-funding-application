@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="container">
+      <a href="{% url app.views.events %}" class="brand">The Common Funding App</a>
+      <div class="pull-right">
+        <ul class="nav">
+          {% if requester.user %}
+          <a href="{% url django.contrib.auth.views.logout %}">Logout</a>
+          {% else %}
+          <a href="{% url django.contrib.auth.views.login %}">Login</a>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ block.super }}
+
+{% endblock %}

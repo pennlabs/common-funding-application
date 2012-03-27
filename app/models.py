@@ -1,6 +1,8 @@
 from collections import namedtuple
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import dispatcher, receiver
 
 
 YES_OR_NO = (
@@ -41,6 +43,12 @@ class CFAUser(models.Model):
     def requested(self, event):
       """Check if a user requested an event."""
       return self == event.requester
+
+@receiver(sender=User, signal=post_save)
+def create_profile(sender, instance, signal, created, **kwargs):
+  """Create a CFAUser whenever a user is created."""
+  if created:
+    CFAUser.objects.create(user=instance, user_type='R')
 
 
 class Event(models.Model):

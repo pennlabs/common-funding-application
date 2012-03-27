@@ -67,11 +67,11 @@
         <span class="app-item-date">[Organization Name]</span>
       </div>      
       <div class="span4">
-      <a class="btn btn-info" href="event?event_id={{ app.id }}">
+      <a class="btn btn-info" href="{% url app.views.event_show app.id %}">
         <i class="icon-info-sign icon-white"></i>
           View
       </a>
-      <a class="btn btn-success" href="itemlist-funder?event_id={{ app.id }}">
+      <a class="btn btn-success" href="{% url app.views.itemlist_funder app.id %}">
         <i class="icon-ok icon-white"></i>
         Fund
       </a>

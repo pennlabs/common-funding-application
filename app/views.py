@@ -18,14 +18,25 @@ def index(request):
     return redirect('app.views.events')
 
 
+def creator_or_funder(view):
+  def protected_view(request, event_id, *args, **kwargs):
+    user = request.user
+    event = Event.objects.get(pk=event_id)
+    if user.cfauser.requested(event) or user.cfauser.is_funder:
+      return view(request, event_id, *args, **kwargs)
+    else:
+      return redirect('app.views.index') # not authorized
+  return protected_view
+
+
 def authorization_required(view):
   def protected_view(request, event_id, *args, **kwargs):
     user = request.user
     event = Event.objects.get(pk=event_id)
-    if user.cfauser.requested(event):
+    if user.get_profile().requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
-      return HttpResponse(status=401) # not authorized
+      return redirect('app.views.index') # not authorized
   return protected_view
 
 
@@ -44,10 +55,10 @@ def events(request):
     return redirect('app.views.items', event.id)
   elif request.method == 'GET':
     user = request.user
-    if user.cfauser.is_requester:
-      apps = Event.objects.filter(requester=user.cfauser).extra(order_by=['date'])
+    if user.get_profile().is_requester:
+      apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
     else: #TODO: filter for funders once submitting functionality has been implemented
-      apps = user.cfauser.event_applied_funders.all().extra(order_by=['date'])
+      apps = user.get_profile().event_applied_funders.all().extra(order_by=['date'])
     
     # TEST DATA
     test_grant_total = 1200
@@ -57,7 +68,7 @@ def events(request):
       
     return render_to_response('events.html',
                               {'apps': apps,
-                               'user': user.cfauser,
+                               'user': user.get_profile(),
                                'test_grant_total': test_grant_total,
                                'test_grants': test_grants},
                               context_instance=RequestContext(request))
@@ -92,11 +103,28 @@ def event_edit(request, event_id):
 
 
 @login_required
-@authorization_required
+@creator_or_funder
 def event_show(request, event_id):
   user = request.user
   if request.method == 'POST': #TODO: should really be PUT
     event = Event.objects.get(pk=event_id)
+
+    if user.cfauser.is_funder:
+      for item in event.item_set.all():
+        amount = request.POST.get("item_" + str(item.id), None)
+        if amount and int(amount):
+          amount = int(amount)
+          grant = Grant.objects.get_or_create(funder=user.cfauser,
+                                              item=item,
+                                              defaults={'amount': 0})[0]
+          grants = Grant.objects.filter(item=item)
+          amount_funded = sum(grant.amount for grant in grants)
+          if amount + amount_funded > item.amount:
+            amount = item.amount - amount_funded
+          grant.amount = grant.amount + amount
+          grant.save()
+      return redirect('app.views.event_show', event_id)
+
 
     for key, value in request.POST.items():
       if key in ('csrfmiddlewaretoken', 'event_id'):
@@ -117,6 +145,18 @@ def event_show(request, event_id):
           answer.save()
     event.save()
     return redirect('app.views.items', event_id)
+  elif request.method == 'GET':
+    event = Event.objects.get(pk=event_id)
+    form = EventForm(event)
+    if user.cfauser.is_funder:
+      other_form = FreeResponseForm(event_id, user.cfauser.id)
+    else:
+      other_form = None
+    return render_to_response('event-edit.html',
+      {'form': form, 'event': event, 'is_funder':user.cfauser.is_funder,
+      'other_form': other_form, 'funder_id':user.cfauser.id,
+      'cfauser_id': user.cfauser.id},
+      context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['POST'])
 
@@ -143,11 +183,10 @@ def items(request, event_id):
     return HttpResponseNotAllowed(['GET', 'POST'])
 
 
-def itemlist_funder(request):
+def itemlist_funder(request, event_id):
   user = request.user
   if user.is_authenticated():
     if request.method == 'GET':
-      event_id = request.GET.get('event_id', None)
       try:
         event = Event.objects.get(pk=event_id)
         event_name = event.name

@@ -24,7 +24,7 @@
 </header>
   
 <div id="main">
-    
+     
   <form id="itemlist-form" method="post">
     {% csrf_token %}
     {% for event_grant in event.grants %}
@@ -67,6 +67,6 @@
       <button class="btn" type="reset">Reset</button>
     </div>
   </form>
-    
+   
 </div>
 {% endblock %}
