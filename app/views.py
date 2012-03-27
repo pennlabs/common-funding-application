@@ -100,6 +100,23 @@ def event_show(request, event_id):
   if request.method == 'POST': #TODO: should really be PUT
     event = Event.objects.get(pk=event_id)
 
+    if user.cfauser.is_funder:
+      for item in event.item_set.all():
+        amount = request.POST.get("item_" + str(item.id), None)
+        if amount and int(amount):
+          amount = int(amount)
+          grant = Grant.objects.get_or_create(funder=user.cfauser,
+                                              item=item,
+                                              defaults={'amount': 0})[0]
+          grants = Grant.objects.filter(item=item)
+          amount_funded = sum(grant.amount for grant in grants)
+          if amount + amount_funded > item.amount:
+            amount = item.amount - amount_funded
+          grant.amount = grant.amount + amount
+          grant.save()
+      return redirect('app.views.event_show', event_id)
+
+
     for key, value in request.POST.items():
       if key in ('csrfmiddlewaretoken', 'event_id'):
         continue
