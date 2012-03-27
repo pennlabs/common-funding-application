@@ -1,7 +1,10 @@
 {% extends "base-page.html" %}
 
+{% load widgets %}
+
 {% block htmllink-styles %}
 <link rel="stylesheet" href="{{ STATIC_URL }}/css/applist.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}/css/fundingbar.css">
 {% endblock %}
 
 {% block container %}
@@ -31,37 +34,50 @@
       <div class="span2">
         <span class="app-item-date">{{ app.date }}</span>
       </div>
+      <div class="span4 app-item-fundingbar">
+        <div class="btn-group">
+          <a data-toggle="dropdown" href="#">
+            {% fundingbar event_grant.totalAmount event_grant.grants %}
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="#">SAC - $1000</a></li>
+            <li><a href="#">UA Contingency - $100</a></li>
+            <li class="divider"></li>
+            <li><a href="#">SPEC - Apply Now</a></li>
+          </ul>
+        </div>
+      </div>
       {% if user.is_requester %}
-      <div class="app-item-btns span7">
-        <a class="btn btn-info" href="{% url app.views.event_edit app.id %}">
-          <i class="icon-info-sign icon-white"></i>
-          Answers
-        </a>
-        <a class="btn btn-info" href="{% url app.views.items app.id %}">
-          <i class="icon-pencil icon-white"></i>
-          Items
-        </a>
-        {% if app.eligibilityanswer_set.all %}
-        <a class="btn btn-success" href="{% url app.views.funders app.id %}">
-          <i class="icon-user icon-white"></i>
-            Funders
-        </a>
-        {% endif %}
-        <a class="btn btn-danger" href="{% url app.views.event_destroy app.id %}">
+      <div class="span3 app-item-btns">
+        <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
           <i class="icon-trash icon-white"></i>
           Delete
         </a>
+        <div class="btn-group pull-right">
+          <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+            <i class="icon-pencil icon-white"></i>
+            Edit
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url app.views.event_edit app.id %}">Answers</a></li>
+            <li><a href="{% url app.views.items app.id %}">Items</a></li>
+            {% if app.eligibilityanswer_set.all %}
+            <li><a href="{% url app.views.funders app.id %}">Funders</a></li>
+            {% endif %}
+          </ul>
+        </div>       
       </div>      
       {% else %}
       <div class="span3">
         <span class="app-item-date">[Organization Name]</span>
       </div>      
       <div class="span4">
-      <a class="btn btn-info" href="event?event_id={{ app.id }}">
+      <a class="btn btn-info" href="{% url app.views.event_show app.id %}">
         <i class="icon-info-sign icon-white"></i>
           View
       </a>
-      <a class="btn btn-success" href="itemlist-funder?event_id={{ app.id }}">
+      <a class="btn btn-success" href="{% url app.views.itemlist_funder app.id %}">
         <i class="icon-ok icon-white"></i>
         Fund
       </a>

@@ -5,6 +5,7 @@
 {% block htmllink-styles %}
 <link rel="stylesheet" href="{{ STATIC_URL }}/css/applist.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}/css/itemlist.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}/css/fundingbar.css">
 {% endblock %}
 
 {% block htmllink-js %}
@@ -23,7 +24,7 @@
 </header>
   
 <div id="main">
-    
+     
   <form id="itemlist-form" method="post">
     {% csrf_token %}
     {% for event_grant in event.grants %}
@@ -66,6 +67,6 @@
       <button class="btn" type="reset">Reset</button>
     </div>
   </form>
-    
+   
 </div>
 {% endblock %}

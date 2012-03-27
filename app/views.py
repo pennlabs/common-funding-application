@@ -18,6 +18,17 @@ def index(request):
     return redirect('app.views.events')
 
 
+def creator_or_funder(view):
+  def protected_view(request, event_id, *args, **kwargs):
+    user = request.user
+    event = Event.objects.get(pk=event_id)
+    if user.cfauser.requested(event) or user.cfauser.is_funder:
+      return view(request, event_id, *args, **kwargs)
+    else:
+      return redirect('app.views.index') # not authorized
+  return protected_view
+
+
 def authorization_required(view):
   def protected_view(request, event_id, *args, **kwargs):
     user = request.user
@@ -25,7 +36,7 @@ def authorization_required(view):
     if user.get_profile().requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
-      return HttpResponse(status=401) # not authorized
+      return redirect('app.views.index') # not authorized
   return protected_view
 
 
@@ -83,11 +94,28 @@ def event_edit(request, event_id):
 
 
 @login_required
-@authorization_required
+@creator_or_funder
 def event_show(request, event_id):
   user = request.user
   if request.method == 'POST': #TODO: should really be PUT
     event = Event.objects.get(pk=event_id)
+
+    if user.cfauser.is_funder:
+      for item in event.item_set.all():
+        amount = request.POST.get("item_" + str(item.id), None)
+        if amount and int(amount):
+          amount = int(amount)
+          grant = Grant.objects.get_or_create(funder=user.cfauser,
+                                              item=item,
+                                              defaults={'amount': 0})[0]
+          grants = Grant.objects.filter(item=item)
+          amount_funded = sum(grant.amount for grant in grants)
+          if amount + amount_funded > item.amount:
+            amount = item.amount - amount_funded
+          grant.amount = grant.amount + amount
+          grant.save()
+      return redirect('app.views.event_show', event_id)
+
 
     for key, value in request.POST.items():
       if key in ('csrfmiddlewaretoken', 'event_id'):
@@ -108,6 +136,18 @@ def event_show(request, event_id):
           answer.save()
     event.save()
     return redirect('app.views.items', event_id)
+  elif request.method == 'GET':
+    event = Event.objects.get(pk=event_id)
+    form = EventForm(event)
+    if user.cfauser.is_funder:
+      other_form = FreeResponseForm(event_id, user.cfauser.id)
+    else:
+      other_form = None
+    return render_to_response('event-edit.html',
+      {'form': form, 'event': event, 'is_funder':user.cfauser.is_funder,
+      'other_form': other_form, 'funder_id':user.cfauser.id,
+      'cfauser_id': user.cfauser.id},
+      context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['POST'])
 
@@ -134,11 +174,10 @@ def items(request, event_id):
     return HttpResponseNotAllowed(['GET', 'POST'])
 
 
-def itemlist_funder(request):
+def itemlist_funder(request, event_id):
   user = request.user
   if user.is_authenticated():
     if request.method == 'GET':
-      event_id = request.GET.get('event_id', None)
       try:
         event = Event.objects.get(pk=event_id)
         event_name = event.name
