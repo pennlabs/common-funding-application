@@ -1,9 +1,24 @@
-.fundingbar.progress {
+.fundingbar .progress {
   margin-bottom: 0px;
+  height: 28px;
+  border-radius: 0px 4px 4px 0px;
 }
 
-.fundingbar.progress .bar {
+.fundingbar div.btn-group {
   float: left;
+}
+
+.fundingbar .btn-group .dropdown-header {
+  margin: 3px 15px;
+  color: #999;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.fundingbar .progress .bar {
+  float: left;
+  height: 100%;
   
   background: #0E90D2;
   border: 1px solid;
@@ -13,9 +28,7 @@
   border-left-color: #44baf2;
 }
 
-.fundingbar.progress .bar:hover {
-  float: left;
-  
+.fundingbar .progress .bar:hover {  
   background: #32b4f1;
   border: 1px solid;
   border-bottom-color: #0e8dcb;

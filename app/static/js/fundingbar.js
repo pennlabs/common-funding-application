@@ -1,3 +1,3 @@
 $(document).ready(function() {
-  $(".fundingbar.progress div.bar").tooltip();
+  $(".fundingbar .progress div.bar").tooltip();
 });

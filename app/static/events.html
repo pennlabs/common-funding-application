@@ -7,6 +7,10 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}/css/fundingbar.css">
 {% endblock %}
 
+{% block htmllink-js %}
+<script src="{{ STATIC_URL }}/js/fundingbar.js"></script>
+{% endblock %}
+
 {% block container %}
 <header>
   {% ifequal user.user_type "R" %}
@@ -35,17 +39,7 @@
         <span class="app-item-date">{{ app.date }}</span>
       </div>
       <div class="span4 app-item-fundingbar">
-        <div class="btn-group">
-          <a data-toggle="dropdown" href="#">
-            {% fundingbar event_grant.totalAmount event_grant.grants %}
-          </a>
-          <ul class="dropdown-menu">
-            <li><a href="#">SAC - $1000</a></li>
-            <li><a href="#">UA Contingency - $100</a></li>
-            <li class="divider"></li>
-            <li><a href="#">SPEC - Apply Now</a></li>
-          </ul>
-        </div>
+        {% fundingbar test_grant_total test_grants %}
       </div>
       {% if user.is_requester %}
       <div class="span3 app-item-btns">
