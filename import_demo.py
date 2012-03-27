@@ -80,3 +80,5 @@ def import_all():
     import_users()
     import_constraints()
     import_events()
+if __name__ == '__main__':
+    import_all()
