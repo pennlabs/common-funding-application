@@ -22,31 +22,3 @@
 .app-item-row input.fund-amount {
   float: right;
 }
-
-/* FUNDING BAR */
-
-.fundingbar.progress {
-  margin-bottom: 0px;
-}
-
-.fundingbar.progress .bar {
-  float: left;
-  
-  background: #0E90D2;
-  border: 1px solid;
-  border-bottom-color: #0b72a4;
-  border-right-color: #0b72a4;
-  border-top-color: #44baf2;
-  border-left-color: #44baf2;
-}
-
-.fundingbar.progress .bar:hover {
-  float: left;
-  
-  background: #32b4f1;
-  border: 1px solid;
-  border-bottom-color: #0e8dcb;
-  border-right-color: #0e8dcb;
-  border-top-color: #93d8f9;
-  border-left-color: #93d8f9;
-}

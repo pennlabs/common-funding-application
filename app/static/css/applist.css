@@ -7,7 +7,7 @@ div.app-item-row:hover {
 div.app-item-row > .row > div:first-child > *:first-child {
   margin-left: 12px;  
 }
-div.app-item-row > .row > div:last-child > *:last-child {
+div.app-item-row > .row > div:last-child > *:first-child {
   margin-right: 12px;
 }
 
@@ -16,8 +16,20 @@ div.app-item-row > .row > div:last-child > *:last-child {
 }
 
 div.app-item-btns {
-  text-align: right;
 }
-div.app-item-btns .btn {
+div.app-item-btns .btn,
+div.app-item-btns .btn-group {
   margin-left:8px;
+}
+div.app-item-btns div.btn-group {
+  text-align: left;
+}
+
+div.app-item-fundingbar .dropdown-menu {
+  top: 18px;
+  max-width: 300px;
+  width: 300px;
+}
+div.app-item-fundingbar a {
+  outline: 0;
 }
