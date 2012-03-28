@@ -7,11 +7,12 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
-from forms import EventForm, EligibilityQuestionnaireForm, BudgetForm, \
-    FreeResponseForm
-from models import Event, EligibilityQuestion, EligibilityAnswer, \
-    FreeResponseQuestion, FreeResponseAnswer, Grant, CFAUser
 from sandbox_config import URL_ROOT
+
+from app.forms import EventForm, EligibilityQuestionnaireForm, BudgetForm, \
+    FreeResponseForm
+from app.models import Event, EligibilityQuestion, EligibilityAnswer, \
+    FreeResponseQuestion, FreeResponseAnswer, Grant, CFAUser
 
 
 def index(request):
