@@ -17,32 +17,46 @@ REQUESTER_OR_FUNDER = (
 
 
 class CFAUser(models.Model):
-    user = models.OneToOneField(User)
-    user_type = models.CharField(max_length=1,
-                                 choices=REQUESTER_OR_FUNDER)
+  """
+  A CFA User profile.
 
-    def __unicode__(self):
-        return unicode(self.user)
+  # Create user
+  >>> u = User.objects.create_user("alice", "alice@example.com", "1234")
+  >>> cfau = u.get_profile()
+  >>> cfau.is_requester
+  True
+  >>> cfau.is_funder
+  False
+  """
+  user = models.OneToOneField(User)
+  user_type = models.CharField(max_length=1,
+                               choices=REQUESTER_OR_FUNDER)
 
-    @property
-    def is_funder(self):
-        return self.user_type == 'F'
+  def __unicode__(self):
+      return unicode(self.user)
 
-    @property
-    def is_requester(self):
-        return not self.is_funder
+  @property
+  def is_funder(self):
+      return self.user_type == 'F'
 
-    def is_willing_to_fund(self, event):
-        for constraint in self.funderconstraint_set.all():
-            event_answer = event.eligibilityanswer_set.get(question=
-                constraint.question).answer
-            if not event_answer == constraint.answer:
-                return False
-        return True
+  @property
+  def is_requester(self):
+      return not self.is_funder
 
-    def requested(self, event):
-      """Check if a user requested an event."""
-      return self == event.requester
+  def is_willing_to_fund(self, event):
+    """Check if a funder is willing to fund an event."""
+    assert self.is_funder
+    for constraint in self.funderconstraint_set.all():
+        event_answer = event.eligibilityanswer_set.get(question=
+            constraint.question).answer
+        if not event_answer == constraint.answer:
+            return False
+    return True
+
+  def requested(self, event):
+    """Check if a user requested an event."""
+    assert self.is_requester
+    return self == event.requester
 
 @receiver(sender=User, signal=post_save)
 def create_profile(sender, instance, signal, created, **kwargs):
