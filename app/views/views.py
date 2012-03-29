@@ -68,7 +68,6 @@ def events(request):
       
     return render_to_response('app/events.html',
                               {'apps': apps,
-                               'user': user.get_profile(),
                                'test_grant_total': test_grant_total,
                                'test_grants': test_grants},
                               context_instance=RequestContext(request))
@@ -119,9 +118,9 @@ def event_show(request, event_id):
                                               defaults={'amount': 0})[0]
           grants = Grant.objects.filter(item=item)
           amount_funded = sum(grant.amount for grant in grants)
-          if amount + amount_funded > item.amount:
-            amount = item.amount - amount_funded
-          grant.amount = grant.amount + amount
+          if amount + amount_funded - grant.amount > item.amount:
+            amount = item.amount - amount_funded + grant.amount
+          grant.amount = amount
           grant.save()
       return redirect('app.views.event_show', event_id)
 
