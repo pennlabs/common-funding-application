@@ -1,8 +1,15 @@
 import datetime
+import os
+import sys
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 
 from app.models import *
+
+from sandbox_config import URL_ROOT
 
 
 QUESTIONS = [
@@ -23,18 +30,20 @@ def import_questions():
 def import_users():
     CFAUser.objects.all().delete()
     User.objects.filter(is_staff=False).delete()
-    CFAUser.objects.create(user=User.objects.create_user(username="testrequester1",
-                                                         email="testrequester1@test.com",
-                                                         password="testrequester1"), user_type='R')
-    CFAUser.objects.create(user=User.objects.create_user(username="testrequester2",
-                                                         email="testrequester2@test.com",
-                                                         password="testrequester2"), user_type='R')
-    CFAUser.objects.create(user=User.objects.create_user(username="testfunder1",
-                                                         email="testfunder1@test.com",
-                                                         password="testfunder1"), user_type='F')
-    CFAUser.objects.create(user=User.objects.create_user(username="testfunder2",
-                                                         email="testfunder2@test.com",
-                                                         password="testfunder2"), user_type='F')
+    User.objects.create_user(username="testrequester1",
+        email="testrequester1@test.com",
+        password="testrequester1")
+    User.objects.create_user(username="testrequester2",
+        email="testrequester2@test.com",
+        password="testrequester2")
+    funder1 = User.objects.create_user(username="testfunder1",
+        email="testfunder1@test.com",
+        password="testfunder1")
+    funder1.get_profile().user_type = 'F'
+    funder2 = User.objects.create_user(username="testfunder2",
+        email="testfunder2@test.com",
+        password="testfunder2")
+    funder2.get_profile().user_type = 'F'
 
 
 def import_constraints():
@@ -73,12 +82,20 @@ def import_events():
                                             month=5,
                                             day=2),
                          requester=CFAUser.objects.get(user=User.objects.get(username="testrequester2")))
-    
+
+def import_sites():
+  site = Site.objects.get_current()
+  site.domain = "www.pennapps.com%s/" % URL_ROOT
+  site.name = "The Common Funding App"
+  site.save()
 
 def import_all():
     import_questions()
     import_users()
     import_constraints()
     import_events()
+    import_sites()
+    return 0
+
 if __name__ == '__main__':
-    import_all()
+    sys.exit(import_all())
