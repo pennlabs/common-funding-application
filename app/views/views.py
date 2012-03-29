@@ -261,7 +261,7 @@ def free_response(request, event_id, funder_id):
     return redirect(URL_ROOT)
   elif request.method == 'GET':
     form = FreeResponseForm(event_id, funder_id)
-    return render_to_response('free-response-form.html',
+    return render_to_response('app/free-response-form.html',
                               {'form': form, 'event_id': event_id,
                               'funder_id': funder_id,
                               'is_funder': user.cfauser.is_funder},
