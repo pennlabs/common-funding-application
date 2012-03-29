@@ -26,5 +26,5 @@ def fundingbar(context, totalAmount, fundDict):
                  'currentAmount': currentAmount,
                  'totalAmount': totalAmount}
   
-  return render_to_string('templatetags/fundingbar.html', new_context)
+  return render_to_string('app/templatetags/fundingbar.html', new_context)
 
