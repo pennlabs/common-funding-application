@@ -12,7 +12,8 @@ from sandbox_config import URL_ROOT
 from app.forms import EventForm, EligibilityQuestionnaireForm, BudgetForm, \
     FreeResponseForm
 from app.models import Event, EligibilityQuestion, EligibilityAnswer, \
-    FreeResponseQuestion, FreeResponseAnswer, Grant, CFAUser
+    FreeResponseQuestion, FreeResponseAnswer, Grant, CFAUser, \
+    CommonFreeResponseQuestion, CommonFreeResponseAnswer
 
 
 def index(request):
@@ -31,6 +32,7 @@ def creator_or_funder(view):
 
 
 def authorization_required(view):
+  """Ensure the user requested the event."""
   def protected_view(request, event_id, *args, **kwargs):
     user = request.user
     event = Event.objects.get(pk=event_id)
@@ -47,6 +49,8 @@ def events(request):
     # handle Create
     event = Event.objects.create(name=request.POST['name'],
                                  date=request.POST['date'],
+                                 location=request.POST['location'],
+                                 organization=request.POST['organization'],
                                  requester=request.user.cfauser)
     # handle questions
     for key, value in request.POST.items():
@@ -68,7 +72,6 @@ def events(request):
       
     return render_to_response('app/events.html',
                               {'apps': apps,
-                               'user': user.get_profile(),
                                'test_grant_total': test_grant_total,
                                'test_grants': test_grants},
                               context_instance=RequestContext(request))
@@ -119,9 +122,9 @@ def event_show(request, event_id):
                                               defaults={'amount': 0})[0]
           grants = Grant.objects.filter(item=item)
           amount_funded = sum(grant.amount for grant in grants)
-          if amount + amount_funded > item.amount:
-            amount = item.amount - amount_funded
-          grant.amount = grant.amount + amount
+          if amount + amount_funded - grant.amount > item.amount:
+            amount = item.amount - amount_funded + grant.amount
+          grant.amount = amount
           grant.save()
       return redirect('app.views.event_show', event_id)
 
@@ -133,6 +136,10 @@ def event_show(request, event_id):
         event.name = value
       elif key == 'date':
         event.date = value
+      elif key == 'location':
+        event.location = value
+      elif key == 'organizations':
+        event.organizations = value
       elif key.endswith("?"):
         question = EligibilityQuestion.objects.get(question=key)
         try:
@@ -236,37 +243,47 @@ def event_destroy(request, event_id):
 
 
 @login_required
+@authorization_required
 def free_response(request, event_id, funder_id):
+  """Show the free response form for a funder and process it."""
   user = request.user
   event = Event.objects.get(pk=event_id)
+  funder = CFAUser.objects.get(pk=funder_id)
 
   if request.method == 'POST':
-    if user.cfauser != event.requester:
-      return render_to_response('error.html',
-        {'error_message': "You: %s Requester: %s" % (user.cfauser, event.requester)},
-        context_instance=RequestContext(request))
     for key, value in request.POST.items():
-      if key not in ('csrfmiddlewaretoken', 'event_id', 'funder_id', 'save', 
-        'submit'):
-        question = FreeResponseQuestion.objects.get(question=key)
-        # update answer if it exists or make a new answer
+      if key not in ('csrfmiddlewaretoken', 'save', 'submit'):
+        # try to parse the question as a free response question
+        # if that fails, try to parse it as a common free response question
         try:
-          answer = event.freeresponseanswer_set.get(question=question)
-          answer.answer = value
-          answer.save()
-        except FreeResponseAnswer.DoesNotExist:
-          event.freeresponseanswer_set.create(question=question,
-                                  answer=value)
+          question = FreeResponseQuestion.objects.get(question=key)
+        except FreeResponseQuestion.DoesNotExist:
+          question = CommonFreeResponseQuestion.objects.get(question=key)
+          try:
+            answer = event.commonfreeresponseanswer_set.get(question=question)
+          except CommonFreeResponseAnswer.DoesNotExist:
+            event.commonfreeresponseanswer_set.create(question=question, answer=value)
+          else:
+            answer.answer = value
+            answer.save()
+        else:
+          try:
+            answer = event.freeresponseanswer_set.get(question=question)
+          except FreeResponseAnswer.DoesNotExist:
+            event.freeresponseanswer_set.create(question=question, answer=value)
+          else:
+            answer.answer = value
+            answer.save()
       elif 'submit' in request.POST:
         event.applied_funders.add(CFAUser.objects.get(id=funder_id))
     # TODO: Change this to something meaningful
     return redirect(URL_ROOT)
   elif request.method == 'GET':
     form = FreeResponseForm(event_id, funder_id)
-    return render_to_response('free-response-form.html',
-                              {'form': form, 'event_id': event_id,
-                              'funder_id': funder_id,
-                              'is_funder': user.cfauser.is_funder},
+    return render_to_response('app/free-response-form.html',
+                              {'form': form,
+                              'event': event,
+                              'funder': funder},
                               context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])

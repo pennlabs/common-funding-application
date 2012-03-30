@@ -15,19 +15,15 @@
   
 <div id="main">
     
-  <form action="{% url app.views.free_response event_id funder_id %}" method="post" class="form-horizontal">
+  <form action="{% url app.views.free_response event.id funder.id %}" method="post" class="form-horizontal">
     {% csrf_token %}
     {{ form.as_p }}
-    <input type="hidden" name="event_id" value="{{ event_id }}" />
-    <input type="hidden" name="funder_id" value="{{ funder_id }}" />
-    
     <div class="form-actions">
-    {% if is_funder %}
+    {% if user.get_profile.is_funder %}
       <a class="btn btn-primary" href="./apps">Done</a>
     {% else %}
       <button class="btn btn-primary" name="save" type="submit">Save</button>
       <button class="btn btn-primary" name="submit" type="submit">Submit</button>
-      <button class="btn" type="reset">Reset</button>
     {% endif %}
     </div>
   </form>
