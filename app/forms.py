@@ -39,23 +39,26 @@ class EventForm(ModelForm):
 
 
 class FreeResponseForm(Form):
+  """Form for requesters to apply to a funder."""
   def __init__(self, event_id, funder_id, *args, **kwargs):
     super(FreeResponseForm, self).__init__(*args, **kwargs)
+
     # common funder questions
     cquestions = CommonFreeResponseQuestion.objects.all()
     for cquestion in cquestions:
       self.fields[unicode(cquestion)] = CharField(widget=Textarea)
+
     # funder specific questions
     questions = FreeResponseQuestion.objects.filter(funder__id=funder_id)
     for question in questions:
       self.fields[unicode(question)] = CharField(widget=Textarea)
-    # populate answers from existing event if it exists
-    try:
-      event = Event.objects.get(pk=event_id)
-      for answer in event.freeresponseanswer_set.all():
-        self.initial[unicode(question)] = answer.answer
-    except Event.DoesNotExist:
-      pass
+
+    # populate answers from existing event
+    event = Event.objects.get(pk=event_id)
+    for answer in event.freeresponseanswer_set.all():
+      self.initial[unicode(answer.question.question)] = answer.answer
+    for answer in event.commonfreeresponseanswer_set.all():
+      self.initial[unicode(answer.question.question)] = answer.answer
 
 
 class FreeResponseSpecificationForm(Form):
