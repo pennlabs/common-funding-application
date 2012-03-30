@@ -43,7 +43,7 @@ def import_users():
     profile1.user_type = 'F'
     profile1.save()
     funder2 = User.objects.create_user(username="testfunder2",
-        email="testfunder2@test.com",
+        email="topwolfed@gmail.com",
         password="testfunder2")
     profile2 = funder2.get_profile()
     profile2.user_type = 'F'

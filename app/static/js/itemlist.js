@@ -1,6 +1,6 @@
 function addItem() {
-  $("div.form-actions").before(
-    $("#itemrow").html()
+  $("#item-table tr:last").after(
+    "<tr>" + $("#itemrow").html() + "</tr>"
   );
 }
 function removeItem(e) {

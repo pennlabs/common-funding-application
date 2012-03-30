@@ -149,13 +149,31 @@ class FreeResponseAnswer(models.Model):
         return "%s %s" % (unicode(self.question), self.answer)
 
 
+# TODO: Find the actual categories and update this
+CATEGORIES = (
+    ('F', 'FOOD'),
+    ('D', 'DRINK'),
+)
+
+
 class Item(models.Model):
+    """An item for an event."""
     event = models.ForeignKey(Event)
-    description = models.CharField(max_length=256)
+    name = models.CharField(max_length=256)
+    # number of items
+    units = models.IntegerField()
+    # cost per item
     amount = models.DecimalField(max_digits=17, decimal_places=2)
+    # funding already received before applications
+    funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
+    category = models.CharField(max_length=1, choices=CATEGORIES)
+
+    @property
+    def total(self):
+      return self.units * self.amount
 
     def __unicode__(self):
-        return self.description
+        return self.name
 
 
 class Grant(models.Model):
