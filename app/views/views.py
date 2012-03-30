@@ -50,7 +50,7 @@ def events(request):
     event = Event.objects.create(name=request.POST['name'],
                                  date=request.POST['date'],
                                  location=request.POST['location'],
-                                 organization=request.POST['organization'],
+                                 organizations=request.POST['organizations'],
                                  requester=request.user.cfauser)
     # handle questions
     for key, value in request.POST.items():
