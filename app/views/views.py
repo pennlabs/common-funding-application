@@ -300,3 +300,7 @@ def funders(request, event_id):
   return render_to_response('app/eligible-funders.html', {'funders': funder_dict,
                             'event': event}, 
                             context_instance=RequestContext(request))
+
+def application(request):
+  return render_to_response('app/application.html',
+                            context_instance=RequestContext(request))

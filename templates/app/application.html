@@ -1,0 +1,144 @@
+{% extends "base-page.html" %}
+
+{% load widgets %}
+    
+{% block htmllink-styles %}
+<link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
+{% endblock %}
+
+{% block htmllink-js %}
+<script src="{{ STATIC_URL }}/js/form.js"></script>
+{% endblock %}
+
+{% block container %}
+  
+<div id="main">
+    
+  <form action="" method="post" class="form-horizontal">    
+    {% csrf_token %}
+    
+    <div class="section-header">
+      <h2>
+        Event
+        <small>details about the event</small>
+      </h2>
+    </div>    
+    <div class="section-content">
+      <fieldset>
+        <div class="control-group">
+          <label for="question01" class="control-label">Question 1</label>
+          <div class="controls">
+            <input type="text" id="question01" class="input-xlarge">
+            <p class="help-block">Help text for Question 1 goes here.</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="question02" class="control-label">Question 2</label>
+          <div class="controls">
+            <input type="date" id="question02" class="input-xlarge datepicker">
+            <p class="help-block">Help text for Question 2 goes here.</p>
+          </div>
+        </div>        
+        <div class="control-group">
+          <label for="select01" class="control-label">Select list</label>
+          <div class="controls">
+            <select id="select01">
+              <option>Option 1</option>
+              <option>Option 2</option>
+              <option>Option 3</option>
+              <option>Option 4</option>
+              <option>Option 5</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    
+    <div class="section-header">
+      <h2>
+        Free-Response Questions
+      </h2>
+    </div>
+    <div class="section-content">
+      <fieldset>
+        <div class="control-group">
+          <label for="question01" class="control-label">Question 1</label>
+          <div class="controls">
+            <input type="text" id="question01" class="input-xlarge">
+            <p class="help-block">Help text for Question 1 goes here.</p>
+          </div>
+        </div>
+        <div class="control-group">
+          <label for="question02" class="control-label">Question 2</label>
+          <div class="controls">
+            <input type="date" id="question02" class="input-xlarge datepicker">
+            <p class="help-block">Help text for Question 2 goes here.</p>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    
+    <div class="section-header">
+      <h2>
+        Items
+        <small>list line items for funding</small>
+      </h2>      
+    </div>
+    
+    <div class="section-header">
+      <h2>
+        Funders
+        <small>select to apply</small>
+      </h2>
+    </div>
+    <div class="section-content">
+      <div class="funder-check">
+        <label class="checkbox">
+          <input class="funder-checkbox-0" type="checkbox">ORGANIZATION 1
+        </label>
+        <p class="help-block">MISSION:Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </div>
+      <div class="funder-check">
+        <label class="checkbox">
+          <input class="funder-checkbox-1" type="checkbox">ORGANIZATION 2
+        </label>
+        <p class="help-block">MISSION:Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </div>
+      <div class="funder-check">
+        <label class="checkbox">
+          <input class="funder-checkbox-2" type="checkbox">ORGANIZATION 3
+        </label>
+        <p class="help-block">MISSION:Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </div>
+    </div>
+    
+    <div class="section-header">
+      <h2>
+        Extra Questions
+        <small>specific to each funder</small>
+      </h2>
+    </div>
+    <div class="section-content">
+      <div class="funder-q funder-q-0">
+        <label>What are you going to do with the money? <em>(for ORG1)</em></label>
+        <textarea class="span8" rows="3"></textarea>
+      </div>
+      <div class="funder-q funder-q-1">
+        <label>What are you going to do with your life? <em>(for ORG2)</em></label>
+        <textarea class="span8" rows="3"></textarea>
+      </div>
+      <div class="funder-q funder-q-0 funder-q-2">
+        <label>What's the point? <em>(for ORG1, ORG3)</em></label>
+        <textarea class="span8" rows="3"></textarea>
+      </div>
+    </div>
+    
+    <div class="form-actions">
+      <button class="btn btn" type="submit" name="submit">Cancel</button>
+      <button class="btn btn" type="submit" name="submit">Save</button>
+      <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+    </div>
+  </form>
+    
+</div>      
+{% endblock %}

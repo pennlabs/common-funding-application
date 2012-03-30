@@ -19,6 +19,36 @@ fieldset {
   margin-bottom: 0px;
 }
 
+.form-horizontal .form-actions {  
+  padding-left: 20px;
+}
+
 #main {
   margin-bottom: 0px;
+}
+
+.section-header {
+  border-bottom: 1px solid #EEEEEE;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+.section-content {
+  margin-bottom: 25px;
+}
+.section-content .funder-check .checkbox {
+  font-weight: bold;
+}
+.section-content .funder-check .help-block {
+  margin-left: 20px;
+}
+.section-content .funder-check {
+  margin-bottom: 10px;
+}
+.section-content .funder-q {
+  margin-bottom: 25px;
+  display: none;
+}
+.section-content .funder-q em {
+  color: #999;
 }
