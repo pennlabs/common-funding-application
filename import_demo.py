@@ -39,11 +39,15 @@ def import_users():
     funder1 = User.objects.create_user(username="testfunder1",
         email="testfunder1@test.com",
         password="testfunder1")
-    funder1.get_profile().user_type = 'F'
+    profile1 = funder1.get_profile()
+    profile1.user_type = 'F'
+    profile1.save()
     funder2 = User.objects.create_user(username="testfunder2",
         email="testfunder2@test.com",
         password="testfunder2")
-    funder2.get_profile().user_type = 'F'
+    profile2 = funder2.get_profile()
+    profile2.user_type = 'F'
+    profile2.save()
 
 
 COMMON_FREE_RESPONSE_QUESTIONS = (
