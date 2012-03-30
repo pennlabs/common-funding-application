@@ -68,7 +68,6 @@ def events(request):
       
     return render_to_response('app/events.html',
                               {'apps': apps,
-                               'user': user.get_profile(),
                                'test_grant_total': test_grant_total,
                                'test_grants': test_grants},
                               context_instance=RequestContext(request))
@@ -119,9 +118,9 @@ def event_show(request, event_id):
                                               defaults={'amount': 0})[0]
           grants = Grant.objects.filter(item=item)
           amount_funded = sum(grant.amount for grant in grants)
-          if amount + amount_funded > item.amount:
-            amount = item.amount - amount_funded
-          grant.amount = grant.amount + amount
+          if amount + amount_funded - grant.amount > item.amount:
+            amount = item.amount - amount_funded + grant.amount
+          grant.amount = amount
           grant.save()
       return redirect('app.views.event_show', event_id)
 
@@ -262,7 +261,7 @@ def free_response(request, event_id, funder_id):
     return redirect(URL_ROOT)
   elif request.method == 'GET':
     form = FreeResponseForm(event_id, funder_id)
-    return render_to_response('free-response-form.html',
+    return render_to_response('app/free-response-form.html',
                               {'form': form, 'event_id': event_id,
                               'funder_id': funder_id,
                               'is_funder': user.cfauser.is_funder},

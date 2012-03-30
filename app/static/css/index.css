@@ -5,9 +5,8 @@
   margin: 10px 0px;
   width:auto;
 }
-#login form, fieldset {
-  margin:0px;
-  padding:0px;
+#login .box p:last-child {
+  margin-bottom: 0px;
 }
 #login fieldset {
   margin-bottom: 15px;

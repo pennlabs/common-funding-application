@@ -13,15 +13,15 @@
 
 {% block container %}
 <header>
-  {% ifequal user.user_type "R" %}
+  {% if user.cfauser.is_requester %}
   <div class="btns pull-right">
     <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
   </div>
-  {% endifequal %}
+  {% endif %}
   <div>
     <h2>
       Current Applications
-      <small>Welcome, {{ user.user.username }}!</small>
+      <small>Welcome, {{ user.username }}!</small>
     </h2>
   </div>
 </header>
@@ -41,7 +41,7 @@
       <div class="span4 app-item-fundingbar">
         {% fundingbar test_grant_total test_grants %}
       </div>
-      {% if user.is_requester %}
+      {% if user.cfauser.is_requester %}
       <div class="span3 app-item-btns">
         <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
           <i class="icon-trash icon-white"></i>
