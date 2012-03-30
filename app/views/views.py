@@ -148,7 +148,11 @@ def event_show(request, event_id):
     event = Event.objects.get(pk=event_id)
     form = EventForm(event)
     if user.cfauser.is_funder:
+      for key in form.fields:
+        form.fields[key].widget.attrs['disabled'] = True
       other_form = FreeResponseForm(event_id, user.cfauser.id)
+      for key in other_form.fields:
+        other_form.fields[key].widget.attrs['disabled'] = True
     else:
       other_form = None
     return render_to_response('app/event-edit.html',
