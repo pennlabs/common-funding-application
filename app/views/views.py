@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
+from django.template.loader import render_to_string
 
 from sandbox_config import URL_ROOT
 
@@ -50,7 +51,7 @@ def events(request):
     event = Event.objects.create(name=request.POST['name'],
                                  date=request.POST['date'],
                                  location=request.POST['location'],
-                                 organization=request.POST['organization'],
+                                 organizations=request.POST['organizations'],
                                  requester=request.user.cfauser)
     # handle questions
     for key, value in request.POST.items():
@@ -274,7 +275,13 @@ def free_response(request, event_id, funder_id):
             answer.answer = value
             answer.save()
       elif 'submit' in request.POST:
-        event.applied_funders.add(CFAUser.objects.get(id=funder_id))
+        # email the funder
+        ctx_dict = {'requester': user, 'event': event}
+        subject = render_to_string('app/application_email_subject.txt',
+            ctx_dict).strip()
+        message = render_to_string('app/application_email.txt', ctx_dict)
+        funder.user.email_user(subject, message)
+        event.applied_funders.add(funder)
     # TODO: Change this to something meaningful
     return redirect(URL_ROOT)
   elif request.method == 'GET':
