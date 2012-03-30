@@ -2,7 +2,8 @@ from django.forms import Form, Textarea, ModelForm
 from django.forms.fields import CharField, ChoiceField, DateField, DecimalField
 from django.forms.widgets import DateInput, RadioSelect, TextInput
 
-from models import Event, EligibilityQuestion, EligibilityAnswer, FreeResponseQuestion
+from models import Event, EligibilityQuestion, EligibilityAnswer, \
+    FreeResponseQuestion, CommonFreeResponseQuestion
 
 
 YES_OR_NO = ( 
@@ -40,6 +41,11 @@ class EventForm(ModelForm):
 class FreeResponseForm(Form):
   def __init__(self, event_id, funder_id, *args, **kwargs):
     super(FreeResponseForm, self).__init__(*args, **kwargs)
+    # common funder questions
+    cquestions = CommonFreeResponseQuestion.objects.all()
+    for cquestion in cquestions:
+      self.fields[unicode(cquestion)] = CharField(widget=Textarea)
+    # funder specific questions
     questions = FreeResponseQuestion.objects.filter(funder__id=funder_id)
     for question in questions:
       self.fields[unicode(question)] = CharField(widget=Textarea)
