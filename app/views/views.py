@@ -49,6 +49,8 @@ def events(request):
     # handle Create
     event = Event.objects.create(name=request.POST['name'],
                                  date=request.POST['date'],
+                                 location=request.POST['location'],
+                                 organization=request.POST['organization'],
                                  requester=request.user.cfauser)
     # handle questions
     for key, value in request.POST.items():
@@ -134,6 +136,10 @@ def event_show(request, event_id):
         event.name = value
       elif key == 'date':
         event.date = value
+      elif key == 'location':
+        event.location = value
+      elif key == 'organizations':
+        event.organizations = value
       elif key.endswith("?"):
         question = EligibilityQuestion.objects.get(question=key)
         try:

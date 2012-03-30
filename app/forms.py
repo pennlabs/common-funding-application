@@ -16,12 +16,15 @@ class EventForm(ModelForm):
 
   class Meta:
     model = Event
-    fields = ('name', 'date', 'location')
+    fields = ('name', 'date', 'location', 'organizations')
+
     # a required attribute is neccesary to make a field required
     # however, it doesn't need any value so we pass the empty string
     widgets = {
         'name': TextInput(attrs={'required': ''}),
-        'date': DateInput(attrs={'required': '', 'class': 'datepicker'})
+        'date': DateInput(attrs={'required': '', 'class': 'datepicker'}),
+        'location': TextInput(attrs={'required': ''}),
+        'organizations': TextInput(attrs={'required': ''})
     }
 
   def __init__(self, event=None, *args, **kwargs):
@@ -34,6 +37,8 @@ class EventForm(ModelForm):
     if event:
       self.initial['name'] = event.name
       self.initial['date'] = event.date
+      self.initial['location'] = event.location
+      self.initial['organizations'] = event.organizations
       for answer in event.eligibilityanswer_set.all():
         self.initial[unicode(answer.question)] = answer.answer
 
