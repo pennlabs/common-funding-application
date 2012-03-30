@@ -58,6 +58,7 @@ class CFAUser(models.Model):
     assert self.is_requester
     return self == event.requester
 
+
 @receiver(sender=User, signal=post_save)
 def create_profile(sender, instance, signal, created, **kwargs):
   """Create a CFAUser whenever a user is created."""
@@ -96,11 +97,15 @@ class Event(models.Model):
         unique_together = ("name", "date", "requester")
 
 
-class EligibilityQuestion(models.Model):
+class Question(models.Model):
     question = models.TextField()
     
     def __unicode__(self):
         return self.question
+
+
+class EligibilityQuestion(Question):
+    pass
 
 
 class EligibilityAnswer(models.Model):
@@ -115,12 +120,24 @@ class EligibilityAnswer(models.Model):
         unique_together = ("question", "event", "answer")
 
 
-class FreeResponseQuestion(models.Model):
-    question = models.TextField()
-    funder = models.ForeignKey(CFAUser)
+class CommonFreeResponseQuestion(Question):
+  """A free response question common to all funders."""
+  pass
 
-    def __unicode__(self):
-        return unicode(self.question)
+
+class CommonFreeResponseAnswer(models.Model):
+  """An answer to a common free response question."""
+  question = models.ForeignKey(CommonFreeResponseQuestion)
+  event = models.ForeignKey(Event)
+  answer = models.TextField()
+
+  def __unicode__(self):
+      return "%s %s" % (unicode(self.question), self.answer)
+
+
+class FreeResponseQuestion(Question):
+  """A unique free response question specified by a single funder."""
+  funder = models.ForeignKey(CFAUser)
 
 
 class FreeResponseAnswer(models.Model):

@@ -46,6 +46,18 @@ def import_users():
     funder2.get_profile().user_type = 'F'
 
 
+COMMON_FREE_RESPONSE_QUESTIONS = (
+    'Have you hosted an event before?',
+    'How many people do you expect to show up?'
+    )
+
+
+def import_free_response():
+    CommonFreeResponseQuestion.objects.all().delete()
+    for question in COMMON_FREE_RESPONSE_QUESTIONS:
+      cfrq = CommonFreeResponseQuestion.objects.create(question=question)
+
+
 def import_constraints():
     FunderConstraint.objects.all().delete()
     FunderConstraint.objects.create(funder=User.objects.get(username="testfunder1").cfauser,
@@ -92,6 +104,7 @@ def import_sites():
 def import_all():
     import_questions()
     import_users()
+    import_free_response()
     import_constraints()
     import_events()
     import_sites()
