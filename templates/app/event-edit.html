@@ -1,6 +1,7 @@
 {% extends "base-page.html" %}
 
 {% load widgets %}
+{% load helpers %}
     
 {% block htmllink-styles %}
 <link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
@@ -44,7 +45,7 @@
     <div class="app-item-row">
       <div class="row">
         <div class="span3">
-          <span>{{ event_grant.item.description }}</span>
+          <span>{{ event_grant.item.name }}</span>
         </div>  
         <div class="span2">
           <span>$ {{ event_grant.currentAmount }} / {{ event_grant.totalAmount }}</span>
@@ -55,15 +56,12 @@
         <div class="span3">
           <div class="input-prepend pull-right">
             <span class="add-on"><strong>$</strong></span>
-            <input class="fund-amount span2 new" name="item_{{ event_grant.item.id }}" type="text"
-                  value="0"
+            <input class="fund-amount span2" name="item_{{ event_grant.item.id }}" type="text"
+                  value="{% funders_grant_to_item event_grant.item user %}"
 		  pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
                   onfocus="newInputClicked(this)"
-                  onblur="newInputCheck(this, '0')"
-                  onkeydown="numericOnly(event)"
-		  {% ifequal event_grant.currentAmount event_grant.totalAmount %}
-		  disabled="disabled"
-		  {% endifequal %}/>
+                  onblur="newInputCheck(this, '{{ event_grant.amount }}')"
+                  onkeydown="numericOnly(event)"/>
           </div>
         </div>        
       </div>

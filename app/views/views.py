@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
+from django.template.loader import render_to_string
 
 from sandbox_config import URL_ROOT
 
@@ -184,7 +185,7 @@ def items(request, event_id):
     item_units = request.POST.getlist('item_units')
     event.item_set.all().delete()
     for name, amount, units in zip(item_names, item_amounts, item_units):
-      event.item_set.create(description=name, amount= amount, units=units)
+      event.item_set.create(name=name, amount= amount, units=units, funding_already_received=0)
     return redirect('app.views.funders', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
@@ -279,7 +280,13 @@ def free_response(request, event_id, funder_id):
             answer.answer = value
             answer.save()
       elif 'submit' in request.POST:
-        event.applied_funders.add(CFAUser.objects.get(id=funder_id))
+        # email the funder
+        ctx_dict = {'requester': user, 'event': event}
+        subject = render_to_string('app/application_email_subject.txt',
+            ctx_dict).strip()
+        message = render_to_string('app/application_email.txt', ctx_dict)
+        funder.user.email_user(subject, message)
+        event.applied_funders.add(funder)
     # TODO: Change this to something meaningful
     return redirect(URL_ROOT)
   elif request.method == 'GET':

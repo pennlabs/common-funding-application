@@ -1,0 +1,1 @@
+{{requester}} has just registered an application for {{event.name}} on {{event.date}}.
