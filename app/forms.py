@@ -2,7 +2,8 @@ from django.forms import Form, Textarea, ModelForm
 from django.forms.fields import CharField, ChoiceField, DateField, DecimalField
 from django.forms.widgets import DateInput, RadioSelect, TextInput
 
-from models import Event, EligibilityQuestion, EligibilityAnswer, FreeResponseQuestion
+from models import Event, EligibilityQuestion, EligibilityAnswer, \
+    FreeResponseQuestion, CommonFreeResponseQuestion
 
 
 YES_OR_NO = ( 
@@ -15,12 +16,15 @@ class EventForm(ModelForm):
 
   class Meta:
     model = Event
-    fields = ('name', 'date', 'location')
+    fields = ('name', 'date', 'location', 'organizations')
+
     # a required attribute is neccesary to make a field required
     # however, it doesn't need any value so we pass the empty string
     widgets = {
         'name': TextInput(attrs={'required': ''}),
-        'date': DateInput(attrs={'required': '', 'class': 'datepicker'})
+        'date': DateInput(attrs={'required': '', 'class': 'datepicker'}),
+        'location': TextInput(attrs={'required': ''}),
+        'organizations': TextInput(attrs={'required': ''})
     }
 
   def __init__(self, event=None, *args, **kwargs):
@@ -33,23 +37,33 @@ class EventForm(ModelForm):
     if event:
       self.initial['name'] = event.name
       self.initial['date'] = event.date
+      self.initial['location'] = event.location
+      self.initial['organizations'] = event.organizations
       for answer in event.eligibilityanswer_set.all():
         self.initial[unicode(answer.question)] = answer.answer
 
 
 class FreeResponseForm(Form):
+  """Form for requesters to apply to a funder."""
   def __init__(self, event_id, funder_id, *args, **kwargs):
     super(FreeResponseForm, self).__init__(*args, **kwargs)
+
+    # common funder questions
+    cquestions = CommonFreeResponseQuestion.objects.all()
+    for cquestion in cquestions:
+      self.fields[unicode(cquestion)] = CharField(widget=Textarea)
+
+    # funder specific questions
     questions = FreeResponseQuestion.objects.filter(funder__id=funder_id)
     for question in questions:
       self.fields[unicode(question)] = CharField(widget=Textarea)
-    # populate answers from existing event if it exists
-    try:
-      event = Event.objects.get(pk=event_id)
-      for answer in event.freeresponseanswer_set.all():
-        self.initial[unicode(question)] = answer.answer
-    except Event.DoesNotExist:
-      pass
+
+    # populate answers from existing event
+    event = Event.objects.get(pk=event_id)
+    for answer in event.freeresponseanswer_set.all():
+      self.initial[unicode(answer.question.question)] = answer.answer
+    for answer in event.commonfreeresponseanswer_set.all():
+      self.initial[unicode(answer.question.question)] = answer.answer
 
 
 class FreeResponseSpecificationForm(Form):
