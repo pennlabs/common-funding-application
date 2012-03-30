@@ -185,7 +185,7 @@ def items(request, event_id):
     item_units = request.POST.getlist('item_units')
     event.item_set.all().delete()
     for name, amount, units in zip(item_names, item_amounts, item_units):
-      event.item_set.create(description=name, amount= amount, units=units)
+      event.item_set.create(name=name, amount= amount, units=units, funding_already_received=0)
     return redirect('app.views.funders', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
