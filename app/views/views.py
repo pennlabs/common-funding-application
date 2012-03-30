@@ -25,7 +25,7 @@ def creator_or_funder(view):
   def protected_view(request, event_id, *args, **kwargs):
     user = request.user
     event = Event.objects.get(pk=event_id)
-    if user.cfauser.requested(event) or user.cfauser.is_funder:
+    if user.cfauser.is_funder or user.cfauser.requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
       return redirect('app.views.index') # not authorized
@@ -157,7 +157,11 @@ def event_show(request, event_id):
     event = Event.objects.get(pk=event_id)
     form = EventForm(event)
     if user.cfauser.is_funder:
+      for key in form.fields:
+        form.fields[key].widget.attrs['disabled'] = True
       other_form = FreeResponseForm(event_id, user.cfauser.id)
+      for key in other_form.fields:
+        other_form.fields[key].widget.attrs['disabled'] = True
     else:
       other_form = None
     return render_to_response('app/event-edit.html',
@@ -178,9 +182,10 @@ def items(request, event_id):
     event = Event.objects.get(pk=event_id)
     item_names = request.POST.getlist('item_name')
     item_amounts = request.POST.getlist('item_amount')
+    item_units = request.POST.getlist('item_units')
     event.item_set.all().delete()
-    for name, amount in zip(item_names, item_amounts):
-      event.item_set.create(description=name, amount= amount)
+    for name, amount, units in zip(item_names, item_amounts, item_units):
+      event.item_set.create(description=name, amount= amount, units=units)
     return redirect('app.views.funders', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)

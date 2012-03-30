@@ -32,13 +32,22 @@
 
     <div class="app-item-row">
       <div class="row">
-        <div class="span4">
+        <div class="span3">
           <input name="item_name" type="text"
            required
            pattern="^(?!Item Name\.\.\.)(.+)"
            onfocus="newInputClicked(this)"
            onblur="newInputCheck(this, 'Item Name...')"
            value="{{ item.description }}" />
+        </div>
+        
+        <div class="span3">
+          <input name="item_units" type="text"
+                 required
+                 pattern="^\d*"
+                 onfocus="newInputClicked(this)"
+                 onblur="newInputCheck(this, 'Number of Items...')"
+                 value="{{ item.units }}" />
         </div>
 	
         <div class="span4">
@@ -78,13 +87,22 @@
 <div id="itemrow">
   <div class="app-item-row">
     <div class="row">
-      <div class="span4">
+      <div class="span3">
         <input class="new" name="item_name" type="text"
                required
                pattern="^(?!Item Name\.\.\.)(.+)"
                onfocus="newInputClicked(this)"
                onblur="newInputCheck(this, 'Item Name...')"
                value="Item Name..." />
+      </div>
+      
+      <div class="span3">
+        <input class="new" name="item_units" type="text"
+               required
+               pattern="^\d*"
+               onfocus="newInputClicked(this)"
+               onblur="newInputCheck(this, 'Number of Items...')"
+               value="Number of Items..." />
       </div>
       
       <div class="span4">
