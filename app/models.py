@@ -135,7 +135,12 @@ class FreeResponseAnswer(models.Model):
 class Item(models.Model):
     event = models.ForeignKey(Event)
     description = models.CharField(max_length=256)
+    units = models.IntegerField()
     amount = models.DecimalField(max_digits=17, decimal_places=2)
+    total = models.DecimalField(max_digits=17, decimal_places=2)
+    funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
+    category = models.CharField(max_length=256)
+    # comment = models.TextField()
 
     def __unicode__(self):
         return self.description

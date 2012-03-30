@@ -170,9 +170,10 @@ def items(request, event_id):
     event = Event.objects.get(pk=event_id)
     item_names = request.POST.getlist('item_name')
     item_amounts = request.POST.getlist('item_amount')
+    item_units = request.POST.getlist('item_units')
     event.item_set.all().delete()
-    for name, amount in zip(item_names, item_amounts):
-      event.item_set.create(description=name, amount= amount)
+    for name, amount, units in zip(item_names, item_amounts, item_units):
+      event.item_set.create(description=name, amount= amount, units=units)
     return redirect('app.views.funders', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
