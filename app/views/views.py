@@ -23,7 +23,7 @@ def creator_or_funder(view):
   def protected_view(request, event_id, *args, **kwargs):
     user = request.user
     event = Event.objects.get(pk=event_id)
-    if user.cfauser.requested(event) or user.cfauser.is_funder:
+    if user.cfauser.is_funder or user.cfauser.requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
       return redirect('app.views.index') # not authorized
