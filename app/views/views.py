@@ -110,49 +110,59 @@ def event_edit(request, event_id):
 @creator_or_funder
 def event_show(request, event_id):
   user = request.user
+  event = Event.objects.get(pk=event_id)
   if request.method == 'POST': #TODO: should really be PUT
-    event = Event.objects.get(pk=event_id)
-
     if user.cfauser.is_funder:
       for item in event.item_set.all():
         amount = request.POST.get("item_" + str(item.id), None)
-        if amount and int(amount):
+        grants = []
+        if amount:
           amount = int(amount)
-          grant = Grant.objects.get_or_create(funder=user.cfauser,
+          grant, _ = Grant.objects.get_or_create(funder=user.cfauser,
                                               item=item,
                                               defaults={'amount': 0})[0]
-          grants = Grant.objects.filter(item=item)
-          amount_funded = sum(grant.amount for grant in grants)
+          amount_funded = sum(grant.amount for grant in 
+              Grant.objects.filter(item=item))
+
+          # if the funder gave too much, adjust the price to be only enough
           if amount + amount_funded - grant.amount > item.amount:
             amount = item.amount - amount_funded + grant.amount
+
           grant.amount = amount
           grant.save()
+
+        if grants:
+          # email the event requester indicating that they've been funded
+          ctx_dict = {'event': event, 'grants': grants}
+          subject = render_to_string('app/grant_email_subject.txt',
+              ctx_dict).strip()
+          message = render_to_string('app/grant_email.txt', ctx_dict)
+          event.requester.email_user(subject, message)
       return redirect('app.views.event_show', event_id)
-
-
-    for key, value in request.POST.items():
-      if key in ('csrfmiddlewaretoken', 'event_id'):
-        continue
-      if key == 'name':
-        event.name = value
-      elif key == 'date':
-        event.date = value
-      elif key == 'location':
-        event.location = value
-      elif key == 'organizations':
-        event.organizations = value
-      elif key.endswith("?"):
-        question = EligibilityQuestion.objects.get(question=key)
-        try:
-          answer = event.eligibilityanswer_set.get(question=question)
-        except EligibilityAnswer.DoesNotExist:
-          event.eligibilityanswer_set.create(question=question,
-                                  answer=value)
-        else:
-          answer.answer = value
-          answer.save()
-    event.save()
-    return redirect('app.views.items', event_id)
+    else:
+      for key, value in request.POST.items():
+        if key in ('csrfmiddlewaretoken', 'event_id'):
+          continue
+        if key == 'name':
+          event.name = value
+        elif key == 'date':
+          event.date = value
+        elif key == 'location':
+          event.location = value
+        elif key == 'organizations':
+          event.organizations = value
+        elif key.endswith("?"):
+          question = EligibilityQuestion.objects.get(question=key)
+          try:
+            answer = event.eligibilityanswer_set.get(question=question)
+          except EligibilityAnswer.DoesNotExist:
+            event.eligibilityanswer_set.create(question=question,
+                                    answer=value)
+          else:
+            answer.answer = value
+            answer.save()
+      event.save()
+      return redirect('app.views.items', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
     form = EventForm(event)
