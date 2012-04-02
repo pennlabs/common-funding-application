@@ -8,6 +8,7 @@
 
 {% block htmllink-js %}
 <script src="{{ STATIC_URL }}/js/form.js"></script>
+<script src="{{ STATIC_URL }}/js/itemlist.js"></script>
 {% endblock %}
 
 {% block container %}
@@ -82,70 +83,11 @@
       <h2>
         Items
         <small>list line items for funding</small>
-      </h2>      
-      <table id='item-table' class='table table-striped'>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Number of Items</th>
-            <th>Price Per Item</th>
-            <th>Funding Already Received</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody >
-          <tr id='itemrow'>
-            <th>
-              <input class="new" name="item_name" type="text"
-                   required
-                   pattern="^(?!Item Name\.\.\.)(.+)"
-                   onfocus="newInputClicked(this)"
-                   onblur="newInputCheck(this, 'Item Name...')"
-                   value="Item Name..." />
-            </th>
-            <th>
-              <input class="new" name="item_units" type="text"
-                   required
-                   pattern="^\d*"
-                   onfocus="newInputClicked(this)"
-                   onblur="newInputCheck(this, 'Number of Items...')"
-                   value="Number of Items..." />
-            </th>
-            <th> 
-              <input class="new inputIcon" name="item_amount" type="text"
-                     required
-                     value="Request Amount..."
-                     pattern="^\d*(\.\d{2}$)?"
-                     title="Please enter a valid dollar amount."
-                     onfocus="newInputClicked(this)"
-                     onblur="newInputCheck(this, 'Request Amount...')"
-                     onkeydown="numericOnly(event)" />
-            </th>
-            <th> 
-              <input class="new inputIcon" name="item_amount" type="text"
-                     required
-                     value="Request Amount..."
-                     pattern="^\d*(\.\d{2}$)?"
-                     title="Please enter a valid dollar amount."
-                     onfocus="newInputClicked(this)"
-                     onblur="newInputCheck(this, 'Request Amount...')"
-                     onkeydown="numericOnly(event)" />
-            </th>
-            <th>
-              <select>
-                <option>Food</option>
-                <option>Drink</option>
-                <option>blah</option>
-                <option>test</option>
-                <option>stuff</option>
-                <option>performer</option>
-                <option>testing</option>
-              </select>
-            </th>
-          </tr>
-        </tbody>
-      </table>
-      
+      </h2>
+    </div>
+    
+    <div class="section-content">
+      <p>Hi itemlist widget goes here</p>
     </div>
     
     <div class="section-header">
@@ -182,6 +124,7 @@
       </h2>
     </div>
     <div class="section-content">
+      <p id="funder-no-q">No questions yet. Please select funders.</p>
       <div class="funder-q funder-q-0">
         <label>What are you going to do with the money? <em>(for ORG1)</em></label>
         <textarea class="span8" rows="3"></textarea>
