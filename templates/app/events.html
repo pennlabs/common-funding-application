@@ -30,7 +30,7 @@
   {% for app in apps %}
   <div class="app-item-row">
     <div class="row">
-      <div class="span3 name">
+      <div class="span4 name">
         <span>{{ app.name }}</span>
       </div>
       <div class="span2 date">
@@ -40,11 +40,11 @@
         $ 900 / 1200
       </div>
       <div class="span1 status">
-        <span class="label label-info">Saved</span>
-<!--        <span class="label label-success">Submitted</span>
-        <span class="label label-important">Funded</span>-->
+        <!--<span class="label label-info">Saved</span>-->
+        <!--<span class="label label-success">Submitted</span>-->
+        <span class="label label-important">Funded</span>
       </div>
-      <div class="span4 buttons">        
+      <div class="span3 buttons">        
         <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
           <i class="icon-trash icon-white"></i>
           Delete
@@ -55,22 +55,20 @@
         </a>
       </div>
       <div class="span12 funders">
-        <div>
-          <table>
-            <tbody>
-              {% for funder, amount in test_grants.items %}
-              <tr>
-                <td>{{funder}}</td>
-                <td>$ {{amount}}</td>
-              </tr>
-              {% endfor %}
-              <tr>
-                <td>SPECTRUM</td>
-                <td class="pending">pending</td>
-              </tr>            
-            </tbody>
-          </table>
-        </div>
+        <table>
+          <tbody>
+            {% for funder, amount in test_grants.items %}
+            <tr>
+              <td>{{funder}}</td>
+              <td>$ {{amount}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td>SPECTRUM</td>
+              <td class="pending">pending</td>
+            </tr>            
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

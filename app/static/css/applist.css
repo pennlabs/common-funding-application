@@ -25,13 +25,13 @@ div.app-item-row .buttons .btn {
 div.app-item-row .name {
   font-weight: bold;
 }
-div.app-item-row .funders > div {
+div.app-item-row .funders > table {
   margin-left: 12px;
 }
-div.app-item-row .funders > div table td {
+div.app-item-row .funders > table td {
   padding-right: 15px;
 }
-div.app-item-row .funders > div table td.pending {
+div.app-item-row .funders > table td.pending {
   font-style: italic;
   color: #999;
 }
