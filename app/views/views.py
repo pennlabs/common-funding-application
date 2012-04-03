@@ -324,6 +324,8 @@ def funders(request, event_id):
                             context_instance=RequestContext(request))
 
 def application(request):
+  if request.POST:
+    return render_to_response('app/saved_form.html', {'post':request.POST['freeresponse1']})
   # test data
   FunderItem = namedtuple('FunderItem', ['name', 'desc', 'question'])
   test_funders = [

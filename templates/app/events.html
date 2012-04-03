@@ -48,18 +48,10 @@
           Delete
         </a>
         <div class="btn-group pull-right">
-          <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+          <a class="btn btn-info" href="{% url app.views.application %}">
             <i class="icon-pencil icon-white"></i>
             Edit
-            <span class="caret"></span>
           </a>
-          <ul class="dropdown-menu">
-            <li><a href="{% url app.views.event_edit app.id %}">Answers</a></li>
-            <li><a href="{% url app.views.items app.id %}">Items</a></li>
-            {% if app.eligibilityanswer_set.all %}
-            <li><a href="{% url app.views.funders app.id %}">Funders</a></li>
-            {% endif %}
-          </ul>
         </div>       
       </div>      
       {% else %}
