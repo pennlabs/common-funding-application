@@ -1,3 +1,5 @@
+import sha
+
 from collections import namedtuple
 from django.contrib.auth.models import User
 from django.db import models
@@ -31,6 +33,7 @@ class CFAUser(models.Model):
   user = models.OneToOneField(User)
   user_type = models.CharField(max_length=1,
                                choices=REQUESTER_OR_FUNDER)
+  osa_email = models.EmailField() # The e-mail of the contact in OSA
 
   def __unicode__(self):
       return unicode(self.user)
@@ -57,6 +60,7 @@ class CFAUser(models.Model):
     """Check if a user requested an event."""
     assert self.is_requester
     return self == event.requester
+
 
 
 @receiver(sender=User, signal=post_save)
@@ -87,6 +91,9 @@ class Event(models.Model):
             totalAmount=item.amount,
             grants=item_grants)
 
+    def get_share_url(self):
+      """Unique url that can be shared."""
+      return sha.new("".join([self.name, str(self.date), str(self.requester)])).hexdigest()
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),

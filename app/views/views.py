@@ -324,5 +324,63 @@ def funders(request, event_id):
                             context_instance=RequestContext(request))
 
 def application(request):
+  # test data
+  FunderItem = namedtuple('FunderItem', ['name', 'desc', 'question'])
+  test_funders = [
+    FunderItem(
+      name="ORGANIZATION 1",
+      desc="MISSION: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      question="How much do you want my money? Why? Please explain."
+    ),
+    FunderItem(
+      name="ORGANIZATION 2",
+      desc="MISSION: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      question="What is the meaning of life?"
+    ),
+    FunderItem(
+      name="ORGANIZATION 3",
+      desc="MISSION: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      question="How much do you want my money? Why? Please explain."
+    ),
+  ]
+  
+  # prepare funder-qs dict
+  funder_qs = {}
+  for idx, f in enumerate(test_funders):
+    if f.question in funder_qs:
+      funder_qs[f.question][0] += " funder-q-"+str(idx)
+      funder_qs[f.question][1] += ", "+f.name
+    else:
+      funder_qs[f.question] = [
+        "funder-q-"+str(idx),
+        f.name
+      ]
+  
   return render_to_response('app/application.html',
+                            {'test_funders': test_funders,
+                             'funder_qs': funder_qs,
+                            },
                             context_instance=RequestContext(request))
+
+
+def submitted(request, sha):
+  """Render submitted applications suitable for sharing among funders."""
+  user = request.user
+  event = Event.objects.get(pk=event_id)
+  if request.method == 'GET':
+    form = EventForm(event)
+    if user.cfauser.is_funder:
+      for key in form.fields:
+        form.fields[key].widget.attrs['disabled'] = True
+      other_form = FreeResponseForm(event_id, user.cfauser.id)
+      for key in other_form.fields:
+        other_form.fields[key].widget.attrs['disabled'] = True
+    else:
+      other_form = None
+    return render_to_response('app/event-edit.html',
+      {'form': form, 'event': event, 'is_funder':user.cfauser.is_funder,
+      'other_form': other_form, 'funder_id':user.cfauser.id,
+      'cfauser_id': user.cfauser.id},
+      context_instance=RequestContext(request))
+  else:
+    return HttpResponseNotAllowed(['GET'])
