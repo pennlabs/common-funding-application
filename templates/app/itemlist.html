@@ -1,4 +1,5 @@
 {% extends "base-page.html" %}
+{% load widgets %}
 
 {% block htmllink-styles %}
 <link rel="stylesheet" href="{{ STATIC_URL }}/css/applist.css">
@@ -24,175 +25,14 @@
 </header>
 
 <div id="main">
-
   <form id="itemlist-form" method="post">{% csrf_token %}
-
     <input type="hidden" name="event_id" value="{{ event.id }}" />
-
-    {% for item in event.item_set.all %}
-
-    <div class="app-item-row">
-      <div class="row">
-        <div class="span3">
-          <input name="item_name" type="text"
-           required
-           pattern="^(?!Item Name\.\.\.)(.+)"
-           onfocus="newInputClicked(this)"
-           onblur="newInputCheck(this, 'Item Name...')"
-           value="{{ item.description }}" />
-        </div>
-        
-        <div class="span3">
-          <input name="item_units" type="text"
-                 required
-                 pattern="^\d*"
-                 onfocus="newInputClicked(this)"
-                 onblur="newInputCheck(this, 'Number of Items...')"
-                 value="{{ item.units }}" />
-        </div>
-	
-        <div class="span4">
-          <div class="input-prepend">
-            <span class="add-on"><strong>$</strong></span>
-            <input class="inputIcon" name="item_amount" type="text"
-              required
-              value="{{ item.amount }}"
-              pattern="^\d*(\.\d{2}$)?"
-              title="Please enter a valid dollar amount."
-              onfocus="newInputClicked(this)"
-              onblur="newInputCheck(this, 'Request Amount...')"
-              onkeydown="numericOnly(event)" />
-          </div>
-        </div>
-	
-        <div class="app-item-btns span4">
-          <a class="btn pull-right"
-             onclick="removeItem(this)">
-            <i class="icon-remove"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-    
-    {% endfor %}
-
+    {% itemlist_requester event.item_set.all %}
     <div class="form-actions">
       <button class="btn" type="submit" name="back">Back</button>
       <button class="btn" type="submit" name="save">Save</button>
       <button class="btn btn-primary" type="submit" name="continue">Continue</button>
     </div>
   </form>
-
 </div>
-
-<div id="itemrow-2">
-  <div class="app-item-row">
-    <div class="row">
-      <div class="span3">
-        <input class="new" name="item_name" type="text"
-               required
-               pattern="^(?!Item Name\.\.\.)(.+)"
-               onfocus="newInputClicked(this)"
-               onblur="newInputCheck(this, 'Item Name...')"
-               value="Item Name..." />
-      </div>
-      
-      <div class="span3">
-        <input class="new" name="item_units" type="text"
-               required
-               pattern="^\d*"
-               onfocus="newInputClicked(this)"
-               onblur="newInputCheck(this, 'Number of Items...')"
-               value="Number of Items..." />
-      </div>
-      
-      <div class="span4">
-        <div class="input-prepend">
-          <span class="add-on"><strong>$</strong></span>
-          <input class="new inputIcon" name="item_amount" type="text"
-                 required
-                 value="Request Amount..."
-                 pattern="^\d*(\.\d{2}$)?"
-                 title="Please enter a valid dollar amount."
-                 onfocus="newInputClicked(this)"
-                 onblur="newInputCheck(this, 'Request Amount...')"
-                 onkeydown="numericOnly(event)" />
-        </div>
-      </div>
-      
-      <div class="app-item-btns span4">
-        <a class="btn pull-right"
-           onclick="removeItem(this)">
-          <i class="icon-remove"></i>
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div>
-   <table id='item-table' class='table table-striped'>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Number of Items</th>
-        <th>Price Per Item</th>
-        <th>Funding Already Received</th>
-        <th>Category</th>
-      </tr>
-    </thead>
-    <tbody >
-      <tr id='itemrow'>
-        <th>
-          <input class="new" name="item_name" type="text"
-               required
-               pattern="^(?!Item Name\.\.\.)(.+)"
-               onfocus="newInputClicked(this)"
-               onblur="newInputCheck(this, 'Item Name...')"
-               value="Item Name..." />
-        </th>
-        <th>
-          <input class="new" name="item_units" type="text"
-               required
-               pattern="^\d*"
-               onfocus="newInputClicked(this)"
-               onblur="newInputCheck(this, 'Number of Items...')"
-               value="Number of Items..." />
-        </th>
-        <th> 
-          <input class="new inputIcon" name="item_amount" type="text"
-                 required
-                 value="Request Amount..."
-                 pattern="^\d*(\.\d{2}$)?"
-                 title="Please enter a valid dollar amount."
-                 onfocus="newInputClicked(this)"
-                 onblur="newInputCheck(this, 'Request Amount...')"
-                 onkeydown="numericOnly(event)" />
-        </th>
-        <th> 
-          <input class="new inputIcon" name="item_amount" type="text"
-                 required
-                 value="Request Amount..."
-                 pattern="^\d*(\.\d{2}$)?"
-                 title="Please enter a valid dollar amount."
-                 onfocus="newInputClicked(this)"
-                 onblur="newInputCheck(this, 'Request Amount...')"
-                 onkeydown="numericOnly(event)" />
-        </th>
-        <th>
-          <select>
-            <option>Food</option>
-            <option>Drink</option>
-            <option>blah</option>
-            <option>test</option>
-            <option>stuff</option>
-            <option>performer</option>
-            <option>testing</option>
-          </select>
-        </th>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 {% endblock %}
