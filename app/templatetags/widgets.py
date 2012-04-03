@@ -28,3 +28,8 @@ def fundingbar(context, totalAmount, fundDict):
   
   return render_to_string('app/templatetags/fundingbar.html', new_context)
 
+@tag(register, [Variable()])
+def itemlist_requester(context, items):
+  # takes a dictionary of items
+  new_context = {'items':items}
+  return render_to_string('app/templatetags/itemlist-requester.html', new_context)
