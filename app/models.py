@@ -1,3 +1,5 @@
+import sha
+
 from collections import namedtuple
 from django.contrib.auth.models import User
 from django.db import models
@@ -87,6 +89,9 @@ class Event(models.Model):
             totalAmount=item.amount,
             grants=item_grants)
 
+    def get_share_url(self):
+      """Unique url that can be shared."""
+      return sha.new("".join([self.name, str(self.date), str(self.requester)])).hexdigest()
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),

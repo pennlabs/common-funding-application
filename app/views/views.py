@@ -326,3 +326,26 @@ def funders(request, event_id):
 def application(request):
   return render_to_response('app/application.html',
                             context_instance=RequestContext(request))
+
+def submitted(request, sha):
+  """Render submitted applications suitable for sharing among funders."""
+  user = request.user
+  event = Event.objects.get(pk=event_id)
+  if request.method == 'GET':
+    form = EventForm(event)
+    if user.cfauser.is_funder:
+      for key in form.fields:
+        form.fields[key].widget.attrs['disabled'] = True
+      other_form = FreeResponseForm(event_id, user.cfauser.id)
+      for key in other_form.fields:
+        other_form.fields[key].widget.attrs['disabled'] = True
+    else:
+      other_form = None
+    return render_to_response('app/event-edit.html',
+      {'form': form, 'event': event, 'is_funder':user.cfauser.is_funder,
+      'other_form': other_form, 'funder_id':user.cfauser.id,
+      'cfauser_id': user.cfauser.id},
+      context_instance=RequestContext(request))
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
