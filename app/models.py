@@ -161,9 +161,9 @@ class Item(models.Model):
     event = models.ForeignKey(Event)
     name = models.CharField(max_length=256)
     # number of items
-    units = models.IntegerField()
+    quantity = models.IntegerField()
     # cost per item
-    amount = models.DecimalField(max_digits=17, decimal_places=2)
+    price_per_unit = models.DecimalField(max_digits=17, decimal_places=2)
     # funding already received before applications
     funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
     category = models.CharField(max_length=1, choices=CATEGORIES)
