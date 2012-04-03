@@ -30,53 +30,48 @@
   {% for app in apps %}
   <div class="app-item-row">
     <div class="row">
-      <div class="span3">
-        <span class="app-item-name">
-          {{ app.name }}
-        </span>
+      <div class="span3 name">
+        <span>{{ app.name }}</span>
+      </div>
+      <div class="span2 date">
+        <span>{{ app.date }}</span>
       </div>
       <div class="span2">
-        <span class="app-item-date">{{ app.date }}</span>
+        $ 900 / 1200
       </div>
-      <div class="span4 app-item-fundingbar">
-        {% fundingbar test_grant_total test_grants %}
+      <div class="span1 status">
+        <span class="label label-info">Saved</span>
+<!--        <span class="label label-success">Submitted</span>
+        <span class="label label-important">Funded</span>-->
       </div>
-      {% if user.cfauser.is_requester %}
-      <div class="span3 app-item-btns">
+      <div class="span4 buttons">        
         <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
           <i class="icon-trash icon-white"></i>
           Delete
         </a>
-        <div class="btn-group pull-right">
-          <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="icon-pencil icon-white"></i>
-            Edit
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a href="{% url app.views.event_edit app.id %}">Answers</a></li>
-            <li><a href="{% url app.views.items app.id %}">Items</a></li>
-            {% if app.eligibilityanswer_set.all %}
-            <li><a href="{% url app.views.funders app.id %}">Funders</a></li>
-            {% endif %}
-          </ul>
-        </div>       
-      </div>      
-      {% else %}
-      <div class="span3">
-        <span class="app-item-date">[Organization Name]</span>
-      </div>      
-      <div class="span4">
-      <a class="btn btn-info" href="{% url app.views.event_show app.id %}">
-        <i class="icon-info-sign icon-white"></i>
+        <a class="btn btn-info pull-right" href="{% url app.views.event_destroy app.id %}">
+          <i class="icon-file icon-white"></i>
           View
-      </a>
-      <a class="btn btn-success" href="{% url app.views.itemlist_funder app.id %}">
-        <i class="icon-ok icon-white"></i>
-        Fund
-      </a>
+        </a>
       </div>
-      {% endif %}
+      <div class="span12 funders">
+        <div>
+          <table>
+            <tbody>
+              {% for funder, amount in test_grants.items %}
+              <tr>
+                <td>{{funder}}</td>
+                <td>$ {{amount}}</td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td>SPECTRUM</td>
+                <td class="pending">pending</td>
+              </tr>            
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
   {% endfor %}

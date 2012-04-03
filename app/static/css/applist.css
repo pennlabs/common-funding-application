@@ -7,20 +7,31 @@ div.app-item-row:hover {
 div.app-item-row > .row > div:first-child > *:first-child {
   margin-left: 12px;  
 }
-div.app-item-row > .row > div:last-child > *:first-child {
+div.app-item-row > .row > .buttons > *:first-child {
   margin-right: 12px;
+}
+div.app-item-row:not(:first-child) {
+  border-top: 1px solid #EEEEEE;
 }
 
 .eligible {
   background-color: #FF0;
 }
 
-div.app-item-btns {
+div.app-item-row .buttons .btn {
+  margin-left: 8px;
 }
-div.app-item-btns .btn,
-div.app-item-btns .btn-group {
-  margin-left:8px;
+
+div.app-item-row .name {
+  font-weight: bold;
 }
-div.app-item-btns div.btn-group {
-  text-align: left;
+div.app-item-row .funders > div {
+  margin-left: 12px;
+}
+div.app-item-row .funders > div table td {
+  padding-right: 15px;
+}
+div.app-item-row .funders > div table td.pending {
+  font-style: italic;
+  color: #999;
 }
