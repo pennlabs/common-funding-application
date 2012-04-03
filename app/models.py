@@ -33,6 +33,7 @@ class CFAUser(models.Model):
   user = models.OneToOneField(User)
   user_type = models.CharField(max_length=1,
                                choices=REQUESTER_OR_FUNDER)
+  osa_email = models.EmailField() # The e-mail of the contact in OSA
 
   def __unicode__(self):
       return unicode(self.user)
@@ -59,6 +60,7 @@ class CFAUser(models.Model):
     """Check if a user requested an event."""
     assert self.is_requester
     return self == event.requester
+
 
 
 @receiver(sender=User, signal=post_save)
