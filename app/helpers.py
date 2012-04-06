@@ -9,7 +9,7 @@ def save_event(request):
   location = request.POST.get('location')
   organizations = request.POST.get('organizations')
   event_id = request.POST.get('event_id', None)
-  if event_id is None:
+  if event_id == "":
     event = Event.objects.create(
         name=name,
         date=date,
