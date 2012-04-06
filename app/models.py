@@ -91,8 +91,9 @@ class Event(models.Model):
             totalAmount=item.amount,
             grants=item_grants)
 
-    def get_share_url(self):
-      """Unique url that can be shared."""
+    @property
+    def secret_key(self):
+      """Unique key that can be shared so that anyone can view the event."""
       return sha.new("".join([self.name, str(self.date), str(self.requester)])).hexdigest()
 
     def __unicode__(self):
@@ -109,6 +110,9 @@ class Question(models.Model):
     
     def __unicode__(self):
         return self.question
+
+    class Meta:
+      abstract = True
 
 
 class EligibilityQuestion(Question):
