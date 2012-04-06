@@ -111,6 +111,9 @@ class Question(models.Model):
     def __unicode__(self):
         return self.question
 
+    class Meta:
+      abstract = True
+
 
 class EligibilityQuestion(Question):
     pass
