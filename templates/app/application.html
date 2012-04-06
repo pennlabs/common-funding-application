@@ -38,7 +38,7 @@
         <div class="control-group">
           <label for="questiondate" class="control-label">Event Date:</label>
           <div class="controls">
-            <input value="{{ event.date }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker">
+            <input value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker">
             <p class="help-block">Enter the date of the event.</p>
           </div>
         </div>
