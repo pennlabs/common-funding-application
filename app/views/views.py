@@ -83,7 +83,12 @@ def events(request):
 @login_required
 def event_new(request):
   """Form to create a new event."""
-  if request.method == 'GET':
+  if request.method == 'POST':
+    save_event(request)
+    return render_to_response('app/application.html',
+                              {'event':'well that failed'},
+                              context_instance=RequestContext(request))
+  elif request.method == 'GET':
     return render_to_response('app/application.html',
         context_instance=RequestContext(request))
   else:
@@ -96,9 +101,23 @@ def event_edit(request, event_id):
   user = request.user
   if request.method == 'GET':
     event = Event.objects.get(pk=event_id)
-    form = EventForm(event)
-    return render_to_response('app/event-edit.html',
-        {'event': event, 'form': form},
+    items = event.item_set.all()
+    eligibility = event.eligibilityanswer_set.all()
+    common = event.commonfreeresponseanswer_set.all()
+    free = event.freeresponseanswer_set.all()
+    organizations = event.organizations
+    location = event.location
+    # can't get the event's funders?
+    return render_to_response('app/application.html',
+        {
+          'event': event,
+          'items':items,
+          'eligibility':eligibility,
+          'commonresponse':common,
+          'freeresponse':free,
+          'organizations':organizations,
+          'location':location
+        },
         context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
@@ -318,10 +337,7 @@ def funders(request, event_id):
   return render_to_response('app/eligible-funders.html', {'funders': funder_dict,
                             'event': event}, 
                             context_instance=RequestContext(request))
-
 def application(request):
-  if request.method == 'POST':
-    save_event(request)
   # test data
   FunderItem = namedtuple('FunderItem', ['name', 'desc', 'question'])
   test_funders = [
