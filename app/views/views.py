@@ -102,9 +102,7 @@ def event_new(request):
   """Form to create a new event."""
   if request.method == 'POST':
     save_event(request)
-    return render_to_response('app/application.html',
-                              {'event':'well that failed'},
-                              context_instance=RequestContext(request))
+    return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application.html',
         context_instance=RequestContext(request))
