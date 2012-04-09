@@ -163,13 +163,12 @@ def event_show(request, event_id):
           grant.amount = amount
           grant.save()
 
+          grants.append(grant)
+
         if grants:
           # email the event requester indicating that they've been funded
-          ctx_dict = {'event': event, 'grants': grants}
-          subject = render_to_string('app/grant_email_subject.txt',
-              ctx_dict).strip()
-          message = render_to_string('app/grant_email.txt', ctx_dict)
-          event.requester.email_user(subject, message)
+          event.notify_requester(grants)
+          funder.notify_osa(event, grants)
       return redirect('app.views.event_show', event_id)
     else:
       for key, value in request.POST.items():
@@ -320,12 +319,7 @@ def free_response(request, event_id, funder_id):
             answer.answer = value
             answer.save()
       elif 'submit' in request.POST:
-        # email the funder
-        ctx_dict = {'requester': user, 'event': event}
-        subject = render_to_string('app/application_email_subject.txt',
-            ctx_dict).strip()
-        message = render_to_string('app/application_email.txt', ctx_dict)
-        funder.user.email_user(subject, message)
+        event.notify_funder(funder)
         event.applied_funders.add(funder)
     # TODO: Change this to something meaningful
     return redirect(URL_ROOT)
