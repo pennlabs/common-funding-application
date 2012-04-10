@@ -54,16 +54,16 @@
     {% endfor %}
     <tr id='itemrow'>
       <th>
-        <input class="new small" name="item_name" type="text"/>
+        <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
       </th>
       <th>
-        <input class="new small" name="item_quantity" type="text"/>
+        <input class="new small" onkeyup="makeRequired(this)" name="item_quantity" type="text"/>
       </th>
       <th> 
-        <input class="new inputIcon small" name="item_price_per_unit" type="text"/>
+        <input class="new inputIcon small" onkeyup="makeRequired(this)" name="item_price_per_unit" type="text"/>
       </th>
       <th> 
-        <input class="new inputIcon" name="item_funding_already_received" type="text"/>
+        <input class="new inputIcon" onkeyup="makeRequired(this)" name="item_funding_already_received" type="text"/>
       </th>
       <th>
         <select name='item_category'>
