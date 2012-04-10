@@ -43,6 +43,24 @@
       </div>
     </fieldset>
   </div>
+
+  <div class="section-header">
+    <h2>
+      Eligibilty Questions
+    </h2>
+  </div>
+  <div class="section-content">
+    <fieldset>
+      {% for qa in eligibility_qas %}
+      <div class="control-group">
+        <label for="question{{forloop.counter0}}" class="control-label"> {{ qa.question.question }}</label>
+        <div class="controls">
+          <input type="checkbox" id="question{{forloop.counter0}}" class="input-xlarge" value={{qa.answer.answer}}>
+        </div>
+      </div>
+      {% endfor %}
+    </fieldset>
+  </div>
   
   <div class="section-header">
     <h2>
@@ -51,12 +69,12 @@
   </div>
   <div class="section-content">
     <fieldset>
-      {% for eligibility_question in eligibility_questions %}
+      {% for qa in commonfreeresponse_qas %}
       <div class="control-group">
-        <label for="question01" class="control-label">Question</label>
+        <label for="question{{forloop.counter0}}" class="control-label">Question {{forloop.counter}}</label>
         <div class="controls">
-          <input type="text" id="question01" class="input-xlarge">
-          <p class="help-block">{{ eligibility_question.question }}</p>
+          <input type="text" id="question{{forloop.counter0}}" class="input-xlarge" value={{qa.answer.answer}}>
+          <p class="help-block">{{ qa.question.question }}</p>
         </div>
       </div>
       {% endfor %}
@@ -69,7 +87,6 @@
       <small>list line items for funding</small>
     </h2>
   </div>
-  
   <div class="section-content">
     <p>
       {% itemlist_requester items %}
@@ -85,12 +102,10 @@
   <div class="section-content">
     {% for funder in funders %}
     <div class="funder-check">
-      <label class="checkbox">
-        <input class="funder-checkbox-{{forloop.counter0}}" type="checkbox">{{funder.0}}
-      </label>
-      <p class="help-block">{{funder.1}}</p>
+      <label for="funder{{forloop.counter0}}" class="checkbox">{{funder}}</label>
+      <input id="funder{{forloop.counter0}}" class="funder-checkbox-{{forloop.counter0}}" type="checkbox">
     </div>
-  {% endfor %}
+    {% endfor %}
   </div>
   
   <div class="section-header">

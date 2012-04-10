@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from templatetag_sugar.parser import Variable, Optional, Constant, Name
 from templatetag_sugar.register import tag
 
-from app.models import CFAUser, EligibilityQuestion
+from app.models import *
 
 
 register = template.Library()
@@ -39,11 +39,26 @@ def itemlist_requester(context, items):
   return render_to_string('app/templatetags/itemlist-requester.html', new_context)
 
 
+def get_or_none(model, **kwargs):
+  """Get an object, or None."""
+  try:
+      return model.objects.get(**kwargs)
+  except model.DoesNotExist:
+      return None
+
+# question-answer pair
+QA = namedtuple('QA', 'question answer')
+
 @tag(register, [Variable()])
 def application(context, event):
-  new_context = {
+  # TODO: Figure out a better way to get the request then passing it explicitly to the context
+  request = context['request']
+  new_context = RequestContext(request, {
       'event': event,
-      'eligibility_questions': EligibilityQuestion.objects.all(),
+      'eligibility_qas': [QA(question, get_or_none(EligibilityAnswer, question=question, event=event))
+          for question in EligibilityQuestion.objects.all()],
+      'commonfreeresponse_qas': [QA(question, get_or_none(CommonFreeResponseAnswer, question=question, event=event))
+          for question in CommonFreeResponseQuestion.objects.all()],
       'funders': CFAUser.objects.filter(user_type='F')
-      }
+      })
   return render_to_string('app/templatetags/application.html', new_context)

@@ -133,7 +133,7 @@ def event_edit(request, event_id):
           'freeresponse':free,
           'organizations':organizations,
           'location':location,
-          'funders': funders
+          'request': request
         },
         context_instance=RequestContext(request))
   else:
