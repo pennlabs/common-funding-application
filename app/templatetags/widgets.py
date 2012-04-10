@@ -68,16 +68,14 @@ def get_or_none(model, **kwargs):
 QA = namedtuple('QA', 'question answer')
 
 
-@tag(register, [Variable()])
-def application(context, event):
-  # TODO: Figure out a better way to get the request then passing it explicitly to the context
-  request = context['request']
-  new_context = RequestContext(request, {
+@tag(register, [Optional([Variable()])])
+def application(context, event=None):
+  new_context = {
       'event': event,
       'eligibility_qas': [QA(question, get_or_none(EligibilityAnswer, question=question, event=event))
           for question in EligibilityQuestion.objects.all()],
       'commonfreeresponse_qas': [QA(question, get_or_none(CommonFreeResponseAnswer, question=question, event=event))
           for question in CommonFreeResponseQuestion.objects.all()],
       'funders': CFAUser.objects.filter(user_type='F')
-      })
+      }
   return render_to_string('app/templatetags/application.html', new_context)

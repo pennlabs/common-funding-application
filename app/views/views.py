@@ -119,8 +119,7 @@ def event_edit(request, event_id):
     # can't get the event's funders?
     return render_to_response('app/events-edit.html',
         {
-          'event': event,
-          'request': request  # this is a hack that lets the application generate a request context
+          'event': event
         },
         context_instance=RequestContext(request))
   else:
