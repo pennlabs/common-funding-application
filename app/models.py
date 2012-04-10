@@ -1,7 +1,8 @@
+from collections import namedtuple
 import sha
 
-from collections import namedtuple
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import dispatcher, receiver
@@ -33,7 +34,7 @@ class CFAUser(models.Model):
   user = models.OneToOneField(User)
   user_type = models.CharField(max_length=1,
                                choices=REQUESTER_OR_FUNDER)
-  osa_email = models.EmailField() # The e-mail of the contact in OSA
+  osa_email = models.EmailField(null=True) # The e-mail of the contact in OSA
 
   def __unicode__(self):
       return unicode(self.user)
@@ -61,6 +62,14 @@ class CFAUser(models.Model):
     assert self.is_requester
     return self == event.requester
 
+  def notify_osa(self, event, grants):
+    """Notify OSA that an event has been funded."""
+    assert self.is_funder
+    context = {'funder': self, 'event': event, 'grants': grants}
+    subject = render_to_string('app/osa_email_subject.txt',
+        context).strip()
+    message = render_to_string('app/osa_email.txt', context)
+    send_mail(subject, message, self.user.email, [str(self.osa_email)])
 
 
 @receiver(sender=User, signal=post_save)
@@ -91,6 +100,24 @@ class Event(models.Model):
             totalAmount=item.amount,
             grants=item_grants)
 
+    def notify_funder(self, funder):
+      """Notify a funder that the requester has applied to them."""
+      assert funder.is_funder
+      context = {'requester': self.requester, 'event': self}
+      subject = render_to_string('app/application_email_subject.txt',
+          context).strip()
+      message = render_to_string('app/application_email.txt', context)
+      funder.user.email_user(subject, message)
+
+    def notify_requester(self, grants):
+      """Notify a requester that an event has been funded."""
+      context = {'event': self, 'grants': self.grant_set}
+      subject = render_to_string('app/grant_email_subject.txt',
+          context).strip()
+      message = render_to_string('app/grant_email.txt', context)
+      self.requester.user.email_user(subject, message)
+
+
     @property
     def secret_key(self):
       """Unique key that can be shared so that anyone can view the event."""
@@ -103,6 +130,16 @@ class Event(models.Model):
 
     class Meta:
         unique_together = ("name", "date", "requester")
+
+
+class Comment(models.Model):
+    """A comment, made by a funder, on an event application."""
+    funder = models.ForeignKey(CFAUser)
+    event = models.ForeignKey(Event)
+    comment = models.TextField()
+
+    def __unicode__(self):
+        return self.comment
 
 
 class Question(models.Model):
