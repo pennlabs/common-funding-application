@@ -441,7 +441,9 @@ def save_items(event, request):
   item_category = request.POST.getlist('item_category')
   event.item_set.all().delete()
   for name, quantity, price_per_unit,funding, cat in zip(item_names,item_quantity,item_price_per_unit,item_funding, item_category):
-    event.item_set.create(name=name, quantity=quantity, price_per_unit=price_per_unit, funding_already_received=funding, category='F')
+    # make sure user isn't trying to save empty
+    if str(name) and str(quantity) and str(price_per_unit) and str(funding):
+      event.item_set.create(name=name, quantity=quantity, price_per_unit=price_per_unit, funding_already_received=funding, category='F')
 
 def save_all_questions(event, request):
   eligibility_answers = request.POST.getlist('eligibility_answers')
