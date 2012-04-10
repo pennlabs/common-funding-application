@@ -124,7 +124,7 @@ def event_edit(request, event_id):
     location = event.location
 
     # can't get the event's funders?
-    return render_to_response('app/events-edit.html',
+    return render_to_response('app/application.html',
         {
           'event': event,
           'items':items,
