@@ -218,7 +218,7 @@ class Item(models.Model):
 
     @property
     def total(self):
-      return self.units * self.amount
+      return self.price_per_unit * self.quantity
 
     def __unicode__(self):
         return self.name

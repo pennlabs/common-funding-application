@@ -7,11 +7,12 @@
 {% endblock %}
 
 {% block htmllink-js %}
-<script src="{{ STATIC_URL }}/js/form.js"></script>
 <script src="{{ STATIC_URL }}/js/itemlist.js"></script>
 {% endblock %}
 
 {% block container %}
+
+{{ items }}
 
 <div id="main">
   <!-- 0 is passed into app.views.event_edit to suppress the errors of invalid arg -->
