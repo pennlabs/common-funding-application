@@ -52,3 +52,9 @@ fieldset {
 .section-content .funder-q em {
   color: #999;
 }
+#item-table input {
+  width: 175px;
+}
+#item-table input.small {
+  width: 100px;
+}

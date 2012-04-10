@@ -1,10 +1,15 @@
-function addItem() {
-  $("#item-table tr:last").after(
-    "<tr>" + $("#itemrow").html() + "</tr>"
-  );
+function addItem(button) {
+  $row = $(button).closest('tr');
+  $remove = $('.remove_button');
+  $clone = $row.clone()
+            .insertBefore($row)
+            .find('.add')
+            .replaceWith($('.remove').html());
+
+  $row.find('input').val('');
 }
 function removeItem(e) {
-  $(e).parents(".app-item-row").remove();
+  $(e).closest('tr').remove();
 }
 
 function newInputClicked(e) {

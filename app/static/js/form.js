@@ -23,13 +23,13 @@ $(document).ready(function() {
     
   // register funder checkbox click
   $(".funder-check input").change(function () {
-    selectedFunders[ $(this).attr("class").substring(16) ] = $(this).attr("checked") == "checked";
+    selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
     showFunderQuestions();
   });
   
   // count already checked checkboxes
   $(".funder-check input").each(function () {
-    selectedFunders[ $(this).attr("class").substring(16) ] = $(this).attr("checked") == "checked";
+    selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
   });
   showFunderQuestions();
 

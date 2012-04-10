@@ -1,15 +1,14 @@
-from django import template
-
 from app.models import Grant
 
-from templatetag_sugar.parser import Variable, Optional, Constant, Name
-from templatetag_sugar.register import tag
 
-
-register = template.Library()
-
-@tag(register, [Variable(), Variable()])
-def funders_grant_to_item(context, item, funder):
-  grant = Grant.objects.filter(item=item, funder=funder.cfauser)
-  return grant[0].amount if grant else 0
+def funders_grant_data_to_item(context, item, funder_id):
+  grant = Grant.objects.filter(item=item, funder__id=funder_id)
+  return (grant[0].amount, grant.id) if grant else (0, 0)
   
+def funder_item_data(context, item, funders):
+  item_data = [item.name, item.quantity, item.price_per_unit, item.total]
+  funders_data = []
+  for funder in funders:
+    grant_amount, grant_id = funders_grant_data_to_item(context, item, funder.id)
+    funders_data.append((funder.id, grant_amount, grant_id))
+  return (item_data, funders_data)
