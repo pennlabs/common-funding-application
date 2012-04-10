@@ -1,0 +1,33 @@
+<table border="1">
+  {% if items_data %}
+  <tr>
+    {% for title in titles %}
+    <td>{{ title }}</td>
+    {% endfor %}
+  </tr>
+  {% for infos, grant_datas in items_data %}
+  <tr>
+    {% for info in infos %}
+    <td>{{ info }}</td>
+    {% endfor %}
+    
+    {% for funder_id, grant_amount, item_id in grant_datas %}
+    {% ifequal funder_id current_funder %}
+    <td>
+      <input class="fund-amount span2" name="item_{{ item_id }}" type="text"
+        value="{{ grant_amount }}"
+        pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
+        onfocus="newInputClicked(this)"
+        onblur="newInputCheck(this, '{{ grant_amount }}')"
+        onkeydown="numericOnly(event)"/>
+    </td>
+    {% else %}
+    <td>{{ grant_amount }}</td>
+    {% endifequal %}
+    {% endfor %}
+  </tr>
+  {% endfor %}
+  {% else %}
+  No items have been added.
+  {% endif %}
+</table>

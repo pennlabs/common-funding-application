@@ -1,7 +1,6 @@
 {% extends "base-page.html" %}
 
 {% load widgets %}
-{% load helpers %}
     
 {% block htmllink-styles %}
 <link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
@@ -38,7 +37,7 @@
   </form>
     
   {% if is_funder %}
-  {% funder_item_table event.item_set.all cfauser_id %}
+  {% itemlist_funder event.item_set.all cfauser_id %}
   {% endif %}
 </div>      
 {% endblock %}
