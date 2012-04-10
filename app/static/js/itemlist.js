@@ -2,9 +2,9 @@ function addItem(button) {
   $row = $(button).closest('tr');
   $remove = $('.remove_button');
   $clone = $row.clone()
-            .insertBefore($row)
-            .find('.add')
-            .replaceWith($('.remove').html());
+            .insertBefore($row);
+  $clone.find('.add').replaceWith($('.remove').html());
+  $clone.find('input').attr('required','required');
 
   $row.find('input').val('');
 }
