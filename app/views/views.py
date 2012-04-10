@@ -231,6 +231,48 @@ def items(request, event_id):
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])
 
+def itemlist_funder(request, event_id):
+  user = request.user
+  if user.is_authenticated():
+    if request.method == 'GET':
+      try:
+        event = Event.objects.get(pk=event_id)
+        event_name = event.name
+      except Event.DoesNotExist:
+        return render_to_response('error.html',
+                                  {'error_message': "Unable to view event"},
+                                  context_instance=RequestContext(request))
+      return render_to_response('itemlist-funder.html',
+                                {'event': event},
+                                context_instance=RequestContext(request))
+
+    elif request.method == 'POST':
+      event_id = request.POST.get('event_id', None)
+      try:
+        event = Event.objects.get(pk=event_id)
+      except Event.DoesNotExist:
+        return render_to_response('error.html',
+                                  {'error_message': "Unable to modify event"},
+                                  context_instance=RequestContext(request))
+      for item in event.item_set.all():
+        amount = request.POST.get("item_" + str(item.id), None)
+        if amount and int(amount):
+          amount = int(amount)
+          grant = Grant.objects.get_or_create(funder=user.cfauser,
+                                              item=item,
+                                              defaults={'amount': 0})[0]
+          grants = Grant.objects.filter(item=item)
+          amount_funded = sum(grant.amount for grant in grants)
+          if amount + amount_funded > item.amount:
+            amount = item.amount - amount_funded
+          grant.amount = grant.amount + amount
+          grant.save()
+      return render_to_response('itemlist-funder.html',
+                                {'event': event},
+                                context_instance=RequestContext(request))
+  else:
+    return HttpResponseNotAllowed(['GET', 'POST'])
+
 
 @login_required
 @requester_only

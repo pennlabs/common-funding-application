@@ -1,0 +1,72 @@
+{% extends "base-page.html" %}
+
+{% load widgets %}
+
+{% block htmllink-styles %}
+<link rel="stylesheet" href="{{ STATIC_URL }}/css/applist.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}/css/itemlist.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}/css/fundingbar.css">
+{% endblock %}
+
+{% block htmllink-js %}
+<script src="{{ STATIC_URL }}/js/itemlist.js"></script>
+<script src="{{ STATIC_URL }}/js/fundingbar.js"></script>
+{% endblock %}
+
+{% block container %}
+<header>
+  <div>
+    <h2>
+      Fund Items
+      <small>Select Items to Fund</small>
+    </h2>
+  </div>
+</header>
+  
+<div id="main">
+     
+  <form id="itemlist-form" method="post">
+    {% csrf_token %}
+    {% for event_grant in event.grants %}
+    <div class="app-item-row">
+      <div class="row">
+        <div class="span3">
+          <span>{{ event_grant.item.description }}</span>
+        </div>  
+        <div class="span2">
+          <span>$ {{ event_grant.currentAmount }} / {{ event_grant.totalAmount }}</span>
+        </div>  
+        <div class="span4">
+          {% fundingbar event_grant.totalAmount event_grant.grants %}
+        </div>  
+        <div class="span3">
+          <div class="input-prepend pull-right">
+            <span class="add-on"><strong>$</strong></span>
+            <input class="fund-amount span2 new" name="item_{{ event_grant.item.id }}" type="text"
+                  value="0"
+		  pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
+                  onfocus="newInputClicked(this)"
+                  onblur="newInputCheck(this, '0')"
+                  onkeydown="numericOnly(event)"
+		  {% ifequal event_grant.currentAmount event_grant.totalAmount %}
+		  disabled="disabled"
+		  {% endifequal %}/>
+          </div>
+        </div>        
+      </div>
+    </div>
+    {% empty %}
+    <p>No items found.</p>
+    
+    {% endfor %}
+
+    <input type="hidden" name="event_id" value="{{ event.id }}" />
+    
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">Submit</button>
+      <button class="btn" type="reset">Reset</button>
+    </div>
+  </form>
+   
+</div>
+{% endblock %}
