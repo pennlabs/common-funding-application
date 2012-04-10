@@ -13,7 +13,6 @@
       <tr class='app-itemrow'>
         <th>
           <input name="item_name" type="text"
-               required
                pattern="^(?!Item Name\.\.\.)(.+)"
                onfocus="newInputClicked(this)"
                onblur="newInputCheck(this, 'Item Name...')"
@@ -21,7 +20,6 @@
         </th>
         <th>
           <input name="item_quantity" type="text"
-               required
                pattern="^\d*"
                onfocus="newInputClicked(this)"
                onblur="newInputCheck(this, 'Number of Items...')"
@@ -29,7 +27,6 @@
         </th>
         <th> 
           <input class="inputIcon" name="item_price_per_unit" type="text"
-                 required
                  value="{{ item.price_per_unit }}"
                  pattern="^\d*(\.\d{2}$)?"
                  title="Please enter a valid dollar amount."
@@ -39,7 +36,6 @@
         </th>
         <th> 
           <input class="inputIcon" name="item_funding_already_received" type="text"
-                 required
                  value="{{ item.funding_already_received }}"
                  pattern="^\d*(\.\d{2}$)?"
                  title="Please enter a valid dollar amount."
@@ -63,25 +59,19 @@
     <tr id='itemrow'>
       <th>
         <input class="new" name="item_name" type="text"
-             required
-             pattern="^(?!Item Name\.\.\.)(.+)"
              onfocus="newInputClicked(this)"
              onblur="newInputCheck(this, 'Item Name...')"
              value="Item Name..." />
       </th>
       <th>
         <input class="new" name="item_quantity" type="text"
-             required
-             pattern="^\d*"
              onfocus="newInputClicked(this)"
              onblur="newInputCheck(this, 'Number of Items...')"
              value="Quantity..." />
       </th>
       <th> 
         <input class="new inputIcon" name="item_price_per_unit" type="text"
-               required
                value="Price Per Unit..."
-               pattern="^\d*(\.\d{2}$)?"
                title="Please enter a valid dollar amount."
                onfocus="newInputClicked(this)"
                onblur="newInputCheck(this, 'Price Per Unit...')"
@@ -89,9 +79,7 @@
       </th>
       <th> 
         <input class="new inputIcon" name="item_funding_already_received" type="text"
-               required
                value="Funding Already Received..."
-               pattern="^\d*(\.\d{2}$)?"
                title="Please enter a valid dollar amount."
                onfocus="newInputClicked(this)"
                onblur="newInputCheck(this, 'Funding Already Received...')"

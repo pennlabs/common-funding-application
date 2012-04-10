@@ -17,30 +17,47 @@ from app.models import Event, EligibilityQuestion, EligibilityAnswer, \
     CommonFreeResponseQuestion, CommonFreeResponseAnswer
 from app.helpers import save_event
 
+
+NOT_AUTHORIZED = 'app.views.index'
+
 def index(request):
     return redirect('app.views.events')
 
 
-def creator_or_funder(view):
+def authorization_required(view):
+  """Ensure only a permitted user can access an event.
+  A user is permitted if:
+    * They requested the event
+    * They are a funder
+    * They have a secret key to an event
+  """
   def protected_view(request, event_id, *args, **kwargs):
-    user = request.user
+    user = request.user.get_profile()
     event = Event.objects.get(pk=event_id)
-    if user.cfauser.is_funder or user.cfauser.requested(event):
+    if user.is_funder or user.requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
-      return redirect('app.views.index') # not authorized
+      try:
+        key = request.GET['key']
+      except KeyError:
+        return redirect(NOT_AUTHORIZED)
+      else:
+        if key == event.secret_key:
+          return view(request, event_id, *args, **kwargs)
+        else:
+          return redirect(NOT_AUTHORIZED)
   return protected_view
 
 
-def authorization_required(view):
-  """Ensure the user requested the event."""
+def requester_only(view):
+  """Ensure only the user who requested the event can access a page."""
   def protected_view(request, event_id, *args, **kwargs):
     user = request.user
     event = Event.objects.get(pk=event_id)
     if user.get_profile().requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
-      return redirect('app.views.index') # not authorized
+      return redirect(NOT_AUTHORIZED)
   return protected_view
 
 
@@ -83,7 +100,10 @@ def events(request):
 @login_required
 def event_new(request):
   """Form to create a new event."""
-  if request.method == 'GET':
+  if request.method == 'POST':
+    save_event(request)
+    return redirect('app.views.events')
+  elif request.method == 'GET':
     return render_to_response('app/application.html',
         context_instance=RequestContext(request))
   else:
@@ -91,21 +111,35 @@ def event_new(request):
 
 
 @login_required
-@authorization_required
+@requester_only
 def event_edit(request, event_id):
   user = request.user
   if request.method == 'GET':
     event = Event.objects.get(pk=event_id)
-    form = EventForm(event)
-    return render_to_response('app/event-edit.html',
-        {'event': event, 'form': form},
+    items = event.item_set.all()
+    eligibility = event.eligibilityanswer_set.all()
+    common = event.commonfreeresponseanswer_set.all()
+    free = event.freeresponseanswer_set.all()
+    organizations = event.organizations
+    location = event.location
+    # can't get the event's funders?
+    return render_to_response('app/application.html',
+        {
+          'event': event,
+          'items':items,
+          'eligibility':eligibility,
+          'commonresponse':common,
+          'freeresponse':free,
+          'organizations':organizations,
+          'location':location
+        },
         context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
 
 
 @login_required
-@creator_or_funder
+@authorization_required
 def event_show(request, event_id):
   user = request.user
   event = Event.objects.get(pk=event_id)
@@ -181,7 +215,7 @@ def event_show(request, event_id):
     return HttpResponseNotAllowed(['POST'])
 
 @login_required
-@authorization_required
+@requester_only
 def items(request, event_id):
   user = request.user
   if request.method == 'POST':
@@ -246,7 +280,7 @@ def itemlist_funder(request, event_id):
 
 
 @login_required
-@authorization_required
+@requester_only
 def event_destroy(request, event_id):
   event = Event.objects.get(pk=event_id)
   event.delete()
@@ -254,7 +288,7 @@ def event_destroy(request, event_id):
 
 
 @login_required
-@authorization_required
+@requester_only
 def free_response(request, event_id, funder_id):
   """Show the free response form for a funder and process it."""
   user = request.user
@@ -318,10 +352,7 @@ def funders(request, event_id):
   return render_to_response('app/eligible-funders.html', {'funders': funder_dict,
                             'event': event}, 
                             context_instance=RequestContext(request))
-
 def application(request):
-  if request.method == 'POST':
-    save_event(request)
   # test data
   FunderItem = namedtuple('FunderItem', ['name', 'desc', 'question'])
   test_funders = [

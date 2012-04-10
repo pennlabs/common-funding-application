@@ -9,7 +9,7 @@
   <tr>
     {% for info in infos %}
     <td>{{ info }}</td>
-    {{% endfor %}
+    {% endfor %}
     
     {% for funder_id, grant_amount, item_id in grant_datas %}
     {% ifequal funder_id current_funder %}
