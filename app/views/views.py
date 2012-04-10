@@ -122,8 +122,9 @@ def event_edit(request, event_id):
     free = event.freeresponseanswer_set.all()
     organizations = event.organizations
     location = event.location
+
     # can't get the event's funders?
-    return render_to_response('app/application.html',
+    return render_to_response('app/events-edit.html',
         {
           'event': event,
           'items':items,
@@ -131,7 +132,8 @@ def event_edit(request, event_id):
           'commonresponse':common,
           'freeresponse':free,
           'organizations':organizations,
-          'location':location
+          'location':location,
+          'funders': funders
         },
         context_instance=RequestContext(request))
   else:

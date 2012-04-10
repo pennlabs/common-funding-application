@@ -1,0 +1,23 @@
+{% extends "base-page.html" %}
+
+{% load widgets %}
+    
+{% block htmllink-styles %}
+<link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
+{% endblock %}
+
+{% block htmllink-js %}
+<script src="{{ STATIC_URL }}/js/form.js"></script>
+<script src="{{ STATIC_URL }}/js/itemlist.js"></script>
+{% endblock %}
+
+{% block container %}
+
+<div id="main">
+  <!-- 0 is passed into app.views.event_edit to suppress the errors of invalid arg -->
+  <!-- a better solution would be to make the argument in event_edit optional -->
+  <!-- but that solution didn't seem to work -->
+  {% application event %}
+    
+</div>      
+{% endblock %}
