@@ -118,11 +118,11 @@
       {% for funder in test_funders %}
       <div class="funder-check">
         <label class="checkbox">
-          <input class="funder-checkbox-{{forloop.counter0}}" type="checkbox">{{funder.0}}
+          <input data-funderid="{{forloop.counter0}}" type="checkbox">{{funder.0}}
         </label>
         <p class="help-block">{{funder.1}}</p>
       </div>
-    {% endfor %}
+      {% endfor %}
     </div>
     
     <div class="section-header">
@@ -133,7 +133,7 @@
     </div>
     <div class="section-content">
       <p id="funder-no-q">No questions yet. Please select funders.</p>
-      {% for q, qval in funder_qs.items %}      
+      {% for q, qval in funder_qs.items %}
       <div class="funder-q {{qval.0}}">
         <label>{{q}} <em>(for {{qval.1}})</em></label>
         <textarea class="span8" rows="3"></textarea>
