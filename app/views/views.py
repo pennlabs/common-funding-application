@@ -52,9 +52,9 @@ def authorization_required(view):
 def requester_only(view):
   """Ensure only the user who requested the event can access a page."""
   def protected_view(request, event_id, *args, **kwargs):
-    user = request.user
+    user = request.user.get_profile()
     event = Event.objects.get(pk=event_id)
-    if user.get_profile().requested(event):
+    if user.is_requester and user.requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
       return redirect(NOT_AUTHORIZED)
@@ -198,20 +198,27 @@ def event_show(request, event_id):
       return redirect('app.views.items', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
-    form = EventForm(event)
-    if user.cfauser.is_funder:
-      for key in form.fields:
-        form.fields[key].widget.attrs['disabled'] = True
-      other_form = FreeResponseForm(event_id, user.cfauser.id)
-      for key in other_form.fields:
-        other_form.fields[key].widget.attrs['disabled'] = True
-    else:
-      other_form = None
-    return render_to_response('app/event-edit.html',
-      {'form': form, 'event': event, 'is_funder':user.cfauser.is_funder,
-      'other_form': other_form, 'funder_id':user.cfauser.id,
-      'cfauser_id': user.cfauser.id},
-      context_instance=RequestContext(request))
+    eligibility = event.eligibilityanswer_set.all()
+    common = event.commonfreeresponseanswer_set.all()
+    free = event.freeresponseanswer_set.all()
+    organizations = event.organizations
+    location = event.location
+    cfauser = user.cfauser
+
+    # can't get the event's funders?
+    return render_to_response('app/application.html',
+        {
+          'event': event,
+          'eligibility':eligibility,
+          'commonresponse':common,
+          'freeresponse':free,
+          'organizations':organizations,
+          'location':location,
+          'funders': funders,
+          'cfauser_id': cfauser.id,
+          'disabled_if_funder': 'disabled' if cfauser.is_funder else ''
+        },
+        context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['POST'])
 
