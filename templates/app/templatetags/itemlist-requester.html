@@ -1,3 +1,6 @@
+<div class='remove' style='display:none'>
+  <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
+</div>
 <table id='item-table' class='table table-striped'>
   <thead>
     <tr>
@@ -6,27 +9,28 @@
       <th>Price Per Unit</th>
       <th>Funding Already Received</th>
       <th>Category</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
     {% for item in items %}
       <tr class='app-itemrow'>
         <th>
-          <input name="item_name" type="text"
+          <input name="item_name" type="text" class='small'
                pattern="^(?!Item Name\.\.\.)(.+)"
                onfocus="newInputClicked(this)"
                onblur="newInputCheck(this, 'Item Name...')"
                value="{{ item.name }}" />
         </th>
         <th>
-          <input name="item_quantity" type="text"
+          <input name="item_quantity" type="text" class='small'
                pattern="^\d*"
                onfocus="newInputClicked(this)"
                onblur="newInputCheck(this, 'Number of Items...')"
                value="{{ item.quantity }}" />
         </th>
         <th> 
-          <input class="inputIcon" name="item_price_per_unit" type="text"
+          <input class="inputIcon small" name="item_price_per_unit" type="text"
                  value="{{ item.price_per_unit }}"
                  pattern="^\d*(\.\d{2}$)?"
                  title="Please enter a valid dollar amount."
@@ -44,7 +48,7 @@
                  onkeydown="numericOnly(event)" />
         </th>
         <th>
-          <select>
+          <select name='item_category'>
             <option>Food</option>
             <option>Drink</option>
             <option>blah</option>
@@ -54,36 +58,23 @@
             <option>testing</option>
           </select>
         </th>
+        <th>
+          <button class='btn btn-danger remove'>Remove</button>
+        </th>
       </tr>
     {% endfor %}
     <tr id='itemrow'>
       <th>
-        <input class="new" name="item_name" type="text"
-             onfocus="newInputClicked(this)"
-             onblur="newInputCheck(this, 'Item Name...')"
-             value="Item Name..." />
+        <input class="new small" name="item_name" type="text"/>
       </th>
       <th>
-        <input class="new" name="item_quantity" type="text"
-             onfocus="newInputClicked(this)"
-             onblur="newInputCheck(this, 'Number of Items...')"
-             value="Quantity..." />
+        <input class="new small" name="item_quantity" type="text"/>
       </th>
       <th> 
-        <input class="new inputIcon" name="item_price_per_unit" type="text"
-               value="Price Per Unit..."
-               title="Please enter a valid dollar amount."
-               onfocus="newInputClicked(this)"
-               onblur="newInputCheck(this, 'Price Per Unit...')"
-               onkeydown="numericOnly(event)" />
+        <input class="new inputIcon small" name="item_price_per_unit" type="text"/>
       </th>
       <th> 
-        <input class="new inputIcon" name="item_funding_already_received" type="text"
-               value="Funding Already Received..."
-               title="Please enter a valid dollar amount."
-               onfocus="newInputClicked(this)"
-               onblur="newInputCheck(this, 'Funding Already Received...')"
-               onkeydown="numericOnly(event)" />
+        <input class="new inputIcon" name="item_funding_already_received" type="text"/>
       </th>
       <th>
         <select>
@@ -95,6 +86,9 @@
           <option>performer</option>
           <option>testing</option>
         </select>
+      </th>
+      <th>
+        <button class='btn add' onclick='addItem(this); return false;'>Add</button>
       </th>
     </tr>
   </tbody>
