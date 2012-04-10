@@ -38,7 +38,8 @@ def import_users():
         password="testrequester2")
     funder1 = User.objects.create_user(username="testfunder1",
         email="testfunder1@test.com",
-        password="testfunder1")
+        password="testfunder1"
+        osa_email="topwolfed@gmail.com")
     profile1 = funder1.get_profile()
     profile1.user_type = 'F'
     profile1.save()

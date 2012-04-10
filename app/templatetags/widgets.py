@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from django import template
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -5,7 +7,8 @@ from django.template.loader import render_to_string
 from templatetag_sugar.parser import Variable, Optional, Constant, Name
 from templatetag_sugar.register import tag
 
-from collections import namedtuple
+from app.models import CFAUser, EligibilityQuestion
+
 
 register = template.Library()
 
@@ -28,8 +31,19 @@ def fundingbar(context, totalAmount, fundDict):
   
   return render_to_string('app/templatetags/fundingbar.html', new_context)
 
+
 @tag(register, [Variable()])
 def itemlist_requester(context, items):
   # takes a dictionary of items
   new_context = {'items':items}
   return render_to_string('app/templatetags/itemlist-requester.html', new_context)
+
+
+@tag(register, [Variable()])
+def application(context, event):
+  new_context = {
+      'event': event,
+      'eligibility_questions': EligibilityQuestion.objects.all(),
+      'funders': CFAUser.objects.filter(user_type='F')
+      }
+  return render_to_string('app/templatetags/application.html', new_context)
