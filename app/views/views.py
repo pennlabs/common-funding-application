@@ -379,30 +379,6 @@ def submitted(request, sha):
   else:
     return HttpResponseNotAllowed(['GET'])
 
-def save_event(request):
-  name = request.POST.get('name')
-  date = request.POST.get('date')
-  requester = request.user.cfauser
-  location = request.POST.get('location')
-  organizations = request.POST.get('organizations')
-  event_id = request.POST.get('event_id', None)
-  if event_id == "":
-    event = Event.objects.create(
-                            name=name,
-                            date=date,
-                            requester=requester,
-                            location=location,
-                            organizations=organizations
-                          )
-  else:
-    event = Event.objects.get(pk=event_id)
-    event.date = date
-    event.name = name
-    event.organizations = organizations
-    event.location = location
-    event.save()
-  save_items(event, request)
-
 def save_items(event, request):
   item_names = request.POST.getlist('item_name')
   item_quantity = request.POST.getlist('item_quantity')
