@@ -15,7 +15,6 @@ from app.forms import EventForm, EligibilityQuestionnaireForm, BudgetForm, \
 from app.models import Event, EligibilityQuestion, EligibilityAnswer, \
     FreeResponseQuestion, FreeResponseAnswer, Grant, CFAUser, \
     CommonFreeResponseQuestion, CommonFreeResponseAnswer
-from app.helpers import save_event
 
 
 NOT_AUTHORIZED = 'app.views.index'
@@ -52,9 +51,9 @@ def authorization_required(view):
 def requester_only(view):
   """Ensure only the user who requested the event can access a page."""
   def protected_view(request, event_id, *args, **kwargs):
-    user = request.user
+    user = request.user.get_profile()
     event = Event.objects.get(pk=event_id)
-    if user.get_profile().requested(event):
+    if user.is_requester and user.requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
       return redirect(NOT_AUTHORIZED)
@@ -104,7 +103,7 @@ def event_new(request):
     save_event(request)
     return redirect('app.views.events')
   elif request.method == 'GET':
-    return render_to_response('app/application.html',
+    return render_to_response('app/events-new.html',
         context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
@@ -116,24 +115,11 @@ def event_edit(request, event_id):
   user = request.user
   if request.method == 'GET':
     event = Event.objects.get(pk=event_id)
-    items = event.item_set.all()
-    eligibility = event.eligibilityanswer_set.all()
-    common = event.commonfreeresponseanswer_set.all()
-    free = event.freeresponseanswer_set.all()
-    organizations = event.organizations
-    location = event.location
 
     # can't get the event's funders?
     return render_to_response('app/events-edit.html',
         {
-          'event': event,
-          'items':items,
-          'eligibility':eligibility,
-          'commonresponse':common,
-          'freeresponse':free,
-          'organizations':organizations,
-          'location':location,
-          'funders': funders
+          'event': event
         },
         context_instance=RequestContext(request))
   else:
@@ -198,20 +184,27 @@ def event_show(request, event_id):
       return redirect('app.views.items', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
-    form = EventForm(event)
-    if user.cfauser.is_funder:
-      for key in form.fields:
-        form.fields[key].widget.attrs['disabled'] = True
-      other_form = FreeResponseForm(event_id, user.cfauser.id)
-      for key in other_form.fields:
-        other_form.fields[key].widget.attrs['disabled'] = True
-    else:
-      other_form = None
-    return render_to_response('app/event-edit.html',
-      {'form': form, 'event': event, 'is_funder':user.cfauser.is_funder,
-      'other_form': other_form, 'funder_id':user.cfauser.id,
-      'cfauser_id': user.cfauser.id},
-      context_instance=RequestContext(request))
+    eligibility = event.eligibilityanswer_set.all()
+    common = event.commonfreeresponseanswer_set.all()
+    free = event.freeresponseanswer_set.all()
+    organizations = event.organizations
+    location = event.location
+    cfauser = user.cfauser
+
+    # can't get the event's funders?
+    return render_to_response('app/events-edit.html',
+        {
+          'event': event,
+          'eligibility':eligibility,
+          'commonresponse':common,
+          'freeresponse':free,
+          'organizations':organizations,
+          'location':location,
+          'funders': funders,
+          'cfauser_id': cfauser.id,
+          'disabled_if_funder': 'disabled' if cfauser.is_funder else ''
+        },
+        context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['POST'])
 
@@ -234,48 +227,6 @@ def items(request, event_id):
     return render_to_response('app/itemlist.html',
                               {'event': event},
                               context_instance=RequestContext(request))
-  else:
-    return HttpResponseNotAllowed(['GET', 'POST'])
-
-def itemlist_funder(request, event_id):
-  user = request.user
-  if user.is_authenticated():
-    if request.method == 'GET':
-      try:
-        event = Event.objects.get(pk=event_id)
-        event_name = event.name
-      except Event.DoesNotExist:
-        return render_to_response('error.html',
-                                  {'error_message': "Unable to view event"},
-                                  context_instance=RequestContext(request))
-      return render_to_response('itemlist-funder.html',
-                                {'event': event},
-                                context_instance=RequestContext(request))
-
-    elif request.method == 'POST':
-      event_id = request.POST.get('event_id', None)
-      try:
-        event = Event.objects.get(pk=event_id)
-      except Event.DoesNotExist:
-        return render_to_response('error.html',
-                                  {'error_message': "Unable to modify event"},
-                                  context_instance=RequestContext(request))
-      for item in event.item_set.all():
-        amount = request.POST.get("item_" + str(item.id), None)
-        if amount and int(amount):
-          amount = int(amount)
-          grant = Grant.objects.get_or_create(funder=user.cfauser,
-                                              item=item,
-                                              defaults={'amount': 0})[0]
-          grants = Grant.objects.filter(item=item)
-          amount_funded = sum(grant.amount for grant in grants)
-          if amount + amount_funded > item.amount:
-            amount = item.amount - amount_funded
-          grant.amount = grant.amount + amount
-          grant.save()
-      return render_to_response('itemlist-funder.html',
-                                {'event': event},
-                                context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])
 
@@ -409,3 +360,55 @@ def submitted(request, sha):
       context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
+
+def save_event(request):
+  name = request.POST.get('name')
+  date = request.POST.get('date')
+  requester = request.user.cfauser
+  location = request.POST.get('location')
+  organizations = request.POST.get('organizations')
+  event_id = request.POST.get('event_id', None)
+  if event_id == "":
+    event = Event.objects.create(
+                            name=name,
+                            date=date,
+                            requester=requester,
+                            location=location,
+                            organizations=organizations
+                          )
+  else:
+    event = Event.objects.get(pk=event_id)
+    event.date = date
+    event.name = name
+    event.organizations = organizations
+    event.location = location
+    event.save()
+  save_items(event, request)
+
+def save_items(event, request):
+  item_names = request.POST.getlist('item_name')
+  item_quantity = request.POST.getlist('item_quantity')
+  item_price_per_unit = request.POST.getlist('item_price_per_unit')
+  item_funding = request.POST.getlist('item_funding_already_received')
+  item_category = request.POST.getlist('item_category')
+  event.item_set.all().delete()
+  for name, quantity, price_per_unit,funding, cat in zip(item_names,item_quantity,item_price_per_unit,item_funding, item_category):
+    # make sure user isn't trying to save empty
+    if str(name) and str(quantity) and str(price_per_unit) and str(funding):
+      event.item_set.create(name=name, quantity=quantity, price_per_unit=price_per_unit, funding_already_received=funding, category='F')
+
+def save_all_questions(event, request):
+  eligibility_answers = request.POST.getlist('eligibility_answers')
+  event.eligibilityanswer_set.all().delete()
+  for answer in eligibility_answers:
+    event.eligibilityanswer_set.create(question='gfdgdgd',event=event,answer=answer)
+  
+  commonresponse_answers = request.POST.getlist('commonresponse_answers')
+  event.commonfreeresponseanswer_set.all().delete()
+  for answer in commonresponse_answers:
+    event.commonfreeresponseanswer_set.create(question='fgfdgfd',event=event,answer=answer)
+  
+  freeresponse_answers = request.POST.getlist('freeresponse_answers')
+  event.freeresponseanswer_set.all().delete()
+  for answer in freeresponsei_answers:
+    event.freeresponseanswer_set.create(question='test',event=event,answer=answer)

@@ -59,7 +59,7 @@
           </select>
         </th>
         <th>
-          <button class='btn btn-danger remove'>Remove</button>
+          <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
         </th>
       </tr>
     {% endfor %}
@@ -77,7 +77,7 @@
         <input class="new inputIcon" name="item_funding_already_received" type="text"/>
       </th>
       <th>
-        <select>
+        <select name='item_category'>
           <option>Food</option>
           <option>Drink</option>
           <option>blah</option>
