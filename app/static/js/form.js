@@ -4,7 +4,7 @@ var totalFunderRecQs;
 var recommendedFunders;
 
 function checkFunderQuestions(e) {
-  selectedFunders[ $(e)[0].dataset.funderid ] = $(e).attr("checked") == "checked";
+  
 }
 function showFunderQuestions() {
   var selectHide = "";
@@ -54,19 +54,18 @@ $(document).ready(function() {
   }
     
   // register funder checkbox click
-  $(".funder-check input").change(function () {
-    checkFunderQuestions(this);
+  $(".funder-check input").change(function() {
+    selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
     showFunderQuestions();
-  });
-  
-  // count already checked checkboxes
-  $(".funder-check input").each(function () {
-    checkFunderQuestions(this);
+  });  
+  // initial count already checked checkboxes
+  $(".funder-check input").each(function() {
+    selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
   });
   showFunderQuestions();
   
   // recommend click
-  $(".bool-q input[type=radio]").change(function () {
+  $(".bool-q input[type=radio]").change(function() {
     var currVal = $(this).val();
     var qid = $(this).parents(".bool-q")[0].dataset.qid;
     var funders = $(this).parents(".bool-q")[0].dataset.funders.split(" ");
@@ -78,5 +77,19 @@ $(document).ready(function() {
     
     showRecommendedFunders();
   });
+  // initial check recommend
+  $(".bool-q").each(function() {
+    var currVal = $(this).find("input[type=radio]").val();
+    var qid = this.dataset.qid;
+    var funders = this.dataset.funders.split(" ");
+    var expected = this.dataset.expected.split(" ");
+    
+    for (i in funders) {
+      recommendedFunders[funders[i]][qid] = expected[i]==currVal;
+    }
+    
+    showRecommendedFunders();
+  });
+  
 
 });
