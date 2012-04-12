@@ -1,17 +1,21 @@
-function addItem(button) {
-  $row = $(button).closest('tr');
-  $remove = $('.remove_button');
-  $clone = $row.clone()
-            .insertBefore($row)
-            .find('.add')
-            .replaceWith($('.remove').html());
-
+function addItem() {
+  var $row = $('.add').closest('tr');
+  var $clone = $row.clone().insertBefore($row);
+  $clone.find('.add').replaceWith($('.remove').html());
+  $clone.find('input').attr('required','required');
   $row.find('input').val('');
 }
 function removeItem(e) {
   $(e).closest('tr').remove();
 }
-
+function makeRequired(input) {
+  var $inputs = $(input).closest('tr').find('input');
+  var input = $inputs.map(function(){ return $(this).val(); }).get().join('');
+  if (input !== "")
+    $inputs.attr('required','required');
+  else
+    $inputs.removeAttr('required');
+}
 function newInputClicked(e) {
   if ($(e).hasClass("new"))
     $(e).removeClass("new")

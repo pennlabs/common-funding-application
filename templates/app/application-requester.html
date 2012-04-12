@@ -8,11 +8,16 @@
 
 {% block container %}      
 <div id="main">
-    
-  <form action="{% url app.views.events %}" method="post" class="form-horizontal">
+
+  {% if event %}
+    <form action="{% url app.views.event_edit event.id %}" method="post" class="form-horizontal">
+  {% else %}
+    <form action="{% url app.views.event_new %}" method="post" class="form-horizontal">
+  {% endif %}
+  
     {% csrf_token %}
-    {% application %}
-    
+    {% application event %}
+
     <div class="form-actions">
       <button class="btn btn" type="submit" name="submit">Cancel</button>
       <button class="btn btn" type="submit" name="submit">Save</button>

@@ -125,7 +125,7 @@
     
     <div class="section-content">
       <p>
-        {% if user.get_user_profile.is_requester %}
+        {% if requester %}
         {% itemlist_requester items %}
         {% else %}
         {% itemlist_funder event.item_set.all cfauser_id %}

@@ -100,10 +100,18 @@ def events(request):
 def event_new(request):
   """Form to create a new event."""
   if request.method == 'POST':
-    save_event(request)
+    event = Event.objects.create(
+                            name=request.POST['name'],
+                            date=request.POST['date'],
+                            requester=request.user.get_profile(),
+                            location=request.POST['location'],
+                            organizations=request.POST['organizations']
+                          )
+    save_items(event, request) 
+    # need to save questions right here
     return redirect('app.views.events')
   elif request.method == 'GET':
-    return render_to_response('app/events-new.html',
+    return render_to_response('app/application-requester.html',
         context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
@@ -113,11 +121,21 @@ def event_new(request):
 @requester_only
 def event_edit(request, event_id):
   user = request.user
-  if request.method == 'GET':
+  if request.method == 'POST':
+    event = Event.objects.get(pk=event_id)
+    event.date = request.POST['date']
+    event.name = request.POST['name']
+    event.organizations = request.POST['organizations']
+    event.location = request.POST['location']
+    event.save()
+    save_items(event, request)
+    # need to save questions here
+    return redirect('app.views.events')
+  elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
 
     # can't get the event's funders?
-    return render_to_response('app/events-edit.html',
+    return render_to_response('app/application-requester.html',
         {
           'event': event
         },
@@ -192,7 +210,7 @@ def event_show(request, event_id):
     cfauser = user.cfauser
 
     # can't get the event's funders?
-    return render_to_response('app/events-edit.html',
+    return render_to_response('app/application-requester.html',
         {
           'event': event,
           'eligibility':eligibility,
@@ -360,30 +378,6 @@ def submitted(request, sha):
       context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
-
-def save_event(request):
-  name = request.POST.get('name')
-  date = request.POST.get('date')
-  requester = request.user.cfauser
-  location = request.POST.get('location')
-  organizations = request.POST.get('organizations')
-  event_id = request.POST.get('event_id', None)
-  if event_id == "":
-    event = Event.objects.create(
-                            name=name,
-                            date=date,
-                            requester=requester,
-                            location=location,
-                            organizations=organizations
-                          )
-  else:
-    event = Event.objects.get(pk=event_id)
-    event.date = date
-    event.name = name
-    event.organizations = organizations
-    event.location = location
-    event.save()
-  save_items(event, request)
 
 def save_items(event, request):
   item_names = request.POST.getlist('item_name')
