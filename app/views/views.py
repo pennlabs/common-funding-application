@@ -107,7 +107,12 @@ def event_new(request):
                             location=request.POST['location'],
                             organizations=request.POST['organizations']
                           )
-    save_items(event, request) 
+    names = request.POST.getlist('item_name')
+    quantities = request.POST.getlist('item_quantity')
+    prices_per_unit = request.POST.getlist('item_price_per_unit')
+    funding = request.POST.getlist('item_funding_already_received')
+    categories = request.POST.getlist('item_category')
+    event.save_items(names, quantities, prices_per_unit, funding, categories)
     # need to save questions right here
     return redirect('app.views.events')
   elif request.method == 'GET':
@@ -128,7 +133,13 @@ def event_edit(request, event_id):
     event.organizations = request.POST['organizations']
     event.location = request.POST['location']
     event.save()
-    save_items(event, request)
+    # now save items
+    names = request.POST.getlist('item_name')
+    quantities = request.POST.getlist('item_quantity')
+    prices_per_unit = request.POST.getlist('item_price_per_unit')
+    funding = request.POST.getlist('item_funding_already_received')
+    categories = request.POST.getlist('item_category')
+    event.save_items(names, quantities, prices_per_unit, funding, categories)
     # need to save questions here
     return redirect('app.views.events')
   elif request.method == 'GET':

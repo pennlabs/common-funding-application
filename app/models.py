@@ -100,6 +100,14 @@ class Event(models.Model):
             totalAmount=item.amount,
             grants=item_grants)
 
+    def save_items(self, names, quantities, prices_per_unit, funding_already_received, categories):
+      """Save items of a particular event."""
+      self.item_set.all().delete()
+      for name, quantity, price, funding, cat in zip(names, quantities, prices_per_unit, funding_already_received, categories):
+        # category defaults to F because we haven' implemented the different category choices
+        self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category='F')
+
+
     def notify_funder(self, funder):
       """Notify a funder that the requester has applied to them."""
       assert funder.is_funder

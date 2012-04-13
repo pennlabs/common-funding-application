@@ -1,7 +1,4 @@
 {% load widgets %}
-<!-- 0 is passed into app.views.event_edit to suppress the errors of invalid arg -->
-<!-- a better solution would be to make the argument in event_edit optional -->
-<!-- but that solution didn't seem to work -->
 <div class="section-header">
   <h2>
     Event
@@ -107,7 +104,7 @@
 
 <div class="section-content">
   <fieldset>
-    {% if requester %}
+    {% if user.get_profile.is_requester %}
     {% itemlist_requester items %}
     {% else %}
     {% itemlist_funder event.item_set.all cfauser_id %}
