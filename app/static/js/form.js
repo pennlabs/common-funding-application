@@ -40,19 +40,12 @@ function showRecommendedFunders() {
 }
 
 $(document).ready(function() {
-  totalFunders = $(".funder-check input").length
-  selectedFunders = new Array(totalFunders);
   
-  totalFunderRecQs = $(".bool-q").length
-  recommendedFunders = new Array(totalFunders);
-  // init question arrays to all true
-  for (var i=0; i<totalFunders; i++) {
-    recommendedFunders[i] = new Array(totalFunderRecQs);
-    for (var j=0; j<totalFunderRecQs; j++) {
-      recommendedFunders[i][j] = true;
-    }
-  }
-    
+  // Init funder questions showing logic
+  // maintain a boolean list of selectedFunders
+  // show funder i if selectedFunders[i] is true
+  totalFunders = $(".funder-check input").length
+  selectedFunders = new Array(totalFunders);    
   // register funder checkbox click
   $(".funder-check input").change(function() {
     selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
@@ -63,6 +56,21 @@ $(document).ready(function() {
     selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
   });
   showFunderQuestions();
+  
+  // Init recommended funders logic
+  // maintain a 2D array of funders and questions, recommendedFunders
+  // show funder i if recommendedFunders[i] is all true
+  // there will be unused entries
+  // trade-off is simplicity of implementing 2D array
+  totalFunderRecQs = $(".bool-q").length
+  recommendedFunders = new Array(totalFunders);
+  // init question arrays to all true
+  for (var i=0; i<totalFunders; i++) {
+    recommendedFunders[i] = new Array(totalFunderRecQs);
+    for (var j=0; j<totalFunderRecQs; j++) {
+      recommendedFunders[i][j] = true;
+    }
+  }
   
   // recommend click
   $(".bool-q input[type=radio]").change(function() {
