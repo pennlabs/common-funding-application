@@ -105,7 +105,8 @@ class Event(models.Model):
       self.item_set.all().delete()
       for name, quantity, price, funding, cat in zip(names, quantities, prices_per_unit, funding_already_received, categories):
         # category defaults to F because we haven' implemented the different category choices
-        self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category='F')
+        if str(name) and str(quantity) and str(funding) and str(price):
+          self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category='F')
 
 
     def notify_funder(self, funder):
