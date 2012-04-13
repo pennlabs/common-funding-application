@@ -87,7 +87,7 @@ $(document).ready(function() {
   });
   // initial check recommend
   $(".bool-q").each(function() {
-    var currVal = $(this).find("input[type=radio]").val();
+    var currVal = $(this).find("input[type=radio]::checked").val();
     var qid = this.dataset.qid;
     var funders = this.dataset.funders.split(" ");
     var expected = this.dataset.expected.split(" ");
