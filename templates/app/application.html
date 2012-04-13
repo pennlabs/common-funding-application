@@ -124,13 +124,13 @@
     </div>
     
     <div class="section-content">
-      <p>
+      <fieldset>
         {% if requester %}
         {% itemlist_requester items %}
         {% else %}
         {% itemlist_funder event.item_set.all cfauser_id %}
         {% endif %}
-      </p>
+      </fieldset>
     </div>
     
     <div class="section-header">
@@ -140,6 +140,7 @@
       </h2>
     </div>
     <div class="section-content">
+      <fieldset>
       {% for funder in test_funders %}
       <div class="funder-check">
         <label class="checkbox">
@@ -148,6 +149,7 @@
         <p class="help-block">{{funder.1}}</p>
       </div>
       {% endfor %}
+      </fieldset>
     </div>
     
     <div class="section-header">
@@ -157,6 +159,7 @@
       </h2>
     </div>
     <div class="section-content">
+      <fieldset>
       <p id="funder-no-q">No questions yet. Please select funders.</p>
       {% for q, qval in funder_qs.items %}
       <div class="funder-q {{qval.0}}">
@@ -164,6 +167,7 @@
         <textarea class="span8" rows="3"></textarea>
       </div>
       {% endfor %}
+      </fieldset>
     </div>
     
     <input type="hidden" name="event_id" value="{{ event.id }}" />
