@@ -16,28 +16,28 @@
       <div class="control-group">
         <label for="questionname" class="control-label">Event Name:</label>
         <div class="controls">
-          <input value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge">
+          <input value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ disabled_if_funder }}>
           <p class="help-block">Enter the name of your event.</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questiondate" class="control-label">Event Date:</label>
         <div class="controls">
-          <input value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker">
+          <input value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{ disabled_if_funder }}>
           <p class="help-block">Enter the date of the event.</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questionlocation" class="control-label">Location:</label>
         <div class="controls">
-          <input value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge">
+          <input value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ disabled_if_funder }}>
           <p class="help-block">Enter the location of the event</p>
         </div>
       </div>        
       <div class="control-group">
         <label for="questionorganizations" class="control-label">Organizations</label>
         <div class="controls">
-          <input value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge">
+          <input value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge" {{ disabled_if_funder }}>
           <p class="help-block">Enter the organizations of the event</p>
         </div>
       </div>
@@ -72,7 +72,11 @@
   
   <div class="section-content">
     <p>
+      {% if funder_id %}
+      {% itemlist_funder items funder_id %}
+      {% else %}
       {% itemlist_requester items %}
+      {% endif %}
     </p>
   </div>
   

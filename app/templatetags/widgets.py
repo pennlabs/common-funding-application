@@ -53,11 +53,15 @@ def itemlist_funder(context, item_list, funder_id):
                 'current_funder': funder_id,
                 'items_data': items_data}
   return render_to_string('app/templatetags/itemlist-funder.html', new_context)
-@tag(register, [Variable()])
-def application(context, event):
+
+@tag(register, [Variable(), Optional([Constant('for'), Variable()])])
+def application(context, event, funder_id=-1):
   new_context = {
       'event': event,
       'eligibility_questions': EligibilityQuestion.objects.all(),
       'funders': CFAUser.objects.filter(user_type='F')
-      }
+  }
+  if funder_id != -1:
+    new_context['funder_id'] = funder_id
+    new_context['disabled_if_funder'] = 'disabled'
   return render_to_string('app/templatetags/application.html', new_context)
