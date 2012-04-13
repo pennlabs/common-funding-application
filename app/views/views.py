@@ -197,25 +197,13 @@ def event_show(request, event_id):
       return redirect('app.views.items', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
-    eligibility = event.eligibilityanswer_set.all()
-    common = event.commonfreeresponseanswer_set.all()
-    free = event.freeresponseanswer_set.all()
-    organizations = event.organizations
-    location = event.location
-    cfauser = user.cfauser
+    funder_id = user.get_profile().id
 
     # can't get the event's funders?
-    return render_to_response('app/application.html',
+    return render_to_response('app/event-show.html',
         {
           'event': event,
-          'eligibility':eligibility,
-          'commonresponse':common,
-          'freeresponse':free,
-          'organizations':organizations,
-          'location':location,
-          'funders': funders,
-          'cfauser_id': cfauser.id,
-          'disabled_if_funder': 'disabled' if cfauser.is_funder else ''
+          'funder_id': funder_id,
         },
         context_instance=RequestContext(request))
   else:
