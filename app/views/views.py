@@ -62,20 +62,7 @@ def requester_only(view):
 
 @login_required
 def events(request):
-  if request.method == 'POST':
-    # handle Create
-    event = Event.objects.create(name=request.POST['name'],
-                                 date=request.POST['date'],
-                                 location=request.POST['location'],
-                                 organizations=request.POST['organizations'],
-                                 requester=request.user.cfauser)
-    # handle questions
-    for key, value in request.POST.items():
-      if key.endswith("?"):
-        question = EligibilityQuestion.objects.get(question=key)
-        event.eligibilityanswer_set.create(question=question, answer=value)
-    return redirect('app.views.items', event.id)
-  elif request.method == 'GET':
+  if request.method == 'GET':
     user = request.user
     if user.get_profile().is_requester:
       apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
@@ -93,7 +80,7 @@ def events(request):
                                'test_grants': test_grants},
                               context_instance=RequestContext(request))
   else:
-    return HttpResponseNotAllowed(['GET', 'POST'])
+    return HttpResponseNotAllowed(['GET'])
 
 
 @login_required
