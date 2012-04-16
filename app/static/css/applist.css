@@ -1,4 +1,5 @@
 div.app-item-row {
+  cursor: pointer;
   padding: 12px 0px;
 }
 div.app-item-row:hover {
