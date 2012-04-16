@@ -1,4 +1,5 @@
 from collections import namedtuple
+import re
 import sha
 
 from django.contrib.auth.models import User
@@ -100,6 +101,15 @@ class Event(models.Model):
             totalAmount=item.amount,
             grants=item_grants)
 
+    def save_items(self, names, quantities, prices_per_unit, funding_already_received, categories):
+      """Save items of a particular event."""
+      self.item_set.all().delete()
+      for name, quantity, price, funding, cat in zip(names, quantities, prices_per_unit, funding_already_received, categories):
+        # category defaults to F because we haven' implemented the different category choices
+        if str(name) and str(quantity) and str(funding) and str(price):
+          self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category='F')
+
+
     def notify_funder(self, funder):
       """Notify a funder that the requester has applied to them."""
       assert funder.is_funder
@@ -127,6 +137,23 @@ class Event(models.Model):
         return "%s: %s, %s" % (unicode(self.requester),
                                self.name,
                                self.date.isoformat())
+
+    def save_questions_from_form(self, request):
+      # delete existing answers
+      self.eligibilityanswer_set.all().delete()
+      self.commonfreeresponseanswer_set.all().delete()
+
+      # create new answers
+      # unchecked checkboxes will not have answers associated with them
+      for k, v in request.POST.items():
+        if k.startswith('eligibility'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = EligibilityQuestion.objects.get(id=q_id)
+          self.eligibilityanswer_set.create(question=question, event=self, answer='Y')
+        elif k.startswith('commonfreeresponse'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = CommonFreeResponseQuestion.objects.get(id=q_id)
+          self.commonfreeresponseanswer_set.create(question=question, event=self, answer=v)
 
     class Meta:
         unique_together = ("name", "date", "requester")

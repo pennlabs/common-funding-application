@@ -67,11 +67,12 @@ def get_or_none(model, **kwargs):
 QA = namedtuple('QA', 'question answer')
 
 
-@tag(register, [Optional([Variable()]), Optional([Variable()])])
-def application(context, event=None, funder_id=-1):
+@tag(register, [Variable(), Optional([Variable()]), Optional([Variable()])])
+def application(context, user, event=None, funder_id=-1):
   if not event:
     event = None
   new_context = {
+      'user':user,
       'event': event,
       'eligibility_qas': [QA(question, get_or_none(EligibilityAnswer, question=question, event=event))
           for question in EligibilityQuestion.objects.all()],

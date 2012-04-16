@@ -107,8 +107,13 @@ def event_new(request):
                             location=request.POST['location'],
                             organizations=request.POST['organizations']
                           )
-    save_items(event, request) 
-    # need to save questions right here
+    names = request.POST.getlist('item_name')
+    quantities = request.POST.getlist('item_quantity')
+    prices_per_unit = request.POST.getlist('item_price_per_unit')
+    funding = request.POST.getlist('item_funding_already_received')
+    categories = request.POST.getlist('item_category')
+    event.save_items(names, quantities, prices_per_unit, funding, categories)
+    event.save_questions_from_form(request)
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
@@ -128,8 +133,15 @@ def event_edit(request, event_id):
     event.organizations = request.POST['organizations']
     event.location = request.POST['location']
     event.save()
-    save_items(event, request)
-    # need to save questions here
+
+    names = request.POST.getlist('item_name')
+    quantities = request.POST.getlist('item_quantity')
+    prices_per_unit = request.POST.getlist('item_price_per_unit')
+    funding = request.POST.getlist('item_funding_already_received')
+    categories = request.POST.getlist('item_category')
+    event.save_items(names, quantities, prices_per_unit, funding, categories)
+
+    event.save_questions_from_form(request)
     return redirect('app.views.events')
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
