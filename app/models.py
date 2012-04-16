@@ -90,17 +90,6 @@ class Event(models.Model):
         models.ManyToManyField(CFAUser,
                                related_name='event_applied_funders')
 
-    @property
-    def grants(self):
-      EventGrant = namedtuple('EventGrant', 'item currentAmount totalAmount grants')
-      for item in self.item_set.all():
-        grants = Grant.objects.filter(item=item)
-        item_grants = dict((grant.funder, grant.amount) for grant in grants)
-        yield EventGrant(item=item,
-            currentAmount=sum(int(v) for v in item_grants.itervalues()),
-            totalAmount=item.amount,
-            grants=item_grants)
-
     def save_from_form(self, POST):
       """Save an event from form data."""
       # save items
