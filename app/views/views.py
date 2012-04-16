@@ -108,7 +108,7 @@ def event_new(request):
                             organizations=request.POST['organizations']
                           )
     save_items(event, request) 
-    # need to save questions right here
+    event.save_questions_from_form(request)
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
@@ -129,7 +129,7 @@ def event_edit(request, event_id):
     event.location = request.POST['location']
     event.save()
     save_items(event, request)
-    # need to save questions here
+    event.save_questions_from_form(request)
     return redirect('app.views.events')
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)

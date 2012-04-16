@@ -1,4 +1,5 @@
 from collections import namedtuple
+import re
 import sha
 
 from django.contrib.auth.models import User
@@ -127,6 +128,23 @@ class Event(models.Model):
         return "%s: %s, %s" % (unicode(self.requester),
                                self.name,
                                self.date.isoformat())
+
+    def save_questions_from_form(self, request):
+      # delete existing answers
+      self.eligibilityanswer_set.all().delete()
+      self.commonfreeresponseanswer_set.all().delete()
+
+      # create new answers
+      # unchecked checkboxes will not have answers associated with them
+      for k, v in request.POST.items():
+        if k.startswith('eligibility'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = EligibilityQuestion.objects.get(id=q_id)
+          self.eligibilityanswer_set.create(question=question, event=self, answer='Y')
+        elif k.startswith('commonfreeresponse'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = CommonFreeResponseQuestion.objects.get(id=q_id)
+          self.commonfreeresponseanswer_set.create(question=question, event=self, answer=v)
 
     class Meta:
         unique_together = ("name", "date", "requester")

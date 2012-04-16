@@ -50,9 +50,10 @@
   <fieldset>
     {% for qa in eligibility_qas %}
     <div class="control-group">
-      <label for="question{{forloop.counter0}}" class="control-label"> {{ qa.question.question }}</label>
+      <label for="eligibilityquestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="checkbox" id="question{{forloop.counter0}}" class="input-xlarge" value={{qa.answer.answer}}>
+        <input type="checkbox" name="eligibilityquestion_{{qa.question.id}}" class="input-xlarge" {% if qa.answer.answer %}checked{% endif %}>
+        <p class="help-block">{{ qa.question.question }}</p>
       </div>
     </div>
     {% endfor %}
@@ -68,9 +69,9 @@
   <fieldset>
     {% for qa in commonfreeresponse_qas %}
     <div class="control-group">
-      <label for="question{{forloop.counter0}}" class="control-label">Question {{forloop.counter}}</label>
+      <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="text" id="question{{forloop.counter0}}" class="input-xlarge" value={{qa.answer.answer}}>
+        <input type="text" name="commonfreeresponsequestion_{{qa.question.id}}" class="input-xlarge" value={{qa.answer.answer}}>
         <p class="help-block">{{ qa.question.question }}</p>
       </div>
     </div>
