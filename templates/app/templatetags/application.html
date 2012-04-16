@@ -46,28 +46,15 @@
 </div>
 <div class="section-content">
   <fieldset>
-    <div class="bool-q" data-qid="0" data-funders="0 1" data-expected="true false">
-      <label class="control-label">
-        ORG1 likes this. ORG2 doesn't. Answer well. 
-      </label>
-      <label class="radio inline">
-        <input type="radio" name="bool1" value="true"> Yes
-      </label>
-      <label class="radio inline">
-        <input type="radio" name="bool1" value="false"> No
-      </label>
+    {% for qa in eligibility_qas %}
+    <div class="control-group">
+      <label for="eligibilityquestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
+      <div class="controls">
+        <input type="checkbox" name="eligibilityquestion_{{qa.question.id}}" class="input-xlarge" {% if qa.answer.answer %}checked{% endif %}>
+        <p class="help-block">{{ qa.question.question }}</p>
+      </div>
     </div>
-    <div class="bool-q" data-qid="1" data-funders="1 2" data-expected="true false">
-      <label class="control-label">
-        ORG2 likes this. ORG3 doesn't like this. What's your answer?
-      </label>
-      <label class="radio inline">
-        <input type="radio" name="bool2" value="true"> Yes
-      </label>
-      <label class="radio inline">
-        <input type="radio" name="bool2" value="false"> No
-      </label>
-    </div>
+    {% endfor %}
   </fieldset>
 </div>
 
@@ -78,20 +65,15 @@
 </div>
 <div class="section-content">
   <fieldset>
+    {% for qa in commonfreeresponse_qas %}
     <div class="control-group">
-      <label for="question01" class="control-label">Question 1</label>
+      <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="text" id="question01" class="input-xlarge">
-        <p class="help-block">Help text for Question 1 goes here.</p>
+        <input type="text" name="commonfreeresponsequestion_{{qa.question.id}}" class="input-xlarge" value={{qa.answer.answer}}>
+        <p class="help-block">{{ qa.question.question }}</p>
       </div>
     </div>
-    <div class="control-group">
-      <label for="question02" class="control-label">Question 2</label>
-      <div class="controls">
-        <input type="date" id="question02" class="input-xlarge datepicker">
-        <p class="help-block">Help text for Question 2 goes here.</p>
-      </div>
-    </div>
+    {% endfor %}
   </fieldset>
 </div>
 

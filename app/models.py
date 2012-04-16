@@ -1,4 +1,5 @@
 from collections import namedtuple
+import re
 import sha
 
 from django.contrib.auth.models import User
@@ -90,24 +91,38 @@ class Event(models.Model):
         models.ManyToManyField(CFAUser,
                                related_name='event_applied_funders')
 
-    @property
-    def grants(self):
-      EventGrant = namedtuple('EventGrant', 'item currentAmount totalAmount grants')
-      for item in self.item_set.all():
-        grants = Grant.objects.filter(item=item)
-        item_grants = dict((grant.funder, grant.amount) for grant in grants)
-        yield EventGrant(item=item,
-            currentAmount=sum(int(v) for v in item_grants.itervalues()),
-            totalAmount=item.amount,
-            grants=item_grants)
+    def save_from_form(self, POST):
+      """Save an event from form data."""
+      # save items
+      names = POST.getlist('item_name')
+      quantities = POST.getlist('item_quantity')
+      prices_per_unit = POST.getlist('item_price_per_unit')
+      funding_already_received = POST.getlist('item_funding_already_received')
+      categories = POST.getlist('item_category')
 
-    def save_items(self, names, quantities, prices_per_unit, funding_already_received, categories):
-      """Save items of a particular event."""
       self.item_set.all().delete()
       for name, quantity, price, funding, cat in zip(names, quantities, prices_per_unit, funding_already_received, categories):
         # category defaults to F because we haven' implemented the different category choices
         if str(name) and str(quantity) and str(funding) and str(price):
           self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category='F')
+
+      # save questions
+
+      # delete existing answers
+      self.eligibilityanswer_set.all().delete()
+      self.commonfreeresponseanswer_set.all().delete()
+
+      # create new answers
+      # unchecked checkboxes will not have answers associated with them
+      for k, v in POST.items():
+        if k.startswith('eligibility'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = EligibilityQuestion.objects.get(id=q_id)
+          self.eligibilityanswer_set.create(question=question, event=self, answer='Y')
+        elif k.startswith('commonfreeresponse'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = CommonFreeResponseQuestion.objects.get(id=q_id)
+          self.commonfreeresponseanswer_set.create(question=question, event=self, answer=v)
 
 
     def notify_funder(self, funder):
