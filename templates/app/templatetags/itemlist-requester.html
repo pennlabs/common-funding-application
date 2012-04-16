@@ -16,36 +16,25 @@
     {% for item in items %}
       <tr class='app-itemrow'>
         <th>
-          <input name="item_name" type="text" class='small'
-               pattern="^(?!Item Name\.\.\.)(.+)"
-               onfocus="newInputClicked(this)"
-               onblur="newInputCheck(this, 'Item Name...')"
-               value="{{ item.name }}" />
+          <input name="item_name" type="text" class='small' required value="{{ item.name }}" />
         </th>
         <th>
           <input name="item_quantity" type="text" class='small'
-               pattern="^\d*"
-               onfocus="newInputClicked(this)"
-               onblur="newInputCheck(this, 'Number of Items...')"
-               value="{{ item.quantity }}" />
+            required
+            pattern="^\d+"
+            value="{{ item.quantity }}" />
         </th>
         <th> 
           <input class="inputIcon small" name="item_price_per_unit" type="text"
-                 value="{{ item.price_per_unit }}"
-                 pattern="^\d*(\.\d{2}$)?"
-                 title="Please enter a valid dollar amount."
-                 onfocus="newInputClicked(this)"
-                 onblur="newInputCheck(this, 'Request Amount...')"
-                 onkeydown="numericOnly(event)" />
+            required
+            pattern="^\d*(\.\d{2}$)?"
+            value="{{ item.price_per_unit }}"/>
         </th>
         <th> 
           <input class="inputIcon" name="item_funding_already_received" type="text"
-                 value="{{ item.funding_already_received }}"
-                 pattern="^\d*(\.\d{2}$)?"
-                 title="Please enter a valid dollar amount."
-                 onfocus="newInputClicked(this)"
-                 onblur="newInputCheck(this, 'Funding Already Received...')"
-                 onkeydown="numericOnly(event)" />
+            required
+            pattern="^\d*(\.\d{2}$)?"
+            value="{{ item.funding_already_received }}" />
         </th>
         <th>
           <select name='item_category'>
@@ -65,16 +54,16 @@
     {% endfor %}
     <tr id='itemrow'>
       <th>
-        <input class="new small" name="item_name" type="text"/>
+        <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
       </th>
       <th>
-        <input class="new small" name="item_quantity" type="text"/>
+        <input class="new small" onkeyup="makeRequired(this)" name="item_quantity" type="text"/>
       </th>
       <th> 
-        <input class="new inputIcon small" name="item_price_per_unit" type="text"/>
+        <input class="new inputIcon small" onkeyup="makeRequired(this)" name="item_price_per_unit" type="text"/>
       </th>
       <th> 
-        <input class="new inputIcon" name="item_funding_already_received" type="text"/>
+        <input class="new inputIcon" onkeyup="makeRequired(this)" name="item_funding_already_received" type="text"/>
       </th>
       <th>
         <select name='item_category'>

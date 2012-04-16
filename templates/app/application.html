@@ -29,44 +29,65 @@
     <div class="section-content">
       <fieldset>
         <div class="control-group">
-          <label for="questionname" class="control-label">Event Name:</label>
+          <label for="questionname" class="control-label">Event Name</label>
           <div class="controls">
             <input value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ disabled_if_funder }}>
-            <p class="help-block">Enter the name of your event.</p>
+            <p class="help-block">Name of the event</p>
           </div>
         </div>
         <div class="control-group">
-          <label for="questiondate" class="control-label">Event Date:</label>
+          <label for="questiondate" class="control-label">Event Date</label>
           <div class="controls">
-            <input value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{disabled_if_funder }}>
-            <p class="help-block">Enter the date of the event.</p>
+            <input value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{ disabled_if_funder }}>
+            <p class="help-block">Date of the event</p>
           </div>
         </div>
         <div class="control-group">
-          <label for="questionlocation" class="control-label">Location:</label>
+          <label for="questionlocation" class="control-label">Location</label>
           <div class="controls">
             <input value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ disabled_if_funder }}>
-            <p class="help-block">Enter the location of the event</p>
+            <p class="help-block">Location of the event</p>
           </div>
         </div>        
         <div class="control-group">
-          <label for="questionorganizations" class="control-label">Organizations</label>
+          <label for="questionorganizations" class="control-label">Organization(s)</label>
           <div class="controls">
             <input value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge" {{ disabled_if_funder }}>
-            <p class="help-block">Enter the organizations of the event</p>
+            <p class="help-block">Organization(s) involved with the event</p>
           </div>
         </div>
-        <div class="control-group">
-          <label for="select01" class="control-label">Select list</label>
-          <div class="controls">
-            <select id="select01" {{ disabled_if_funder }}>
-              <option>Option 1</option>
-              <option>Option 2</option>
-              <option>Option 3</option>
-              <option>Option 4</option>
-              <option>Option 5</option>
-            </select>
-          </div>
+      </fieldset>
+    </div>
+    
+    <div class="section-header">
+      <h2>
+        True / False Questions
+        <small>to recommend funders</small>
+      </h2>
+    </div>
+    <div class="section-content">
+      <fieldset>
+        <div class="bool-q" data-qid="0" data-funders="0 1" data-expected="true false">
+          <label class="control-label">
+            ORG1 likes this. ORG2 doesn't. Answer well. 
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="bool1" value="true"> Yes
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="bool1" value="false"> No
+          </label>
+        </div>
+        <div class="bool-q" data-qid="1" data-funders="1 2" data-expected="true false">
+          <label class="control-label">
+            ORG2 likes this. ORG3 doesn't like this. What's your answer?
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="bool2" value="true"> Yes
+          </label>
+          <label class="radio inline">
+            <input type="radio" name="bool2" value="false"> No
+          </label>
         </div>
       </fieldset>
     </div>
@@ -104,7 +125,7 @@
     
     <div class="section-content">
       <p>
-        {% if user.get_user_profile.is_requester %}
+        {% if requester %}
         {% itemlist_requester items %}
         {% else %}
         {% itemlist_funder event.item_set.all cfauser_id %}

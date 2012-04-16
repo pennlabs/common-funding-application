@@ -100,10 +100,18 @@ def events(request):
 def event_new(request):
   """Form to create a new event."""
   if request.method == 'POST':
-    save_event(request)
+    event = Event.objects.create(
+                            name=request.POST['name'],
+                            date=request.POST['date'],
+                            requester=request.user.get_profile(),
+                            location=request.POST['location'],
+                            organizations=request.POST['organizations']
+                          )
+    save_items(event, request) 
+    # need to save questions right here
     return redirect('app.views.events')
   elif request.method == 'GET':
-    return render_to_response('app/application.html',
+    return render_to_response('app/application-requester.html',
         context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
@@ -113,26 +121,23 @@ def event_new(request):
 @requester_only
 def event_edit(request, event_id):
   user = request.user
-  if request.method == 'GET':
+  if request.method == 'POST':
     event = Event.objects.get(pk=event_id)
-    items = event.item_set.all()
-    eligibility = event.eligibilityanswer_set.all()
-    common = event.commonfreeresponseanswer_set.all()
-    free = event.freeresponseanswer_set.all()
-    organizations = event.organizations
-    location = event.location
+    event.date = request.POST['date']
+    event.name = request.POST['name']
+    event.organizations = request.POST['organizations']
+    event.location = request.POST['location']
+    event.save()
+    save_items(event, request)
+    # need to save questions here
+    return redirect('app.views.events')
+  elif request.method == 'GET':
+    event = Event.objects.get(pk=event_id)
 
     # can't get the event's funders?
-    return render_to_response('app/application.html',
+    return render_to_response('app/application-requester.html',
         {
-          'event': event,
-          'items':items,
-          'eligibility':eligibility,
-          'commonresponse':common,
-          'freeresponse':free,
-          'organizations':organizations,
-          'location':location,
-          'funders': funders
+          'event': event
         },
         context_instance=RequestContext(request))
   else:
@@ -200,7 +205,7 @@ def event_show(request, event_id):
     funder_id = user.get_profile().id
 
     # can't get the event's funders?
-    return render_to_response('app/event-show.html',
+    return render_to_response('app/application-requester.html',
         {
           'event': event,
           'funder_id': funder_id,
@@ -228,48 +233,6 @@ def items(request, event_id):
     return render_to_response('app/itemlist.html',
                               {'event': event},
                               context_instance=RequestContext(request))
-  else:
-    return HttpResponseNotAllowed(['GET', 'POST'])
-
-def itemlist_funder(request, event_id):
-  user = request.user
-  if user.is_authenticated():
-    if request.method == 'GET':
-      try:
-        event = Event.objects.get(pk=event_id)
-        event_name = event.name
-      except Event.DoesNotExist:
-        return render_to_response('error.html',
-                                  {'error_message': "Unable to view event"},
-                                  context_instance=RequestContext(request))
-      return render_to_response('itemlist-funder.html',
-                                {'event': event},
-                                context_instance=RequestContext(request))
-
-    elif request.method == 'POST':
-      event_id = request.POST.get('event_id', None)
-      try:
-        event = Event.objects.get(pk=event_id)
-      except Event.DoesNotExist:
-        return render_to_response('error.html',
-                                  {'error_message': "Unable to modify event"},
-                                  context_instance=RequestContext(request))
-      for item in event.item_set.all():
-        amount = request.POST.get("item_" + str(item.id), None)
-        if amount and int(amount):
-          amount = int(amount)
-          grant = Grant.objects.get_or_create(funder=user.cfauser,
-                                              item=item,
-                                              defaults={'amount': 0})[0]
-          grants = Grant.objects.filter(item=item)
-          amount_funded = sum(grant.amount for grant in grants)
-          if amount + amount_funded > item.amount:
-            amount = item.amount - amount_funded
-          grant.amount = grant.amount + amount
-          grant.save()
-      return render_to_response('itemlist-funder.html',
-                                {'event': event},
-                                context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET', 'POST'])
 
@@ -403,30 +366,6 @@ def submitted(request, sha):
       context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
-
-def save_event(request):
-  name = request.POST.get('name')
-  date = request.POST.get('date')
-  requester = request.user.cfauser
-  location = request.POST.get('location')
-  organizations = request.POST.get('organizations')
-  event_id = request.POST.get('event_id', None)
-  if event_id == "":
-    event = Event.objects.create(
-                            name=name,
-                            date=date,
-                            requester=requester,
-                            location=location,
-                            organizations=organizations
-                          )
-  else:
-    event = Event.objects.get(pk=event_id)
-    event.date = date
-    event.name = name
-    event.organizations = organizations
-    event.location = location
-    event.save()
-  save_items(event, request)
 
 def save_items(event, request):
   item_names = request.POST.getlist('item_name')

@@ -7,22 +7,16 @@
 {% endblock %}
 
 {% block container %}      
-<header>
-  <div>
-    <h2>Event</h2>
-  </div>       
-</header>
-  
 <div id="main">
     
   <form action="{% url app.views.events %}" method="post" class="form-horizontal">
     {% csrf_token %}
-    {{ form.as_p }}
-    
+    {% application event for funder_id%}
+
     <div class="form-actions">
-      <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+      <button class="btn btn" type="submit" name="submit">Cancel</button>
+      <button class="btn btn-primary" type="submit" name="submit">Save</button>
     </div>
   </form>
-    
 </div>      
 {% endblock %}

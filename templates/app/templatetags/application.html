@@ -2,6 +2,7 @@
 <!-- 0 is passed into app.views.event_edit to suppress the errors of invalid arg -->
 <!-- a better solution would be to make the argument in event_edit optional -->
 <!-- but that solution didn't seem to work -->
+<<<<<<< HEAD
 <form action="{% url app.views.event_new %}" method="post" class="form-horizontal">    
   {% csrf_token %}
   
@@ -40,25 +41,44 @@
           <input value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge" {{ disabled_if_funder }}>
           <p class="help-block">Enter the organizations of the event</p>
         </div>
+=======
+<div class="section-header">
+  <h2>
+    Event
+    <small>details about the event</small>
+  </h2>
+</div>    
+<div class="section-content">
+  <fieldset>
+    <div class="control-group">
+      <label for="questionname" class="control-label">Event Name:</label>
+      <div class="controls">
+        <input value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge">
+        <p class="help-block">Enter the name of your event.</p>
       </div>
-    </fieldset>
-  </div>
-  
-  <div class="section-header">
-    <h2>
-      Free-Response Questions
-    </h2>
-  </div>
-  <div class="section-content">
-    <fieldset>
-      {% for eligibility_question in eligibility_questions %}
-      <div class="control-group">
-        <label for="question01" class="control-label">Question</label>
-        <div class="controls">
-          <input type="text" id="question01" class="input-xlarge">
-          <p class="help-block">{{ eligibility_question.question }}</p>
-        </div>
+    </div>
+    <div class="control-group">
+      <label for="questiondate" class="control-label">Event Date:</label>
+      <div class="controls">
+        <input value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker">
+        <p class="help-block">Enter the date of the event.</p>
       </div>
+    </div>
+    <div class="control-group">
+      <label for="questionlocation" class="control-label">Location:</label>
+      <div class="controls">
+        <input value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge">
+        <p class="help-block">Enter the location of the event</p>
+>>>>>>> 2493d5819819b704e2bed55828c2d7deb80d09fa
+      </div>
+    </div>        
+    <div class="control-group">
+      <label for="questionorganizations" class="control-label">Organizations</label>
+      <div class="controls">
+        <input value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge">
+        <p class="help-block">Enter the organizations of the event</p>
+      </div>
+<<<<<<< HEAD
       {% endfor %}
     </fieldset>
   </div>
@@ -93,31 +113,88 @@
         <input class="funder-checkbox-{{forloop.counter0}}" type="checkbox">{{funder.0}}
       </label>
       <p class="help-block">{{funder.1}}</p>
+=======
+>>>>>>> 2493d5819819b704e2bed55828c2d7deb80d09fa
     </div>
-  {% endfor %}
-  </div>
-  
-  <div class="section-header">
-    <h2>
-      Extra Questions
-      <small>specific to each funder</small>
-    </h2>
-  </div>
-  <div class="section-content">
-    <p id="funder-no-q">No questions yet. Please select funders.</p>
-    {% for q, qval in funder_qs.items %}      
-    <div class="funder-q {{qval.0}}">
-      <label>{{q}} <em>(for {{qval.1}})</em></label>
-      <textarea class="span8" rows="3"></textarea>
+  </fieldset>
+</div>
+
+<div class="section-header">
+  <h2>
+    Eligibilty Questions
+  </h2>
+</div>
+<div class="section-content">
+  <fieldset>
+    {% for qa in eligibility_qas %}
+    <div class="control-group">
+      <label for="question{{forloop.counter0}}" class="control-label"> {{ qa.question.question }}</label>
+      <div class="controls">
+        <input type="checkbox" id="question{{forloop.counter0}}" class="input-xlarge" value={{qa.answer.answer}}>
+      </div>
     </div>
     {% endfor %}
+  </fieldset>
+</div>
+
+<div class="section-header">
+  <h2>
+    Free-Response Questions
+  </h2>
+</div>
+<div class="section-content">
+  <fieldset>
+    {% for qa in commonfreeresponse_qas %}
+    <div class="control-group">
+      <label for="question{{forloop.counter0}}" class="control-label">Question {{forloop.counter}}</label>
+      <div class="controls">
+        <input type="text" id="question{{forloop.counter0}}" class="input-xlarge" value={{qa.answer.answer}}>
+        <p class="help-block">{{ qa.question.question }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </fieldset>
+</div>
+
+<div class="section-header">
+  <h2>
+    Items
+    <small>list line items for funding</small>
+  </h2>
+</div>
+<div class="section-content">
+  <p>
+    {% itemlist_requester items %}
+  </p>
+</div>
+
+<div class="section-header">
+  <h2>
+    Funders
+    <small>select to apply</small>
+  </h2>
+</div>
+<div class="section-content">
+  {% for funder in funders %}
+  <div class="funder-check">
+    <label for="funder{{forloop.counter0}}" class="checkbox">{{funder}}</label>
+    <input id="funder{{forloop.counter0}}" class="funder-checkbox-{{forloop.counter0}}" type="checkbox">
   </div>
-  
-  <input type="hidden" name="event_id" value="{{ event.id }}" />
-  
-  <div class="form-actions">
-    <button class="btn btn" type="submit" name="submit">Cancel</button>
-    <button class="btn btn" type="submit" name="submit">Save</button>
-    <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+  {% endfor %}
+</div>
+
+<div class="section-header">
+  <h2>
+    Extra Questions
+    <small>specific to each funder</small>
+  </h2>
+</div>
+<div class="section-content">
+  <p id="funder-no-q">No questions yet. Please select funders.</p>
+  {% for q, qval in funder_qs.items %}      
+  <div class="funder-q {{qval.0}}">
+    <label>{{q}} <em>(for {{qval.1}})</em></label>
+    <textarea class="span8" rows="3"></textarea>
   </div>
-</form>
+  {% endfor %}
+</div>
