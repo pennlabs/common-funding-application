@@ -35,6 +35,7 @@ class CFAUser(models.Model):
   user_type = models.CharField(max_length=1,
                                choices=REQUESTER_OR_FUNDER)
   osa_email = models.EmailField(null=True) # The e-mail of the contact in OSA
+  mission_statement = models.TextField(max_length=256)
 
   def __unicode__(self):
       return unicode(self.user)
