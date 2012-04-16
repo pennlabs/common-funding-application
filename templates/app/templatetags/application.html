@@ -1,7 +1,4 @@
 {% load widgets %}
-<!-- 0 is passed into app.views.event_edit to suppress the errors of invalid arg -->
-<!-- a better solution would be to make the argument in event_edit optional -->
-<!-- but that solution didn't seem to work -->
 <div class="section-header">
   <h2>
     Event
@@ -11,31 +8,31 @@
 <div class="section-content">
   <fieldset>
     <div class="control-group">
-      <label for="questionname" class="control-label">Event Name:</label>
+      <label for="questionname" class="control-label">Event Name</label>
       <div class="controls">
-        <input value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge">
-        <p class="help-block">Enter the name of your event.</p>
+        <input value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ disabled_if_funder }}>
+        <p class="help-block">Name of the event</p>
       </div>
     </div>
     <div class="control-group">
-      <label for="questiondate" class="control-label">Event Date:</label>
+      <label for="questiondate" class="control-label">Event Date</label>
       <div class="controls">
-        <input value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker">
-        <p class="help-block">Enter the date of the event.</p>
+        <input value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{ disabled_if_funder }}>
+        <p class="help-block">Date of the event</p>
       </div>
     </div>
     <div class="control-group">
-      <label for="questionlocation" class="control-label">Location:</label>
+      <label for="questionlocation" class="control-label">Location</label>
       <div class="controls">
-        <input value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge">
-        <p class="help-block">Enter the location of the event</p>
+        <input value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ disabled_if_funder }}>
+        <p class="help-block">Location of the event</p>
       </div>
     </div>        
     <div class="control-group">
-      <label for="questionorganizations" class="control-label">Organizations</label>
+      <label for="questionorganizations" class="control-label">Organization(s)</label>
       <div class="controls">
-        <input value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge">
-        <p class="help-block">Enter the organizations of the event</p>
+        <input value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge" {{ disabled_if_funder }}>
+        <p class="help-block">Organization(s) involved with the event</p>
       </div>
     </div>
   </fieldset>
@@ -43,7 +40,8 @@
 
 <div class="section-header">
   <h2>
-    Eligibilty Questions
+    True / False Questions
+    <small>to recommend funders</small>
   </h2>
 </div>
 <div class="section-content">
@@ -85,10 +83,15 @@
     <small>list line items for funding</small>
   </h2>
 </div>
+
 <div class="section-content">
-  <p>
-    {% itemlist_requester items %}
-  </p>
+  <fieldset>
+    {% if user.get_profile.is_requester %}
+    {% itemlist_requester event.item_set.all %}
+    {% else %}
+    {% itemlist_funder event.item_set.all cfauser_id %}
+    {% endif %}
+  </fieldset>
 </div>
 
 <div class="section-header">
@@ -98,12 +101,16 @@
   </h2>
 </div>
 <div class="section-content">
-  {% for funder in funders %}
+  <fieldset>
+  {% for funder in test_funders %}
   <div class="funder-check">
-    <label for="funder{{forloop.counter0}}" class="checkbox">{{funder}}</label>
-    <input id="funder{{forloop.counter0}}" class="funder-checkbox-{{forloop.counter0}}" type="checkbox">
+    <label class="checkbox">
+      <input data-funderid="{{forloop.counter0}}" type="checkbox">{{funder.0}}
+    </label>
+    <p class="help-block">{{funder.1}}</p>
   </div>
   {% endfor %}
+  </fieldset>
 </div>
 
 <div class="section-header">
@@ -113,11 +120,13 @@
   </h2>
 </div>
 <div class="section-content">
+  <fieldset>
   <p id="funder-no-q">No questions yet. Please select funders.</p>
-  {% for q, qval in funder_qs.items %}      
+  {% for q, qval in funder_qs.items %}
   <div class="funder-q {{qval.0}}">
     <label>{{q}} <em>(for {{qval.1}})</em></label>
     <textarea class="span8" rows="3"></textarea>
   </div>
   {% endfor %}
+  </fieldset>
 </div>
