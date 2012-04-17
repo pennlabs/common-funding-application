@@ -13,7 +13,7 @@
 
 {% block container %}
 <header>
-  {% if user.cfauser.is_requester %}
+  {% if user.get_profile.is_requester %}
   <div class="btns pull-right">
     <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
   </div>
@@ -36,19 +36,22 @@
       <div class="span2 date">
         <span>{{ app.date }}</span>
       </div>
-      <div class="span2">
-        $ 900 / 1200
-      </div>
-      <div class="span1 status">
+      <div class="offset2 span1 status">
         <!--<span class="label label-info">Saved</span>-->
         <!--<span class="label label-success">Submitted</span>-->
-        <span class="label label-important">Funded</span>
+        {% if app.funded %}
+        <span class="label label-success">Funded</span>
+        {% else %}
+        <span class="label label-important">UnFunded</span>
+        {% endif %}
       </div>
       <div class="span3 buttons">        
+        {% if user.get_profile.is_requester %}
         <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
           <i class="icon-trash icon-white"></i>
           Delete
         </a>
+        {% endif %}
         <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
           <i class="icon-file icon-white"></i>
           View
@@ -57,16 +60,24 @@
       <div class="span12 funders">
         <table>
           <tbody>
-            {% for funder, amount in test_grants.items %}
+            {% for funder, amount in app.amounts.items %}
             <tr>
               <td>{{funder}}</td>
-              <td>$ {{amount}}</td>
+              {% if amount %}
+              <td>$ {{ amount }}</td>
+              {% else %}
+              <td class="pending">pending</td>
+              {% endif %}
             </tr>
             {% endfor %}
             <tr>
-              <td>SPECTRUM</td>
-              <td class="pending">pending</td>
-            </tr>            
+              <td>Funds already received</td>
+              <td>$ {{ app.total_funds_already_received }}</td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td>$ {{ app.total_funds_received }}</td>
+            </tr>
           </tbody>
         </table>
       </div>

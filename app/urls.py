@@ -10,8 +10,5 @@ urlpatterns = patterns('',
     url(r'^events/(\d+)/$', event_show),
     url(r'^events/(\d+)/edit/$', event_edit),
     url(r'^events/(\d+)/items/$', items),
-    url(r'^events/(\d+)/funders/$', funders),
-    url(r'^events/(\d+)/funders/(\d+)/application/', free_response),
     url(r'^events/(\d+)/destroy/$', event_destroy),
-    url(r'^application/', application),
 )

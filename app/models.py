@@ -37,6 +37,7 @@ class CFAUser(models.Model):
   user_type = models.CharField(max_length=1,
                                choices=REQUESTER_OR_FUNDER)
   osa_email = models.EmailField(null=True) # The e-mail of the contact in OSA
+  mission_statement = models.TextField(max_length=256)
 
   def __unicode__(self):
       return unicode(self.user)
@@ -92,23 +93,78 @@ class Event(models.Model):
                                related_name='event_applied_funders')
 
     @property
-    def grants(self):
-      EventGrant = namedtuple('EventGrant', 'item currentAmount totalAmount grants')
-      for item in self.item_set.all():
-        grants = Grant.objects.filter(item=item)
-        item_grants = dict((grant.funder, grant.amount) for grant in grants)
-        yield EventGrant(item=item,
-            currentAmount=sum(int(v) for v in item_grants.itervalues()),
-            totalAmount=item.amount,
-            grants=item_grants)
+    def total_funds_already_received(self):
+      """The total amount of money already received (before grants) for an event."""
+      return sum(item.funding_already_received for item in self.item_set.all())
 
-    def save_items(self, names, quantities, prices_per_unit, funding_already_received, categories):
-      """Save items of a particular event."""
+    @property
+    def amounts(self):
+      """Get a dictionary containing the amount each funder has granted."""
+      amounts = dict((funder, 0) for funder in self.applied_funders.all())
+      for item in self.item_set.all():
+        for grant in item.grant_set.all():
+          amounts[grant.funder] += grant.amount
+      return amounts
+
+    @property
+    def total_funds_granted(self):
+      """The total amount of money received via grants."""
+      return sum(self.amounts.values())
+    
+    @property
+    def funded(self):
+      """Whether or not an event has been funded."""
+      return self.total_funds_granted > 0
+
+    @property
+    def total_funds_received(self):
+      """The total amount of money received (grants + pre grant)."""
+      return self.total_funds_already_received + self.total_funds_granted
+
+    @property
+    def total_funds_requested(self):
+      """The total amount of money requested for an event."""
+      return sum(item.total for item in self.item_set.all())
+
+    def save_from_form(self, POST):
+      """Save an event from form data."""
+      # save items
+      names = POST.getlist('item_name')
+      quantities = POST.getlist('item_quantity')
+      prices_per_unit = POST.getlist('item_price_per_unit')
+      funding_already_received = POST.getlist('item_funding_already_received')
+      categories = POST.getlist('item_category')
+
       self.item_set.all().delete()
       for name, quantity, price, funding, cat in zip(names, quantities, prices_per_unit, funding_already_received, categories):
         # category defaults to F because we haven' implemented the different category choices
         if str(name) and str(quantity) and str(funding) and str(price):
           self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category='F')
+
+      # save questions
+
+      # delete existing answers
+      self.eligibilityanswer_set.all().delete()
+      self.commonfreeresponseanswer_set.all().delete()
+      
+      # clear existing funders to re-add new ones
+      self.applied_funders.clear()
+
+      # create new answers and save funders
+      # unchecked checkboxes will have neither answers nor funders associated with them
+      for k, v in POST.items():
+        if k.startswith('eligibility'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = EligibilityQuestion.objects.get(id=q_id)
+          self.eligibilityanswer_set.create(question=question, event=self, answer='Y')
+        elif k.startswith('commonfreeresponse'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = CommonFreeResponseQuestion.objects.get(id=q_id)
+          self.commonfreeresponseanswer_set.create(question=question, event=self, answer=v)
+        elif k.startswith('funder'):
+          funder_id = re.search("[0-9]+", k).group(0)
+          funder = CFAUser.objects.get(id=funder_id)
+          self.applied_funders.add(funder)
 
 
     def notify_funder(self, funder):
@@ -138,23 +194,6 @@ class Event(models.Model):
         return "%s: %s, %s" % (unicode(self.requester),
                                self.name,
                                self.date.isoformat())
-
-    def save_questions_from_form(self, request):
-      # delete existing answers
-      self.eligibilityanswer_set.all().delete()
-      self.commonfreeresponseanswer_set.all().delete()
-
-      # create new answers
-      # unchecked checkboxes will not have answers associated with them
-      for k, v in request.POST.items():
-        if k.startswith('eligibility'):
-          q_id = re.search("[0-9]+", k).group(0)
-          question = EligibilityQuestion.objects.get(id=q_id)
-          self.eligibilityanswer_set.create(question=question, event=self, answer='Y')
-        elif k.startswith('commonfreeresponse'):
-          q_id = re.search("[0-9]+", k).group(0)
-          question = CommonFreeResponseQuestion.objects.get(id=q_id)
-          self.commonfreeresponseanswer_set.create(question=question, event=self, answer=v)
 
     class Meta:
         unique_together = ("name", "date", "requester")
