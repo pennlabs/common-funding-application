@@ -80,6 +80,6 @@ def application(context, user, event=None):
           for question in CommonFreeResponseQuestion.objects.all()],
       'funders': CFAUser.objects.filter(user_type='F')
   }
-  if user.get_profile().is_funder:
+  if not user.is_authenticated() or user.get_profile().is_funder:
     new_context['disabled_if_funder'] = 'disabled'
   return render_to_string('app/templatetags/application.html', new_context)

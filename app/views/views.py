@@ -31,20 +31,18 @@ def authorization_required(view):
     * They have a secret key to an event
   """
   def protected_view(request, event_id, *args, **kwargs):
-    user = request.user.get_profile()
     event = Event.objects.get(pk=event_id)
-    if user.is_funder or user.requested(event):
-      return view(request, event_id, *args, **kwargs)
+    try:
+      key = request.GET['key']
+    except KeyError:
+      user = request.user.get_profile()
+      if user.is_funder or user.requested(event):
+        return view(request, event_id, *args, **kwargs)
     else:
-      try:
-        key = request.GET['key']
-      except KeyError:
-        return redirect(NOT_AUTHORIZED)
+      if key == event.secret_key:
+        return view(request, event_id, *args, **kwargs)
       else:
-        if key == event.secret_key:
-          return view(request, event_id, *args, **kwargs)
-        else:
-          return redirect(NOT_AUTHORIZED)
+        return redirect(NOT_AUTHORIZED)
   return protected_view
 
 
@@ -121,7 +119,6 @@ def event_edit(request, event_id):
     return HttpResponseNotAllowed(['GET'])
 
 
-@login_required
 @authorization_required
 def event_show(request, event_id):
   user = request.user
@@ -180,17 +177,11 @@ def event_show(request, event_id):
       return redirect('app.views.items', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
-    funder_id = user.get_profile().id
 
     # can't get the event's funders?
-    if user.get_profile().is_funder:
-      template = 'app/application-funder.html'
-    else:
-      template = 'app/application-requester.html'
-    return render_to_response(template,
+    return render_to_response('app/application-funder.html',
         {
           'event': event,
-          'funder_id': funder_id,
         },
         context_instance=RequestContext(request))
   else:
