@@ -92,6 +92,11 @@ class Event(models.Model):
                                related_name='event_applied_funders')
 
     @property
+    def total_funds_already_received(self):
+      """The total amount of money already received (before grants) for an event."""
+      return sum(item.funding_already_received for item in self.item_set.all())
+
+    @property
     def amounts(self):
       """Get a dictionary containing the amount each funder has granted."""
       amounts = dict((funder, 0) for funder in self.applied_funders.all())
@@ -101,15 +106,23 @@ class Event(models.Model):
       return amounts
 
     @property
-    def total_funds_received(self):
+    def total_funds_granted(self):
+      """The total amount of money received via grants."""
       return sum(self.amounts.values())
     
     @property
     def funded(self):
-      return self.total_funds_received > 0
+      """Whether or not an event has been funded."""
+      return self.total_funds_granted > 0
+
+    @property
+    def total_funds_received(self):
+      """The total amount of money received (grants + pre grant)."""
+      return self.total_funds_already_received + self.total_funds_granted
 
     @property
     def total_funds_requested(self):
+      """The total amount of money requested for an event."""
       return sum(item.total for item in self.item_set.all())
 
     def save_from_form(self, POST):
