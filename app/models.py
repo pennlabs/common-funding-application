@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import dispatcher, receiver
+from django.template.loader import render_to_string
 
 
 YES_OR_NO = (
@@ -121,7 +122,7 @@ class Event(models.Model):
 
     def notify_requester(self, grants):
       """Notify a requester that an event has been funded."""
-      context = {'event': self, 'grants': self.grant_set}
+      context = {'event': self, 'grants': self.grants}
       subject = render_to_string('app/grant_email_subject.txt',
           context).strip()
       message = render_to_string('app/grant_email.txt', context)

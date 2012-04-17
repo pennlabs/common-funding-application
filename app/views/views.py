@@ -170,23 +170,24 @@ def event_show(request, event_id):
           amount = int(amount)
           grant, _ = Grant.objects.get_or_create(funder=user.cfauser,
                                               item=item,
-                                              defaults={'amount': 0})[0]
+                                              defaults={'amount': 0})
           amount_funded = sum(grant.amount for grant in 
               Grant.objects.filter(item=item))
+          amount_funded += item.funding_already_received
 
           # if the funder gave too much, adjust the price to be only enough
-          if amount + amount_funded - grant.amount > item.amount:
-            amount = item.amount - amount_funded + grant.amount
+          if amount + amount_funded - grant.amount > item.total:
+            amount = item.total - amount_funded + grant.amount
 
           grant.amount = amount
           grant.save()
 
           grants.append(grant)
 
-        if grants:
+        #if grants:
           # email the event requester indicating that they've been funded
-          event.notify_requester(grants)
-          funder.notify_osa(event, grants)
+          #event.notify_requester(grants)
+          #funder.notify_osa(event, grants)
       return redirect('app.views.event_show', event_id)
     else:
       for key, value in request.POST.items():

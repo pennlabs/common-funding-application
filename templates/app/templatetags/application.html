@@ -1,10 +1,4 @@
 {% load widgets %}
-<!-- 0 is passed into app.views.event_edit to suppress the errors of invalid arg -->
-<!-- a better solution would be to make the argument in event_edit optional -->
-<!-- but that solution didn't seem to work -->
-<form action="{% url app.views.event_new %}" method="post" class="form-horizontal">    
-  {% csrf_token %}
-  
 <div class="section-header">
   <h2>
     Event
@@ -16,7 +10,6 @@
     <div class="control-group">
       <label for="questionname" class="control-label">Event Name</label>
       <div class="controls">
-        <input value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ disabled_if_funder }}>
         <p class="help-block">Name of the event</p>
       </div>
     </div>
@@ -95,7 +88,7 @@
     {% if user.get_profile.is_requester %}
     {% itemlist_requester event.item_set.all %}
     {% else %}
-    {% itemlist_funder event.item_set.all cfauser_id %}
+    {% itemlist_funder event.item_set.all user.get_profile.id %}
     {% endif %}
   </fieldset>
 </div>
