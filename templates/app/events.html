@@ -61,7 +61,7 @@
       <div class="span12 funders">
         <table>
           <tbody>
-            {% for funder, amount in app.amounts %}
+            {% for funder, amount in app.amounts.items %}
             <tr>
               <td>{{funder}}</td>
               {% if amount %}
