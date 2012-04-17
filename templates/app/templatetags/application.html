@@ -105,7 +105,7 @@
   {% for funder in funders %}
   <div class="funder-check">
     <label class="checkbox">
-      <input data-funderid="{{forloop.counter0}}" type="checkbox">{{funder.user.username}}
+      <input data-funderid="{{forloop.counter0}}" name='funder_{{ funder.id }}' {% if funder in event.applied_funders.all %}checked{% endif %} type="checkbox">{{funder.user.username}}
     </label>
     <p class="help-block">{{funder.mission_statement}}</p>
   </div>
