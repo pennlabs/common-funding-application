@@ -56,7 +56,6 @@ def itemlist_funder(context, item_list, funder_id):
                 'items_data': items_data}
   return render_to_string('app/templatetags/itemlist-funder.html', new_context)
 
-
 def get_or_none(model, **kwargs):
   """Get an object, or None."""
   try:
@@ -80,5 +79,7 @@ def application(context, user, event=None):
       'commonfreeresponse_qas': [QA(question, get_or_none(CommonFreeResponseAnswer, question=question, event=event))
           for question in CommonFreeResponseQuestion.objects.all()],
       'funders': CFAUser.objects.filter(user_type='F')
-      }
+  }
+  if user.get_profile().is_funder:
+    new_context['disabled_if_funder'] = 'disabled'
   return render_to_string('app/templatetags/application.html', new_context)

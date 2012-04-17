@@ -135,23 +135,24 @@ def event_show(request, event_id):
           amount = int(amount)
           grant, _ = Grant.objects.get_or_create(funder=user.cfauser,
                                               item=item,
-                                              defaults={'amount': 0})[0]
+                                              defaults={'amount': 0})
           amount_funded = sum(grant.amount for grant in 
               Grant.objects.filter(item=item))
+          amount_funded += item.funding_already_received
 
           # if the funder gave too much, adjust the price to be only enough
-          if amount + amount_funded - grant.amount > item.amount:
-            amount = item.amount - amount_funded + grant.amount
+          if amount + amount_funded - grant.amount > item.total:
+            amount = item.total - amount_funded + grant.amount
 
           grant.amount = amount
           grant.save()
 
           grants.append(grant)
 
-        if grants:
+        #if grants:
           # email the event requester indicating that they've been funded
-          event.notify_requester(grants)
-          funder.notify_osa(event, grants)
+          #event.notify_requester(grants)
+          #funder.notify_osa(event, grants)
       return redirect('app.views.event_show', event_id)
     else:
       for key, value in request.POST.items():
@@ -179,25 +180,17 @@ def event_show(request, event_id):
       return redirect('app.views.items', event_id)
   elif request.method == 'GET':
     event = Event.objects.get(pk=event_id)
-    eligibility = event.eligibilityanswer_set.all()
-    common = event.commonfreeresponseanswer_set.all()
-    free = event.freeresponseanswer_set.all()
-    organizations = event.organizations
-    location = event.location
-    cfauser = user.cfauser
+    funder_id = user.get_profile().id
 
     # can't get the event's funders?
-    return render_to_response('app/application-requester.html',
+    if user.get_profile().is_funder:
+      template = 'app/application-funder.html'
+    else:
+      template = 'app/application-requester.html'
+    return render_to_response(template,
         {
           'event': event,
-          'eligibility':eligibility,
-          'commonresponse':common,
-          'freeresponse':free,
-          'organizations':organizations,
-          'location':location,
-          'funders': funders,
-          'cfauser_id': cfauser.id,
-          'disabled_if_funder': 'disabled' if cfauser.is_funder else ''
+          'funder_id': funder_id,
         },
         context_instance=RequestContext(request))
   else:
