@@ -10,6 +10,7 @@
     <div class="control-group">
       <label for="questionname" class="control-label">Event Name</label>
       <div class="controls">
+        <input value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ disabled_if_funder }}>
         <p class="help-block">Name of the event</p>
       </div>
     </div>
@@ -120,7 +121,13 @@
 </div>
 <div class="section-content">
   <fieldset>
-  <p id="funder-no-q">No questions yet. Please select funders.</p>
+  <p id="funder-no-q">
+    {% if user.get_profile.is_requester %}
+    No questions yet. Please select funders.
+    {% else %}
+    No other questions answered.
+    {% endif %}
+  </p>
   {% for q, qval in funder_qs.items %}
   <div class="funder-q {{qval.0}}">
     <label>{{q}} <em>(for {{qval.1}})</em></label>
