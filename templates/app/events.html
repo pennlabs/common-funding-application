@@ -13,7 +13,7 @@
 
 {% block container %}
 <header>
-  {% if user.cfauser.is_requester %}
+  {% if user.get_profile.is_requester %}
   <div class="btns pull-right">
     <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
   </div>
@@ -46,10 +46,12 @@
         {% endif %}
       </div>
       <div class="span3 buttons">        
+        {% if user.get_profile.is_requester %}
         <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
           <i class="icon-trash icon-white"></i>
           Delete
         </a>
+        {% endif %}
         <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
           <i class="icon-file icon-white"></i>
           View
