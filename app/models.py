@@ -91,6 +91,27 @@ class Event(models.Model):
         models.ManyToManyField(CFAUser,
                                related_name='event_applied_funders')
 
+    @property
+    def amounts(self):
+      """Get a dictionary containing the amount each funder has granted."""
+      amounts = dict((funder, 0) for funder in self.applied_funders.all())
+      for item in self.item_set.all():
+        for grant in item.grant_set.all():
+          amounts[grant.funder] += grant.amount
+      return amounts
+
+    @property
+    def total_funds_received(self):
+      return sum(self.amounts.values())
+    
+    @property
+    def funded(self):
+      return self.total_funds_received > 0
+
+    @property
+    def total_funds_requested(self):
+      return sum(item.total for item in self.item_set.all())
+
     def save_from_form(self, POST):
       """Save an event from form data."""
       # save items

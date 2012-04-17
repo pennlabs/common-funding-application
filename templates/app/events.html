@@ -37,12 +37,16 @@
         <span>{{ app.date }}</span>
       </div>
       <div class="span2">
-        $ 900 / 1200
+        $ {{ app.total_funds_received }} / {{ app.total_funds_requested }}
       </div>
       <div class="span1 status">
         <!--<span class="label label-info">Saved</span>-->
         <!--<span class="label label-success">Submitted</span>-->
+        {% if app.funded %}
         <span class="label label-important">Funded</span>
+        {% else %}
+        <span class="label label-important">UnFunded</span>
+        {% endif %}
       </div>
       <div class="span3 buttons">        
         <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
@@ -57,16 +61,16 @@
       <div class="span12 funders">
         <table>
           <tbody>
-            {% for funder, amount in test_grants.items %}
+            {% for funder, amount in app.amounts.items %}
             <tr>
               <td>{{funder}}</td>
-              <td>$ {{amount}}</td>
+              {% if amount %}
+              <td>$ {{ amount }}</td>
+              {% else %}
+              <td class="pending">pending</td>
+              {% endif %}
             </tr>
             {% endfor %}
-            <tr>
-              <td>SPECTRUM</td>
-              <td class="pending">pending</td>
-            </tr>            
           </tbody>
         </table>
       </div>
