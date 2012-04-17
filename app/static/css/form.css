@@ -61,3 +61,6 @@ fieldset {
 #item-table input.small {
   width: 100px;
 }
+#item-table .action-column {
+  width: 75px;
+}

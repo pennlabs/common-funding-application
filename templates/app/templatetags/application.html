@@ -102,12 +102,12 @@
 </div>
 <div class="section-content">
   <fieldset>
-  {% for funder in test_funders %}
+  {% for funder in funders %}
   <div class="funder-check">
     <label class="checkbox">
-      <input data-funderid="{{forloop.counter0}}" type="checkbox">{{funder.0}}
+      <input data-funderid="{{forloop.counter0}}" name='funder_{{ funder.id }}' {% if funder in event.applied_funders.all %}checked{% endif %} type="checkbox">{{funder.user.username}}
     </label>
-    <p class="help-block">{{funder.1}}</p>
+    <p class="help-block">{{funder.mission_statement}}</p>
   </div>
   {% endfor %}
   </fieldset>
