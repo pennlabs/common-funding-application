@@ -97,6 +97,10 @@ class Event(models.Model):
         for grant in item.grant_set.all():
           amount += grant.amount
       return amount
+    
+    @property
+    def funded(self):
+      return self.total_funds_received > 0
 
     @property
     def total_funds_requested(self):
