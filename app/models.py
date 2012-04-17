@@ -91,12 +91,17 @@ class Event(models.Model):
                                related_name='event_applied_funders')
 
     @property
-    def total_funds_received(self):
-      amount = 0
+    def amounts(self):
+      """Get a dictionary containing the amount each funder has granted."""
+      amounts = dict((funder, 0) for funder in self.applied_funders.all())
       for item in self.item_set.all():
         for grant in item.grant_set.all():
-          amount += grant.amount
-      return amount
+          amounts[grant.funder] += grant.amount
+      return amounts
+
+    @property
+    def total_funds_received(self):
+      return sum(self.amounts.values())
     
     @property
     def funded(self):

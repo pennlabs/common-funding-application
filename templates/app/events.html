@@ -61,16 +61,16 @@
       <div class="span12 funders">
         <table>
           <tbody>
-            {% for funder, amount in test_grants.items %}
+            {% for funder, amount in app.amounts %}
             <tr>
               <td>{{funder}}</td>
-              <td>$ {{amount}}</td>
+              {% if amount %}
+              <td>$ {{ amount }}</td>
+              {% else %}
+              <td class="pending">pending</td>
+              {% endif %}
             </tr>
             {% endfor %}
-            <tr>
-              <td>SPECTRUM</td>
-              <td class="pending">pending</td>
-            </tr>            
           </tbody>
         </table>
       </div>
