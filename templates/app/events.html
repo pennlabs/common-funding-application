@@ -52,7 +52,7 @@
           Delete
         </a>
         {% endif %}
-        <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
+        <a class="btn btn-info pull-right" href="{% if user.get_profile.is_requester %}{% url app.views.event_edit app.id %}{% else %}{% url app.views.event_show app.id %}{% endif %}">
           <i class="icon-file icon-white"></i>
           View
         </a>
