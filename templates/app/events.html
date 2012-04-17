@@ -36,14 +36,11 @@
       <div class="span2 date">
         <span>{{ app.date }}</span>
       </div>
-      <div class="span2">
-        $ {{ app.total_funds_received }} / {{ app.total_funds_requested }}
-      </div>
-      <div class="span1 status">
+      <div class="offset2 span1 status">
         <!--<span class="label label-info">Saved</span>-->
         <!--<span class="label label-success">Submitted</span>-->
         {% if app.funded %}
-        <span class="label label-important">Funded</span>
+        <span class="label label-success">Funded</span>
         {% else %}
         <span class="label label-important">UnFunded</span>
         {% endif %}
@@ -71,6 +68,10 @@
               {% endif %}
             </tr>
             {% endfor %}
+            <tr>
+              <td>Total</td>
+              <td>$ {{ app.total_funds_received }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
