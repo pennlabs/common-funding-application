@@ -67,8 +67,8 @@ def get_or_none(model, **kwargs):
 QA = namedtuple('QA', 'question answer')
 
 
-@tag(register, [Variable(), Optional([Variable()]), Optional([Variable()])])
-def application(context, user, event=None, funder_id=-1):
+@tag(register, [Variable(), Optional([Variable()])])
+def application(context, user, event=None):
   if not event:
     event = None
   new_context = {
@@ -80,7 +80,6 @@ def application(context, user, event=None, funder_id=-1):
           for question in CommonFreeResponseQuestion.objects.all()],
       'funders': CFAUser.objects.filter(user_type='F')
   }
-  if funder_id != -1:
-    new_context['funder_id'] = funder_id
+  if user.get_profile().is_funder:
     new_context['disabled_if_funder'] = 'disabled'
   return render_to_string('app/templatetags/application.html', new_context)

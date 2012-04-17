@@ -217,7 +217,11 @@ def event_show(request, event_id):
     funder_id = user.get_profile().id
 
     # can't get the event's funders?
-    return render_to_response('app/application-requester.html',
+    if user.get_profile().is_funder:
+      template = 'app/application-funder.html'
+    else:
+      template = 'app/application-requester.html'
+    return render_to_response(template,
         {
           'event': event,
           'funder_id': funder_id,
