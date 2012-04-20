@@ -10,28 +10,28 @@
     <div class="control-group">
       <label for="questionname" class="control-label">Event Name</label>
       <div class="controls">
-        <input value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ disabled_if_funder }}>
+        <input required value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ disabled_if_funder }}>
         <p class="help-block">Name of the event</p>
       </div>
     </div>
     <div class="control-group">
       <label for="questiondate" class="control-label">Event Date</label>
       <div class="controls">
-        <input value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{ disabled_if_funder }}>
+        <input required value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{ disabled_if_funder }}>
         <p class="help-block">Date of the event</p>
       </div>
     </div>
     <div class="control-group">
       <label for="questionlocation" class="control-label">Location</label>
       <div class="controls">
-        <input value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ disabled_if_funder }}>
+        <input required value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ disabled_if_funder }}>
         <p class="help-block">Location of the event</p>
       </div>
     </div>        
     <div class="control-group">
       <label for="questionorganizations" class="control-label">Organization(s)</label>
       <div class="controls">
-        <input value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge" {{ disabled_if_funder }}>
+        <input required value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge" {{ disabled_if_funder }}>
         <p class="help-block">Organization(s) involved with the event</p>
       </div>
     </fieldset>
@@ -127,11 +127,13 @@
     No other questions answered.
     {% endif %}
   </p>
-  {% for q, qval in funder_qs.items %}
-  <div class="funder-q {{qval.0}}">
-    <label>{{q}} <em>(for {{qval.1}})</em></label>
-    <textarea class="span8" rows="3" {{ disabled_if_funder }}></textarea>
-  </div>
+  {% for funder_id, question_set in funder_qs.items %}
+    {% for q in question_set %}
+    <div class='funder-q {{ funder_id }}'>
+      <label> {{ q.question }}<em> for {{ funder_id }}</em></label>
+      <textarea class='span8' rows='3' {{ disabled_if_funder }}></textarea>
+    </div>
+    {% endfor %}
   {% endfor %}
   </fieldset>
 </div>

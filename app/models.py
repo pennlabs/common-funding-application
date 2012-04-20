@@ -88,6 +88,7 @@ class Event(models.Model):
     location = models.CharField(max_length=256)
     requester = models.ForeignKey(CFAUser, related_name='event_requester')
     organizations = models.CharField(max_length=256)
+
     applied_funders =\
         models.ManyToManyField(CFAUser,
                                related_name='event_applied_funders')
