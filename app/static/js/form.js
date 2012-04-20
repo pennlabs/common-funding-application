@@ -10,12 +10,15 @@ function showFunderQuestions() {
   var selectHide = "";
   var selectShow = "";
   
-  for (var i=0; i<totalFunders; i++) {
+  for (var i=0; i<selectedFunders.length; i++) {
     if (selectedFunders[i])
       selectShow += ".funder-q-"+i+", ";
   }
-  $(".funder-q").hide();
-  $(selectShow).show();
+  $("[class^=funder-q]").hide();
+  $(selectShow).fadeIn();
+
+  
+  console.log(selectedFunders.length);
   
   if ($(selectShow).length)
     $("p#funder-no-q").hide();
@@ -45,7 +48,7 @@ $(document).ready(function() {
   // maintain a boolean list of selectedFunders
   // show funder i if selectedFunders[i] is true
   totalFunders = $(".funder-check input").length
-  selectedFunders = new Array(totalFunders);    
+  selectedFunders = [] 
   // register funder checkbox click
   $(".funder-check input").change(function() {
     selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
@@ -53,6 +56,7 @@ $(document).ready(function() {
   });  
   // initial count already checked checkboxes
   $(".funder-check input").each(function() {
+    console.log($(this)[0].dataset.funderid);
     selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
   });
   showFunderQuestions();

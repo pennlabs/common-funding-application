@@ -71,14 +71,19 @@ QA = namedtuple('QA', 'question answer')
 def application(context, user, event=None):
   if not event:
     event = None
+  funders = CFAUser.objects.filter(user_type='F')
+  funder_qs = {}
+  for f in funders:
+    funder_qs[f.id] = f.freeresponsequestion_set.all()
   new_context = {
       'user':user,
       'event': event,
+      'funder_qs': funder_qs,
       'eligibility_qas': [QA(question, get_or_none(EligibilityAnswer, question=question, event=event))
           for question in EligibilityQuestion.objects.all()],
       'commonfreeresponse_qas': [QA(question, get_or_none(CommonFreeResponseAnswer, question=question, event=event))
           for question in CommonFreeResponseQuestion.objects.all()],
-      'funders': CFAUser.objects.filter(user_type='F')
+      'funders': funders
   }
   if not user.is_authenticated() or user.get_profile().is_funder \
     or event and event.funded:
