@@ -104,7 +104,7 @@
   {% for funder in funders %}
   <div class="funder-check">
     <label class="checkbox">
-      <input data-funderid="{{forloop.counter0}}" name='funder_{{ funder.id }}' {% if funder in event.applied_funders.all %}checked{% endif %} type="checkbox" {{ disabled_if_funder }}>{{funder.user.username}}
+      <input data-funderid="{{funder.id}}" name='funder_{{ funder.id }}' {% if funder in event.applied_funders.all %}checked{% endif %} type="checkbox" {{ disabled_if_funder }}>{{funder.user.username}}
     </label>
     <p class="help-block">{{funder.mission_statement}}</p>
   </div>
@@ -129,7 +129,7 @@
   </p>
   {% for funder_id, question_set in funder_qs.items %}
     {% for q in question_set %}
-    <div class='funder-q {{ funder_id }}'>
+    <div class='funder-q-{{ funder_id }}'>
       <label> {{ q.question }}<em> for {{ funder_id }}</em></label>
       <textarea class='span8' rows='3' {{ disabled_if_funder }}></textarea>
     </div>
