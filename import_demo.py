@@ -51,8 +51,11 @@ def import_users():
 
 
 COMMON_FREE_RESPONSE_QUESTIONS = (
-    'Have you hosted an event before?',
-    'How many people do you expect to show up?'
+    "Describe your event.",
+    "What are the goals of your event and how do they relate to the missions of all groups involved?",
+    "How do you plan to publicize this event?",
+    "Please detail the nature of collaboration between your event's collaborating groups.",
+    "Please list three past events held by the collaborating organizations."
     )
 
 
