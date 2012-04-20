@@ -15,7 +15,7 @@ function showFunderQuestions() {
       selectShow += ".funder-q-"+i+", ";
   }
   $("[class^=funder-q]").hide();
-  $(selectShow).show();
+  $(selectShow).fadeIn();
 
   
   console.log(selectedFunders.length);
