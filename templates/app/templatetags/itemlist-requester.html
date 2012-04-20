@@ -9,35 +9,39 @@
       <th>Price Per Unit</th>
       <th>Funding Already Received</th>
       <th>Category</th>
+      {% if not funded %}
       <th class='action-column'>Action</th>
+      {% endif %}
     </tr>
   </thead>
   <tbody>
     {% for item in items %}
       <tr class='app-itemrow'>
         <th>
-          <input name="item_name" type="text" class='small' required value="{{ item.name }}" />
+          <input name="item_name" type="text" class='small' 
+            required {% if funded %} disabled {% endif %}
+            value="{{ item.name }}" />
         </th>
         <th>
           <input name="item_quantity" type="text" class='small'
-            required
+            required {% if funded %} disabled {% endif %}
             pattern="^\d+"
             value="{{ item.quantity }}" />
         </th>
         <th> 
           <input class="inputIcon small" name="item_price_per_unit" type="text"
-            required
+            required {% if funded %} disabled {% endif %}
             pattern="^\d*(\.\d{2}$)?"
             value="{{ item.price_per_unit }}"/>
         </th>
         <th> 
           <input class="inputIcon" name="item_funding_already_received" type="text"
-            required
+            required {% if funded %} disabled {% endif %}
             pattern="^\d*(\.\d{2}$)?"
             value="{{ item.funding_already_received }}" />
         </th>
         <th>
-          <select name='item_category'>
+          <select name='item_category' {% if funded %} disabled {% endif %}>
             <option>Food</option>
             <option>Drink</option>
             <option>blah</option>
@@ -47,11 +51,14 @@
             <option>testing</option>
           </select>
         </th>
+        {% if not funded %}
         <th>
           <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
         </th>
+        {% endif %}
       </tr>
     {% endfor %}
+    {% if not funded %}
     <tr id='itemrow'>
       <th>
         <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
@@ -80,5 +87,6 @@
         <button class='btn add' onclick='addItem(this); return false;'>Add</button>
       </th>
     </tr>
+    {% endif %}
   </tbody>
 </table>
