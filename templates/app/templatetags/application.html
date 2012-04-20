@@ -10,28 +10,28 @@
     <div class="control-group">
       <label for="questionname" class="control-label">Event Name</label>
       <div class="controls">
-        <input required value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ disabled_if_funder }}>
+        <input required value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ extra_attrs }}>
         <p class="help-block">Name of the event</p>
       </div>
     </div>
     <div class="control-group">
       <label for="questiondate" class="control-label">Event Date</label>
       <div class="controls">
-        <input required value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{ disabled_if_funder }}>
+        <input required value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{ extra_attrs }}>
         <p class="help-block">Date of the event</p>
       </div>
     </div>
     <div class="control-group">
       <label for="questionlocation" class="control-label">Location</label>
       <div class="controls">
-        <input required value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ disabled_if_funder }}>
+        <input required value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ extra_attrs }}>
         <p class="help-block">Location of the event</p>
       </div>
     </div>        
     <div class="control-group">
       <label for="questionorganizations" class="control-label">Organization(s)</label>
       <div class="controls">
-        <input required value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge" {{ disabled_if_funder }}>
+        <input required value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge" {{ extra_attrs }}>
         <p class="help-block">Organization(s) involved with the event</p>
       </div>
     </fieldset>
@@ -49,7 +49,7 @@
     <div class="control-group">
       <label for="eligibilityquestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="checkbox" name="eligibilityquestion_{{qa.question.id}}" {{ disabled_if_funder }} class="input-xlarge" {% if qa.answer.answer %}checked{% endif %}>
+        <input type="checkbox" name="eligibilityquestion_{{qa.question.id}}" {{ extra_attrs }} class="input-xlarge" {% if qa.answer.answer %}checked{% endif %}>
         <p class="help-block">{{ qa.question.question }}</p>
       </div>
     </div>
@@ -68,7 +68,7 @@
     <div class="control-group">
       <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="text" name="commonfreeresponsequestion_{{qa.question.id}}" class="input-xlarge" value={{qa.answer.answer}} {{ disabled_if_funder }}>
+        <input type="text" name="commonfreeresponsequestion_{{qa.question.id}}" class="input-xlarge" value={{qa.answer.answer}} {{ extra_attrs }}>
         <p class="help-block">{{ qa.question.question }}</p>
       </div>
     </div>
@@ -86,7 +86,7 @@
 <div class="section-content">
   <fieldset>
     {% if user.get_profile.is_requester %}
-    {% itemlist_requester event.item_set.all %}
+    {% itemlist_requester event.item_set.all event.funded%}
     {% else %}
     {% itemlist_funder event.item_set.all user.get_profile.id %}
     {% endif %}
@@ -104,7 +104,7 @@
   {% for funder in funders %}
   <div class="funder-check">
     <label class="checkbox">
-      <input data-funderid="{{funder.id}}" name='funder_{{ funder.id }}' {% if funder in event.applied_funders.all %}checked{% endif %} type="checkbox" {{ disabled_if_funder }}>{{funder.user.username}}
+      <input data-funderid="{{funder.id}}" name='funder_{{ funder.id }}' {% if funder in event.applied_funders.all %}checked{% endif %} type="checkbox" {{ extra_attrs }}>{{funder.user.username}}
     </label>
     <p class="help-block">{{funder.mission_statement}}</p>
   </div>
@@ -131,7 +131,7 @@
     {% for q in question_set %}
     <div class='funder-q-{{ funder_id }}'>
       <label> {{ q.question }}<em> for {{ funder_id }}</em></label>
-      <textarea class='span8' rows='3' {{ disabled_if_funder }}></textarea>
+      <textarea class='span8' rows='3' {{ extra_attrs }}></textarea>
     </div>
     {% endfor %}
   {% endfor %}

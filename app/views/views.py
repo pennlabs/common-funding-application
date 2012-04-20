@@ -97,8 +97,10 @@ def event_new(request):
 @requester_only
 def event_edit(request, event_id):
   user = request.user
+  event = Event.objects.get(pk=event_id)
+  if event.funded:
+    return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
-    event = Event.objects.get(pk=event_id)
     event.date = request.POST['date']
     event.name = request.POST['name']
     event.organizations = request.POST['organizations']
@@ -107,8 +109,6 @@ def event_edit(request, event_id):
     event.save_from_form(request.POST)
     return redirect('app.views.events')
   elif request.method == 'GET':
-    event = Event.objects.get(pk=event_id)
-
     # can't get the event's funders?
     return render_to_response('app/application-requester.html',
         {
@@ -176,10 +176,8 @@ def event_show(request, event_id):
       event.save()
       return redirect('app.views.items', event_id)
   elif request.method == 'GET':
-    event = Event.objects.get(pk=event_id)
-
     # can't get the event's funders?
-    return render_to_response('app/application-funder.html',
+    return render_to_response('app/application-show.html',
         {
           'event': event,
         },

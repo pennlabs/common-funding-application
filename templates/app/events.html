@@ -47,15 +47,27 @@
       </div>
       <div class="span3 buttons">        
         {% if user.get_profile.is_requester %}
+        {% if app.funded %}
+        <a class="btn btn-info pull-right" href="{% url app.views.event_show app.id %}">
+          <i class="icon-file icon-white"></i>
+          View
+        </a>
+        {% else %}
         <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
           <i class="icon-trash icon-white"></i>
           Delete
         </a>
-        {% endif %}
-        <a class="btn btn-info pull-right" href="{% if user.get_profile.is_requester %}{% url app.views.event_edit app.id %}{% else %}{% url app.views.event_show app.id %}{% endif %}">
+        <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
           <i class="icon-file icon-white"></i>
           View
         </a>
+        {% endif %}
+        {% else %}
+        <a class="btn btn-info pull-right" href="{% url app.views.event_show app.id %}">
+          <i class="icon-file icon-white"></i>
+          View
+        </a>
+        {% endif %}
       </div>
       <div class="span12 funders">
         <table>

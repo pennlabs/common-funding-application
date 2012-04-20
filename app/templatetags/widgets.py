@@ -34,10 +34,10 @@ def fundingbar(context, totalAmount, fundDict):
   return render_to_string('app/templatetags/fundingbar.html', new_context)
 
 
-@tag(register, [Variable()])
-def itemlist_requester(context, items):
+@tag(register, [Variable(), Variable()])
+def itemlist_requester(context, items, funded):
   # takes a dictionary of items
-  new_context = {'items':items}
+  new_context = {'items':items, 'funded':funded}
   return render_to_string('app/templatetags/itemlist-requester.html', new_context)
 
 
@@ -85,6 +85,7 @@ def application(context, user, event=None):
           for question in CommonFreeResponseQuestion.objects.all()],
       'funders': funders
   }
-  if not user.is_authenticated() or user.get_profile().is_funder:
-    new_context['disabled_if_funder'] = 'disabled'
+  if not user.is_authenticated() or user.get_profile().is_funder \
+    or event and event.funded:
+    new_context['extra_attrs'] = 'disabled'
   return render_to_string('app/templatetags/application.html', new_context)
