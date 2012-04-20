@@ -2,7 +2,7 @@ function addItem() {
   var $row = $('.add').closest('tr');
   var $clone = $row.clone().insertBefore($row);
   $clone.find('.add').replaceWith($('.remove').html());
-  $clone.find('input').attr('required','required');
+  $clone.find('input').removeAttr('required');
   $row.find('input').removeAttr('required').val('');
 
 }
