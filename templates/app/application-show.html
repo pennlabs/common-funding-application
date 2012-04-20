@@ -8,7 +8,6 @@
 
 {% block htmllink-js %}
 <script src="{{ STATIC_URL }}/js/form.js"></script>
-<script src="{{ STATIC_URL }}/js/itemlist.js"></script>
 {% endblock %}
 
 {% block container %}      
@@ -19,11 +18,15 @@
     {% csrf_token %}
     {% application user event %}
 
+    {% if user.get_profile.is_funder %}
     <div class="form-actions">
       <button class="btn btn" type="submit" name="submit">Cancel</button>
       <button class="btn btn-primary" type="submit" name="submit">Save</button>
       <a class="btn btn-info" href="{{event.get_absolute_url}}?key={{event.secret_key}}">Share</a>
     </div>
+    {% else %}
+    <a class="btn btn-primary" href="{% url app.views.events %}">Done</a>
+    {% endif %}
   </form>
 </div>      
 {% endblock %}
