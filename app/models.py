@@ -168,6 +168,7 @@ class Event(models.Model):
       # delete existing answers
       self.eligibilityanswer_set.all().delete()
       self.commonfreeresponseanswer_set.all().delete()
+      self.freeresponseanswer_set.all().delete()
       
       # clear existing funders to re-add new ones
       self.applied_funders.clear()
@@ -183,6 +184,10 @@ class Event(models.Model):
           q_id = re.search("[0-9]+", k).group(0)
           question = CommonFreeResponseQuestion.objects.get(id=q_id)
           self.commonfreeresponseanswer_set.create(question=question, event=self, answer=v)
+        elif k.startswith('freeresponse'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = FreeResponseQuestion.objects.get(id=q_id)
+          self.freeresponseanswer_set.create(question=question, event=self, answer=v)
         elif k.startswith('funder'):
           funder_id = re.search("[0-9]+", k).group(0)
           funder = CFAUser.objects.get(id=funder_id)
