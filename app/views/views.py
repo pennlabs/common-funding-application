@@ -1,4 +1,5 @@
 import os
+from decimal import Decimal
 from collections import namedtuple
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -14,7 +15,7 @@ from app.forms import EventForm, EligibilityQuestionnaireForm, BudgetForm, \
     FreeResponseForm
 from app.models import Event, EligibilityQuestion, EligibilityAnswer, \
     FreeResponseQuestion, FreeResponseAnswer, Grant, CFAUser, \
-    CommonFreeResponseQuestion, CommonFreeResponseAnswer
+    CommonFreeResponseQuestion, CommonFreeResponseAnswer, Comment
 
 
 NOT_AUTHORIZED = 'app.views.index'
@@ -129,7 +130,7 @@ def event_show(request, event_id):
         amount = request.POST.get("item_" + str(item.id), None)
         grants = []
         if amount:
-          amount = int(amount)
+          amount = Decimal(amount)
           grant, _ = Grant.objects.get_or_create(funder=user.cfauser,
                                               item=item,
                                               defaults={'amount': 0})
@@ -141,7 +142,7 @@ def event_show(request, event_id):
           if amount + amount_funded - grant.amount > item.total:
             amount = item.total - amount_funded + grant.amount
 
-          grant.amount = amount
+          grant.amount = str(amount)
           grant.save()
 
           grants.append(grant)
@@ -150,6 +151,10 @@ def event_show(request, event_id):
           # email the event requester indicating that they've been funded
           #event.notify_requester(grants)
           #funder.notify_osa(event, grants)
+      if 'new-comment' in request.POST:
+        comment = Comment(comment=request.POST['new-comment'],
+          funder=user.get_profile(), event=event)
+        comment.save()
       return redirect('app.views.event_show', event_id)
     else:
       for key, value in request.POST.items():

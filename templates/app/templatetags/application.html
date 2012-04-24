@@ -137,3 +137,17 @@
   {% endfor %}
   </fieldset>
 </div>
+{% if user.get_profile.is_funder %}
+<div class="section-header">
+  <h2>
+    Comments
+    <small>feel free to leave a message</small>
+  </h2>
+</div>
+<div class="section-content">
+  {% for comment in event.comment_set.all %}
+  <label>{{ comment.funder }} said: {{ comment }}</label>
+  {% endfor %}
+  <textarea name="new-comment"></textarea>
+</div>
+{% endif %}
