@@ -102,14 +102,14 @@ class Event(models.Model):
     date = models.DateField()
     time = models.TimeField()
     location = models.CharField(max_length=256)
-
+    requester = models.ForeignKey(CFAUser, related_name='event_requester')
+    contact_email = models.EmailField()
+    contact_phone = models.CharField(max_length=10)
     anticipated_attendance = models.IntegerField()
     admission_fee = models.DecimalField(max_digits=6, decimal_places=2)
-    requester = models.ForeignKey(CFAUser, related_name='event_requester')
-    advisor_email = models.EmailField(null=True)
-    advisor_phone = USPhoneNumberField()
+    advisor_email = models.EmailField(blank=True)
+    advisor_phone = models.CharField(max_length=10, blank=True)
     organizations = models.CharField(max_length=256)
-
     applied_funders =\
         models.ManyToManyField(CFAUser,
                                related_name='event_applied_funders')
