@@ -10,7 +10,7 @@
     <div class="control-group">
       <label for="questionname" class="control-label">Event Name</label>
       <div class="controls">
-        <input required value="{{ event.name }}" type="text" name='name' id="questionname" class="input-xlarge" {{ extra_attrs }}>
+        <input required value="{{ event.name }}" type="text" name="name" id="questionname" class="input-xlarge" {{ extra_attrs }}>
         <p class="help-block">Name of the event</p>
       </div>
     </div>
@@ -22,20 +22,70 @@
       </div>
     </div>
     <div class="control-group">
+      <label for="questiontime" class="control-label">Event Time</label>
+      <div class="controls">
+        <input required value="{{ event.time }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
+        <p class="help-block">Time of the event</p>
+      </div>
+    </div>
+    <div class="control-group">
       <label for="questionlocation" class="control-label">Location</label>
       <div class="controls">
         <input required value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ extra_attrs }}>
         <p class="help-block">Location of the event</p>
       </div>
-    </div>        
+    </div>
+    <div class="control-group">
+      <label for="questioncontactemail" class="control-label">Contact Email</label>
+      <div class="controls">
+        <input required value="{{ event.contact_email }}" type="email" name="contactemail" id="questioncontactemail" class="input-xlarge" {{ extra_attrs }}>
+        <p class="help-block">Primary contact's email address</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="questioncontactphone" class="control-label">Contact Phone</label>
+      <div class="controls">
+        <input required value="{{ event.contact_phone }}" type="text" name="contactphone" id="questioncontactphone" class="input-xlarge" {{ extra_attrs }}>
+        <p class="help-block">Primary contact's phone number</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="questionanticipatedattendance" class="control-label">Anticipated Attendance</label>
+      <div class="controls">
+        <input required value="{{ event.anticipated_attendance }}" type="number" name="anticipatedattendance" id="questionanticipatedattendance" class="input-xlarge" {{ extra_attrs }}>
+        <p class="help-block">Anticipated number of people attending the event</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="questionadmissionfee" class="control-label">Admission Fee</label>
+      <div class="controls">
+        <input required value="{{ event.admission_fee }}" type="number" name="admissionfee" id="questionadmissionfee" class="input-xlarge" {{ extra_attrs }}>
+        <p class="help-block">Amount you plan charge as admission</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="questionadvisoremail" class="control-label">Advisor Email</label>
+      <div class="controls">
+        <input value="{{ event.advisor_email }}" type="email" name="advisoremail" id="questionadvisoremail" class="input-xlarge" {{ extra_attrs }}>
+        <p class="help-block">Advisor's email address</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="questionadvisorphone" class="control-label">Advisor Phone</label>
+      <div class="controls">
+        <input value="{{ event.advisor_phone }}" type="text" name="advisorphone" id="questionadvisorphone" class="input-xlarge" {{ extra_attrs }}>
+        <p class="help-block">Advisor's phone number</p>
+      </div>
+    </div>
     <div class="control-group">
       <label for="questionorganizations" class="control-label">Organization(s)</label>
       <div class="controls">
-        <input required value="{{ event.organizations }}" type="text" name='organizations' id="questionorganizations" class="input-xlarge" {{ extra_attrs }}>
+        <input required value="{{ event.organizations }}" type="text" name="organizations" id="questionorganizations" class="input-xlarge" {{ extra_attrs }}>
         <p class="help-block">Organization(s) involved with the event</p>
       </div>
-    </fieldset>
-  </div>
+    </div>
+  </fieldset>
+</div>
   
 <div class="section-header">
   <h2>
@@ -68,7 +118,7 @@
     <div class="control-group">
       <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="text" name="commonfreeresponsequestion_{{qa.question.id}}" class="input-xlarge" value={{qa.answer.answer}} {{ extra_attrs }}>
+        <input type="text" name="commonfreeresponsequestion_{{qa.question.id}}" class="input-xlarge" value='{{qa.answer.answer}}' {{ extra_attrs }}>
         <p class="help-block">{{ qa.question.question }}</p>
       </div>
     </div>
@@ -127,13 +177,11 @@
     No other questions answered.
     {% endif %}
   </p>
-  {% for funder_id, question_set in funder_qs.items %}
-    {% for q in question_set %}
-    <div class='funder-q-{{ funder_id }}'>
-      <label> {{ q.question }}<em> for {{ funder_id }}</em></label>
-      <textarea class='span8' rows='3' {{ extra_attrs }}></textarea>
-    </div>
-    {% endfor %}
+  {% for qa in funder_qas %}
+  <div class="funder-q-{{ qa.question.funder.id }}">
+    <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
+    <input type="text" name="freeresponsequestion_{{qa.question.id}}" class="input-xlarge" value='{{qa.answer.answer}}' {{ extra_attrs }}>
+  </div>
   {% endfor %}
   </fieldset>
 </div>

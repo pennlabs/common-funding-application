@@ -51,8 +51,11 @@ def import_users():
 
 
 COMMON_FREE_RESPONSE_QUESTIONS = (
-    'Have you hosted an event before?',
-    'How many people do you expect to show up?'
+    "Describe your event.",
+    "What are the goals of your event and how do they relate to the missions of all groups involved?",
+    "How do you plan to publicize this event?",
+    "Please detail the nature of collaboration between your event's collaborating groups.",
+    "Please list three past events held by the collaborating organizations."
     )
 
 
@@ -82,21 +85,37 @@ def import_events():
                          date=datetime.date(year=2012,
                                             month=4,
                                             day=1),
+                         time=datetime.time(hour=12),
+                         location='Huntsman',
+                         anticipated_attendance=0,
+                         admission_fee='0',
                          requester=CFAUser.objects.get(user=User.objects.get(username="testrequester1")))
     Event.objects.create(name="testrequester1's Second Event",
                          date=datetime.date(year=2012,
                                             month=4,
                                             day=2),
+                         time=datetime.time(hour=13),
+                         location='Moore 100',
+                         anticipated_attendance=50,
+                         admission_fee='69.69',
                          requester=CFAUser.objects.get(user=User.objects.get(username="testrequester1")))
     Event.objects.create(name="testrequester2's First Event",
                          date=datetime.date(year=2012,
                                             month=5,
                                             day=1),
+                         time=datetime.time(hour=14),
+                         location='DRLB',
+                         anticipated_attendance=30,
+                         admission_fee='10',
                          requester=CFAUser.objects.get(user=User.objects.get(username="testrequester2")))
     Event.objects.create(name="testrequester2's Second Event",
                          date=datetime.date(year=2012,
                                             month=5,
                                             day=2),
+                         time=datetime.time(hour=20),
+                         location='Rodin',
+                         anticipated_attendance=10,
+                         admission_fee='8',
                          requester=CFAUser.objects.get(user=User.objects.get(username="testrequester2")))
 
 def import_sites():

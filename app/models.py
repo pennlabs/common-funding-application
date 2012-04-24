@@ -3,6 +3,7 @@ import re
 import sha
 
 from django.contrib.auth.models import User
+from django.contrib.localflavor.us.forms import USPhoneNumberField
 from django.core.mail import send_mail
 from django.db import models
 from django.db.models.signals import post_save
@@ -36,6 +37,7 @@ class CFAUser(models.Model):
   user = models.OneToOneField(User)
   user_type = models.CharField(max_length=1,
                                choices=REQUESTER_OR_FUNDER)
+  phone = USPhoneNumberField()
   osa_email = models.EmailField(null=True) # The e-mail of the contact in OSA
   mission_statement = models.TextField(max_length=256)
 
@@ -83,12 +85,31 @@ def create_profile(sender, instance, signal, created, **kwargs):
 
 
 class Event(models.Model):
+    """An Event object.
+
+    An Event consists of:
+    * A name
+    * A date
+    * A time
+    * A location
+    * An anticipated attendance
+    * An admission fee
+    * A requester
+    * An advisor
+    * A list of collaborating organizations
+    """
     name = models.CharField(max_length=256)
     date = models.DateField()
+    time = models.TimeField()
     location = models.CharField(max_length=256)
     requester = models.ForeignKey(CFAUser, related_name='event_requester')
+    contact_email = models.EmailField()
+    contact_phone = models.CharField(max_length=10)
+    anticipated_attendance = models.IntegerField()
+    admission_fee = models.DecimalField(max_digits=6, decimal_places=2)
+    advisor_email = models.EmailField(blank=True)
+    advisor_phone = models.CharField(max_length=10, blank=True)
     organizations = models.CharField(max_length=256)
-
     applied_funders =\
         models.ManyToManyField(CFAUser,
                                related_name='event_applied_funders')
@@ -147,6 +168,7 @@ class Event(models.Model):
       # delete existing answers
       self.eligibilityanswer_set.all().delete()
       self.commonfreeresponseanswer_set.all().delete()
+      self.freeresponseanswer_set.all().delete()
       
       # clear existing funders to re-add new ones
       self.applied_funders.clear()
@@ -162,6 +184,10 @@ class Event(models.Model):
           q_id = re.search("[0-9]+", k).group(0)
           question = CommonFreeResponseQuestion.objects.get(id=q_id)
           self.commonfreeresponseanswer_set.create(question=question, event=self, answer=v)
+        elif k.startswith('freeresponse'):
+          q_id = re.search("[0-9]+", k).group(0)
+          question = FreeResponseQuestion.objects.get(id=q_id)
+          self.freeresponseanswer_set.create(question=question, event=self, answer=v)
         elif k.startswith('funder'):
           funder_id = re.search("[0-9]+", k).group(0)
           funder = CFAUser.objects.get(id=funder_id)
@@ -270,10 +296,14 @@ class FreeResponseAnswer(models.Model):
         return "%s %s" % (unicode(self.question), self.answer)
 
 
-# TODO: Find the actual categories and update this
 CATEGORIES = (
-    ('F', 'FOOD'),
-    ('D', 'DRINK'),
+    ('H', 'Honoraria/Services'),
+    ('E', 'Equipment/Supplies'),
+    ('F', 'Food/Drinks'),
+    ('S', 'Facilities/Security'),
+    ('T', 'Travel/Conference'),
+    ('P', 'Photocopgies/Printing/Publicity'),
+    ('O', 'Other'),
 )
 
 
