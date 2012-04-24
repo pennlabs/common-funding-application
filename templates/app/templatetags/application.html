@@ -68,7 +68,7 @@
     <div class="control-group">
       <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="text" name="commonfreeresponsequestion_{{qa.question.id}}" class="input-xlarge" value={{qa.answer.answer}} {{ extra_attrs }}>
+        <input type="text" name="commonfreeresponsequestion_{{qa.question.id}}" class="input-xlarge" value='{{qa.answer.answer}}' {{ extra_attrs }}>
         <p class="help-block">{{ qa.question.question }}</p>
       </div>
     </div>
@@ -127,13 +127,11 @@
     No other questions answered.
     {% endif %}
   </p>
-  {% for funder_id, question_set in funder_qs.items %}
-    {% for q in question_set %}
-    <div class='funder-q-{{ funder_id }}'>
-      <label> {{ q.question }}<em> for {{ funder_id }}</em></label>
-      <textarea class='span8' rows='3' {{ extra_attrs }}></textarea>
-    </div>
-    {% endfor %}
+  {% for qa in funder_qas %}
+  <div class="funder-q-{{ qa.question.funder.id }}">
+    <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
+    <input type="text" name="freeresponsequestion_{{qa.question.id}}" class="input-xlarge" value='{{qa.answer.answer}}' {{ extra_attrs }}>
+  </div>
   {% endfor %}
   </fieldset>
 </div>
