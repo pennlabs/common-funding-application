@@ -80,7 +80,8 @@ def event_new(request):
                             date=request.POST['date'],
                             requester=request.user.get_profile(),
                             location=request.POST['location'],
-                            organizations=request.POST['organizations']
+                            organizations=request.POST['organizations'],
+                            time=request.POST['time']
                           )   
     event.save_from_form(request.POST)
     return redirect('app.views.events')
@@ -103,6 +104,7 @@ def event_edit(request, event_id):
     event.name = request.POST['name']
     event.organizations = request.POST['organizations']
     event.location = request.POST['location']
+    event.time = request.POST['time']
     event.save()
     event.save_from_form(request.POST)
     return redirect('app.views.events')
