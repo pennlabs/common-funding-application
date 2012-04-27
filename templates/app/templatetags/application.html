@@ -1,4 +1,45 @@
 {% load widgets %}
+
+<!-- Remove me eventually! -->
+<script type="text/javascript">
+
+/** Populate these fields */
+function populate() {
+  $("#questionname").val("Socrates Speaks");
+  $("#questiondate").val("2012-05-02");
+  $("#questiontime").val("12:00:00");
+  $("#questionlocation").val("Philo Halls");
+  $("#questioncontactemail").val("kyleh@sas.upenn.edu");
+  $("#questioncontactphone").val("3013054038");
+  $("#questionanticipatedattendance").val("40");
+  $("#questionadmissionfee").val("0");
+  $("#questionadvisoremail").val("kyleh@seas.upenn.edu");
+  $("#questionadvisorphone").val("3013054038");
+  $("#questionorganizations").val("The Philomathean Society, SCUE");
+  $(".commonfreeresponsequestion").val("My thoughtful response to this question");
+  addItem(); addItem();
+  $("#item-table tr input[name='item_name']")[0].value = "Soda";
+  $("#item-table tr input[name='item_name']")[1].value = "Juice";
+  $("#item-table tr input[name='item_name']")[2].value = "Milkshakes";
+  
+  $("#item-table tr input[name='item_quantity']")[0].value = "3";
+  $("#item-table tr input[name='item_quantity']")[1].value = "40";
+  $("#item-table tr input[name='item_quantity']")[2].value = "5";
+  
+  $("#item-table tr input[name='item_price_per_unit']")[0].value = "10";
+  $("#item-table tr input[name='item_price_per_unit']")[1].value = "5";
+  $("#item-table tr input[name='item_price_per_unit']")[2].value = "12";
+
+  $("#item-table tr input[name='item_funding_already_received']")[0].value = "0";
+  $("#item-table tr input[name='item_funding_already_received']")[1].value = "15";
+  $("#item-table tr input[name='item_funding_already_received']")[2].value = "0";  
+}
+
+
+
+
+</script>
+
 <div class="section-header">
   <h2>
     Event
@@ -97,10 +138,15 @@
   <fieldset>
     {% for qa in eligibility_qas %}
     <div class="control-group">
-      <label for="eligibilityquestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
+      <label class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="checkbox" name="eligibilityquestion_{{qa.question.id}}" {{ extra_attrs }} class="input-xlarge" {% if qa.answer.answer %}checked{% endif %}>
-        <p class="help-block">{{ qa.question.question }}</p>
+        <input type="checkbox" 
+          id="eligibilityquestion_{{qa.question.id}}"
+          name="eligibilityquestion_{{qa.question.id}}"
+          class="input-xlarge"
+         {{ extra_attrs }} 
+         {% if qa.answer.answer %}checked{% endif %}>
+        <label for="eligibilityquestion_{{qa.question.id}}">{{ qa.question.question }}</label>
       </div>
     </div>
     {% endfor %}
@@ -118,7 +164,11 @@
     <div class="control-group">
       <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="text" name="commonfreeresponsequestion_{{qa.question.id}}" class="input-xlarge" value='{{qa.answer.answer}}' {{ extra_attrs }}>
+        <input type="text"
+          id="commonfreeresponsequestion_{{qa.question.id}}"
+          name="commonfreeresponsequestion_{{qa.question.id}}"
+          class="commonfreeresponsequestion input-xlarge"
+          value='{{qa.answer.answer}}' {{ extra_attrs }}>
         <p class="help-block">{{ qa.question.question }}</p>
       </div>
     </div>
