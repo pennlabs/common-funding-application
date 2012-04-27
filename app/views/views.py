@@ -82,7 +82,13 @@ def event_new(request):
                             requester=request.user.get_profile(),
                             location=request.POST['location'],
                             organizations=request.POST['organizations'],
-                            time=request.POST['time']
+                            contact_email=request.POST['contactemail'],
+                            time=request.POST['time'],
+                            contact_phone=request.POST['contactphone'],
+                            anticipated_attendance=request.POST['anticipatedattendance'],
+                            admission_fee=request.POST['admissionfee'],
+                            advisor_email=request.POST['advisoremail'],
+                            advisor_phone=request.POST['advisorphone'],
                           )   
     event.save_from_form(request.POST)
     return redirect('app.views.events')
@@ -106,6 +112,12 @@ def event_edit(request, event_id):
     event.organizations = request.POST['organizations']
     event.location = request.POST['location']
     event.time = request.POST['time']
+    event.contact_email = request.POST['contactemail']
+    event.contact_phone = request.POST['contactphone']
+    event.anticipated_attendance = request.POST['anticipatedattendance']
+    event.admission_fee = request.POST['admissionfee']
+    event.advisor_email = request.POST['advisoremail']
+    event.advisor_phone = request.POST['advisorphone']
     event.save()
     event.save_from_form(request.POST)
     return redirect('app.views.events')
