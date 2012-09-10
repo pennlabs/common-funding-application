@@ -164,11 +164,11 @@ function populate() {
     <div class="control-group">
       <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="text"
+        <textarea type="text"
           id="commonfreeresponsequestion_{{qa.question.id}}"
           name="commonfreeresponsequestion_{{qa.question.id}}"
           class="commonfreeresponsequestion input-xlarge"
-          value='{{qa.answer.answer}}' {{ extra_attrs }}>
+          value='{{qa.answer.answer}}' {{ extra_attrs }}></textarea>
         <p class="help-block">{{ qa.question.question }}</p>
       </div>
     </div>
