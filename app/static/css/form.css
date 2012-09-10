@@ -75,3 +75,12 @@ fieldset {
     float: none;
     margin-left: 0px;
 }
+
+#true-false .control-label {
+    width: 100%;
+    text-align: left;
+}
+
+#true-false .controls {
+    margin-left: 0px;
+}
