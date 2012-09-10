@@ -246,6 +246,7 @@ function populate() {
   {% for comment in event.comment_set.all %}
   <label>{{ comment.funder }} said: {{ comment }}</label>
   {% endfor %}
+  <p>Specify any conditions and stipulations here.</p>
   <textarea name="new-comment"></textarea>
 </div>
 {% endif %}
