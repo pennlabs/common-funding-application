@@ -46,7 +46,7 @@ def itemlist_requester(context, items, funded):
 def itemlist_funder(context, item_list, funder_id):
   funders = CFAUser.objects.filter(user_type='F')
   items_data = []
-  title_row = ['Name', 'Quantity', 'Price Per Unit', 'Total Amount']
+  title_row = ['Name', 'Quantity', 'Price Per Unit', 'Total Amount', 'Category']
   for funder in funders:
     title_row.append(funder.user.username)
   for item in item_list:
