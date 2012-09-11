@@ -64,3 +64,23 @@ fieldset {
 #item-table .action-column {
   width: 75px;
 }
+
+#free-response .control-label {
+    float: none;
+    width: 100%;
+    text-align: left;
+}
+
+#free-response .controls {
+    float: none;
+    margin-left: 0px;
+}
+
+#true-false .control-label {
+    width: 100%;
+    text-align: left;
+}
+
+#true-false .controls {
+    margin-left: 0px;
+}

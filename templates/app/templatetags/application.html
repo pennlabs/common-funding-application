@@ -128,53 +128,56 @@ function populate() {
   </fieldset>
 </div>
   
-<div class="section-header">
-  <h2>
-    True / False Questions
-    <small>to recommend funders</small>
-  </h2>
-</div>
-<div class="section-content">
-  <fieldset>
-    {% for qa in eligibility_qas %}
-    <div class="control-group">
-      <label class="control-label">Question {{forloop.counter}}</label>
-      <div class="controls">
-        <input type="checkbox" 
-          id="eligibilityquestion_{{qa.question.id}}"
-          name="eligibilityquestion_{{qa.question.id}}"
-          class="input-xlarge"
-         {{ extra_attrs }} 
-         {% if qa.answer.answer %}checked{% endif %}>
-        <label for="eligibilityquestion_{{qa.question.id}}">{{ qa.question.question }}</label>
-      </div>
+<section id="true-false">
+    <div class="section-header">
+      <h2>
+        True / False Questions
+        <small>to recommend funders</small>
+      </h2>
     </div>
-    {% endfor %}
-  </fieldset>
-</div>
+    <div class="section-content">
+      <fieldset>
+        {% for qa in eligibility_qas %}
+        <div class="control-group">
+          <label for="eligibilityquestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>
+          <div class="controls">
+            <input type="checkbox" 
+              id="eligibilityquestion_{{qa.question.id}}"
+              name="eligibilityquestion_{{qa.question.id}}"
+              class="input-xlarge"
+             {{ extra_attrs }} 
+             {% if qa.answer.answer %}checked{% endif %}>
+            Yes
+          </div>
+        </div>
+        {% endfor %}
+      </fieldset>
+    </div>
+</section>
 
-<div class="section-header">
-  <h2>
-    Free-Response Questions
-  </h2>
-</div>
-<div class="section-content">
-  <fieldset>
-    {% for qa in commonfreeresponse_qas %}
-    <div class="control-group">
-      <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">Question {{forloop.counter}}</label>
-      <div class="controls">
-        <textarea type="text"
-          id="commonfreeresponsequestion_{{qa.question.id}}"
-          name="commonfreeresponsequestion_{{qa.question.id}}"
-          class="commonfreeresponsequestion input-xlarge"
-          value='{{qa.answer.answer}}' {{ extra_attrs }}></textarea>
-        <p class="help-block">{{ qa.question.question }}</p>
-      </div>
+<section id="free-response">
+    <div class="section-header">
+      <h2>
+        Free-Response Questions
+      </h2>
     </div>
-    {% endfor %}
-  </fieldset>
-</div>
+    <div class="section-content">
+      <fieldset>
+        {% for qa in commonfreeresponse_qas %}
+        <div class="control-group">
+        <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>
+          <div class="controls">
+            <textarea type="text"
+              id="commonfreeresponsequestion_{{qa.question.id}}"
+              name="commonfreeresponsequestion_{{qa.question.id}}"
+              class="commonfreeresponsequestion input-xlarge"
+              value='{{qa.answer.answer}}' {{ extra_attrs }}></textarea>
+          </div>
+        </div>
+        {% endfor %}
+      </fieldset>
+    </div>
+</section>
 
 <div class="section-header">
   <h2>
