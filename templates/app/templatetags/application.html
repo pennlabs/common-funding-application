@@ -139,7 +139,7 @@ function populate() {
       <fieldset>
         {% for qa in eligibility_qas %}
         <div class="control-group">
-          <label for="eligibilityquestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>
+          <p class="control-label">{{ qa.question.question }}</p>
           <div class="controls">
             <input type="checkbox" 
               id="eligibilityquestion_{{qa.question.id}}"
@@ -147,7 +147,7 @@ function populate() {
               class="input-xlarge"
              {{ extra_attrs }} 
              {% if qa.answer.answer %}checked{% endif %}>
-            Yes
+             <label for="eligibilityquestion_{{qa.question.id}}">Yes</label>
           </div>
         </div>
         {% endfor %}
@@ -170,7 +170,7 @@ function populate() {
             <textarea type="text"
               id="commonfreeresponsequestion_{{qa.question.id}}"
               name="commonfreeresponsequestion_{{qa.question.id}}"
-              class="commonfreeresponsequestion input-xlarge"
+              class="span6 commonfreeresponsequestion input-xlarge"
               value='{{qa.answer.answer}}' {{ extra_attrs }}></textarea>
           </div>
         </div>

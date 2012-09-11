@@ -84,3 +84,7 @@ fieldset {
 #true-false .controls {
     margin-left: 0px;
 }
+
+#true-false label {
+    display: inline;
+}
