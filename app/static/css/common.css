@@ -45,3 +45,11 @@ footer {
   margin-top: 30px;
   margin-bottom: 30px;
 }
+
+#item-table input.small.input-with-dollar {
+  width: 72px;
+}
+
+#item-table input.input-with-dollar {
+  width: 147px;
+}
