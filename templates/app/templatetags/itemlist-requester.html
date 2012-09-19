@@ -18,31 +18,36 @@
   <tbody>
     {% for item in items %}
       <tr class='app-itemrow'>
-        <th>
+        <td>
           <input name="item_name" type="text" class='small' 
             required {% if funded %} disabled {% endif %}
             value="{{ item.name }}" />
-        </th>
-        <th>
-          <input name="item_quantity" type="number" class='small'
+        </td>
+        <td>
+          <input name="item_quantity" type="text" class='small'
             required {% if funded %} disabled {% endif %}
             pattern="^\d+"
             value="{{ item.quantity }}" />
-        </th>
-        <th> 
-          <input class="inputIcon small" name="item_price_per_unit" type="number"
-            required {% if funded %} disabled {% endif %}
-            pattern="^\d*(\.\d{2}$)?"
-            value="{{ item.price_per_unit }}"/>
-        </th>
-
-        <th> 
-          <input class="inputIcon" name="item_funding_already_received" type="number"
-            required {% if funded %} disabled {% endif %}
-            pattern="^\d*(\.\d{2}$)?"
-            value="{{ item.funding_already_received }}" />
-        </th>
-        <th>
+        </td>
+        <td> 
+          <div class="input-prepend">
+            <span class="add-on">$</span>
+            <input class="inputIcon small input-with-dollar" name="item_price_per_unit" type="text"
+              required {% if funded %} disabled {% endif %} type="number"
+              pattern="^\d*(\.\d{2}$)?"
+              value="{{ item.price_per_unit }}"/>
+          </div>
+        </td>
+        <td> 
+          <div class="input-prepend">
+            <span class="add-on">$</span>
+            <input class="inputIcon input-with-dollar" name="item_funding_already_received"
+              type="text" type="number" required {% if funded %} disabled {% endif %}
+              pattern="^\d*(\.\d{2}$)?"
+              value="{{ item.funding_already_received }}" />
+          </div>
+        </td>
+        <td>
           <select name='item_category' {% if funded %} disabled {% endif %}>
             <option>Food</option>
             <option>Drink</option>
@@ -52,11 +57,11 @@
             <option>performer</option>
             <option>testing</option>
           </select>
-        </th>
+        </td>
         {% if not funded %}
-        <th>
-          <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
-        </th>
+        <td>
+          <button class='btn btn-danger remove_button' onclick="removeItem(tdis); return false;">Remove</button>
+        </td>
         {% endif %}
       </tr>
     {% endfor %}
