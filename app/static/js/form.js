@@ -1,7 +1,7 @@
 var totalFunders;
 var selectedFunders;
-var totalFunderRecQs;
 var recommendedFunders;
+var funderIds;
 
 function checkFunderQuestions(e) {
   
@@ -26,11 +26,25 @@ function showFunderQuestions() {
     $("p#funder-no-q").show();
 }
 
+function checkRecommendedFunders(elem) {
+  var currVal = String(elem.checked); // convert to string for comparison
+  var qid = elem.dataset.qid;
+  var funders = elem.dataset.funders.split(" ");
+  var expected = elem.dataset.expected.split(" ");
+  
+  for (i in funders) {
+    recommendedFunders[funders[i]][qid] = expected[i]==currVal;
+    //console.log("funder"+i+",qid"+qid+" : "+"expected-"+expected[i]+" got-"+currVal+" = "+(expected[i]==currVal));
+  }
+  
+  showRecommendedFunders();
+}
+
 function showRecommendedFunders() {
   var label = '<span class="label label-important">Recommended</span>';
   $(".funder-check .checkbox .label-important").remove();
   
-  for (var i=0; i<totalFunders; i++) {
+  for (i in recommendedFunders) {
     var boolCheck = true;
     for (j in recommendedFunders[i]) {
       boolCheck &= recommendedFunders[i][j];
@@ -47,60 +61,58 @@ $(document).ready(function() {
   // Init funder questions showing logic
   // maintain a boolean list of selectedFunders
   // show funder i if selectedFunders[i] is true
-  totalFunders = $(".funder-check input").length
-  selectedFunders = [] 
-  // register funder checkbox click
-  $(".funder-check input").change(function() {
-    selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
+  (function() {
+    totalFunders = $(".funder-check input").length
+    selectedFunders = []
+    // register funder checkbox click
+    $(".funder-check input").change(function() {
+      selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
+      showFunderQuestions();
+    });  
+    // initial count already checked checkboxes
+    $(".funder-check input").each(function() {
+      console.log($(this)[0].dataset.funderid);
+      selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
+    });
     showFunderQuestions();
-  });  
-  // initial count already checked checkboxes
-  $(".funder-check input").each(function() {
-    console.log($(this)[0].dataset.funderid);
-    selectedFunders[ $(this)[0].dataset.funderid ] = $(this).attr("checked") == "checked";
-  });
-  showFunderQuestions();
+  })();
   
   // Init recommended funders logic
   // maintain a 2D array of funders and questions, recommendedFunders
   // show funder i if recommendedFunders[i] is all true
   // there will be unused entries
   // trade-off is simplicity of implementing 2D array
-  totalFunderRecQs = $(".bool-q").length
-  recommendedFunders = new Array(totalFunders);
-  // init question arrays to all true
-  for (var i=0; i<totalFunders; i++) {
-    recommendedFunders[i] = new Array(totalFunderRecQs);
-    for (var j=0; j<totalFunderRecQs; j++) {
-      recommendedFunders[i][j] = true;
-    }
-  }
-  
-  // recommend click
-  $(".bool-q input[type=radio]").change(function() {
-    var currVal = $(this).val();
-    var qid = $(this).parents(".bool-q")[0].dataset.qid;
-    var funders = $(this).parents(".bool-q")[0].dataset.funders.split(" ");
-    var expected = $(this).parents(".bool-q")[0].dataset.expected.split(" ");
-    
-    for (i in funders) {
-      recommendedFunders[funders[i]][qid] = expected[i]==currVal;
+  (function() {
+    // collect funder ids
+    funderIds = new Array(totalFunders);
+    for (var i=0; i<totalFunders; i++) {
+      funderIds[i] = $(".funder-checkbox")[i].dataset.funderid;
     }
     
-    showRecommendedFunders();
-  });
+    // collect qids
+    var qids = new Array();
+    $(".bool-q").each(function(){
+      qids.push(this.dataset.qid);
+    });
+    
+    // init recommendedFunders 2D ("associated") array
+    var totalFunderRecQs = $(".bool-q").length
+    recommendedFunders = {};
+    for (var i=0; i<totalFunders; i++) {
+      recommendedFunders[funderIds[i]] = {};
+      for (j in qids) {
+        recommendedFunders[funderIds[i]][qids[j]] = false;
+      }
+    }
+  })();
+    
   // initial check recommend
   $(".bool-q").each(function() {
-    var currVal = $(this).find("input[type=radio]::checked").val();
-    var qid = this.dataset.qid;
-    var funders = this.dataset.funders.split(" ");
-    var expected = this.dataset.expected.split(" ");
-    
-    for (i in funders) {
-      recommendedFunders[funders[i]][qid] = expected[i]==currVal;
-    }
-    
-    showRecommendedFunders();
+    checkRecommendedFunders(this);
+  });
+  // register recommend click
+  $(".bool-q").change(function() {
+    checkRecommendedFunders(this);
   });
   
 

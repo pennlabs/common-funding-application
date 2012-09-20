@@ -140,13 +140,17 @@ function populate() {
     <div class="control-group">
       <label class="control-label">Question {{forloop.counter}}</label>
       <div class="controls">
-        <input type="checkbox" 
-          id="eligibilityquestion_{{qa.question.id}}"
-          name="eligibilityquestion_{{qa.question.id}}"
-          class="input-xlarge"
-         {{ extra_attrs }} 
-         {% if qa.answer.answer %}checked{% endif %}>
-        <label for="eligibilityquestion_{{qa.question.id}}">{{ qa.question.question }}</label>
+        <label>
+          <input type="checkbox" 
+            id="eligibilityquestion_{{qa.question.id}}"
+            name="eligibilityquestion_{{qa.question.id}}"
+            class="bool-q"
+            data-qid="{{qa.question.id}}"
+            data-funders="4 5"
+            data-expected="true false"
+            {{ extra_attrs }}
+            {% if qa.answer.answer %}checked{% endif %}>
+        {{ qa.question.question }}</label>
       </div>
     </div>
     {% endfor %}
@@ -204,7 +208,13 @@ function populate() {
   {% for funder in funders %}
   <div class="funder-check">
     <label class="checkbox">
-      <input data-funderid="{{funder.id}}" name='funder_{{ funder.id }}' {% if funder in event.applied_funders.all %}checked{% endif %} type="checkbox" {{ extra_attrs }}>{{funder.user.username}}
+      <input
+        data-funderid="{{funder.id}}"
+        name='funder_{{ funder.id }}'
+        class="funder-checkbox"
+        {% if funder in event.applied_funders.all %}checked{% endif %}
+        type="checkbox" {{ extra_attrs }}>
+        {{funder.user.username}}
     </label>
     <p class="help-block">{{funder.mission_statement}}</p>
   </div>
