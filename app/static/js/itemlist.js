@@ -1,3 +1,5 @@
+
+
 function addItem() {
   var $row = $('.add').closest('tr');
   var $clone = $row.clone().insertBefore($row);
@@ -74,20 +76,20 @@ $(document).ready(function() {
 //updates the total amount (quant * ppu) in the column
 function calculateAmount() {
   // selectors
-  var quant_sel = 'input[name="item_quantity"]';
-  var ppu_sel = 'input[name="item_price_per_unit"]';
-  var alr_rcvd_sel = 'input[name="item_funding_already_received"]';
-  var amt_sel = '.itemrow ' + quant_sel + ', .itemrow ' +
-    ppu_sel + ', .itemrow ' + alr_rcvd_sel;
+  var quantSel = 'input[name="item_quantity"]';
+  var ppuSel = 'input[name="item_price_per_unit"]';
+  var alreadyReceivedSel = 'input[name="item_funding_already_received"]';
+  var amountSel = '.itemrow ' + quantSel + ', .itemrow ' +
+    ppuSel + ', .itemrow ' + alreadyReceivedSel;
 
-  $(amt_sel).bind('input', function(){
+  $(amountSel).bind('input', function(){
     // find current selection
-    var curr_row = $(this).closest('.itemrow');
-    var q_val = $(curr_row).find(quant_sel).val() || 0.00;
-    var p_val = $(curr_row).find(ppu_sel).val() || 0.00;
-    var a_val = $(curr_row).find(alr_rcvd_sel).val() || 0.00;
+    var currRow = $(this).closest('.itemrow');
+    var qVal = $(currRow).find(quantSel).val() || 0.00;
+    var pVal = $(currRow).find(ppuSel).val() || 0.00;
+    var aVal = $(currRow).find(alreadyReceivedSel).val() || 0.00;
 
-    $(curr_row).find('.item-amount').html((q_val * p_val - a_val).toFixed(2));
+    $(currRow).find('.item-amount').html((qVal * pVal - aVal).toFixed(2));
 
     updateTotal();
   });
@@ -95,7 +97,6 @@ function calculateAmount() {
 
 function updateTotal(){
     var total = 0;
-    console.log($('.item-amount'));
     for(var i=0; i < $('.item-amount').length ; i++){
       total = total + parseFloat($('.item-amount').get(i).innerHTML);
     }
