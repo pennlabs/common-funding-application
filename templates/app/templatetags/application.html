@@ -127,32 +127,34 @@ function populate() {
     </div>
   </fieldset>
 </div>
-  
+
 <section id="true-false">
-    <div class="section-header">
-      <h2>
-        True / False Questions
-        <small>to recommend funders</small>
-      </h2>
-    </div>
-    <div class="section-content">
-      <fieldset>
-        {% for qa in eligibility_qas %}
-        <div class="control-group">
-          <p class="control-label">{{ qa.question.question }}</p>
-          <div class="controls">
+  <div class="section-header">
+    <h2>
+      True / False Questions
+      <small>to recommend funders</small>
+    </h2>
+  </div>
+  <div class="section-content">
+    <fieldset>
+      {% for qa in eligibility_qas %}
+      <div class="control-group">
+        <label class="control-label">Question {{forloop.counter}}</label>
+        <div class="controls">
+          <label>
             <input type="checkbox" 
               id="eligibilityquestion_{{qa.question.id}}"
               name="eligibilityquestion_{{qa.question.id}}"
-              class="input-xlarge"
-             {{ extra_attrs }} 
-             {% if qa.answer.answer %}checked{% endif %}>
-             <label for="eligibilityquestion_{{qa.question.id}}">Yes</label>
-          </div>
+              class="bool-q"
+              data-qid="{{qa.question.id}}"
+              {{ extra_attrs }}
+              {% if qa.answer.answer %}checked{% endif %}>
+          {{ qa.question.question }}</label>
         </div>
-        {% endfor %}
-      </fieldset>
-    </div>
+      </div>
+      {% endfor %}
+    </fieldset>
+  </div>
 </section>
 
 <section id="free-response">
@@ -207,7 +209,15 @@ function populate() {
   {% for funder in funders %}
   <div class="funder-check">
     <label class="checkbox">
-      <input data-funderid="{{funder.id}}" name='funder_{{ funder.id }}' {% if funder in event.applied_funders.all %}checked{% endif %} type="checkbox" {{ extra_attrs }}>{{funder.user.username}}
+      <input
+        data-funderid="{{funder.id}}"
+        name="funder_{{ funder.id }}"
+        class="funder-checkbox"
+        data-questions="1,3,4"
+        data-expected="false,true,false"
+        {% if funder in event.applied_funders.all %}checked{% endif %}
+        type="checkbox" {{ extra_attrs }}>
+        {{funder.user.username}}
     </label>
     <p class="help-block">{{funder.mission_statement}}</p>
   </div>
