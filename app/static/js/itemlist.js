@@ -7,7 +7,6 @@ function addItem() {
   $clone.find('input').removeAttr('required');
   $row.find('input').removeAttr('required').val('');
 
-  updateTotal();
 }
 function removeItem(e) {
   $(e).closest('tr').remove();
@@ -84,11 +83,13 @@ function calculateAmount() {
   $(amt_sel).bind('input', function(){
     // find current selection
     var curr_row = $(this).closest('.itemrow');
-    var q_val = $(curr_row).find(quant_sel).val();
-    var p_val = $(curr_row).find(ppu_sel).val();
-    var a_val = $(curr_row).find(alr_rcvd_sel).val();
-    (q_val && p_val && a_val) && 
-      $(curr_row).find('.item-amount').html(q_val * p_val - a_val);
+    var q_val = $(curr_row).find(quant_sel).val() || 0.00;
+    var p_val = $(curr_row).find(ppu_sel).val() || 0.00;
+    var a_val = $(curr_row).find(alr_rcvd_sel).val() || 0.00;
+
+    $(curr_row).find('.item-amount').html((q_val * p_val - a_val).toFixed(2));
+
+    updateTotal();
   });
 }
 
@@ -98,5 +99,5 @@ function updateTotal(){
     for(var i=0; i < $('.item-amount').length ; i++){
       total = total + parseFloat($('.item-amount').get(i).innerHTML);
     }
-    $('.items-total').html(total);
+    $('.items-total small').html(total.toFixed(2));
 }
