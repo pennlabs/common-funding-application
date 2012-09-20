@@ -7,8 +7,8 @@
       <th>Name</th>
       <th>Quantity</th>
       <th>Price Per Unit</th>
-      <th>Amount</th>        
       <th>Funding Already Received</th>
+      <th>Amount</th>        
       <th>Category</th>
       {% if not funded %}
       <th class='action-column'>Action</th>
@@ -71,11 +71,11 @@
       <th> 
         <input class="new inputIcon small" onkeyup="makeRequired(this)" name="item_price_per_unit" type="text"/>
       </th>
-      <th>
-        <p class="item-amount">0</p>
-      </th>
       <th> 
         <input class="new inputIcon" onkeyup="makeRequired(this)" name="item_funding_already_received" type="text"/>
+      </th>
+      <th>
+        <p class="item-amount">0.00</p>
       </th>
       <th>
         <select name='item_category'>
@@ -96,14 +96,6 @@
     {% endif %}
 
   </tbody>
-
-    <tr>
-      <th>
-        Total: <span class="items-total">0</span>
-      </th>
-    </tr>
-
-
-
 </table>
+<h3 class="items-total">Total: <small>0.00</small> </h3> 
 
