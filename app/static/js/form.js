@@ -25,10 +25,6 @@ function showFunderQuestions() {
     $("p#funder-no-q").show();
 }
 
-function checkRecommendedFunders2(qid) {
-  
-}
-
 function checkRecommendedFunders(elem) {
   var currVal = String(elem.checked); // convert to string for comparison
   var qid = elem.dataset.qid;
