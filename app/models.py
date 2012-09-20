@@ -34,11 +34,15 @@ class CFAUser(models.Model):
   >>> cfau.is_funder
   False
   """
-  user = models.OneToOneField(User)
+  user = models.OneToOneField(User, help_text='You must first create a user '
+                              'before adding them to the CFA.')
   user_type = models.CharField(max_length=1,
                                choices=REQUESTER_OR_FUNDER)
   phone = USPhoneNumberField()
-  osa_email = models.EmailField(null=True) # The e-mail of the contact in OSA
+  # The e-mail of the contact in OSA
+  osa_email = models.EmailField('OSA Contact Email', null=True,
+                                help_text='The email address for contacting '
+                                'OSA when an app is funded.')
   mission_statement = models.TextField(max_length=256)
 
   def __unicode__(self):
@@ -75,6 +79,10 @@ class CFAUser(models.Model):
         context).strip()
     message = render_to_string('app/osa_email.txt', context)
     send_mail(subject, message, self.user.email, [str(self.osa_email)])
+
+  class Meta:
+    verbose_name = 'CFA Users'
+    verbose_name_plural = 'CFA Users'
 
 
 @receiver(sender=User, signal=post_save)
@@ -252,7 +260,7 @@ class Question(models.Model):
 
 
 class EligibilityQuestion(Question):
-    pass
+  pass
 
 
 class EligibilityAnswer(models.Model):
