@@ -81,10 +81,12 @@ class CFAUser(models.Model):
     send_mail(subject, message, self.user.email, [str(self.osa_email)])
 
   def recs_yes(self):
-    self.funderconstraint_set.filter(answer='Y').values_list("question_id", flat=True)
+    """Returns the questions the funder wants Yes on"""
+    return self.funderconstraint_set.filter(answer='Y').values_list("question_id", flat=True)
 
   def recs_no(self):
-    self.funderconstraint_set.filter(answer='N').values_list("question_id", flat=True)
+    """Returns the questions the funder wants No on"""
+    return self.funderconstraint_set.filter(answer='N').values_list("question_id", flat=True)
 
   class Meta:
     verbose_name = 'CFA Users'
