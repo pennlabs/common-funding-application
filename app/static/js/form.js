@@ -32,8 +32,10 @@ function checkRecommendedFunders(elem) {
   var funders = elem.dataset.funders.split(" ");
   var expected = elem.dataset.expected.split(" ");
   
-  for (i in funders) {
-    recommendedFunders[funders[i]][qid] = expected[i]==currVal;
+  for (var i in funders) {
+    // check if valid funder id
+    if (recommendedFunders[funders[i]])
+      recommendedFunders[funders[i]][qid] = expected[i]==currVal;
     //console.log("funder"+i+",qid"+qid+" : "+"expected-"+expected[i]+" got-"+currVal+" = "+(expected[i]==currVal));
   }
   
@@ -44,7 +46,7 @@ function showRecommendedFunders() {
   var label = '<span class="label label-important">Recommended</span>';
   $(".funder-check .checkbox .label-important").remove();
   
-  for (i in recommendedFunders) {
+  for (var i in recommendedFunders) {
     var boolCheck = true;
     for (j in recommendedFunders[i]) {
       boolCheck &= recommendedFunders[i][j];
@@ -100,7 +102,7 @@ $(document).ready(function() {
     recommendedFunders = {};
     for (var i=0; i<totalFunders; i++) {
       recommendedFunders[funderIds[i]] = {};
-      for (j in qids) {
+      for (var j in qids) {
         recommendedFunders[funderIds[i]][qids[j]] = false;
       }
     }
