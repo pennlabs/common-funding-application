@@ -1,7 +1,6 @@
-var totalFunders;
 var selectedFunders;
 var recommendedFunders;
-var funderIds;
+var qStorage;
 
 function checkFunderQuestions(e) {
   
@@ -26,11 +25,15 @@ function showFunderQuestions() {
     $("p#funder-no-q").show();
 }
 
+function checkRecommendedFunders2(qid) {
+  
+}
+
 function checkRecommendedFunders(elem) {
   var currVal = String(elem.checked); // convert to string for comparison
   var qid = elem.dataset.qid;
-  var funders = elem.dataset.funders.split(" ");
-  var expected = elem.dataset.expected.split(" ");
+  var funders = qStorage[qid].funders;
+  var expected = qStorage[qid].expected;
   
   for (var i in funders) {
     // check if valid funder id
@@ -64,7 +67,7 @@ $(document).ready(function() {
   // maintain a boolean list of selectedFunders
   // show funder i if selectedFunders[i] is true
   (function() {
-    totalFunders = $(".funder-check input").length
+    var totalFunders = $(".funder-check input").length
     selectedFunders = []
     // register funder checkbox click
     $(".funder-check input").change(function() {
@@ -86,26 +89,42 @@ $(document).ready(function() {
   // trade-off is simplicity of implementing 2D array
   (function() {
     // collect funder ids
-    funderIds = new Array(totalFunders);
-    for (var i=0; i<totalFunders; i++) {
-      funderIds[i] = $(".funder-checkbox")[i].dataset.funderid;
-    }
+    var fids = new Array();
+    $(".funder-checkbox").each(function(){
+      fids.push(this.dataset.funderid);
+    });
     
-    // collect qids
+    // collect question ids
     var qids = new Array();
     $(".bool-q").each(function(){
       qids.push(this.dataset.qid);
     });
     
     // init recommendedFunders 2D ("associated") array
-    var totalFunderRecQs = $(".bool-q").length
+    // init them to all true, "true" for indifferent
     recommendedFunders = {};
-    for (var i=0; i<totalFunders; i++) {
-      recommendedFunders[funderIds[i]] = {};
+    for (var i in fids) {
+      recommendedFunders[fids[i]] = {};
       for (var j in qids) {
-        recommendedFunders[funderIds[i]][qids[j]] = false;
+        recommendedFunders[fids[i]][qids[j]] = true;
       }
-    }
+    }    
+    
+    // build questions storage, for quick lookup for question onClick
+    // for each question, stores list of funders that cares, and list of expected values
+    qStorage = {};
+    for (var i in qids)
+      qStorage[qids[i]] = { funders:[], expected:[] };
+    $(".funder-checkbox").each(function(){
+        var funderid = this.dataset.funderid;
+        var qids2 = this.dataset.questions.split(",");
+        var expected = this.dataset.expected.split(",");
+        for (var i in qids2) {
+          qStorage[qids2[i]].funders.push(funderid);
+          qStorage[qids2[i]].expected.push(expected[i]);
+        }
+    });
+    
   })();
     
   // initial check recommend

@@ -146,8 +146,6 @@ function populate() {
             name="eligibilityquestion_{{qa.question.id}}"
             class="bool-q"
             data-qid="{{qa.question.id}}"
-            data-funders="4 5"
-            data-expected="true false"
             {{ extra_attrs }}
             {% if qa.answer.answer %}checked{% endif %}>
         {{ qa.question.question }}</label>
@@ -210,8 +208,10 @@ function populate() {
     <label class="checkbox">
       <input
         data-funderid="{{funder.id}}"
-        name='funder_{{ funder.id }}'
+        name="funder_{{ funder.id }}"
         class="funder-checkbox"
+        data-questions="1,3,4"
+        data-expected="false,true,false"
         {% if funder in event.applied_funders.all %}checked{% endif %}
         type="checkbox" {{ extra_attrs }}>
         {{funder.user.username}}
