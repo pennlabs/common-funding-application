@@ -171,7 +171,7 @@ function populate() {
               id="commonfreeresponsequestion_{{qa.question.id}}"
               name="commonfreeresponsequestion_{{qa.question.id}}"
               class="span6 commonfreeresponsequestion input-xlarge"
-              value='{{qa.answer.answer}}' {{ extra_attrs }}></textarea>
+              {{ extra_attrs }}>{{qa.answer.answer}}</textarea>
           </div>
         </div>
         {% endfor %}
