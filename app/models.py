@@ -223,7 +223,7 @@ class Event(models.Model):
 
     def notify_requester(self, grants):
       """Notify a requester that an event has been funded."""
-      context = {'event': self, 'grants': self.grants}
+      context = {'event': self, 'grants': grants}
       subject = render_to_string('app/grant_email_subject.txt',
           context).strip()
       message = render_to_string('app/grant_email.txt', context)
