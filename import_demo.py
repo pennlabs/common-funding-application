@@ -89,7 +89,8 @@ def import_events():
                          location='Huntsman',
                          anticipated_attendance=0,
                          admission_fee='0',
-                         requester=CFAUser.objects.get(user=User.objects.get(username="testrequester1")))
+                         requester=CFAUser.objects.get(user=User.objects.get(username="testrequester1")),
+                         funding_already_received="0.00")
     Event.objects.create(name="testrequester1's Second Event",
                          date=datetime.date(year=2012,
                                             month=4,
@@ -98,7 +99,8 @@ def import_events():
                          location='Moore 100',
                          anticipated_attendance=50,
                          admission_fee='69.69',
-                         requester=CFAUser.objects.get(user=User.objects.get(username="testrequester1")))
+                         requester=CFAUser.objects.get(user=User.objects.get(username="testrequester1")),
+                         funding_already_received="1.00")
     Event.objects.create(name="testrequester2's First Event",
                          date=datetime.date(year=2012,
                                             month=5,
@@ -107,7 +109,8 @@ def import_events():
                          location='DRLB',
                          anticipated_attendance=30,
                          admission_fee='10',
-                         requester=CFAUser.objects.get(user=User.objects.get(username="testrequester2")))
+                         requester=CFAUser.objects.get(user=User.objects.get(username="testrequester2")),
+                         funding_already_received="5.50")
     Event.objects.create(name="testrequester2's Second Event",
                          date=datetime.date(year=2012,
                                             month=5,
@@ -116,7 +119,8 @@ def import_events():
                          location='Rodin',
                          anticipated_attendance=10,
                          admission_fee='8',
-                         requester=CFAUser.objects.get(user=User.objects.get(username="testrequester2")))
+                         requester=CFAUser.objects.get(user=User.objects.get(username="testrequester2")),
+                         funding_already_received="2.50")
 
 def import_sites():
   site = Site.objects.get_current()
