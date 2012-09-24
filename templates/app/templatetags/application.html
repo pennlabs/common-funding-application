@@ -213,10 +213,8 @@ function populate() {
         data-funderid="{{funder.id}}"
         name="funder_{{ funder.id }}"
         class="funder-checkbox"
-        data-questions="1,3,4"
-        data-recs_yes="{{ funder.recs_yes }}"
-        data-recs_no="{{ funder.recs_no }}"
-        data-expected="false,true,false"
+        data-recsyes="{{ funder.recs_yes }}"
+        data-recsno="{{ funder.recs_no }}"
         {% if funder in event.applied_funders.all %}checked{% endif %}
         type="checkbox" {{ extra_attrs }}>
         {{funder.user.username}}
