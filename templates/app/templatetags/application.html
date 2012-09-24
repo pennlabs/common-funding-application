@@ -128,7 +128,10 @@ function populate() {
     <div class="control-group">
       <label for="fundingalreadyreceived" class="control-label">Funding Already Receieved</label>
       <div class="controls">
-        <input required value="{{ event.funding_already_received }}" type="number" name='fundingalreadyreceived' id="fundingalreadyreceived" class="input-xlarge" {{ extra_attrs }}>
+        <div class="input-prepend">
+            <span class="add-on">$</span>
+            <input required value="{{ event.funding_already_received }}" type="number" name='fundingalreadyreceived' id="fundingalreadyreceived" class="input-xlarge" {{ extra_attrs }}>
+        </div>
         <p class="help-block">Amount of funding already received that has not been allocated for any particular item</p>
       </div>
     </div>
