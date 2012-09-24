@@ -115,6 +115,7 @@ class Event(models.Model):
     * A requester
     * An advisor
     * A list of collaborating organizations
+    * The amount of money already received that is not allocated for any item
     """
     name = models.CharField(max_length=256)
     date = models.DateField()
@@ -131,11 +132,13 @@ class Event(models.Model):
     applied_funders =\
         models.ManyToManyField(CFAUser,
                                related_name='event_applied_funders')
+    funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
 
     @property
     def total_funds_already_received(self):
       """The total amount of money already received (before grants) for an event."""
-      return sum(item.funding_already_received for item in self.item_set.all())
+      return self.funding_already_received + sum(item.funding_already_received
+                                                 for item in self.item_set.all())
 
     @property
     def amounts(self):

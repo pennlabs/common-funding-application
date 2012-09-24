@@ -89,6 +89,7 @@ def event_new(request):
                             admission_fee=request.POST['admissionfee'],
                             advisor_email=request.POST['advisoremail'],
                             advisor_phone=request.POST['advisorphone'],
+                            funding_already_received=request.POST['fundingalreadyreceived'],
                           )   
     event.save_from_form(request.POST)
     return redirect('app.views.events')
@@ -118,6 +119,7 @@ def event_edit(request, event_id):
     event.admission_fee = request.POST['admissionfee']
     event.advisor_email = request.POST['advisoremail']
     event.advisor_phone = request.POST['advisorphone']
+    event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
     return redirect('app.views.events')
