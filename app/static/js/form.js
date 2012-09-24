@@ -17,7 +17,7 @@ function showFunderQuestions() {
   $(selectShow).fadeIn();
 
   
-  console.log(selectedFunders.length);
+  //console.log(selectedFunders.length);
   
   if ($(selectShow).length)
     $("p#funder-no-q").hide();
@@ -26,7 +26,7 @@ function showFunderQuestions() {
 }
 
 function checkRecommendedFunders(elem) {
-  var currVal = String(elem.checked); // convert to string for comparison
+  var currVal = elem.checked;
   var qid = elem.dataset.qid;
   var funders = qStorage[qid].funders;
   var expected = qStorage[qid].expected;
@@ -35,7 +35,7 @@ function checkRecommendedFunders(elem) {
     // check if valid funder id
     if (recommendedFunders[funders[i]])
       recommendedFunders[funders[i]][qid] = expected[i]==currVal;
-    //console.log("funder"+i+",qid"+qid+" : "+"expected-"+expected[i]+" got-"+currVal+" = "+(expected[i]==currVal));
+    //console.log("funder"+funders[i]+",qid"+qid+" : "+"expected-"+expected[i]+" got-"+currVal+" = "+(expected[i]==currVal));
   }
   
   showRecommendedFunders();
@@ -111,14 +111,25 @@ $(document).ready(function() {
     qStorage = {};
     for (var i in qids)
       qStorage[qids[i]] = { funders:[], expected:[] };
+    
     $(".funder-checkbox").each(function(){
-        var funderid = this.dataset.funderid;
-        var qids2 = this.dataset.questions.split(",");
-        var expected = this.dataset.expected.split(",");
-        for (var i in qids2) {
-          qStorage[qids2[i]].funders.push(funderid);
-          qStorage[qids2[i]].expected.push(expected[i]);
+      var funderid = this.dataset.funderid;
+      var yesIds = this.dataset.recsyes;
+      if (!!yesIds) {
+        yesIds = yesIds.split(",");
+        for (var i in yesIds) {
+          qStorage[yesIds[i]].funders.push(funderid);
+          qStorage[yesIds[i]].expected.push(true);
         }
+      }
+      var noIds = this.dataset.recsno;
+      if (!!noIds) {
+        noIds = noIds.split(",");
+        for (var i in noIds) {
+          qStorage[noIds[i]].funders.push(funderid);
+          qStorage[noIds[i]].expected.push(false);
+        }
+      }
     });
     
   })();
