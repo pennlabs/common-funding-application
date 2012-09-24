@@ -82,11 +82,13 @@ class CFAUser(models.Model):
 
   def recs_yes(self):
     """Returns the questions the funder wants Yes on"""
-    return self.funderconstraint_set.filter(answer='Y').values_list("question_id", flat=True)
+    yes = self.funderconstraint_set.filter(answer='Y').values_list("question_id", flat=True)
+    return ','.join(str(a) for a in yes)
 
   def recs_no(self):
     """Returns the questions the funder wants No on"""
-    return self.funderconstraint_set.filter(answer='N').values_list("question_id", flat=True)
+    no = self.funderconstraint_set.filter(answer='N').values_list("question_id", flat=True)
+    return ','.join(str(a) for a in no)
 
   class Meta:
     verbose_name = 'CFA Users'
