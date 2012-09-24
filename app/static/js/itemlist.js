@@ -1,6 +1,10 @@
+
+
 function addItem() {
   var $row = $('.add').closest('tr');
   var $clone = $row.clone().insertBefore($row);
+  //set previous amount to zero.
+  $row.find('.item-amount').html(0);
   $clone.find('.add').replaceWith($('.remove').html());
   $clone.find('input').removeAttr('required');
   $row.find('input').removeAttr('required').val('');
@@ -8,6 +12,7 @@ function addItem() {
 }
 function removeItem(e) {
   $(e).closest('tr').remove();
+  updateTotal();
 }
 function makeRequired(input) {
   var $inputs = $(input).closest('tr').find('input');
@@ -28,6 +33,8 @@ function newInputCheck(e,s) {
       .attr("value",s);
   }
 }
+
+
 
 function numericOnly(event) {
   
@@ -62,4 +69,36 @@ $(document).ready(function() {
   if ($(".app-item-row").length == 1) {
     addItem();
   }
+  calculateAmount();
 });
+
+
+//updates the total amount (quant * ppu) in the column
+function calculateAmount() {
+  // selectors
+  var quantSel = 'input[name="item_quantity"]';
+  var ppuSel = 'input[name="item_price_per_unit"]';
+  var alreadyReceivedSel = 'input[name="item_funding_already_received"]';
+  var amountSel = '.itemrow ' + quantSel + ', .itemrow ' +
+    ppuSel + ', .itemrow ' + alreadyReceivedSel;
+
+  $(amountSel).bind('input', function(){
+    // find current selection
+    var currRow = $(this).closest('.itemrow');
+    var qVal = $(currRow).find(quantSel).val() || 0.00;
+    var pVal = $(currRow).find(ppuSel).val() || 0.00;
+    var aVal = $(currRow).find(alreadyReceivedSel).val() || 0.00;
+
+    $(currRow).find('.item-amount').html((qVal * pVal - aVal).toFixed(2));
+
+    updateTotal();
+  });
+}
+
+function updateTotal(){
+    var total = 0;
+    for(var i=0; i < $('.item-amount').length ; i++){
+      total = total + parseFloat($('.item-amount').get(i).innerHTML);
+    }
+    $('.items-total small').html(total.toFixed(2));
+}
