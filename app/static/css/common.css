@@ -53,3 +53,7 @@ footer {
 #item-table input.input-with-dollar {
   width: 147px;
 }
+
+.item-category {
+  width: 100px;
+}

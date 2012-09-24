@@ -24,7 +24,7 @@
             value="{{ item.name }}" />
         </td>
         <td>
-          <input name="item_quantity" type="text" class='small'
+          <input name="item_quantity" type="number" class='small'
             required {% if funded %} disabled {% endif %}
             pattern="^\d+"
             value="{{ item.quantity }}" />
@@ -48,7 +48,10 @@
           </div>
         </td>
         <td>
-          <select name='item_category' {% if funded %} disabled {% endif %}>
+          <p class="item-amount">0.00</p>
+        </td>
+        <td>
+          <select class="item-category" name='item_category' {% if funded %} disabled {% endif %}>
             <option>Food</option>
             <option>Drink</option>
             <option>blah</option>
@@ -67,27 +70,29 @@
     {% endfor %}
     {% if not funded %}
     <tr class='itemrow'>
-      <th>
+      <td>
         <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
-      </th>
-      <th>
+      </td>
+      <td>
         <input class="new small" onkeyup="makeRequired(this)" name="item_quantity" type="number"/>
-      </th>
-      <th> 
+      </td>
+      <td> 
         <div class="input-prepend">
           <span class="add-on">$</span>
           <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_price_per_unit" type="number"/>
         </div>
-      </th>
-      <th> 
+      </td>
+      <td> 
         <div class="input-prepend">
           <span class="add-on">$</span>
           <input class="new inputIcon input-with-dollar" onkeyup="makeRequired(this)" name="item_funding_already_received" type="number"/>
         </div>
+      </td>
+      <td>
         <p class="item-amount">0.00</p>
-      </th>
-      <th>
-        <select name='item_category'>
+      </td>
+      <td>
+        <select class="item-category" name='item_category'>
           <option>Food</option>
           <option>Drink</option>
           <option>blah</option>
@@ -96,10 +101,10 @@
           <option>performer</option>
           <option>testing</option>
         </select>
-      </th>
-      <th>
+      </td>
+      <td>
         <button class='btn add' onclick='addItem(this); return false;'>Add</button>
-      </th>
+      </td>
     </tr>
 
     {% endif %}
