@@ -8,6 +8,7 @@
       <th>Quantity</th>
       <th>Price Per Unit</th>
       <th>Funding Already Received</th>
+      <th>Amount</th>        
       <th>Category</th>
       {% if not funded %}
       <th class='action-column'>Action</th>
@@ -34,6 +35,7 @@
             pattern="^\d*(\.\d{2}$)?"
             value="{{ item.price_per_unit }}"/>
         </th>
+
         <th> 
           <input class="inputIcon" name="item_funding_already_received" type="number"
             required {% if funded %} disabled {% endif %}
@@ -59,7 +61,7 @@
       </tr>
     {% endfor %}
     {% if not funded %}
-    <tr id='itemrow'>
+    <tr class='itemrow'>
       <th>
         <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
       </th>
@@ -71,6 +73,9 @@
       </th>
       <th> 
         <input class="new inputIcon" onkeyup="makeRequired(this)" name="item_funding_already_received" type="number"/>
+      </th>
+      <th>
+        <p class="item-amount">0.00</p>
       </th>
       <th>
         <select name='item_category'>
@@ -87,6 +92,10 @@
         <button class='btn add' onclick='addItem(this); return false;'>Add</button>
       </th>
     </tr>
+
     {% endif %}
+
   </tbody>
 </table>
+<h3 class="items-total">Total: <small>0.00</small> </h3> 
+
