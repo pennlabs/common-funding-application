@@ -8,10 +8,12 @@ function addItem() {
   $row.find('input').removeAttr('required').val('');
 
 }
+
 function removeItem(e) {
   $(e).closest('tr').remove();
   updateTotal();
 }
+
 function makeRequired(input) {
   var $inputs = $(input).closest('tr').find('input');
   var input = $inputs.map(function(){ return $(this).val(); }).get().join('');
@@ -20,11 +22,13 @@ function makeRequired(input) {
   else
     $inputs.removeAttr('required');
 }
+
 function newInputClicked(e) {
   if ($(e).hasClass("new"))
     $(e).removeClass("new")
       .attr("value","");
 }
+
 function newInputCheck(e,s) {
   if ($(e).attr("value")=="") {    
     $(e).addClass("new")
@@ -32,12 +36,7 @@ function newInputCheck(e,s) {
   }
 }
 
-
-
 function numericOnly(event) {
-  
-  console.log(event.keyCode);
-  
   // Allow: backspace, delete, tab and escape
   if (event.keyCode == 46 || event.keyCode == 8 ||
       event.keyCode == 9 || event.keyCode == 27 || 
@@ -62,6 +61,13 @@ function numericOnly(event) {
 function expandFunders(e) {
   $(e).parents(".app-item-row").find(".funders-list").slideToggle(500);
 }
+
+$(document).ready(function() {
+  if ($(".app-item-row").length == 1) {
+    addItem();
+  }
+  calculateAmount();
+});
 
 //updates the total amount (quant * ppu) in the column
 function calculateAmount() {
@@ -98,14 +104,12 @@ function calculateAmount() {
 
   //upon keystroke input, update totals
   $(amountSel).bind('input', function(){
-    console.log('inside');
     // find current selection
     currRow = $($(this).closest('.itemrow, .app-itemrow'));
     setRowAmount(currRow);
     updateTotal();
   });
 }
-
 //update item total
 function updateTotal(){
     var total = 0;
@@ -117,12 +121,9 @@ function updateTotal(){
     $('.items-total small').html(total.toFixed(2));
 }
 
-
-
 $(document).ready(function() {
   if ($(".app-item-row").length == 1) {
     addItem();
   }
   calculateAmount();
 });
-
