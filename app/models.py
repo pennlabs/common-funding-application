@@ -262,6 +262,16 @@ class Comment(models.Model):
         return self.comment
 
 
+@receiver(sender=Comment, signal=post_save)
+def notify_requester(sender, instance, signal, created, **kwargs):
+  if created:
+    subject = 'You have a new comment on your funding application'
+    message = ('%s left a comment on your application for an event on %s.'
+      '%s said "%s" See the full application at %s.') % (instance.funder, instance.event.date,
+      instance.funder, instance.comment, 'link here')
+    send_mail(subject, message, instance.funder.user.email, [instance.event.contact_email])
+
+
 class Question(models.Model):
     question = models.TextField()
     

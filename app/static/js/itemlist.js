@@ -76,7 +76,7 @@ function calculateAmount() {
   var quantSel = 'input[name="item_quantity"]';
   var ppuSel = 'input[name="item_price_per_unit"]';
   var alreadyReceivedSel = 'input[name="item_funding_already_received"]';
-  var qVal = 0;
+  var qVal = 0.00;
   var pVal = 0.00;
   var aVal = 0.00;
   var currRow;
@@ -128,8 +128,12 @@ function updateTotal(){
     var items = $('.item-amount');
     //for each item, add on the amount
     for(var i=0; i < items.length ; i++){
+      console.log(items.get(i).innerHTML);
       total = total + parseFloat(items.get(i).innerHTML);
     }
+    console.log(total);
+    console.log(items);
+    console.log(funded);
     //remove existing funding
     $('.items-total small').html('$' + (total - funded).toFixed(2));
 }

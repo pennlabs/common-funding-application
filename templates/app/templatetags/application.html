@@ -65,7 +65,8 @@ function populate() {
     <div class="control-group">
       <label for="questiontime" class="control-label">Event Time</label>
       <div class="controls">
-        <input required value="{{ event.time }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
+        <!-- refer to https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date -->
+        <input required value="{{ event.time|date:'H:i' }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
         <p class="help-block">Time of the event</p>
       </div>
     </div>
@@ -258,18 +259,26 @@ function populate() {
   {% endfor %}
   </fieldset>
 </div>
-{% if user.get_profile.is_funder %}
 <div class="section-header">
   <h2>
     Comments
-    <small>feel free to leave a message</small>
+    <small>
+      {% if user.get_profile.is_funder %}
+      feel free to leave a message
+      {% else %}
+      here are some comments from your potential funders
+      {% endif %}
+    </small>
   </h2>
 </div>
 <div class="section-content">
   {% for comment in event.comment_set.all %}
   <label>{{ comment.funder }} said: {{ comment }}</label>
+  {% empty %}
+  There are no comments yet.
   {% endfor %}
+  {% if user.get_profile.is_funder %}
   <p>Specify any conditions and stipulations here.</p>
   <textarea name="new-comment"></textarea>
+  {% endif %}
 </div>
-{% endif %}

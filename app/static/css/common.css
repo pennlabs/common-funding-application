@@ -46,7 +46,21 @@ footer {
   margin-bottom: 30px;
 }
 
+#item-table input.small.input-with-dollar {
+  width: 59px;
+}
 
+#item-table input.input-with-dollar {
+  width: 147px;
+}
+
+.item-category {
+  width: 100px;
+}
+
+#fundingalreadyreceived {
+    width: 242px;
+}
 
 /* item list styling */
 
@@ -62,7 +76,3 @@ footer {
 }
 
 
-
-#fundingalreadyreceived {
-    width: 242px;
-}
