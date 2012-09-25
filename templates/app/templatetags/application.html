@@ -156,6 +156,8 @@ function populate() {
             <input type="checkbox" 
               id="eligibilityquestion_{{qa.question.id}}"
               name="eligibilityquestion_{{qa.question.id}}"
+              data-recsyes="{{ qa.question.recs_yes }}"
+              data-recsno="{{ qa.question.recs_no }}"
               class="bool-q"
               data-qid="{{qa.question.id}}"
               {{ extra_attrs }}
@@ -224,8 +226,6 @@ function populate() {
         data-funderid="{{funder.id}}"
         name="funder_{{ funder.id }}"
         class="funder-checkbox"
-        data-recsyes="{{ funder.recs_yes }}"
-        data-recsno="{{ funder.recs_no }}"
         {% if funder in event.applied_funders.all %}checked{% endif %}
         type="checkbox" {{ extra_attrs }}>
         {{funder.user.username}}
@@ -259,18 +259,26 @@ function populate() {
   {% endfor %}
   </fieldset>
 </div>
-{% if user.get_profile.is_funder %}
 <div class="section-header">
   <h2>
     Comments
-    <small>feel free to leave a message</small>
+    <small>
+      {% if user.get_profile.is_funder %}
+      feel free to leave a message
+      {% else %}
+      here are some comments from your potential funders
+      {% endif %}
+    </small>
   </h2>
 </div>
 <div class="section-content">
   {% for comment in event.comment_set.all %}
   <label>{{ comment.funder }} said: {{ comment }}</label>
+  {% empty %}
+  There are no comments yet.
   {% endfor %}
+  {% if user.get_profile.is_funder %}
   <p>Specify any conditions and stipulations here.</p>
   <textarea name="new-comment"></textarea>
+  {% endif %}
 </div>
-{% endif %}
