@@ -65,7 +65,8 @@ function populate() {
     <div class="control-group">
       <label for="questiontime" class="control-label">Event Time</label>
       <div class="controls">
-        <input required value="{{ event.time }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
+        <!-- refer to https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date -->
+        <input required value="{{ event.time|date:'H:i' }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
         <p class="help-block">Time of the event</p>
       </div>
     </div>
