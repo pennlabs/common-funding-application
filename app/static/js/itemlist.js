@@ -123,7 +123,6 @@ function updateTotal(){
     //lump sum (existing funding) calculations and generation
     var lumpFundingReceivedEl = $("#fundingalreadyreceived");
     var funded = parseFloat(lumpFundingReceivedEl.val()) || 0;
-    console.log(funded);
  
     $('.items-funded span').html(funded);
     var items = $('.item-amount');
@@ -131,6 +130,7 @@ function updateTotal(){
     for(var i=0; i < items.length ; i++){
       total = total + parseFloat(items.get(i).innerHTML);
     }
+    //remove existing funding
     $('.items-total small').html(total.toFixed(2) - funded);
 }
 
