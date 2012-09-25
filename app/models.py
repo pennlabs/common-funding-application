@@ -80,16 +80,6 @@ class CFAUser(models.Model):
     message = render_to_string('app/osa_email.txt', context)
     send_mail(subject, message, self.user.email, [str(self.osa_email)])
 
-  def recs_yes(self):
-    """Returns the questions the funder wants Yes on"""
-    yes = self.funderconstraint_set.filter(answer='Y').values_list("funder_id", flat=True)
-    return ','.join(str(a) for a in yes)
-
-  def recs_no(self):
-    """Returns the questions the funder wants No on"""
-    no = self.funderconstraint_set.filter(answer='N').values_list("funder_id", flat=True)
-    return ','.join(str(a) for a in no)
-
   class Meta:
     verbose_name = 'CFA Users'
     verbose_name_plural = 'CFA Users'
@@ -273,7 +263,15 @@ class Question(models.Model):
 
 
 class EligibilityQuestion(Question):
-  pass
+  def recs_yes(self):
+    """Returns the funders that want Yes on the question"""
+    yes = self.funderconstraint_set.filter(answer='Y').values_list("funder_id", flat=True)
+    return ','.join(str(a) for a in yes)
+
+  def recs_no(self):
+    """Returns the funders that want No on the question"""
+    no = self.funderconstraint_set.filter(answer='N').values_list("funder_id", flat=True)
+    return ','.join(str(a) for a in no)
 
 
 class EligibilityAnswer(models.Model):
