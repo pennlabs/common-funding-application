@@ -1,5 +1,4 @@
 {{grant.funder}} has granted:
-
 {% for grant in grants %}
-  {{grant.amount}} for {{grant.item}}
+- ${{grant.amount}} for {{grant.item}}
 {% endfor %}

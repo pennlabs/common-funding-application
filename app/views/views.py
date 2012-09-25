@@ -89,6 +89,7 @@ def event_new(request):
                             admission_fee=request.POST['admissionfee'],
                             advisor_email=request.POST['advisoremail'],
                             advisor_phone=request.POST['advisorphone'],
+                            funding_already_received=request.POST['fundingalreadyreceived'],
                           )   
     event.save_from_form(request.POST)
     return redirect('app.views.events')
@@ -118,6 +119,7 @@ def event_edit(request, event_id):
     event.admission_fee = request.POST['admissionfee']
     event.advisor_email = request.POST['advisoremail']
     event.advisor_phone = request.POST['advisorphone']
+    event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
     return redirect('app.views.events')
@@ -147,22 +149,22 @@ def event_show(request, event_id):
                                               item=item,
                                               defaults={'amount': 0})
           amount_funded = sum(grant.amount for grant in 
-              Grant.objects.filter(item=item))
+                  Grant.objects.filter(item=item))
           amount_funded += item.funding_already_received
 
           # if the funder gave too much, adjust the price to be only enough
           if amount + amount_funded - grant.amount > item.total:
             amount = item.total - amount_funded + grant.amount
 
-          grant.amount = str(amount)
+          grant.amount = amount
           grant.save()
 
           grants.append(grant)
 
-        #if grants:
+        if grants:
           # email the event requester indicating that they've been funded
-          #event.notify_requester(grants)
-          #funder.notify_osa(event, grants)
+          event.notify_requester(grants)
+          user.get_profile().notify_osa(event, grants)
       if 'new-comment' in request.POST:
         comment = Comment(comment=request.POST['new-comment'],
           funder=user.get_profile(), event=event)
