@@ -80,7 +80,7 @@ function calculateAmount() {
   var pVal = 0.00;
   var aVal = 0.00;
   var currRow;
-  
+ 
   // helper, calculates the row amount for the passed row
   var setRowAmount = function(currRow){
     //defaults to 0
@@ -110,19 +110,28 @@ function calculateAmount() {
     setRowAmount(currRow);
     updateTotal();
   });
+  
+  var lumpFundingReceivedEl = $("#fundingalreadyreceived");
+  //upon changing lump funding, updateTotal
+  lumpFundingReceivedEl.bind('input', function(){
+    updateTotal();
+  });
 }
 //update item total
 function updateTotal(){
     var total = 0;
-    //lump already funded
-    var funded = parseFloat(0.00);// $().val();
+    //lump sum (existing funding) calculations and generation
+    var lumpFundingReceivedEl = $("#fundingalreadyreceived");
+    var funded = parseFloat(lumpFundingReceivedEl.val()) || 0;
+    console.log(funded);
+ 
     $('.items-funded span').html(funded);
     var items = $('.item-amount');
     //for each item, add on the amount
     for(var i=0; i < items.length ; i++){
-      total = total + parseFloat(items.get(i).innerHTML) - funded;
+      total = total + parseFloat(items.get(i).innerHTML);
     }
-    $('.items-total small').html(total.toFixed(2));
+    $('.items-total small').html(total.toFixed(2) - funded);
 }
 
 $(document).ready(function() {
