@@ -45,3 +45,21 @@ footer {
   margin-top: 30px;
   margin-bottom: 30px;
 }
+
+
+
+/* item list styling */
+
+.items-funded{
+  width:100%;
+  text-align:right;
+}
+
+.items-total{
+  width:100%;
+  text-align:right;
+  border-top: 1px solid #eee;
+}
+
+
+

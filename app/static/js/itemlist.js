@@ -67,6 +67,7 @@ $(document).ready(function() {
     addItem();
   }
   calculateAmount();
+  updateTotal();
 });
 
 //updates the total amount (quant * ppu) in the column
@@ -113,10 +114,13 @@ function calculateAmount() {
 //update item total
 function updateTotal(){
     var total = 0;
+    //lump already funded
+    var funded = parseFloat(0.00);// $().val();
+    $('.items-funded span').html(funded);
     var items = $('.item-amount');
     //for each item, add on the amount
     for(var i=0; i < items.length ; i++){
-      total = total + parseFloat(items.get(i).innerHTML);
+      total = total + parseFloat(items.get(i).innerHTML) - funded;
     }
     $('.items-total small').html(total.toFixed(2));
 }
