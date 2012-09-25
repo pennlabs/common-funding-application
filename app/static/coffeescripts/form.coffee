@@ -1,6 +1,6 @@
-window.Questions = {}
-window.Funders = {}
-window.Selected = {}
+Questions = {}
+Funders = {}
+Selected = {}
 
 initStore = () ->
   $(".bool-q").each (index, el) ->
@@ -20,18 +20,9 @@ showFunderQuestions = () ->
 showRecommendedFunders = () ->
   label = '<span class="label label-important">Recommended</span>'
   $(".funder-check .checkbox .label-important").remove()
-
-  recs = {}
-
-  for funders in _.values(Funders)
-    for fid in _.keys(funders)
-      if recs[fid] is undefined
-        recs[fid] = funders[fid]
-      else
-        recs[fid] = recs[fid] and funders[fid]
-  console.log recs
-  for fid in _.keys(recs)
-    $(".funder-check input[data-funderid="+fid+"]").parent().append(label) if recs[fid]
+  fs =  getFunders(Funders)
+  for f in fs
+    $(".funder-check input[data-funderid="+f+"]").parent().append(label)
 
 checkRecommendedFunders = (el) ->
   qid = el.dataset.qid
