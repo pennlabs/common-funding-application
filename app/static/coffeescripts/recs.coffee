@@ -1,22 +1,25 @@
-window.addQuestion = (recsyes, recsno) ->
+# add expected results for a particular question
+window.addExpectation = (recsyes, recsno) ->
   funders = {}
   funders[fid] = true for fid in recsyes when fid.length
   funders[fid] = false for fid in recsno when fid.length
   funders
 
-window.getRecommendedFunders = (is_checked, question) ->
+# check if expectations match reality
+window.checkExpectations = (is_checked, funder_relations) ->
   recs = {}
-  for funder in _.keys(question)
-    recs[funder] = is_checked == question[funder]
+  for funder_id in _.keys(funder_relations)
+    recs[funder_id] = is_checked == funder_relations[funder_id]
   recs
 
-window.getFunders = (AllFunders) ->
+# get a list of recommended funders based on reality
+window.getRecommended = (reality) ->
   recs = {}
-  for funders in _.values(AllFunders)
+  for funders in _.values(reality)
     for fid in _.keys(funders)
-      if recs[fid] is undefined
+      # if recs is not defined, initialize it
+      if not recs[fid]?
         recs[fid] = funders[fid]
       else
         recs[fid] = recs[fid] and funders[fid]
-  console.log recs
   (fid for fid in _.keys(recs) when recs[fid])

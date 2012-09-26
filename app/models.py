@@ -273,15 +273,17 @@ class Question(models.Model):
 
 
 class EligibilityQuestion(Question):
+  @property
   def recs_yes(self):
-    """Returns the funders that want Yes on the question"""
-    yes = self.funderconstraint_set.filter(answer='Y').values_list("funder_id", flat=True)
-    return ','.join(str(a) for a in yes)
+    """Return the funder ids that want Yes on the question"""
+    funder_ids = self.funderconstraint_set.filter(answer='Y').values_list("funder_id", flat=True)
+    return ','.join(str(a) for a in funder_ids)
 
+  @property
   def recs_no(self):
-    """Returns the funders that want No on the question"""
-    no = self.funderconstraint_set.filter(answer='N').values_list("funder_id", flat=True)
-    return ','.join(str(a) for a in no)
+    """Return the funder ids that want No on the question"""
+    funder_ids = self.funderconstraint_set.filter(answer='N').values_list("funder_id", flat=True)
+    return ','.join(str(a) for a in funder_ids)
 
 
 class EligibilityAnswer(models.Model):
