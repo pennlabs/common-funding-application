@@ -156,6 +156,8 @@ function populate() {
             <input type="checkbox" 
               id="eligibilityquestion_{{qa.question.id}}"
               name="eligibilityquestion_{{qa.question.id}}"
+              data-recsyes="{{ qa.question.recs_yes }}"
+              data-recsno="{{ qa.question.recs_no }}"
               class="bool-q"
               data-qid="{{qa.question.id}}"
               {{ extra_attrs }}
@@ -224,8 +226,6 @@ function populate() {
         data-funderid="{{funder.id}}"
         name="funder_{{ funder.id }}"
         class="funder-checkbox"
-        data-recsyes="{{ funder.recs_yes }}"
-        data-recsno="{{ funder.recs_no }}"
         {% if funder in event.applied_funders.all %}checked{% endif %}
         type="checkbox" {{ extra_attrs }}>
         {{funder.user.username}}
@@ -234,6 +234,10 @@ function populate() {
   </div>
   {% endfor %}
   </fieldset>
+  <!-- template for the recommendation label -->
+  <script id="recommended-label" type="text/template">
+    <span class="label label-important">Recommended</span>
+  </script>
 </div>
 
 <div class="section-header">
@@ -252,7 +256,7 @@ function populate() {
     {% endif %}
   </p>
   {% for qa in funder_qas %}
-  <div class="funder-q-{{ qa.question.funder.id }}">
+  <div class="extra-answer funder-q-{{ qa.question.funder.id }}">
     <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
     <input type="text" name="freeresponsequestion_{{qa.question.id}}" class="input-xlarge" value='{{qa.answer.answer}}' {{ extra_attrs }}>
   </div>
