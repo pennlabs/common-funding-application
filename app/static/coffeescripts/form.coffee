@@ -54,8 +54,9 @@ Reality = {}
 # initialize expected answers to questions
 initExpectations = () ->
   $(".bool-q").each (index, el) ->
-    question_id = el.dataset.qid
-    [y, n] = [el.dataset.recsyes.split(','), el.dataset.recsno.split(',')]
+    question_id = $(el).data("qid")
+    expectations = (type) -> $(el).data(type).toString().split(',')
+    [y, n] = [expectations("recsyes"), expectations("recsno")]
     Expectations[question_id] = addExpectation(y, n)
 
 # Show questions based on which funders are selected
@@ -78,7 +79,7 @@ showRecommendations = () ->
 
 # update the recommended funders
 updateRecommendations = (el) ->
-  question_id = el.dataset.qid
+  question_id = $(el).data("qid")
   funder_relations = Expectations[question_id]
   Reality[question_id] = checkExpectations(el.checked, funder_relations)
 
@@ -86,14 +87,14 @@ $ ->
   initExpectations()
 
   $(".funder-checkbox").change () ->
-    Selected[this.dataset.funderid] = this.checked
+    Selected[$(this).data("funderid")] = this.checked
     showQuestions()
 
   $(".bool-q").change () ->
     updateRecommendations(this)
     showRecommendations()
 
-  $(".funder-checkbox").each () -> Selected[this.dataset.funderid] = this.checked
+  $(".funder-checkbox").each () -> Selected[$(this).data("funderid")] = this.checked
   showQuestions()
 
   $(".bool-q").each () -> updateRecommendations(this)
