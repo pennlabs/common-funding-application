@@ -48,7 +48,7 @@
           </div>
         </td>
         <td>
-          <p class="item-amount">0.00</p>
+          $<span class="item-amount">0.00</span>
         </td>
         <td>
           <select class="item-category" name='item_category' {% if funded %} disabled {% endif %}>
@@ -89,7 +89,7 @@
         </div>
       </td>
       <td>
-        <p class="item-amount">0.00</p>
+        $<span class="item-amount">0.00</span>
       </td>
       <td>
         <select class="item-category" name='item_category'>
@@ -111,5 +111,7 @@
 
   </tbody>
 </table>
-<h3 class="items-total">Total: <small>0.00</small> </h3> 
+<p class="items-funded"> Already Funded: &ndash;$<span>130.00</span></p> 
+<p class="items-total">Total: <span>0.00</span> </p> 
+
 
