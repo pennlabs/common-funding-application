@@ -1,19 +1,21 @@
+root = exports ? this
+
 # add expected results for a particular question
-window.addExpectation = (recsyes, recsno) ->
+root.addExpectation = (recsyes, recsno) ->
   funders = {}
   funders[fid] = true for fid in recsyes when fid.length
   funders[fid] = false for fid in recsno when fid.length
   funders
 
 # check if expectations match reality
-window.checkExpectations = (is_checked, funder_relations) ->
+root.checkExpectations = (is_checked, funder_relations) ->
   recs = {}
   for funder_id in _.keys(funder_relations)
     recs[funder_id] = is_checked == funder_relations[funder_id]
   recs
 
 # get a list of recommended funders based on reality
-window.getRecommended = (reality) ->
+root.getRecommended = (reality) ->
   recs = {}
   for funders in _.values(reality)
     for fid in _.keys(funders)
