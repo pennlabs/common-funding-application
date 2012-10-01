@@ -5,11 +5,11 @@
   <thead>
     <tr>
       <th>Name</th>
+      <th>Category</th>
       <th>Quantity</th>
       <th>Price Per Unit</th>
-      <th>Funding Already Received</th>
-      <th>Amount</th>        
-      <th>Category</th>
+      <th>Already Received</th>
+      <th>Amount</th>
       {% if not funded %}
       <th class='action-column'>Action</th>
       {% endif %}
@@ -22,6 +22,17 @@
           <input name="item_name" type="text" class='small' 
             required {% if funded %} disabled {% endif %}
             value="{{ item.name }}" />
+        </td>        
+        <td>
+          <select class="item-category" name='item_category' {% if funded %} disabled {% endif %}>
+            <option>Food</option>
+            <option>Drink</option>
+            <option>blah</option>
+            <option>test</option>
+            <option>stuff</option>
+            <option>performer</option>
+            <option>testing</option>
+          </select>
         </td>
         <td>
           <input name="item_quantity" type="number" class='small'
@@ -41,7 +52,7 @@
         <td> 
           <div class="input-prepend">
             <span class="add-on">$</span>
-            <input class="inputIcon input-with-dollar" name="item_funding_already_received"
+            <input class="inputIcon small input-with-dollar" name="item_funding_already_received"
               type="number" required {% if funded %} disabled {% endif %}
               pattern="^\d*(\.\d{2}$)?"
               value="{{ item.funding_already_received }}" />
@@ -49,17 +60,6 @@
         </td>
         <td>
           $<span class="item-amount">0.00</span>
-        </td>
-        <td>
-          <select class="item-category" name='item_category' {% if funded %} disabled {% endif %}>
-            <option>Food</option>
-            <option>Drink</option>
-            <option>blah</option>
-            <option>test</option>
-            <option>stuff</option>
-            <option>performer</option>
-            <option>testing</option>
-          </select>
         </td>
         {% if not funded %}
         <td>
@@ -74,24 +74,6 @@
         <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
       </td>
       <td>
-        <input class="new small" onkeyup="makeRequired(this)" name="item_quantity" type="number"/>
-      </td>
-      <td> 
-        <div class="input-prepend">
-          <span class="add-on">$</span>
-          <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_price_per_unit" type="number"/>
-        </div>
-      </td>
-      <td> 
-        <div class="input-prepend">
-          <span class="add-on">$</span>
-          <input class="new inputIcon input-with-dollar" onkeyup="makeRequired(this)" name="item_funding_already_received" type="number"/>
-        </div>
-      </td>
-      <td>
-        $<span class="item-amount">0.00</span>
-      </td>
-      <td>
         <select class="item-category" name='item_category'>
           <option>Food</option>
           <option>Drink</option>
@@ -103,6 +85,24 @@
         </select>
       </td>
       <td>
+        <input class="new small" onkeyup="makeRequired(this)" name="item_quantity" type="number"/>
+      </td>
+      <td> 
+        <div class="input-prepend">
+          <span class="add-on">$</span>
+          <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_price_per_unit" type="number"/>
+        </div>
+      </td>
+      <td> 
+        <div class="input-prepend">
+          <span class="add-on">$</span>
+          <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_funding_already_received" type="number"/>
+        </div>
+      </td>
+      <td>
+        $<span class="item-amount">0.00</span>
+      </td>
+      <td>
         <button class='btn add' onclick='addItem(this); return false;'>Add</button>
       </td>
     </tr>
@@ -111,7 +111,20 @@
 
   </tbody>
 </table>
-<p class="items-funded"> Already Funded: &ndash;$<span>130.00</span></p> 
-<p class="items-total">Total: <span>0.00</span> </p> 
+
+<table class="items-total">
+  <tr>
+    <td>Sum Total</td>
+    <td>$<span class="items-sum-total">0.00</span></td>
+  </tr>
+  <tr>
+    <td>Already Funded</td>
+    <td>&ndash;$<span class="items-funded">0.00</span></td>
+  </tr>
+  <tr>
+    <td>Final Total</td>
+    <td>$<span class="items-final-total">0.00</span></td>
+  </tr>
+</table>
 
 
