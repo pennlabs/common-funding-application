@@ -27,6 +27,10 @@ fieldset {
   margin-bottom: 0px;
 }
 
+#fundingalreadyreceived {
+  width: 242px;
+}
+
 .section-header {
   border-bottom: 1px solid #EEEEEE;
   margin-bottom: 25px;
@@ -61,6 +65,25 @@ fieldset {
 #item-table .action-column {
   width: 75px;
 }
+.item-category {
+  width: 100px;
+}
+table.items-total {
+  font-size: 14px;
+  text-align: right;
+  color: #999;
+  float: right;
+}
+table.items-total td {
+  padding: 5px 10px;
+}
+
+table.items-total tr:last-child {
+  font-size: 18px;
+  color: #000;
+}
+
+
 
 #free-response .control-label {
     float: none;

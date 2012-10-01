@@ -124,14 +124,16 @@ function updateTotal(){
     var lumpFundingReceivedEl = $("#fundingalreadyreceived");
     var funded = parseFloat(lumpFundingReceivedEl.val()) || 0;
  
-    $('.items-funded span').html(funded.toFixed(2));
+    $('.items-funded').html(funded.toFixed(2));
     var items = $('.item-amount');
     //for each item, add on the amount
     items.each(function(index, value){
       total = total + parseFloat(value.innerHTML);
     });
+    $('.items-sum-total').html(total.toFixed(2));
+    
     //remove existing funding
-    $('.items-total span').html('$' + (total - funded).toFixed(2));
+    $('.items-final-total').html((total - funded).toFixed(2));
 }
 
 $(document).ready(function() {
