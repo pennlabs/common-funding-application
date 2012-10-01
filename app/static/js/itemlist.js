@@ -92,10 +92,10 @@ function calculateAmount() {
 
   //update the existing items
   var existingItemEls = $('.app-itemrow');
-  for(var i=0; i < existingItemEls.length; i++){
-    currRow = $(existingItemEls.get(i));
+  existingItemEls.each(function(index, value){
+    currRow = $(value);
     setRowAmount(currRow);
-  }
+  });
 
   //selector for any item, either existing (app-itemrow) or new
   var amountSel = '.itemrow ' + quantSel + ', .itemrow ' +
@@ -127,15 +127,11 @@ function updateTotal(){
     $('.items-funded span').html(funded.toFixed(2));
     var items = $('.item-amount');
     //for each item, add on the amount
-    for(var i=0; i < items.length ; i++){
-      console.log(items.get(i).innerHTML);
-      total = total + parseFloat(items.get(i).innerHTML);
-    }
-    console.log(total);
-    console.log(items);
-    console.log(funded);
+    items.each(function(index, value){
+      total = total + parseFloat(value.innerHTML);
+    });
     //remove existing funding
-    $('.items-total small').html('$' + (total - funded).toFixed(2));
+    $('.items-total span').html('$' + (total - funded).toFixed(2));
 }
 
 $(document).ready(function() {

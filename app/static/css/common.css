@@ -64,15 +64,33 @@ footer {
 
 /* item list styling */
 
-.items-funded{
+.items-funded {
   width:100%;
   text-align:right;
 }
 
-.items-total{
+.items-total {
   width:100%;
   text-align:right;
   border-top: 1px solid #eee;
+}
+
+.items-funded, .items-total span{
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+  line-height: 27px;
+  text-align: right;
+}
+.items-total {
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+  height:29px;
+  line-height: 27px; 
 }
 
 
