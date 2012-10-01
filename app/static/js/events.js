@@ -5,8 +5,12 @@ function toggleEventRow(e) {
 
 $(document).ready(function() {
   
-  $(".app-item-row").click(function() {
+  $(".app-item-row").on("click", function() {
     $(this).children().first().children(".funders").slideToggle(200);
+  });
+
+  $(".app-item-row .btn").on("click", function(e) {
+    e.stopPropagation();
   });
   
 });
