@@ -1,6 +1,6 @@
 var assert = require("assert"),
-    recs = require("../js/recs")
-    _ = require("../js/underscore")
+    recs = require("../js/recs"),
+    _ = require("../js/underscore");
 
 describe('Recommendations', function(){
   describe("#addExpectation()", function() {
