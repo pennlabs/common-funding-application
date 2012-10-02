@@ -98,8 +98,8 @@ $ ->
   $(".bool-q").each (index, el) -> updateRecommendations(el)
   showRecommendations()
 	
-	$("#questiontime").timepicker({		
+	$("#questiontime").timepicker(
 		timeFormat: "G:i"
 		step: 30
-		scrollDefaultNow: true		
-	})
+		scrollDefaultNow: true
+	)
