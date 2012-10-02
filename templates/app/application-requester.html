@@ -3,10 +3,12 @@
 {% load widgets %}
     
 {% block htmllink-styles %}
+<link rel="stylesheet" href="{{STATIC_URL}}/css/jquery.timepicker.css">
 <link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
 {% endblock %}
 
 {% block htmllink-js %}
+<script src="{{ STATIC_URL }}/js/jquery.timepicker.min.js"></script>
 <script src="{{ STATIC_URL }}/js/recs.js"></script>
 <script src="{{ STATIC_URL }}/js/form.js"></script>
 <script src="{{ STATIC_URL }}/js/itemlist.js"></script>
