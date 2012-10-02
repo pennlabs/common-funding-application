@@ -13,6 +13,9 @@ import os
 DISPLAY_NAME = ""
 URL_ROOT = "/" + DISPLAY_NAME
 
+# The e-mail assigned to all the users in `import_demo`. For testing only.
+TEST_EMAIL = ''
+
 DATABASE_NAME = ""
 DATABASE_USER = ""
 DATABASE_PASSWORD = ""
