@@ -162,6 +162,7 @@ def add_funder(name, un, desc, qs):
     profile = user.get_profile()
     profile.user_type = 'F'
     profile.mission_statement = desc
+    profile.osa_email = TEST_EMAIL
     profile.save()
 
     # Questions
