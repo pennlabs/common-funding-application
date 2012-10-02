@@ -94,3 +94,8 @@ table.items-total tr:last-child {
     float: none;
     margin-left: 0px;
 }
+
+.recommended-label {
+  padding: 3.5px;
+  margin-left: 3px;
+}
