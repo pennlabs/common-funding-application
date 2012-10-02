@@ -236,7 +236,7 @@ function populate() {
   </fieldset>
   <!-- template for the recommendation label -->
   <script id="recommended-label" type="text/template">
-    <span class="label label-important">Recommended</span>
+    <span class="label label-info recommended-label">Recommended</span>
   </script>
 </div>
 
@@ -258,7 +258,10 @@ function populate() {
   {% for qa in funder_qas %}
   <div class="extra-answer funder-q-{{ qa.question.funder.id }}">
     <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
-    <input type="text" name="freeresponsequestion_{{qa.question.id}}" class="input-xlarge" value='{{qa.answer.answer}}' {{ extra_attrs }}>
+    <textarea type="text"
+      name="freeresponsequestion_{{qa.question.id}}"
+      class="span6 input-xlarge"
+      {{ extra_attrs }}>{{qa.answer.answer}}</textarea>
   </div>
   {% endfor %}
   </fieldset>

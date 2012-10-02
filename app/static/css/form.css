@@ -99,3 +99,6 @@ table.items-total tr:last-child {
   padding: 3.5px;
   margin-left: 3px;
 }
+.extra-answer {
+  margin-bottom: 25px;
+}
