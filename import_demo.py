@@ -220,7 +220,6 @@ def import_sites():
 def import_all():
     import_users()
     import_questions()
-#    import_events()
     import_sites()
     return 0
 
