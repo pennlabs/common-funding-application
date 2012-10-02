@@ -72,7 +72,7 @@ showQuestions = () ->
 
 # show labels on the funders who are recommended
 showRecommendations = () ->
-  $(".funder-check .checkbox .label-important").remove()
+  $(".funder-check .checkbox .recommended-label").remove()
   label = $("#recommended-label").html()
   funders = getRecommended(Reality)
   $(".funder-check input[data-funderid=#{f}]").parent().append(label) for f in funders
