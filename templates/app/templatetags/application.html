@@ -34,10 +34,6 @@ function populate() {
   $("#item-table tr input[name='item_funding_already_received']")[1].value = "15";
   $("#item-table tr input[name='item_funding_already_received']")[2].value = "0";  
 }
-
-
-
-
 </script>
 
 <div class="section-header">
@@ -67,7 +63,7 @@ function populate() {
       <div class="controls">
         <!-- refer to https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date -->
         <input required value="{{ event.time|date:'H:i' }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Time of the event</p>
+        <p class="help-block">Time of the event in 24-hour format</p>
       </div>
     </div>
     <div class="control-group">
