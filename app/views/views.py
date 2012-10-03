@@ -2,6 +2,7 @@ import os
 from decimal import Decimal
 from collections import namedtuple
 
+import smtplib
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -164,7 +165,10 @@ def event_show(request, event_id):
         if grants:
           # email the event requester indicating that they've been funded
           event.notify_requester(grants)
-          user.get_profile().notify_osa(event, grants)
+          try:
+              user.get_profile().notify_osa(event, grants)
+          except smtplib.SMTPException:
+              pass
       if 'new-comment' in request.POST:
         comment = Comment(comment=request.POST['new-comment'],
           funder=user.get_profile(), event=event)
