@@ -4,7 +4,7 @@ import sha
 
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.forms import USPhoneNumberField
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import dispatcher, receiver
@@ -74,7 +74,11 @@ class CFAUser(models.Model):
     subject = render_to_string('app/osa_email_subject.txt',
         context).strip()
     message = render_to_string('app/osa_email.txt', context)
-    send_mail(subject, message, self.user.email, [str(self.osa_email)])
+    sender = "no-reply@pennapps.com"
+    recipients = [str(self.osa_email)]
+    headers = {'Reply-To': self.user.email}
+    email = EmailMessage(subject, message, sender, recipients, headers)
+    email.send()
 
 
 @receiver(sender=User, signal=post_save)
@@ -239,6 +243,20 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return self.comment
+
+
+@receiver(sender=Comment, signal=post_save)
+def notify_requester(sender, instance, signal, created, **kwargs):
+  if created:
+    subject = 'You have a new comment on your funding application'
+    message = ('%s left a comment on your application for an event on %s.'
+      '%s said "%s" See the full application at %s.') % (instance.funder, instance.event.date,
+      instance.funder, instance.comment, 'link here')
+    sender = "no-reply@pennapps.com"
+    recipients = [instance.event.contact_email]
+    headers = {'Reply-To': instance.funder.user.email}
+    email = EmailMessage(subject, message, sender, recipients, headers)
+    email.send()
 
 
 class Question(models.Model):
