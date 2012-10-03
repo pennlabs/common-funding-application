@@ -34,10 +34,6 @@ function populate() {
   $("#item-table tr input[name='item_funding_already_received']")[1].value = "15";
   $("#item-table tr input[name='item_funding_already_received']")[2].value = "0";  
 }
-
-
-
-
 </script>
 
 <div class="section-header">
@@ -58,15 +54,16 @@ function populate() {
     <div class="control-group">
       <label for="questiondate" class="control-label">Event Date</label>
       <div class="controls">
-        <input required value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{ extra_attrs }}>
+        <input required value="{{ event.date.isoformat }}" type="text" name='date' id="questiondate" class="input-xlarge datepicker" {{ extra_attrs }}>
         <p class="help-block">Date of the event</p>
       </div>
     </div>
     <div class="control-group">
       <label for="questiontime" class="control-label">Event Time</label>
       <div class="controls">
-        <input required value="{{ event.time }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Time of the event</p>
+        <!-- refer to https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date -->
+        <input required value="{{ event.time|date:'H:i' }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
+        <p class="help-block">Time of the event in 24-hour format</p>
       </div>
     </div>
     <div class="control-group">
@@ -125,34 +122,48 @@ function populate() {
         <p class="help-block">Organization(s) involved with the event</p>
       </div>
     </div>
+    <div class="control-group">
+      <label for="fundingalreadyreceived" class="control-label">Funding Already Receieved</label>
+      <div class="controls">
+        <div class="input-prepend">
+            <span class="add-on">$</span>
+            <input required value="{{ event.funding_already_received }}" type="number" name='fundingalreadyreceived' id="fundingalreadyreceived" class="input-xlarge" {{ extra_attrs }}>
+        </div>
+        <p class="help-block">Amount of funding already received that has not been allocated for any particular item</p>
+      </div>
+    </div>
   </fieldset>
 </div>
-  
+
 <section id="true-false">
-    <div class="section-header">
-      <h2>
-        True / False Questions
-        <small>to recommend funders</small>
-      </h2>
-    </div>
-    <div class="section-content">
-      <fieldset>
-        {% for qa in eligibility_qas %}
-        <div class="control-group">
-          <p class="control-label">{{ qa.question.question }}</p>
-          <div class="controls">
+  <div class="section-header">
+    <h2>
+      True / False Questions
+      <small>to recommend funders</small>
+    </h2>
+  </div>
+  <div class="section-content">
+    <fieldset>
+      {% for qa in eligibility_qas %}
+      <div class="control-group">
+        <label class="control-label">Question {{forloop.counter}}</label>
+        <div class="controls">
+          <label>
             <input type="checkbox" 
               id="eligibilityquestion_{{qa.question.id}}"
               name="eligibilityquestion_{{qa.question.id}}"
-              class="input-xlarge"
-             {{ extra_attrs }} 
-             {% if qa.answer.answer %}checked{% endif %}>
-             <label for="eligibilityquestion_{{qa.question.id}}">Yes</label>
-          </div>
+              data-recsyes="{{ qa.question.recs_yes }}"
+              data-recsno="{{ qa.question.recs_no }}"
+              class="bool-q"
+              data-qid="{{qa.question.id}}"
+              {{ extra_attrs }}
+              {% if qa.answer.answer %}checked{% endif %}>
+          {{ qa.question.question }}</label>
         </div>
-        {% endfor %}
-      </fieldset>
-    </div>
+      </div>
+      {% endfor %}
+    </fieldset>
+  </div>
 </section>
 
 <section id="free-response">
@@ -207,12 +218,22 @@ function populate() {
   {% for funder in funders %}
   <div class="funder-check">
     <label class="checkbox">
-      <input data-funderid="{{funder.id}}" name='funder_{{ funder.id }}' {% if funder in event.applied_funders.all %}checked{% endif %} type="checkbox" {{ extra_attrs }}>{{funder.user.username}}
+      <input
+        data-funderid="{{funder.id}}"
+        name="funder_{{ funder.id }}"
+        class="funder-checkbox"
+        {% if funder in event.applied_funders.all %}checked{% endif %}
+        type="checkbox" {{ extra_attrs }}>
+        {{funder.user.username}}
     </label>
     <p class="help-block">{{funder.mission_statement}}</p>
   </div>
   {% endfor %}
   </fieldset>
+  <!-- template for the recommendation label -->
+  <script id="recommended-label" type="text/template">
+    <span class="label label-success recommended-label">Recommended</span>
+  </script>
 </div>
 
 <div class="section-header">
@@ -231,25 +252,36 @@ function populate() {
     {% endif %}
   </p>
   {% for qa in funder_qas %}
-  <div class="funder-q-{{ qa.question.funder.id }}">
+  <div class="extra-answer funder-q-{{ qa.question.funder.id }}">
     <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
-    <input type="text" name="freeresponsequestion_{{qa.question.id}}" class="input-xlarge" value='{{qa.answer.answer}}' {{ extra_attrs }}>
+    <textarea type="text"
+      name="freeresponsequestion_{{qa.question.id}}"
+      class="span6 input-xlarge"
+      {{ extra_attrs }}>{{qa.answer.answer}}</textarea>
   </div>
   {% endfor %}
   </fieldset>
 </div>
-{% if user.get_profile.is_funder %}
 <div class="section-header">
   <h2>
     Comments
-    <small>feel free to leave a message</small>
+    <small>
+      {% if user.get_profile.is_funder %}
+      feel free to leave a message
+      {% else %}
+      here are some comments from your potential funders
+      {% endif %}
+    </small>
   </h2>
 </div>
 <div class="section-content">
   {% for comment in event.comment_set.all %}
   <label>{{ comment.funder }} said: {{ comment }}</label>
+  {% empty %}
+  There are no comments yet.
   {% endfor %}
+  {% if user.get_profile.is_funder %}
   <p>Specify any conditions and stipulations here.</p>
   <textarea name="new-comment"></textarea>
+  {% endif %}
 </div>
-{% endif %}

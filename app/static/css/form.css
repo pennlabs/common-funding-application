@@ -27,6 +27,10 @@ fieldset {
   margin-bottom: 0px;
 }
 
+#fundingalreadyreceived {
+  width: 242px;
+}
+
 .section-header {
   border-bottom: 1px solid #EEEEEE;
   margin-bottom: 25px;
@@ -34,9 +38,6 @@ fieldset {
   padding-top: 10px;
 }
 .section-content {
-  margin-bottom: 25px;
-}
-.section-content .bool-q {
   margin-bottom: 25px;
 }
 .section-content .funder-check .checkbox {
@@ -64,27 +65,40 @@ fieldset {
 #item-table .action-column {
   width: 75px;
 }
+.item-category {
+  width: 100px;
+}
+table.items-total {
+  font-size: 14px;
+  text-align: right;
+  color: #999;
+  float: right;
+}
+table.items-total td {
+  padding: 5px 10px;
+}
+
+table.items-total tr:last-child {
+  font-size: 18px;
+  color: #000;
+}
+
+
 
 #free-response .control-label {
     float: none;
     width: 100%;
     text-align: left;
 }
-
 #free-response .controls {
     float: none;
     margin-left: 0px;
 }
 
-#true-false .control-label {
-    width: 100%;
-    text-align: left;
+.recommended-label {
+  padding: 3.5px;
+  margin-left: 3px;
 }
-
-#true-false .controls {
-    margin-left: 0px;
-}
-
-#true-false label {
-    display: inline;
+.extra-answer {
+  margin-bottom: 25px;
 }

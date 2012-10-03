@@ -34,11 +34,15 @@ class CFAUser(models.Model):
   >>> cfau.is_funder
   False
   """
-  user = models.OneToOneField(User)
+  user = models.OneToOneField(User, help_text='You must first create a user '
+                              'before adding them to the CFA.')
   user_type = models.CharField(max_length=1,
                                choices=REQUESTER_OR_FUNDER)
   phone = USPhoneNumberField()
-  osa_email = models.EmailField(null=True) # The e-mail of the contact in OSA
+  # The e-mail of the contact in OSA
+  osa_email = models.EmailField('OSA Contact Email', null=True,
+                                help_text='The email address for contacting '
+                                'OSA when an app is funded.')
   mission_statement = models.TextField(max_length=256)
 
   def __unicode__(self):
@@ -80,6 +84,10 @@ class CFAUser(models.Model):
     email = EmailMessage(subject, message, sender, recipients, headers)
     email.send()
 
+  class Meta:
+    verbose_name = 'CFA Users'
+    verbose_name_plural = 'CFA Users'
+
 
 @receiver(sender=User, signal=post_save)
 def create_profile(sender, instance, signal, created, **kwargs):
@@ -101,6 +109,7 @@ class Event(models.Model):
     * A requester
     * An advisor
     * A list of collaborating organizations
+    * The amount of money already received that is not allocated for any item
     """
     name = models.CharField(max_length=256)
     date = models.DateField()
@@ -117,11 +126,13 @@ class Event(models.Model):
     applied_funders =\
         models.ManyToManyField(CFAUser,
                                related_name='event_applied_funders')
+    funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
 
     @property
     def total_funds_already_received(self):
       """The total amount of money already received (before grants) for an event."""
-      return sum(item.funding_already_received for item in self.item_set.all())
+      return self.funding_already_received + sum(item.funding_already_received
+                                                 for item in self.item_set.all())
 
     @property
     def amounts(self):
@@ -209,7 +220,7 @@ class Event(models.Model):
 
     def notify_requester(self, grants):
       """Notify a requester that an event has been funded."""
-      context = {'event': self, 'grants': self.grants}
+      context = {'event': self, 'grants': grants}
       subject = render_to_string('app/grant_email_subject.txt',
           context).strip()
       message = render_to_string('app/grant_email.txt', context)
@@ -270,7 +281,17 @@ class Question(models.Model):
 
 
 class EligibilityQuestion(Question):
-    pass
+  @property
+  def recs_yes(self):
+    """Return the funder ids that want Yes on the question"""
+    funder_ids = self.funderconstraint_set.filter(answer='Y').values_list("funder_id", flat=True)
+    return ','.join(str(a) for a in funder_ids)
+
+  @property
+  def recs_no(self):
+    """Return the funder ids that want No on the question"""
+    funder_ids = self.funderconstraint_set.filter(answer='N').values_list("funder_id", flat=True)
+    return ','.join(str(a) for a in funder_ids)
 
 
 class EligibilityAnswer(models.Model):
