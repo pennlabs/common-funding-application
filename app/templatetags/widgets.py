@@ -87,3 +87,7 @@ def application(context, user, event=None):
     or event and event.funded:
     new_context['extra_attrs'] = 'disabled'
   return render_to_string('app/templatetags/application.html', new_context)
+
+@register.filter
+def keyvalue(dict, key):
+  return dict[key]

@@ -1,5 +1,7 @@
 <div class='remove' style='display:none'>
-  <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
+  <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">
+    <i class="icon-remove icon-white"></i>
+  </button>
 </div>
 <table id='item-table' class='table table-striped'>
   <thead>
@@ -11,7 +13,7 @@
       <th>Already Received</th>
       <th>Amount</th>
       {% if not funded %}
-      <th class='action-column'>Action</th>
+      <th class='action-column'></th>
       {% endif %}
     </tr>
   </thead>
@@ -63,7 +65,9 @@
         </td>
         {% if not funded %}
         <td>
-          <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
+          <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">
+            <i class="icon-remove icon-white"></i>
+          </button>
         </td>
         {% endif %}
       </tr>
@@ -103,7 +107,9 @@
         $<span class="item-amount">0.00</span>
       </td>
       <td>
-        <button class='btn add' onclick='addItem(this); return false;'>Add</button>
+        <button class='btn add' onclick='addItem(this); return false;'>
+          <i class="icon-plus icon"></i>
+        </button>
       </td>
     </tr>
 
