@@ -27,10 +27,6 @@ fieldset {
   margin-bottom: 0px;
 }
 
-#fundingalreadyreceived {
-  width: 242px;
-}
-
 .section-header {
   border-bottom: 1px solid #EEEEEE;
   margin-bottom: 25px;
@@ -56,31 +52,9 @@ fieldset {
 .section-content .funder-q em {
   color: #999;
 }
-#item-table input {
-  width: 175px;
-}
-#item-table input.small {
-  width: 100px;
-}
-#item-table .action-column {
-  width: 75px;
-}
-.item-category {
-  width: 100px;
-}
-table.items-total {
-  font-size: 14px;
-  text-align: right;
-  color: #999;
-  float: right;
-}
-table.items-total td {
-  padding: 5px 10px;
-}
 
-table.items-total tr:last-child {
-  font-size: 18px;
-  color: #000;
+.input-prepend .input-xlarge {
+  width: 242px;
 }
 
 #free-response .control-label {
@@ -94,8 +68,8 @@ table.items-total tr:last-child {
 }
 
 .recommended-label {
-  padding: 3.5px;
-  margin-left: 3px;
+  padding: 2px;
+  margin-left: 5px;
 }
 .extra-answer {
   margin-bottom: 25px;

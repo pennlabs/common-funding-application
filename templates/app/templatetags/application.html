@@ -123,7 +123,7 @@ function populate() {
       </div>
     </div>
     <div class="control-group">
-      <label for="fundingalreadyreceived" class="control-label">Funding Already Receieved</label>
+      <label for="fundingalreadyreceived" class="control-label">Funding Already Received</label>
       <div class="controls">
         <div class="input-prepend">
             <span class="add-on">$</span>
@@ -283,6 +283,6 @@ function populate() {
   {% endfor %}
   {% if user.get_profile.is_funder %}
   <p>Specify any conditions and stipulations here.</p>
-  <textarea name="new-comment"></textarea>
+  <textarea name="new-comment" class="span6"></textarea>
   {% endif %}
 </div>
