@@ -23,6 +23,10 @@ table#item-table div.input-prepend input {
   width: 60%;
 }
 
+table#item-table td.col-self input {
+  width: 80px;
+}
+
 table.items-total {
   font-size: 14px;
   text-align: right;
