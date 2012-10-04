@@ -74,13 +74,11 @@
         <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
       </td>
       <td>
-      <td>
         <select class="item-category" name='item_category'>
           {% for item_category in CATEGORIES %}
           <option> {{ item_category.1 }} </option>
           {% endfor %}
         </select>
-      </td>
       </td>
       <td>
         <input class="new small" onkeyup="makeRequired(this)" name="item_quantity" type="number"/>
