@@ -251,6 +251,7 @@ class Comment(models.Model):
     funder = models.ForeignKey(CFAUser)
     event = models.ForeignKey(Event)
     comment = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):
         return self.comment
