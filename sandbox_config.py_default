@@ -9,6 +9,8 @@ This and nothing else.  (In the ominous words of AMK.)
 
 import os
 
+# Name of the site you are developing on. This is only needed for registration links to work.
+SITE_NAME = "www.pennapps.com"
 # i.e., pennapps.com/<DISPLAY_NAME>, this should be the empty string in prod
 DISPLAY_NAME = ""
 URL_ROOT = "/" + DISPLAY_NAME

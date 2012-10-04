@@ -9,7 +9,7 @@ from django.contrib.sites.models import Site
 
 from app.models import *
 
-from sandbox_config import URL_ROOT, TEST_EMAIL
+from sandbox_config import SITE_NAME, URL_ROOT, TEST_EMAIL
 
 
 QUESTIONS = [
@@ -213,7 +213,7 @@ def import_questions():
 
 def import_sites():
   site = Site.objects.get_current()
-  site.domain = "www.pennapps.com%s/" % URL_ROOT
+  site.domain = SITE_NAME + URL_ROOT
   site.name = "The Common Funding App"
   site.save()
 
