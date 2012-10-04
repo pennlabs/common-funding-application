@@ -1,7 +1,7 @@
+Common Funding Application
+=============================
 
-
-Setup
-=====
+## Setup
 
 * Go to [pennapps.com/phpmyadmin](http://pennapps.com/phpmyadmin) and make a new database for yourself by copying an existing one.
 
@@ -16,3 +16,5 @@ Setup
 * Navigate to app/static and run `coffee -o js/ -c coffeescripts/` to compile the CoffeeScript.
 
 * Go to /admin and modify the Site object in Sites. Change the domain name to something like "pennapps.com/ceasarb-cfa" and the display name to "The Common Funding App".
+
+
