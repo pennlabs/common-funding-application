@@ -5,12 +5,16 @@
 <link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
 {% endblock %}
 
+{% block htmllink-js %}
+<script src="{{ STATIC_URL }}/js/pennemail.js"></script>
+{% endblock %}
+
 {% block container %}
 <div id="main" class="row">
   <div id="register" class="span4 offset1">
     <div class="box">
       <h2>Sign up</h2>
-    <form method="post" class="form-horizotal">
+    <form id='register-form' method="post" class="form-horizotal">
       {% csrf_token %}
       {{ form.as_p }}
       <div class="form-actions">
