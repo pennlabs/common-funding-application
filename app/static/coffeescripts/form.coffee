@@ -1,17 +1,9 @@
 ###
 #
-# Selected is a hash of funder ids with values of checked or unchecked
-# true if checked, false otherwise
-# Example:
-# {
-#   funder_id1: true,
-#   funder_id2: false
-#   .
-#   .
-# }
+# Selected is an array of selected funders: [ funder_id1, funder_id2, ... ]
 #
 ###
-Selected = {}
+Selected = []
 
 ###
 #
@@ -54,15 +46,16 @@ Reality = {}
 # initialize expected answers to questions
 initExpectations = () ->
   $(".bool-q").each (index, el) ->
-    question_id = el.dataset.qid
-    [y, n] = [el.dataset.recsyes.split(','), el.dataset.recsno.split(',')]
+    question_id = $(el).data("qid")
+    expectations = (type) -> $(el).data(type).toString().split(',')
+    [y, n] = [expectations("recsyes"), expectations("recsno")]
     Expectations[question_id] = addExpectation(y, n)
 
 # Show questions based on which funders are selected
 showQuestions = () ->
-  funder_ids = (".funder-q-#{fid}" for fid in _.keys(Selected) when Selected[fid])
+  funder_ids = (".funder-q-#{fid}" for fid in Selected)
   funders = funder_ids.join()
-  $(".extra-answer").hide() # hide elements wh
+  $(".extra-answer").hide() # hide elements
   $(funders).fadeIn()
   if funders.length
     $("#funder-no-q").hide()
@@ -71,14 +64,14 @@ showQuestions = () ->
 
 # show labels on the funders who are recommended
 showRecommendations = () ->
-  $(".funder-check .checkbox .label-important").remove()
+  $(".funder-check .checkbox .recommended-label").remove()
   label = $("#recommended-label").html()
   funders = getRecommended(Reality)
   $(".funder-check input[data-funderid=#{f}]").parent().append(label) for f in funders
 
 # update the recommended funders
 updateRecommendations = (el) ->
-  question_id = el.dataset.qid
+  question_id = $(el).data("qid")
   funder_relations = Expectations[question_id]
   Reality[question_id] = checkExpectations(el.checked, funder_relations)
 
@@ -86,15 +79,27 @@ $ ->
   initExpectations()
 
   $(".funder-checkbox").change () ->
-    Selected[this.dataset.funderid] = this.checked
+    funder_id = $(this).data("funderid")
+    if !this.checked
+      Selected = _.without(Selected, funder_id)
+    else if this.checked and !_.contains(Selected, funder_id)
+      Selected.push funder_id
     showQuestions()
 
   $(".bool-q").change () ->
     updateRecommendations(this)
     showRecommendations()
 
-  $(".funder-checkbox").each () -> Selected[this.dataset.funderid] = this.checked
+  $(".funder-checkbox").each (index, el) ->
+    funder_id = $(el).data("funderid")
+    Selected.push(funder_id) if this.checked
   showQuestions()
 
-  $(".bool-q").each () -> updateRecommendations(this)
+  $(".bool-q").each (index, el) -> updateRecommendations(el)
   showRecommendations()
+	
+	$("#questiontime").timepicker(
+		timeFormat: "G:i"
+		step: 30
+		scrollDefaultNow: true
+	)

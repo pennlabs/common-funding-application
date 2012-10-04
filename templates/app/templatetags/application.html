@@ -34,10 +34,6 @@ function populate() {
   $("#item-table tr input[name='item_funding_already_received']")[1].value = "15";
   $("#item-table tr input[name='item_funding_already_received']")[2].value = "0";  
 }
-
-
-
-
 </script>
 
 <div class="section-header">
@@ -58,7 +54,7 @@ function populate() {
     <div class="control-group">
       <label for="questiondate" class="control-label">Event Date</label>
       <div class="controls">
-        <input required value="{{ event.date.isoformat }}" type="date" name='date' id="questiondate" class="input-xlarge datepicker" {{ extra_attrs }}>
+        <input required value="{{ event.date.isoformat }}" type="text" name='date' id="questiondate" class="input-xlarge datepicker" {{ extra_attrs }}>
         <p class="help-block">Date of the event</p>
       </div>
     </div>
@@ -67,7 +63,7 @@ function populate() {
       <div class="controls">
         <!-- refer to https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date -->
         <input required value="{{ event.time|date:'H:i' }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Time of the event</p>
+        <p class="help-block">Time of the event in 24-hour format</p>
       </div>
     </div>
     <div class="control-group">
@@ -206,7 +202,7 @@ function populate() {
     {% if user.get_profile.is_requester %}
     {% itemlist_requester event.item_set.all event.funded%}
     {% else %}
-    {% itemlist_funder event.item_set.all user.get_profile.id %}
+    {% itemlist_funder event.item_set.all event.applied_funders.all user.get_profile.id %}
     {% endif %}
   </fieldset>
 </div>
@@ -236,7 +232,7 @@ function populate() {
   </fieldset>
   <!-- template for the recommendation label -->
   <script id="recommended-label" type="text/template">
-    <span class="label label-important">Recommended</span>
+    <span class="label label-success recommended-label">Recommended</span>
   </script>
 </div>
 
@@ -258,7 +254,10 @@ function populate() {
   {% for qa in funder_qas %}
   <div class="extra-answer funder-q-{{ qa.question.funder.id }}">
     <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
-    <input type="text" name="freeresponsequestion_{{qa.question.id}}" class="input-xlarge" value='{{qa.answer.answer}}' {{ extra_attrs }}>
+    <textarea type="text"
+      name="freeresponsequestion_{{qa.question.id}}"
+      class="span6 input-xlarge"
+      {{ extra_attrs }}>{{qa.answer.answer}}</textarea>
   </div>
   {% endfor %}
   </fieldset>
@@ -277,7 +276,8 @@ function populate() {
 </div>
 <div class="section-content">
   {% for comment in event.comment_set.all %}
-  <label>{{ comment.funder }} said: {{ comment }}</label>
+  <p><strong>{{ comment.funder }}</strong> wrote on {{ comment.created }}</p>
+  <blockquote>{{ comment }}</blockquote>
   {% empty %}
   There are no comments yet.
   {% endfor %}

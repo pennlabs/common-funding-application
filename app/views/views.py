@@ -2,6 +2,7 @@ import os
 from decimal import Decimal
 from collections import namedtuple
 
+import smtplib
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -140,9 +141,9 @@ def event_show(request, event_id):
   event = Event.objects.get(pk=event_id)
   if request.method == 'POST': #TODO: should really be PUT
     if user.cfauser.is_funder:
+      grants = []
       for item in event.item_set.all():
         amount = request.POST.get("item_" + str(item.id), None)
-        grants = []
         if amount:
           amount = Decimal(amount)
           grant, _ = Grant.objects.get_or_create(funder=user.cfauser,
@@ -161,10 +162,14 @@ def event_show(request, event_id):
 
           grants.append(grant)
 
-        if grants:
-          # email the event requester indicating that they've been funded
-          event.notify_requester(grants)
+      if grants:
+        # email the event requester indicating that they've been funded
+        event.notify_requester(grants)
+        # try to notify osa, but osa is not guaranteed to exist
+        try:
           user.get_profile().notify_osa(event, grants)
+        except smtplib.SMTPException:
+          pass
       if 'new-comment' in request.POST:
         comment = Comment(comment=request.POST['new-comment'],
           funder=user.get_profile(), event=event)
