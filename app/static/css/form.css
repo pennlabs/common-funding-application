@@ -83,8 +83,6 @@ table.items-total tr:last-child {
   color: #000;
 }
 
-
-
 #free-response .control-label {
     float: none;
     width: 100%;
@@ -101,4 +99,25 @@ table.items-total tr:last-child {
 }
 .extra-answer {
   margin-bottom: 25px;
+}
+#register-form input {
+  width: 97%;
+}
+.email-error {
+  color: #b94a48;
+  border-color: #b94a48;
+}
+.email-error:focus {
+  border-color: #953b39;
+  -webkit-box-shadow: 0 0 6px #d59392;
+  -moz-box-shadow: 0 0 6px #d59392;
+  box-shadow: 0 0 6px #d59392;
+}
+.errorlist {
+  float: right;
+  margin: 0;
+  padding: 0;
+}
+.errorlist li {
+  color: #b94a48;
 }
