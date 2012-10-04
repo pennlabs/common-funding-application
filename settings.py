@@ -9,7 +9,11 @@ TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 
+# Number of days a user has to activate his account after registration
 ACCOUNT_ACTIVATION_DAYS = 7
+
+# Email address to use for automated registration emails
+DEFAULT_FROM_EMAIL = "no-reply@pennapps.com"
 
 LOGIN_URL = URL_ROOT + "/accounts/login/"
 LOGOUT_URL = URL_ROOT + "/accounts/logout/"
