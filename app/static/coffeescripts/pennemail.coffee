@@ -1,4 +1,7 @@
+# Registration email validator
 $ ->
+  $("label[for=id_email]").html("Penn Email Address:")
+
   $("#register-form").on "submit", (e) ->
     email = $("#id_email").val()
     pattern = /@.*upenn\.edu$/
