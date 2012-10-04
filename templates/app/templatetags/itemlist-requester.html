@@ -25,13 +25,12 @@
         </td>        
         <td>
           <select class="item-category" name='item_category' {% if funded %} disabled {% endif %}>
-            <option>Food</option>
-            <option>Drink</option>
-            <option>blah</option>
-            <option>test</option>
-            <option>stuff</option>
-            <option>performer</option>
-            <option>testing</option>
+            <option> {{ item.get_category_display }} </option>
+            {% for item_category in CATEGORIES %}
+              {% if item_category.1 != item.get_category_display %}
+            <option> {{ item_category.1 }} </option>
+              {% endif %}
+            {% endfor %}
           </select>
         </td>
         <td>
@@ -61,6 +60,7 @@
         <td>
           $<span class="item-amount">0.00</span>
         </td>
+
         {% if not funded %}
         <td>
           <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
@@ -75,13 +75,9 @@
       </td>
       <td>
         <select class="item-category" name='item_category'>
-          <option>Food</option>
-          <option>Drink</option>
-          <option>blah</option>
-          <option>test</option>
-          <option>stuff</option>
-          <option>performer</option>
-          <option>testing</option>
+          {% for item_category in CATEGORIES %}
+          <option> {{ item_category.1 }} </option>
+          {% endfor %}
         </select>
       </td>
       <td>
@@ -102,6 +98,7 @@
       <td>
         $<span class="item-amount">0.00</span>
       </td>
+
       <td>
         <button class='btn add' onclick='addItem(this); return false;'>Add</button>
       </td>
