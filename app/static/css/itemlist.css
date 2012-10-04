@@ -7,6 +7,7 @@ table#item-table th {
 table#item-table td {
   width: 5%;
 }
+table#item-table td:nth-child(2),
 table#item-table td:nth-last-child(2) {
   width: 2%;
 }

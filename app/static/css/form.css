@@ -53,6 +53,10 @@ fieldset {
   color: #999;
 }
 
+.input-prepend .input-xlarge {
+  width: 242px;
+}
+
 #free-response .control-label {
     float: none;
     width: 100%;
