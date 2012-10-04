@@ -123,7 +123,7 @@ function populate() {
       </div>
     </div>
     <div class="control-group">
-      <label for="fundingalreadyreceived" class="control-label">Funding Already Receieved</label>
+      <label for="fundingalreadyreceived" class="control-label">Funding Already Received</label>
       <div class="controls">
         <div class="input-prepend">
             <span class="add-on">$</span>
@@ -202,7 +202,7 @@ function populate() {
     {% if user.get_profile.is_requester %}
     {% itemlist_requester event.item_set.all event.funded%}
     {% else %}
-    {% itemlist_funder event.item_set.all user.get_profile.id %}
+    {% itemlist_funder event.item_set.all event.applied_funders.all user.get_profile.id %}
     {% endif %}
   </fieldset>
 </div>
@@ -276,12 +276,13 @@ function populate() {
 </div>
 <div class="section-content">
   {% for comment in event.comment_set.all %}
-  <label>{{ comment.funder }} said: {{ comment }}</label>
+  <p><strong>{{ comment.funder }}</strong> wrote on {{ comment.created }}</p>
+  <blockquote>{{ comment }}</blockquote>
   {% empty %}
   There are no comments yet.
   {% endfor %}
   {% if user.get_profile.is_funder %}
   <p>Specify any conditions and stipulations here.</p>
-  <textarea name="new-comment"></textarea>
+  <textarea name="new-comment" class="span6"></textarea>
   {% endif %}
 </div>

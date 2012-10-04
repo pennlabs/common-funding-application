@@ -16,16 +16,13 @@
       
       {% for funder_id, grant_amount, item_id in grant_datas %}
       {% ifequal funder_id current_funder %}
-      <td>
-        <div class="input-prepend">
-          <span class="add-on">$</span>
-          <input class="inputIcon small input-with-dollar" name="item_{{ item_id }}"
-            value="{{ grant_amount }}"
-            pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
-            onfocus="newInputClicked(this)"
-            onblur="newInputCheck(this, '{{ grant_amount }}')"
-            onkeydown="numericOnly(event)"/>
-        </div>
+      <td class="col-self">
+        <input class="inputIcon small input-with-dollar" name="item_{{ item_id }}"
+          value="{{ grant_amount }}"
+          pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
+          onfocus="newInputClicked(this)"
+          onblur="newInputCheck(this, '{{ grant_amount }}')"
+          onkeydown="numericOnly(event)"/>
       </td>
       {% else %}
       <td>${{ grant_amount }}</td>
