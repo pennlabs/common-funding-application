@@ -38,7 +38,7 @@ def fundingbar(context, totalAmount, fundDict):
 def itemlist_requester(context, items, funded):
   """ Render the table of items in the requester view """
   # takes a dictionary of items
-  new_context = {'items':items, 'funded':funded}
+  new_context = {'items':items, 'funded':funded, 'CATEGORIES': CATEGORIES}
   return render_to_string('app/templatetags/itemlist-requester.html', new_context)
 
 
