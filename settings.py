@@ -17,7 +17,7 @@ DEFAULT_FROM_EMAIL = "no-reply@pennapps.com"
 
 LOGIN_URL = URL_ROOT + "/accounts/login/"
 LOGOUT_URL = URL_ROOT + "/accounts/logout/"
-LOGIN_REDIRECT_URL = URL_ROOT
+LOGIN_REDIRECT_URL = "/" + URL_ROOT
 
 AUTH_PROFILE_MODULE = "app.CFAUser"
 
