@@ -18,3 +18,12 @@ Common Funding Application
 * Go to /admin and modify the Site object in Sites. Change the domain name to something like "pennapps.com/ceasarb-cfa" and the display name to "The Common Funding App".
 
 
+## DB migrations
+
+_Note_: instructions are from [our wiki](https://github.com/pennappslabs/wiki/wiki/Setting-Up-South)
+
+* Edit models.py
+
+* `python manage.py schemamigration app --auto NAME_OF_CHANGE`
+
+* `python manage.py migrate app`
