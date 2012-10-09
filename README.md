@@ -20,6 +20,8 @@ Common Funding Application
 
 ## DB migrations
 
+_Note_: instructions are from [our wiki](https://github.com/pennappslabs/wiki/wiki/Setting-Up-South)
+
 * Edit models.py
 
 * `python manage.py schemamigration app --auto NAME_OF_CHANGE`
