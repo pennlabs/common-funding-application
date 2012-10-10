@@ -12,13 +12,13 @@ from django.template.loader import render_to_string
 
 
 YES_OR_NO = (
-    ('Y', 'YES'),
-    ('N', 'NO'),
+  ('Y', 'YES'),
+  ('N', 'NO'),
 )
 
 REQUESTER_OR_FUNDER = (
-    ('R', 'REQUESTER'),
-    ('F', 'FUNDER'),
+  ('R', 'REQUESTER'),
+  ('F', 'FUNDER'),
 )
 
 
@@ -46,24 +46,24 @@ class CFAUser(models.Model):
   mission_statement = models.TextField(max_length=256)
 
   def __unicode__(self):
-      return unicode(self.user)
+    return unicode(self.user)
 
   @property
   def is_funder(self):
-      return self.user_type == 'F'
+    return self.user_type == 'F'
 
   @property
   def is_requester(self):
-      return not self.is_funder
+    return not self.is_funder
 
   def is_willing_to_fund(self, event):
     """Check if a funder is willing to fund an event."""
     assert self.is_funder
     for constraint in self.funderconstraint_set.all():
-        event_answer = event.eligibilityanswer_set.get(question=
+      event_answer = event.eligibilityanswer_set.get(question=
             constraint.question).answer
-        if not event_answer == constraint.answer:
-            return False
+      if not event_answer == constraint.answer:
+        return False
     return True
 
   def requested(self, event):
@@ -95,171 +95,171 @@ def create_profile(sender, instance, signal, created, **kwargs):
   if created:
     CFAUser.objects.create(user=instance, user_type='R')
 
-
 class Event(models.Model):
-    """An Event object.
+  """An Event object.
 
-    An Event consists of:
-    * A name
-    * A date
-    * A time
-    * A location
-    * An anticipated attendance
-    * An admission fee
-    * A requester
-    * An advisor
-    * A list of collaborating organizations
-    * The amount of money already received that is not allocated for any item
-    """
-    name = models.CharField(max_length=256)
-    date = models.DateField()
-    time = models.TimeField()
-    location = models.CharField(max_length=256)
-    requester = models.ForeignKey(CFAUser, related_name='event_requester')
-    contact_email = models.EmailField()
-    contact_phone = models.CharField(max_length=10)
-    anticipated_attendance = models.IntegerField()
-    admission_fee = models.DecimalField(max_digits=6, decimal_places=2)
-    advisor_email = models.EmailField(blank=True)
-    advisor_phone = models.CharField(max_length=10, blank=True)
-    organizations = models.CharField(max_length=256)
-    applied_funders =\
-        models.ManyToManyField(CFAUser,
-                               related_name='event_applied_funders')
-    funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
+  An Event consists of:
+  * A name
+  * A date
+  * A time
+  * A location
+  * An anticipated attendance
+  * An admission fee
+  * A requester
+  * An advisor
+  * A list of collaborating organizations
+  * The amount of money already received that is not allocated for any item
+  """
+  name = models.CharField(max_length=256)
+  date = models.DateField()
+  time = models.TimeField()
+  location = models.CharField(max_length=256)
+  requester = models.ForeignKey(CFAUser, related_name='event_requester')
+  contact_email = models.EmailField()
+  contact_phone = models.CharField(max_length=10)
+  anticipated_attendance = models.IntegerField()
+  admission_fee = models.DecimalField(max_digits=6, decimal_places=2)
+  advisor_email = models.EmailField(blank=True)
+  advisor_phone = models.CharField(max_length=10, blank=True)
+  organizations = models.CharField(max_length=256)
+  applied_funders =\
+      models.ManyToManyField(CFAUser,
+                             related_name='event_applied_funders')
+  funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
+  over = models.CharField(max_length=1, choices=YES_OR_NO)
 
-    @property
-    def total_funds_already_received(self):
-      """The total amount of money already received (before grants) for an event."""
-      return self.funding_already_received + sum(item.funding_already_received
-                                                 for item in self.item_set.all())
+  @property
+  def total_funds_already_received(self):
+    """The total amount of money already received (before grants) for an event."""
+    return self.funding_already_received + sum(item.funding_already_received
+                                               for item in self.item_set.all())
 
-    @property
-    def amounts(self):
-      """Get a dictionary containing the amount each funder has granted."""
-      amounts = dict((funder, 0) for funder in self.applied_funders.all())
-      for item in self.item_set.all():
-        for grant in item.grant_set.all():
-          amounts[grant.funder] += grant.amount
-      return amounts
+  @property
+  def amounts(self):
+    """Get a dictionary containing the amount each funder has granted."""
+    amounts = dict((funder, 0) for funder in self.applied_funders.all())
+    for item in self.item_set.all():
+      for grant in item.grant_set.all():
+        amounts[grant.funder] += grant.amount
+    return amounts
 
-    @property
-    def total_funds_granted(self):
-      """The total amount of money received via grants."""
-      return sum(self.amounts.values())
+  @property
+  def total_funds_granted(self):
+    """The total amount of money received via grants."""
+    return sum(self.amounts.values())
+  
+  @property
+  def funded(self):
+    """Whether or not an event has been funded."""
+    return self.total_funds_granted > 0
+
+  @property
+  def total_funds_received(self):
+    """The total amount of money received (grants + pre grant)."""
+    return self.total_funds_already_received + self.total_funds_granted
+
+  @property
+  def total_funds_requested(self):
+    """The total amount of money requested for an event."""
+    return sum(item.total for item in self.item_set.all())
+
+  def save_from_form(self, POST):
+    """Save an event from form data."""
+    # save items
+    names = POST.getlist('item_name')
+    quantities = POST.getlist('item_quantity')
+    prices_per_unit = POST.getlist('item_price_per_unit')
+    funding_already_received = POST.getlist('item_funding_already_received')
+    categories = POST.getlist('item_category')
+
+    self.item_set.all().delete()
+    for name, quantity, price, funding, cat in zip(names, quantities, prices_per_unit, funding_already_received, categories):
+      # set correct category letter 
+      for tup in CATEGORIES:
+        if tup[1] == cat:  
+          cat = tup[0] 
+
+      # category defaults to F because we haven' implemented the different category choices
+      if str(name) and str(quantity) and str(funding) and str(price):
+        self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category=cat)
+
+    # save questions
+
+    # delete existing answers
+    self.eligibilityanswer_set.all().delete()
+    self.commonfreeresponseanswer_set.all().delete()
+    self.freeresponseanswer_set.all().delete()
     
-    @property
-    def funded(self):
-      """Whether or not an event has been funded."""
-      return self.total_funds_granted > 0
+    # clear existing funders to re-add new ones
+    self.applied_funders.clear()
 
-    @property
-    def total_funds_received(self):
-      """The total amount of money received (grants + pre grant)."""
-      return self.total_funds_already_received + self.total_funds_granted
-
-    @property
-    def total_funds_requested(self):
-      """The total amount of money requested for an event."""
-      return sum(item.total for item in self.item_set.all())
-
-    def save_from_form(self, POST):
-      """Save an event from form data."""
-      # save items
-      names = POST.getlist('item_name')
-      quantities = POST.getlist('item_quantity')
-      prices_per_unit = POST.getlist('item_price_per_unit')
-      funding_already_received = POST.getlist('item_funding_already_received')
-      categories = POST.getlist('item_category')
-
-      self.item_set.all().delete()
-      for name, quantity, price, funding, cat in zip(names, quantities, prices_per_unit, funding_already_received, categories):
-        # set correct category letter 
-        for tup in CATEGORIES:
-          if tup[1] == cat:  
-            cat = tup[0] 
-
-        # category defaults to F because we haven' implemented the different category choices
-        if str(name) and str(quantity) and str(funding) and str(price):
-          self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category=cat)
-
-      # save questions
-
-      # delete existing answers
-      self.eligibilityanswer_set.all().delete()
-      self.commonfreeresponseanswer_set.all().delete()
-      self.freeresponseanswer_set.all().delete()
-      
-      # clear existing funders to re-add new ones
-      self.applied_funders.clear()
-
-      # create new answers and save funders
-      # unchecked checkboxes will have neither answers nor funders associated with them
-      for k, v in POST.items():
-        if k.startswith('eligibility'):
-          q_id = re.search("[0-9]+", k).group(0)
-          question = EligibilityQuestion.objects.get(id=q_id)
-          self.eligibilityanswer_set.create(question=question, event=self, answer='Y')
-        elif k.startswith('commonfreeresponse'):
-          q_id = re.search("[0-9]+", k).group(0)
-          question = CommonFreeResponseQuestion.objects.get(id=q_id)
-          self.commonfreeresponseanswer_set.create(question=question, event=self, answer=v)
-        elif k.startswith('freeresponse'):
-          q_id = re.search("[0-9]+", k).group(0)
-          question = FreeResponseQuestion.objects.get(id=q_id)
-          self.freeresponseanswer_set.create(question=question, event=self, answer=v)
-        elif k.startswith('funder'):
-          funder_id = re.search("[0-9]+", k).group(0)
-          funder = CFAUser.objects.get(id=funder_id)
-          self.applied_funders.add(funder)
+    # create new answers and save funders
+    # unchecked checkboxes will have neither answers nor funders associated with them
+    for k, v in POST.items():
+      if k.startswith('eligibility'):
+        q_id = re.search("[0-9]+", k).group(0)
+        question = EligibilityQuestion.objects.get(id=q_id)
+        self.eligibilityanswer_set.create(question=question, event=self, answer='Y')
+      elif k.startswith('commonfreeresponse'):
+        q_id = re.search("[0-9]+", k).group(0)
+        question = CommonFreeResponseQuestion.objects.get(id=q_id)
+        self.commonfreeresponseanswer_set.create(question=question, event=self, answer=v)
+      elif k.startswith('freeresponse'):
+        q_id = re.search("[0-9]+", k).group(0)
+        question = FreeResponseQuestion.objects.get(id=q_id)
+        self.freeresponseanswer_set.create(question=question, event=self, answer=v)
+      elif k.startswith('funder'):
+        funder_id = re.search("[0-9]+", k).group(0)
+        funder = CFAUser.objects.get(id=funder_id)
+        self.applied_funders.add(funder)
 
 
-    def notify_funder(self, funder):
-      """Notify a funder that the requester has applied to them."""
-      assert funder.is_funder
-      context = {'requester': self.requester, 'event': self}
-      subject = render_to_string('app/application_email_subject.txt',
-          context).strip()
-      message = render_to_string('app/application_email.txt', context)
-      funder.user.email_user(subject, message)
+  def notify_funder(self, funder):
+    """Notify a funder that the requester has applied to them."""
+    assert funder.is_funder
+    context = {'requester': self.requester, 'event': self}
+    subject = render_to_string('app/application_email_subject.txt',
+        context).strip()
+    message = render_to_string('app/application_email.txt', context)
+    funder.user.email_user(subject, message)
 
-    def notify_requester(self, grants):
-      """Notify a requester that an event has been funded."""
-      context = {'event': self, 'grants': grants}
-      subject = render_to_string('app/grant_email_subject.txt',
-          context).strip()
-      message = render_to_string('app/grant_email.txt', context)
-      self.requester.user.email_user(subject, message)
+  def notify_requester(self, grants):
+    """Notify a requester that an event has been funded."""
+    context = {'event': self, 'grants': grants}
+    subject = render_to_string('app/grant_email_subject.txt',
+        context).strip()
+    message = render_to_string('app/grant_email.txt', context)
+    self.requester.user.email_user(subject, message)
 
 
-    @property
-    def secret_key(self):
-      """Unique key that can be shared so that anyone can view the event."""
-      """To use the key append ?key=<key>"""
-      return sha.new("".join([self.name, str(self.date), str(self.requester)])).hexdigest()
+  @property
+  def secret_key(self):
+    """Unique key that can be shared so that anyone can view the event."""
+    """To use the key append ?key=<key>"""
+    return sha.new("".join([self.name, str(self.date), str(self.requester)])).hexdigest()
 
-    @models.permalink
-    def get_absolute_url(self):
-      return ('app.views.event_show', [str(self.id)])
+  @models.permalink
+  def get_absolute_url(self):
+    return ('app.views.event_show', [str(self.id)])
 
-    def __unicode__(self):
-        return "%s: %s, %s" % (unicode(self.requester),
-                               self.name,
-                               self.date.isoformat())
+  def __unicode__(self):
+      return "%s: %s, %s" % (unicode(self.requester),
+                             self.name,
+                             self.date.isoformat())
 
-    class Meta:
-        unique_together = ("name", "date", "requester")
+  class Meta:
+      unique_together = ("name", "date", "requester")
 
 
 class Comment(models.Model):
-    """A comment, made by a funder, on an event application."""
-    funder = models.ForeignKey(CFAUser)
-    event = models.ForeignKey(Event)
-    comment = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
+  """A comment, made by a funder, on an event application."""
+  funder = models.ForeignKey(CFAUser)
+  event = models.ForeignKey(Event)
+  comment = models.TextField()
+  created = models.DateTimeField(auto_now_add=True)
 
-    def __unicode__(self):
-        return self.comment
+  def __unicode__(self):
+    return self.comment
 
 
 @receiver(sender=Comment, signal=post_save)
@@ -277,13 +277,22 @@ def notify_requester(sender, instance, signal, created, **kwargs):
 
 
 class Question(models.Model):
-    question = models.TextField()
-    
-    def __unicode__(self):
-        return self.question
+  question = models.TextField()
 
-    class Meta:
-      abstract = True
+  def __unicode__(self):
+    return self.question
+
+  class Meta:
+    abstract = True
+
+class Answer(models.Model):
+  event = models.ForeignKey(Event)
+
+  def __unicode__(self):
+    return "%s %s" % (unicode(self.question), self.answer)
+
+  class Meta:
+    abstract = True
 
 
 class EligibilityQuestion(Question):
@@ -300,46 +309,47 @@ class EligibilityQuestion(Question):
     return ','.join(str(a) for a in funder_ids)
 
 
-class EligibilityAnswer(models.Model):
-    question = models.ForeignKey(EligibilityQuestion)
-    event = models.ForeignKey(Event)
-    answer = models.CharField(max_length=1, choices=YES_OR_NO)
+class EligibilityAnswer(Answer):
+  question = models.ForeignKey(EligibilityQuestion)
+  answer = models.CharField(max_length=1, choices=YES_OR_NO)
 
-    def __unicode__(self):
-        return "%s %s" % (unicode(self.question), self.answer)
+  class Meta:
+    unique_together = ("question", "event", "answer")
 
-    class Meta:
-        unique_together = ("question", "event", "answer")
+class CommonFollowupQuestion(Question):
+  """A followup question common to all funders."""
+  pass
 
+class CommonFollowupAnswer(Answer):
+  question = models.ForeignKey(CommonFollowupQuestion)
+  answer = models.TextField()
+
+class FollowupQuestion(Question):
+  """A followup question specific to a funder."""
+  funder = models.ForeignKey(CFAUser)
+
+class FollowupAnswer(Answer):
+  question = models.ForeignKey(FollowupQuestion)
+  answer = models.TextField()
 
 class CommonFreeResponseQuestion(Question):
   """A free response question common to all funders."""
   pass
 
 
-class CommonFreeResponseAnswer(models.Model):
+class CommonFreeResponseAnswer(Answer):
   """An answer to a common free response question."""
   question = models.ForeignKey(CommonFreeResponseQuestion)
-  event = models.ForeignKey(Event)
   answer = models.TextField()
-
-  def __unicode__(self):
-      return "%s %s" % (unicode(self.question), self.answer)
-
 
 class FreeResponseQuestion(Question):
   """A unique free response question specified by a single funder."""
   funder = models.ForeignKey(CFAUser)
 
 
-class FreeResponseAnswer(models.Model):
-    question = models.ForeignKey(FreeResponseQuestion)
-    event = models.ForeignKey(Event)
-    answer = models.TextField()
-    
-    def __unicode__(self):
-        return "%s %s" % (unicode(self.question), self.answer)
-
+class FreeResponseAnswer(Answer):
+  question = models.ForeignKey(FreeResponseQuestion)
+  answer = models.TextField()
 
 CATEGORIES = (
     ('H', 'Honoraria/Services'),
