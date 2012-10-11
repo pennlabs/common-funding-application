@@ -24,6 +24,8 @@ _Note_: instructions are from [our wiki](https://github.com/pennappslabs/wiki/wi
 
 * Edit models.py
 
+* _first migration only_ `python manage.py convert_to_south app`
+
 * `python manage.py schemamigration app --auto NAME_OF_CHANGE`
 
 * `python manage.py migrate app`
