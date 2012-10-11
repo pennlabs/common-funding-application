@@ -62,6 +62,12 @@ fieldset {
   cursor: pointer;
   margin-top: 10px;
 }
+.section-toggle:after {
+  content: "collapse";
+}
+.section-toggle.collapsed:after {
+  content: "expand";
+}
 
 #item-table input {
   width: 175px;
