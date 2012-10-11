@@ -120,20 +120,28 @@ function calculateAmount() {
 }
 //update item total
 function updateTotal(){
-    var total = 0;
+    var expTotal = 0;
+    var revTotal = 0;
     //lump sum (existing funding) calculations and generation
     var lumpFundingReceivedEl = $("#fundingalreadyreceived");
     var funded = parseFloat(lumpFundingReceivedEl.val()) || 0;
  
     $('.items-funded').html(funded.toFixed(2));
-    var items = $('.item-amount');
-    //for each item, add on the amount
-    items.each(function(index, value){
-      total = total + parseFloat(value.innerHTML);
+    var expItems = $('.expense-item .item-amount');
+    var revItems = $('.revenue-item .item-amount');
+    //for each expense item, add on the amount
+    expItems.each(function(index, value){
+      expTotal = expTotal + parseFloat(value.innerHTML);
     });
-    $('.items-sum-total').html(total.toFixed(2));
+
+    revItems.each(function(index, value){
+      revTotal = revTotal + parseFloat(value.innerHTML);
+    });
+
+    $('.items-exp-total').html(expTotal.toFixed(2));
+    $('.items-rev-total').html(revTotal.toFixed(2));
     
     //remove existing funding
-    $('.items-final-total').html((total - funded).toFixed(2));
+    $('.items-final-total').html((expTotal - revTotal - funded).toFixed(2));
 }
 

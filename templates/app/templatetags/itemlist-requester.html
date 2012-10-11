@@ -25,7 +25,7 @@
   <tbody>
     {% for item in items %}
       {% if item.revenue %}
-        <tr class='app-itemrow'>
+        <tr class='app-itemrow revenue-item'>
           <input name="item_revenue" type="hidden" value="1" />
           <td>
             <input name="item_name" type="text" class='small' 
@@ -79,7 +79,7 @@
       {% endif %}
     {% endfor %}
     {% if not funded %}
-    <tr class='itemrow'>
+    <tr class='itemrow revenue-item'>
       <input name="item_revenue" type="hidden" value="1" />
       <td>
         <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
@@ -147,7 +147,7 @@
   <tbody>
     {% for item in items %}
       {% if not item.revenue %}
-        <tr class='app-itemrow'>
+        <tr class='app-itemrow expense-item'>
           <input name="item_revenue" type="hidden" value="0" />
           <td>
             <input name="item_name" type="text" class='small' 
@@ -201,7 +201,7 @@
       {% endif %}
     {% endfor %}
     {% if not funded %}
-    <tr class='itemrow'>
+    <tr class='itemrow expense-item'>
       <input name="item_revenue" type="hidden" value="0" />
       <td>
         <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
@@ -245,11 +245,11 @@
 <table class="items-total">
   <tr>
     <td>Sum Total</td>
-    <td>$<span class="items-sum-total">0.00</span></td>
+    <td>$<span class="items-exp-total">0.00</span></td>
   </tr>
   <tr>
     <td>Revenue Total</td>
-    <td>&ndash;$<span class="items-revenue-total">0.00</span></td>
+    <td>&ndash;$<span class="items-rev-total">0.00</span></td>
   </tr>
   <tr>
     <td>Already Funded</td>
