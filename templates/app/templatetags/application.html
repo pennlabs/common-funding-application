@@ -302,7 +302,7 @@ function populate() {
 
 
 
-{% ifequal event.over "Y" %}
+{% if event.over %}
 <section class="short-answer">
   <div class="section-header">
     <a class='section-toggle'></a>
@@ -326,4 +326,4 @@ function populate() {
     </fieldset>
   </div>
 </section>
-{% endifequal %}
+{% endif %}
