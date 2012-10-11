@@ -56,7 +56,7 @@ def application(context, user, event=None):
     'funders'        : CFAUser.objects.filter(user_type='F')
   }
 
-  if event.over:
+  if event.over == 'Y':
     new_context['commonfollowup_qas'] = [QA(question, get_or_none(CommonFollowupAnswer, question=question, event=event))
                                          for question in CommonFollowupQuestion.objects.all()]
     new_context['followup_qas']       = [QA(question, get_or_none(FollowupAnswer, question=question, event=event))
