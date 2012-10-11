@@ -71,9 +71,9 @@ COMMON_QS = [
     ]
 
 COMMON_FOLLOWUP_QS = [
-    ("How did your stupid event go?"),
-    ("Did your mother attend?"),
-    ("Why are you such a failure?")
+    ("How did your event go?"),
+    ("Did your advisor attend?"),
+    ("Why was it a success?")
     ]
 
 
