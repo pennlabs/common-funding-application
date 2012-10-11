@@ -77,10 +77,10 @@ updateRecommendations = (el) ->
 
 toggleSection = (e) ->  
   $(e).parent().siblings(".section-content").toggle()
-  if e.innerHTML == "hide"
-    e.innerHTML = "show"
+  if e.innerHTML == "collapse"
+    e.innerHTML = "expand"
   else
-    e.innerHTML = "hide"
+    e.innerHTML = "collapse"
 
 $ ->
   initExpectations()
@@ -112,10 +112,10 @@ $ ->
   )
   
   # toggle sections
-  $(".section-header").prepend("<a class='section-toggle'>hide</a>")
+  $(".section-header").prepend("<a class='section-toggle'>collapse</a>")
   $(".section-toggle").click -> toggleSection(this)
   
   # hide all sections
-  $(".section-content").hide()
-  $(".section-toggle").text("show")
+  # $(".section-content").hide()
+  # $(".section-toggle").text("expand")
   
