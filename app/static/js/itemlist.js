@@ -1,11 +1,12 @@
-function addItem() {
-  var $row = $('.add').closest('tr');
+function addItem(e) {
+  var $row = $(e).closest('tr');
   var $clone = $row.clone().insertBefore($row);
   //set previous amount to zero.
   $row.find('.item-amount').html(0);
   $clone.find('.add').replaceWith($('.remove').html());
   $clone.find('input').removeAttr('required');
   $row.find('input').removeAttr('required').val('');
+  console.log("inside additem");
 
 }
 
@@ -136,9 +137,3 @@ function updateTotal(){
     $('.items-final-total').html((total - funded).toFixed(2));
 }
 
-$(document).ready(function() {
-  if ($(".app-item-row").length == 1) {
-    addItem();
-  }
-  calculateAmount();
-});

@@ -1,3 +1,10 @@
+<div>
+  <h3>
+    Revenue Items
+    <small>list your projected revenue items</small>
+  </h3>
+</div>
+
 <div class='remove' style='display:none'>
   <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
 </div>
@@ -17,59 +24,185 @@
   </thead>
   <tbody>
     {% for item in items %}
-      <tr class='app-itemrow'>
-        <td>
-          <input name="item_name" type="text" class='small' 
-            required {% if funded %} disabled {% endif %}
-            value="{{ item.name }}" />
-        </td>        
-        <td>
-          <select class="item-category" name='item_category' {% if funded %} disabled {% endif %}>
-            <option> {{ item.get_category_display }} </option>
-            {% for item_category in CATEGORIES %}
-              {% if item_category.1 != item.get_category_display %}
-            <option> {{ item_category.1 }} </option>
-              {% endif %}
-            {% endfor %}
-          </select>
-        </td>
-        <td>
-          <input name="item_quantity" type="number" class='small'
-            required {% if funded %} disabled {% endif %}
-            pattern="^\d+"
-            value="{{ item.quantity }}" />
-        </td>
-        <td> 
-          <div class="input-prepend">
-            <span class="add-on">$</span>
-            <input class="inputIcon small input-with-dollar" name="item_price_per_unit"
-              required {% if funded %} disabled {% endif %} type="number"
-              pattern="^\d*(\.\d{2}$)?"
-              value="{{ item.price_per_unit }}"/>
-          </div>
-        </td>
-        <td> 
-          <div class="input-prepend">
-            <span class="add-on">$</span>
-            <input class="inputIcon small input-with-dollar" name="item_funding_already_received"
-              type="number" required {% if funded %} disabled {% endif %}
-              pattern="^\d*(\.\d{2}$)?"
-              value="{{ item.funding_already_received }}" />
-          </div>
-        </td>
-        <td>
-          $<span class="item-amount">0.00</span>
-        </td>
+      {% if item.revenue %}
+        <tr class='app-itemrow'>
+          <input name="item_revenue" type="hidden" value="1" />
+          <td>
+            <input name="item_name" type="text" class='small' 
+              required {% if funded %} disabled {% endif %}
+              value="{{ item.name }}" />
+          </td>        
+          <td>
+            <select class="item-category" name='item_category' {% if funded %} disabled {% endif %}>
+              <option> {{ item.get_category_display }} </option>
+              {% for item_category in CATEGORIES %}
+                {% if item_category.1 != item.get_category_display %}
+              <option> {{ item_category.1 }} </option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </td>
+          <td>
+            <input name="item_quantity" type="number" class='small'
+              required {% if funded %} disabled {% endif %}
+              pattern="^\d+"
+              value="{{ item.quantity }}" />
+          </td>
+          <td> 
+            <div class="input-prepend">
+              <span class="add-on">$</span>
+              <input class="inputIcon small input-with-dollar" name="item_price_per_unit"
+                required {% if funded %} disabled {% endif %} type="number"
+                pattern="^\d*(\.\d{2}$)?"
+                value="{{ item.price_per_unit }}"/>
+            </div>
+          </td>
+          <td> 
+            <div class="input-prepend">
+              <span class="add-on">$</span>
+              <input class="inputIcon small input-with-dollar" name="item_funding_already_received"
+                type="number" required {% if funded %} disabled {% endif %}
+                pattern="^\d*(\.\d{2}$)?"
+                value="{{ item.funding_already_received }}" />
+            </div>
+          </td>
+          <td>
+            $<span class="item-amount">0.00</span>
+          </td>
 
-        {% if not funded %}
-        <td>
-          <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
-        </td>
-        {% endif %}
-      </tr>
+          {% if not funded %}
+          <td>
+            <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
+          </td>
+          {% endif %}
+        </tr>
+      {% endif %}
     {% endfor %}
     {% if not funded %}
     <tr class='itemrow'>
+      <input name="item_revenue" type="hidden" value="1" />
+      <td>
+        <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
+      </td>
+      <td>
+        <select class="item-category" name='item_category'>
+          {% for item_category in CATEGORIES %}
+          <option> {{ item_category.1 }} </option>
+          {% endfor %}
+        </select>
+      </td>
+      <td>
+        <input class="new small" onkeyup="makeRequired(this)" name="item_quantity" type="number"/>
+      </td>
+      <td> 
+        <div class="input-prepend">
+          <span class="add-on">$</span>
+          <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_price_per_unit" type="number"/>
+        </div>
+      </td>
+      <td> 
+        <div class="input-prepend">
+          <span class="add-on">$</span>
+          <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_funding_already_received" type="number"/>
+        </div>
+      </td>
+      <td>
+        $<span class="item-amount">0.00</span>
+      </td>
+
+      <td>
+        <button class='btn add' onclick='addItem(this); return false;'>Add</button>
+      </td>
+    </tr>
+
+    {% endif %}
+
+  </tbody>
+</table>
+
+<div>
+  <h3>
+    Expense Items
+    <small>list your projected expense items</small>
+  </h3>
+</div>
+
+<div class='remove' style='display:none'>
+  <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
+</div>
+<table id='item-table' class='table table-striped'>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Quantity</th>
+      <th>Price Per Unit</th>
+      <th>Already Received</th>
+      <th>Amount</th>
+      {% if not funded %}
+      <th class='action-column'>Action</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in items %}
+      {% if not item.revenue %}
+        <tr class='app-itemrow'>
+          <input name="item_revenue" type="hidden" value="0" />
+          <td>
+            <input name="item_name" type="text" class='small' 
+              required {% if funded %} disabled {% endif %}
+              value="{{ item.name }}" />
+          </td>        
+          <td>
+            <select class="item-category" name='item_category' {% if funded %} disabled {% endif %}>
+              <option> {{ item.get_category_display }} </option>
+              {% for item_category in CATEGORIES %}
+                {% if item_category.1 != item.get_category_display %}
+              <option> {{ item_category.1 }} </option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </td>
+          <td>
+            <input name="item_quantity" type="number" class='small'
+              required {% if funded %} disabled {% endif %}
+              pattern="^\d+"
+              value="{{ item.quantity }}" />
+          </td>
+          <td> 
+            <div class="input-prepend">
+              <span class="add-on">$</span>
+              <input class="inputIcon small input-with-dollar" name="item_price_per_unit"
+                required {% if funded %} disabled {% endif %} type="number"
+                pattern="^\d*(\.\d{2}$)?"
+                value="{{ item.price_per_unit }}"/>
+            </div>
+          </td>
+          <td> 
+            <div class="input-prepend">
+              <span class="add-on">$</span>
+              <input class="inputIcon small input-with-dollar" name="item_funding_already_received"
+                type="number" required {% if funded %} disabled {% endif %}
+                pattern="^\d*(\.\d{2}$)?"
+                value="{{ item.funding_already_received }}" />
+            </div>
+          </td>
+          <td>
+            $<span class="item-amount">0.00</span>
+          </td>
+
+          {% if not funded %}
+          <td>
+            <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
+          </td>
+          {% endif %}
+        </tr>
+      {% endif %}
+    {% endfor %}
+    {% if not funded %}
+    <tr class='itemrow'>
+      <input name="item_revenue" type="hidden" value="0" />
       <td>
         <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
       </td>
@@ -113,6 +246,10 @@
   <tr>
     <td>Sum Total</td>
     <td>$<span class="items-sum-total">0.00</span></td>
+  </tr>
+  <tr>
+    <td>Revenue Total</td>
+    <td>&ndash;$<span class="items-revenue-total">0.00</span></td>
   </tr>
   <tr>
     <td>Already Funded</td>

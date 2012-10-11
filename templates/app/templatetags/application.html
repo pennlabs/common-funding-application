@@ -200,7 +200,7 @@ function populate() {
 <div class="section-content">
   <fieldset>
     {% if user.get_profile.is_requester %}
-    {% itemlist_requester event.item_set.all event.funded%}
+    {% itemlist_requester event.item_set.all event.funded %}
     {% else %}
     {% itemlist_funder event.item_set.all event.applied_funders.all user.get_profile.id %}
     {% endif %}
