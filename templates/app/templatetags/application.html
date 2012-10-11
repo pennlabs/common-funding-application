@@ -36,107 +36,111 @@ function populate() {
 }
 </script>
 
-<div class="section-header">
-  <h2>
-    Event
-    <small>details about the event</small>
-  </h2>
-</div>    
-<div class="section-content">
-  <fieldset>
-    <div class="control-group">
-      <label for="questionname" class="control-label">Event Name</label>
-      <div class="controls">
-        <input required value="{{ event.name }}" type="text" name="name" id="questionname" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Name of the event</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questiondate" class="control-label">Event Date</label>
-      <div class="controls">
-        <input required value="{{ event.date.isoformat }}" type="text" name='date' id="questiondate" class="input-xlarge datepicker" {{ extra_attrs }}>
-        <p class="help-block">Date of the event</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questiontime" class="control-label">Event Time</label>
-      <div class="controls">
-        <!-- refer to https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date -->
-        <input required value="{{ event.time|date:'H:i' }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Time of the event in 24-hour format</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questionlocation" class="control-label">Location</label>
-      <div class="controls">
-        <input required value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Location of the event</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questioncontactemail" class="control-label">Contact Email</label>
-      <div class="controls">
-        <input required value="{{ event.contact_email }}" type="email" name="contactemail" id="questioncontactemail" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Primary contact's email address</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questioncontactphone" class="control-label">Contact Phone</label>
-      <div class="controls">
-        <input required value="{{ event.contact_phone }}" type="text" name="contactphone" id="questioncontactphone" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Primary contact's phone number</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questionanticipatedattendance" class="control-label">Anticipated Attendance</label>
-      <div class="controls">
-        <input required value="{{ event.anticipated_attendance }}" type="number" name="anticipatedattendance" id="questionanticipatedattendance" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Anticipated number of people attending the event</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questionadmissionfee" class="control-label">Admission Fee</label>
-      <div class="controls">
-        <input required value="{{ event.admission_fee }}" type="number" name="admissionfee" id="questionadmissionfee" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Amount you plan charge as admission</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questionadvisoremail" class="control-label">Advisor Email</label>
-      <div class="controls">
-        <input value="{{ event.advisor_email }}" type="email" name="advisoremail" id="questionadvisoremail" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Advisor's email address</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questionadvisorphone" class="control-label">Advisor Phone</label>
-      <div class="controls">
-        <input value="{{ event.advisor_phone }}" type="text" name="advisorphone" id="questionadvisorphone" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Advisor's phone number</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="questionorganizations" class="control-label">Organization(s)</label>
-      <div class="controls">
-        <input required value="{{ event.organizations }}" type="text" name="organizations" id="questionorganizations" class="input-xlarge" {{ extra_attrs }}>
-        <p class="help-block">Organization(s) involved with the event</p>
-      </div>
-    </div>
-    <div class="control-group">
-      <label for="fundingalreadyreceived" class="control-label">Funding Already Receieved</label>
-      <div class="controls">
-        <div class="input-prepend">
-            <span class="add-on">$</span>
-            <input required value="{{ event.funding_already_received }}" type="number" name='fundingalreadyreceived' id="fundingalreadyreceived" class="input-xlarge" {{ extra_attrs }}>
+<section>
+  <div class="section-header">
+    <a class='section-toggle'></a>
+    <h2>
+      Event
+      <small>details about the event</small>
+    </h2>
+  </div>    
+  <div class="section-content">
+    <fieldset>
+      <div class="control-group">
+        <label for="questionname" class="control-label">Event Name</label>
+        <div class="controls">
+          <input required value="{{ event.name }}" type="text" name="name" id="questionname" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Name of the event</p>
         </div>
-        <p class="help-block">Amount of funding already received that has not been allocated for any particular item</p>
       </div>
-    </div>
-  </fieldset>
-</div>
+      <div class="control-group">
+        <label for="questiondate" class="control-label">Event Date</label>
+        <div class="controls">
+          <input required value="{{ event.date.isoformat }}" type="text" name='date' id="questiondate" class="input-xlarge datepicker" {{ extra_attrs }}>
+          <p class="help-block">Date of the event</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="questiontime" class="control-label">Event Time</label>
+        <div class="controls">
+          <!-- refer to https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date -->
+          <input required value="{{ event.time|date:'H:i' }}" type="time" name="time" id="questiontime" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Time of the event in 24-hour format</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="questionlocation" class="control-label">Location</label>
+        <div class="controls">
+          <input required value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Location of the event</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="questioncontactemail" class="control-label">Contact Email</label>
+        <div class="controls">
+          <input required value="{{ event.contact_email }}" type="email" name="contactemail" id="questioncontactemail" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Primary contact's email address</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="questioncontactphone" class="control-label">Contact Phone</label>
+        <div class="controls">
+          <input required value="{{ event.contact_phone }}" type="text" name="contactphone" id="questioncontactphone" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Primary contact's phone number</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="questionanticipatedattendance" class="control-label">Anticipated Attendance</label>
+        <div class="controls">
+          <input required value="{{ event.anticipated_attendance }}" type="number" name="anticipatedattendance" id="questionanticipatedattendance" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Anticipated number of people attending the event</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="questionadmissionfee" class="control-label">Admission Fee</label>
+        <div class="controls">
+          <input required value="{{ event.admission_fee }}" type="number" name="admissionfee" id="questionadmissionfee" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Amount you plan charge as admission</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="questionadvisoremail" class="control-label">Advisor Email</label>
+        <div class="controls">
+          <input value="{{ event.advisor_email }}" type="email" name="advisoremail" id="questionadvisoremail" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Advisor's email address</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="questionadvisorphone" class="control-label">Advisor Phone</label>
+        <div class="controls">
+          <input value="{{ event.advisor_phone }}" type="text" name="advisorphone" id="questionadvisorphone" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Advisor's phone number</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="questionorganizations" class="control-label">Organization(s)</label>
+        <div class="controls">
+          <input required value="{{ event.organizations }}" type="text" name="organizations" id="questionorganizations" class="input-xlarge" {{ extra_attrs }}>
+          <p class="help-block">Organization(s) involved with the event</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="fundingalreadyreceived" class="control-label">Funding Already Receieved</label>
+        <div class="controls">
+          <div class="input-prepend">
+              <span class="add-on">$</span>
+              <input required value="{{ event.funding_already_received }}" type="number" name='fundingalreadyreceived' id="fundingalreadyreceived" class="input-xlarge" {{ extra_attrs }}>
+          </div>
+          <p class="help-block">Amount of funding already received that has not been allocated for any particular item</p>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+</section>
 
 <section id="true-false">
   <div class="section-header">
+    <a class='section-toggle'></a>
     <h2>
       True / False Questions
       <small>to recommend funders</small>
@@ -168,6 +172,7 @@ function populate() {
 
 <section id="free-response">
     <div class="section-header">
+      <a class='section-toggle'></a>
       <h2>
         Free-Response Questions
       </h2>
@@ -190,99 +195,111 @@ function populate() {
     </div>
 </section>
 
-<div class="section-header">
-  <h2>
-    Items
-    <small>list line items for funding</small>
-  </h2>
-</div>
-
-<div class="section-content">
-  <fieldset>
-    {% if user.get_profile.is_requester %}
-    {% itemlist_requester event.item_set.all event.funded %}
-    {% else %}
-    {% itemlist_funder event.item_set.all event.applied_funders.all user.get_profile.id %}
-    {% endif %}
-  </fieldset>
-</div>
-
-<div class="section-header">
-  <h2>
-    Funders
-    <small>select to apply</small>
-  </h2>
-</div>
-<div class="section-content">
-  <fieldset>
-  {% for funder in funders %}
-  <div class="funder-check">
-    <label class="checkbox">
-      <input
-        data-funderid="{{funder.id}}"
-        name="funder_{{ funder.id }}"
-        class="funder-checkbox"
-        {% if funder in event.applied_funders.all %}checked{% endif %}
-        type="checkbox" {{ extra_attrs }}>
-        {{funder.user.username}}
-    </label>
-    <p class="help-block">{{funder.mission_statement}}</p>
+<section>
+  <div class="section-header">
+    <a class='section-toggle'></a>
+    <h2>
+      Items
+      <small>list line items for funding</small>
+    </h2>
   </div>
-  {% endfor %}
-  </fieldset>
-  <!-- template for the recommendation label -->
-  <script id="recommended-label" type="text/template">
-    <span class="label label-success recommended-label">Recommended</span>
-  </script>
-</div>
-
-<div class="section-header">
-  <h2>
-    Extra Questions
-    <small>specific to each funder</small>
-  </h2>
-</div>
-<div class="section-content">
-  <fieldset>
-  <p id="funder-no-q">
-    {% if user.get_profile.is_requester %}
-    No questions yet. Please select funders.
-    {% else %}
-    No other questions answered.
-    {% endif %}
-  </p>
-  {% for qa in funder_qas %}
-  <div class="extra-answer funder-q-{{ qa.question.funder.id }}">
-    <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
-    <textarea type="text"
-      name="freeresponsequestion_{{qa.question.id}}"
-      class="span6 input-xlarge"
-      {{ extra_attrs }}>{{qa.answer.answer}}</textarea>
-  </div>
-  {% endfor %}
-  </fieldset>
-</div>
-<div class="section-header">
-  <h2>
-    Comments
-    <small>
-      {% if user.get_profile.is_funder %}
-      feel free to leave a message
+  <div class="section-content">
+    <fieldset>
+      {% if user.get_profile.is_requester %}
+      {% itemlist_requester event.item_set.all event.funded%}
       {% else %}
-      here are some comments from your potential funders
+      {% itemlist_funder event.item_set.all event.applied_funders.all user.get_profile.id %}
       {% endif %}
-    </small>
-  </h2>
-</div>
-<div class="section-content">
-  {% for comment in event.comment_set.all %}
-  <p><strong>{{ comment.funder }}</strong> wrote on {{ comment.created }}</p>
-  <blockquote>{{ comment }}</blockquote>
-  {% empty %}
-  There are no comments yet.
-  {% endfor %}
-  {% if user.get_profile.is_funder %}
-  <p>Specify any conditions and stipulations here.</p>
-  <textarea name="new-comment"></textarea>
-  {% endif %}
-</div>
+    </fieldset>
+  </div>
+</section>
+
+<section>
+  <div class="section-header">
+    <a class='section-toggle'></a>
+    <h2>
+      Funders
+      <small>select to apply</small>
+    </h2>
+  </div>
+  <div class="section-content">
+    <fieldset>
+    {% for funder in funders %}
+    <div class="funder-check">
+      <label class="checkbox">
+        <input
+          data-funderid="{{funder.id}}"
+          name="funder_{{ funder.id }}"
+          class="funder-checkbox"
+          {% if funder in event.applied_funders.all %}checked{% endif %}
+          type="checkbox" {{ extra_attrs }}>
+          {{funder.user.username}}
+      </label>
+      <p class="help-block">{{funder.mission_statement}}</p>
+    </div>
+    {% endfor %}
+    </fieldset>
+    <!-- template for the recommendation label -->
+    <script id="recommended-label" type="text/template">
+      <span class="label label-success recommended-label">Recommended</span>
+    </script>
+  </div>
+</section>
+
+<section>
+  <div class="section-header">
+    <a class='section-toggle'></a>
+    <h2>
+      Extra Questions
+      <small>specific to each funder</small>
+    </h2>
+  </div>
+  <div class="section-content">
+    <fieldset>
+    <p id="funder-no-q">
+      {% if user.get_profile.is_requester %}
+      No questions yet. Please select funders.
+      {% else %}
+      No other questions answered.
+      {% endif %}
+    </p>
+    {% for qa in funder_qas %}
+    <div class="extra-answer funder-q-{{ qa.question.funder.id }}">
+      <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
+      <textarea type="text"
+        name="freeresponsequestion_{{qa.question.id}}"
+        class="span6 input-xlarge"
+        {{ extra_attrs }}>{{qa.answer.answer}}</textarea>
+    </div>
+    {% endfor %}
+    </fieldset>
+  </div>
+</section>
+
+<section>
+  <div class="section-header">
+    <a class='section-toggle'></a>
+    <h2>
+      Comments
+      <small>
+        {% if user.get_profile.is_funder %}
+        feel free to leave a message
+        {% else %}
+        here are some comments from your potential funders
+        {% endif %}
+      </small>
+    </h2>
+  </div>
+  <div class="section-content">
+    {% for comment in event.comment_set.all %}
+    <p><strong>{{ comment.funder }}</strong> wrote on {{ comment.created }}</p>
+    <blockquote>{{ comment }}</blockquote>
+    {% empty %}
+    There are no comments yet.
+    {% endfor %}
+    {% if user.get_profile.is_funder %}
+    <p>Specify any conditions and stipulations here.</p>
+    <textarea name="new-comment"></textarea>
+    {% endif %}
+  </div>
+</section>

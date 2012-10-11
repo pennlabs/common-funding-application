@@ -75,6 +75,10 @@ updateRecommendations = (el) ->
   funder_relations = Expectations[question_id]
   Reality[question_id] = checkExpectations(el.checked, funder_relations)
 
+toggleSection = (e) ->  
+  $(e).parent().siblings(".section-content").toggle()
+  $(e).toggleClass("collapsed")
+
 $ ->
   initExpectations()
 
@@ -97,9 +101,17 @@ $ ->
 
   $(".bool-q").each (index, el) -> updateRecommendations(el)
   showRecommendations()
-	
-	$("#questiontime").timepicker(
-		timeFormat: "G:i"
-		step: 30
-		scrollDefaultNow: true
-	)
+  
+  $("#questiontime").timepicker(
+    timeFormat: "G:i"
+    step: 30
+    scrollDefaultNow: true
+  )
+  
+  # toggle sections
+  $(".section-toggle").click -> toggleSection(this)
+  
+  # hide all sections
+  #$(".section-content").hide()
+  #$(".section-toggle").addClass("collapsed")
+  
