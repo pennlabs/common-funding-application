@@ -96,21 +96,11 @@ table.items-total tr:last-child {
   color: #000;
 }
 
-#free-response .control-label {
-    float: none;
-    width: 100%;
-    text-align: left;
-}
-#free-response .controls {
-    float: none;
-    margin-left: 0px;
-}
-
 .recommended-label {
   padding: 3.5px;
   margin-left: 3px;
 }
-.extra-answer {
+.short-answer textarea {
   margin-bottom: 25px;
 }
 #register-form input {

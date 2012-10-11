@@ -170,29 +170,25 @@ function populate() {
   </div>
 </section>
 
-<section id="free-response">
-    <div class="section-header">
-      <a class='section-toggle'></a>
-      <h2>
-        Free-Response Questions
-      </h2>
-    </div>
-    <div class="section-content">
-      <fieldset>
-        {% for qa in commonfreeresponse_qas %}
-        <div class="control-group">
-        <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>
-          <div class="controls">
-            <textarea type="text"
-              id="commonfreeresponsequestion_{{qa.question.id}}"
-              name="commonfreeresponsequestion_{{qa.question.id}}"
-              class="span6 commonfreeresponsequestion input-xlarge"
-              {{ extra_attrs }}>{{qa.answer.answer}}</textarea>
-          </div>
-        </div>
-        {% endfor %}
-      </fieldset>
-    </div>
+<section class="short-answer">
+  <div class="section-header">
+    <a class='section-toggle'></a>
+    <h2>
+      Free-Response Questions
+    </h2>
+  </div>
+  <div class="section-content">
+    <fieldset>
+      {% for qa in commonfreeresponse_qas %}        
+      <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>        
+      <textarea type="text"
+        id="commonfreeresponsequestion_{{qa.question.id}}"
+        name="commonfreeresponsequestion_{{qa.question.id}}"
+        class="span6 commonfreeresponsequestion input-xlarge"
+        {{ extra_attrs }}>{{qa.answer.answer}}</textarea>        
+      {% endfor %}
+    </fieldset>
+  </div>
 </section>
 
 <section>
@@ -246,7 +242,7 @@ function populate() {
   </div>
 </section>
 
-<section>
+<section class="short-answer">
   <div class="section-header">
     <a class='section-toggle'></a>
     <h2>
