@@ -70,6 +70,12 @@ COMMON_QS = [
     ("How do you plan to publicize this event?"),
     ]
 
+COMMON_FOLLOWUP_QS = [
+    ("How did your stupid event go?"),
+    ("Did your mother attend?"),
+    ("Why are you such a failure?")
+    ]
+
 
 REQUESTERS = [
     'philo',
@@ -209,6 +215,8 @@ def import_questions():
     CommonFreeResponseQuestion.objects.all().delete()
     for common_q in COMMON_QS:
         CommonFreeResponseQuestion.objects.create(question=common_q)
+    for common_followup_q in COMMON_FOLLOWUP_QS:
+        CommonFollowupQuestion.objects.create(question=common_followup_q)
         
 
 def import_sites():
