@@ -126,7 +126,7 @@ class Event(models.Model):
       models.ManyToManyField(CFAUser,
                              related_name='event_applied_funders')
   funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
-  over = models.CharField(max_length=1, choices=YES_OR_NO)
+  over = models.BooleanField()
 
   @property
   def total_funds_already_received(self):
