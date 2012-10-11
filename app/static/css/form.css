@@ -56,6 +56,13 @@ fieldset {
 .section-content .funder-q em {
   color: #999;
 }
+
+.section-toggle {
+  float: right;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
 #item-table input {
   width: 175px;
 }
