@@ -112,6 +112,6 @@ $ ->
   $(".section-toggle").click -> toggleSection(this)
   
   # hide all sections
-  $(".section-content").hide()
-  $(".section-toggle").addClass("collapsed")
+  #$(".section-content").hide()
+  #$(".section-toggle").addClass("collapsed")
   
