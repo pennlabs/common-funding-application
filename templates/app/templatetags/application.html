@@ -36,6 +36,33 @@ function populate() {
 }
 </script>
 
+
+{% if event.over %}
+<section id="followup" class="short-answer">
+  <div class="section-header">
+    <a class='section-toggle'></a>
+    <h2>
+      Followup Questions
+      <small>
+        post-event report
+      </small>
+    </h2>
+  </div>
+  <div class="section-content">
+    <fieldset>
+    {% for qa in commonfollowup_qas %}        
+    <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>        
+    <textarea type="text"
+      id="commonfreeresponsequestion_{{qa.question.id}}"
+      name="commonfreeresponsequestion_{{qa.question.id}}"
+      class="span6 commonfreeresponsequestion input-xlarge"
+      {{ extra_attrs }}>{{qa.answer.answer}}</textarea>        
+    {% endfor %}
+    </fieldset>
+  </div>
+</section>
+{% endif %}
+
 <section>
   <div class="section-header">
     <a class='section-toggle'></a>
@@ -299,31 +326,3 @@ function populate() {
     {% endif %}
   </div>
 </section>
-
-
-
-{% if event.over %}
-<section class="short-answer">
-  <div class="section-header">
-    <a class='section-toggle'></a>
-    <h2>
-      Followup Questions
-      <small>
-        post-event report
-      </small>
-    </h2>
-  </div>
-  <div class="section-content">
-    <fieldset>
-    {% for qa in commonfollowup_qas %}        
-    <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>        
-    <textarea type="text"
-      id="commonfreeresponsequestion_{{qa.question.id}}"
-      name="commonfreeresponsequestion_{{qa.question.id}}"
-      class="span6 commonfreeresponsequestion input-xlarge"
-      {{ extra_attrs }}>{{qa.answer.answer}}</textarea>        
-    {% endfor %}
-    </fieldset>
-  </div>
-</section>
-{% endif %}
