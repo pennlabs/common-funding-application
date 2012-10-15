@@ -111,7 +111,7 @@ $ ->
   # toggle sections
   $(".section-toggle").click -> toggleSection(this)
   
-  if $("#followup")
+  if $("#followup").length
     $(".section-content").hide()
     $(".section-toggle").addClass("collapsed")
     toggleSection($(".section-toggle")[0])
