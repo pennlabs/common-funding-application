@@ -1,4 +1,5 @@
 #!/bin/env python
+"""Checks whether an event is over and sends emails the requester if so"""
 
 import os, sys
 from datetime import date, timedelta
@@ -8,16 +9,16 @@ sys.path.append(PROJECT_ROOT)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
-from app.models import *
+from app.models import Event
 
-DAYS = 3
+DAYS = 3 # number of days to wait until sending an email
 now = date.today()
 events = Event.objects.all()
 
 for event in events:
   if not event.over:
     then = event.date
-    if (now - then) > timedelta(days = DAYS):
+    if (now - then) > timedelta(days=DAYS):
       event.over = True
       event.save()
       event.notify_requester_for_followups()
