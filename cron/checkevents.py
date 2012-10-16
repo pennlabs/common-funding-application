@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 """Checks whether an event is over and sends emails the requester if so"""
 
 import os, sys
