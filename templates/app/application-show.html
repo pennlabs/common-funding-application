@@ -1,7 +1,7 @@
 {% extends "base-page.html" %}
 
 {% load widgets %}
-    
+
 {% block htmllink-styles %}
 <link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
 {% endblock %}
@@ -11,15 +11,18 @@
 <script src="{{ STATIC_URL }}/js/form.js"></script>
 {% endblock %}
 
-{% block container %}      
+{% block container %}
 <div id="main">
 
     <form action="." method="post" class="form-horizontal">
-  
+
     {% csrf_token %}
     {% application user event %}
 
     {% if user.get_profile.is_funder %}
+		<p>To submit your funding changes and any comments, click "Save." To create
+			a read-only copy of this application to share with your organization,
+			click "Share."</p>
     <div class="form-actions">
       <button class="btn btn" type="submit" name="submit">Cancel</button>
       <button class="btn btn-primary" type="submit" name="submit">Save</button>
@@ -29,5 +32,5 @@
     <a class="btn btn-primary" href="{% url app.views.events %}">Done</a>
     {% endif %}
   </form>
-</div>      
+</div>
 {% endblock %}
