@@ -57,6 +57,7 @@ def application(context, user, event=None):
   }
 
   if event and event.over:
+    new_context['event_over_disable'] = 'disabled'
     new_context['commonfollowup_qas'] = [QA(question, get_or_none(CommonFollowupAnswer, question=question, event=event))
                                          for question in CommonFollowupQuestion.objects.all()]
     new_context['followup_qas']       = [QA(question, get_or_none(FollowupAnswer, question=question, event=event))
@@ -65,4 +66,5 @@ def application(context, user, event=None):
   if not user.is_authenticated() or user.get_profile().is_funder \
     or event and event.funded:
     new_context['extra_attrs'] = 'disabled'
+
   return render_to_string('app/templatetags/application.html', new_context)
