@@ -1,1 +1,1 @@
-Application Received: {{event}} on {{event.date}}
+[{{event.name}}] Event Application Received
