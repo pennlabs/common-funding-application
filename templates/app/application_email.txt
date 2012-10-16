@@ -1,1 +1,1 @@
-{{requester}} has just registered an application for {{event.name}} on {{event.date}}.
+{{requester}} ({{requester.email}}) has just registered an application for an event "{{event.name}}" on {{event.date}}.
