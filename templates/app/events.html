@@ -50,10 +50,15 @@
       <div class="offset2 span1 status">
         <!--<span class="label label-info">Saved</span>-->
         <!--<span class="label label-success">Submitted</span>-->
-        {% if app.funded %}
-        <span class="label label-success">Funded</span>
+        
+        {% if app.over %}
+          <span class="label">Done</span>
         {% else %}
-        <span class="label label-important">UnFunded</span>
+          {% if app.funded %}
+          <span class="label label-success">Funded</span>
+          {% else %}
+          <span class="label label-important">UnFunded</span>
+          {% endif %}
         {% endif %}
       </div>
       <div class="span3 buttons">        
