@@ -231,6 +231,14 @@ class Event(models.Model):
     message = render_to_string('app/grant_email.txt', context)
     self.requester.user.email_user(subject, message)
 
+  def notify_requester_for_followups(self):
+    """Notify a requester that his event is over and he needs to answer followup questions"""
+    context = {'event': self }
+    subject = render_to_string('app/over_event_email_subject.txt',
+        context).strip()
+    message = render_to_string('app/over_event_email.txt', context)
+    self.requester.user.email_user(subject, message)
+
 
   @property
   def secret_key(self):

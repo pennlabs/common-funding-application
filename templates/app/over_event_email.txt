@@ -1,0 +1,3 @@
+We hope {{event.name}} has been fun!
+
+Now if you would be so kind as to log into <a href="">CFA</a> and answer some followup questions.
