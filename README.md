@@ -17,7 +17,6 @@ Common Funding Application
 
 * Run python import_demo.py
 
-
 ## DB migrations
 
 _Note_: instructions are from [our wiki](https://github.com/pennappslabs/wiki/wiki/Setting-Up-South)
