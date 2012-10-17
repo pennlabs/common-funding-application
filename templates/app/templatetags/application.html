@@ -51,11 +51,11 @@ function populate() {
   <div class="section-content">
     <fieldset>
     {% for qa in commonfollowup_qas %}        
-    <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>        
+    <label for="commonfollowupquestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>        
     <textarea type="text"
-      id="commonfreeresponsequestion_{{qa.question.id}}"
-      name="commonfreeresponsequestion_{{qa.question.id}}"
-      class="span6 commonfreeresponsequestion input-xlarge"
+      id="commonfollowupquestion_{{qa.question.id}}"
+      name="commonfollowupquestion_{{qa.question.id}}"
+      class="span6 commonfollowupquestion input-xlarge"
       {{extra_attrs}}>{{qa.answer.answer}}</textarea>        
     {% endfor %}
     </fieldset>
