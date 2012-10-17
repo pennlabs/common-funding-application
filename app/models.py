@@ -186,6 +186,7 @@ class Event(models.Model):
     # save questions
 
     # delete existing answers
+    self.commonfollowupanswer_set.all().delete()
     self.eligibilityanswer_set.all().delete()
     self.commonfreeresponseanswer_set.all().delete()
     self.freeresponseanswer_set.all().delete()
@@ -200,6 +201,10 @@ class Event(models.Model):
         q_id = re.search("[0-9]+", k).group(0)
         question = EligibilityQuestion.objects.get(id=q_id)
         self.eligibilityanswer_set.create(question=question, event=self, answer='Y')
+      elif k.startswith('commonfollowup'):
+        q_id = re.search("[0-9]+", k).group(0)
+        question = CommonFollowupQuestion.objects.get(id=q_id)
+        self.commonfollowupanswer_set.create(question=question, event=self, answer=v)
       elif k.startswith('commonfreeresponse'):
         q_id = re.search("[0-9]+", k).group(0)
         question = CommonFreeResponseQuestion.objects.get(id=q_id)
