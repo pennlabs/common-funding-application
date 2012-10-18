@@ -187,10 +187,11 @@ class Event(models.Model):
 
     # delete existing answers
     self.commonfollowupanswer_set.all().delete()
+    self.followupanswer_set.all().delete()
     self.eligibilityanswer_set.all().delete()
     self.commonfreeresponseanswer_set.all().delete()
     self.freeresponseanswer_set.all().delete()
-    
+
     # clear existing funders to re-add new ones
     self.applied_funders.clear()
 
@@ -205,6 +206,10 @@ class Event(models.Model):
         q_id = re.search("[0-9]+", k).group(0)
         question = CommonFollowupQuestion.objects.get(id=q_id)
         self.commonfollowupanswer_set.create(question=question, event=self, answer=v)
+      elif k.startswith('followup'):
+        q_id = re.search("[0-9]+", k).group(0)
+        question = FollowupQuestion.objects.get(id=q_id)
+        self.followupanswer_set.create(question=question, event=self, answer=v)
       elif k.startswith('commonfreeresponse'):
         q_id = re.search("[0-9]+", k).group(0)
         question = CommonFreeResponseQuestion.objects.get(id=q_id)

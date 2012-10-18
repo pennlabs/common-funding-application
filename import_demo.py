@@ -89,14 +89,16 @@ FUNDERS = [
         'name': 'SPEC-TRUM',
         'un': 'spectrum',
         'desc': 'Host events serving multitude of minority interests on campus.',
-        'qs': []
+        'qs': [],
+        'fqs': []
         },
 
     {
         'name': 'SPEC Connaissance',
         'un': 'connaissance',
         'desc': 'Bring awesome speakers.',
-        'qs': []
+        'qs': [],
+        'fqs': []
         },
 
     {
@@ -104,7 +106,10 @@ FUNDERS = [
         'un': 'fullyplanned',
         'desc': ('Fund events that are ready to go but need financial '
                'assistance to be viable.'),
-        'qs': []
+        'qs': [],
+        'fqs': [
+            ('SPEC has a followup.')
+            ]
         },
 
     {
@@ -117,7 +122,9 @@ FUNDERS = [
              'event (i.e., APSC, Lambda, PCUW, UMOJA, and/or UMC).'),
             ("How does your event fulfill the mission of the "
              "Intercultural Fund?"),
-            
+            ],
+        'fqs': [
+            ('ICF has a followup.')
             ]
         },
 
@@ -126,7 +133,8 @@ FUNDERS = [
         'un': 'faithfund',
         'desc': ('Promote and support faith-based events that are '
                'educational in nature and not exclusive'),
-        'qs': []
+        'qs': [],
+        'fqs': []
         },
 
     {
@@ -144,6 +152,9 @@ FUNDERS = [
              "event's collaborating groups. (Up to 200 words.)"),
             ("Please list the past 3 major events hosted by your "
              "event's collaborating organizations.")
+            ],
+        'fqs': [
+            ('Tchange has some change for you')
             ]
         },
 
@@ -152,12 +163,13 @@ FUNDERS = [
         'un': 'uacontingency',
         'desc': ('Fund events that need funding and have exhausted their other '
                'alternatives.'),
-        'qs': []
+        'qs': [],
+        'fqs': []
         }
     ]
 
 
-def add_funder(name, un, desc, qs):
+def add_funder(name, un, desc, qs, fqs):
     """Add a funder and their attendant questions."""
     # User and CFAUser
     user = User.objects.create_user(
@@ -174,6 +186,9 @@ def add_funder(name, un, desc, qs):
     # Questions
     for q in qs:
         FreeResponseQuestion.objects.create(funder=profile, question=q)
+
+    for fq in fqs:
+        FollowupQuestion.objects.create(funder=profile, question=fq)
 
 
 def add_requester(un):

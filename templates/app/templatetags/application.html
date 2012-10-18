@@ -50,13 +50,21 @@ function populate() {
   </div>
   <div class="section-content">
     <fieldset>
-    {% for qa in commonfollowup_qas %}        
-    <label for="commonfollowupquestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>        
+    {% for qa in followup_qas %}
+    <label for="followupquestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>
+    <textarea type="text"
+      id="followupquestion_{{qa.question.id}}"
+      name="followupquestion_{{qa.question.id}}"
+      class="span6 followupquestion input-xlarge"
+      {{extra_attrs}}>{{qa.answer.answer}}</textarea>
+    {% endfor %}
+    {% for qa in commonfollowup_qas %}
+    <label for="commonfollowupquestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>
     <textarea type="text"
       id="commonfollowupquestion_{{qa.question.id}}"
       name="commonfollowupquestion_{{qa.question.id}}"
       class="span6 commonfollowupquestion input-xlarge"
-      {{extra_attrs}}>{{qa.answer.answer}}</textarea>        
+      {{extra_attrs}}>{{qa.answer.answer}}</textarea>
     {% endfor %}
     </fieldset>
   </div>
