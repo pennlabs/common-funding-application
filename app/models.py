@@ -10,6 +10,9 @@ from django.db.models.signals import post_save
 from django.dispatch import dispatcher, receiver
 from django.template.loader import render_to_string
 
+from settings import DEFAULT_FROM_EMAIL
+from sandbox_config import SITE_NAME
+
 
 YES_OR_NO = (
   ('Y', 'YES'),
@@ -78,10 +81,9 @@ class CFAUser(models.Model):
     subject = render_to_string('app/osa_email_subject.txt',
         context).strip()
     message = render_to_string('app/osa_email.txt', context)
-    sender = "no-reply@pennapps.com"
     recipients = [str(self.osa_email)]
     headers = {'Reply-To': self.user.email}
-    email = EmailMessage(subject, message, sender, recipients, headers)
+    email = EmailMessage(subject, message, DEFAULT_FROM_EMAIL, recipients, headers)
     email.send()
 
   class Meta:
@@ -243,11 +245,14 @@ class Event(models.Model):
 
   def notify_requester_for_followups(self):
     """Notify a requester that his event is over and he needs to answer followup questions"""
-    context = {'event': self }
+    context = {'event': self, 'SITE_NAME': SITE_NAME }
     subject = render_to_string('app/over_event_email_subject.txt',
         context).strip()
-    message = render_to_string('app/over_event_email.txt', context)
-    self.requester.user.email_user(subject, message)
+    html_content = render_to_string('app/over_event_email.txt', context)
+    email = EmailMessage(subject, html_content, DEFAULT_FROM_EMAIL, [self.requester.user.email])
+    email.content_subtype = "html" # main content is not text/html
+    email.send()
+    # self.requester.user.email_user(subject, html_content)
 
 
   @property
