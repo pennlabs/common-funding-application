@@ -187,10 +187,12 @@ class Event(models.Model):
     # save questions
 
     # delete existing answers
+    self.commonfollowupanswer_set.all().delete()
+    self.followupanswer_set.all().delete()
     self.eligibilityanswer_set.all().delete()
     self.commonfreeresponseanswer_set.all().delete()
     self.freeresponseanswer_set.all().delete()
-    
+
     # clear existing funders to re-add new ones
     self.applied_funders.clear()
 
@@ -201,6 +203,14 @@ class Event(models.Model):
         q_id = re.search("[0-9]+", k).group(0)
         question = EligibilityQuestion.objects.get(id=q_id)
         self.eligibilityanswer_set.create(question=question, event=self, answer='Y')
+      elif k.startswith('commonfollowup'):
+        q_id = re.search("[0-9]+", k).group(0)
+        question = CommonFollowupQuestion.objects.get(id=q_id)
+        self.commonfollowupanswer_set.create(question=question, event=self, answer=v)
+      elif k.startswith('followup'):
+        q_id = re.search("[0-9]+", k).group(0)
+        question = FollowupQuestion.objects.get(id=q_id)
+        self.followupanswer_set.create(question=question, event=self, answer=v)
       elif k.startswith('commonfreeresponse'):
         q_id = re.search("[0-9]+", k).group(0)
         question = CommonFreeResponseQuestion.objects.get(id=q_id)
@@ -230,6 +240,14 @@ class Event(models.Model):
     subject = render_to_string('app/grant_email_subject.txt',
         context).strip()
     message = render_to_string('app/grant_email.txt', context)
+    self.requester.user.email_user(subject, message)
+
+  def notify_requester_for_followups(self):
+    """Notify a requester that his event is over and he needs to answer followup questions"""
+    context = {'event': self }
+    subject = render_to_string('app/over_event_email_subject.txt',
+        context).strip()
+    message = render_to_string('app/over_event_email.txt', context)
     self.requester.user.email_user(subject, message)
 
 

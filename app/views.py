@@ -91,7 +91,7 @@ def event_new(request):
                             advisor_email=request.POST['advisoremail'],
                             advisor_phone=request.POST['advisorphone'],
                             funding_already_received=request.POST['fundingalreadyreceived'],
-                          )   
+                          )
     event.save_from_form(request.POST)
     return redirect('app.views.events')
   elif request.method == 'GET':
@@ -109,8 +109,8 @@ def event_edit(request, event_id):
   if event.funded:
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
-    event.date = request.POST['date']
     event.name = request.POST['name']
+    event.date = request.POST['date']
     event.organizations = request.POST['organizations']
     event.location = request.POST['location']
     event.time = request.POST['time']

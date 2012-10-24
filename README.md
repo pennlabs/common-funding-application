@@ -15,8 +15,7 @@ Common Funding Application
 
 * Navigate to app/static and run `coffee -o js/ -c coffeescripts/` to compile the CoffeeScript.
 
-* Go to /admin and modify the Site object in Sites. Change the domain name to something like "pennapps.com/ceasarb-cfa" and the display name to "The Common Funding App".
-
+* Run python import_demo.py
 
 ## DB migrations
 

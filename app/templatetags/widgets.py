@@ -57,12 +57,18 @@ def application(context, user, event=None):
   }
 
   if event and event.over:
-    new_context['commonfollowup_qas'] = [QA(question, get_or_none(CommonFollowupAnswer, question=question, event=event))
-                                         for question in CommonFollowupQuestion.objects.all()]
-    new_context['followup_qas']       = [QA(question, get_or_none(FollowupAnswer, question=question, event=event))
-                                         for question in FollowupQuestion.objects.all()]
+    new_context['event_over_disable'] = 'readonly'
+    new_context['commonfollowup_qas'] = [
+      QA(question, get_or_none(CommonFollowupAnswer, question=question, event=event))
+      for question in CommonFollowupQuestion.objects.all()
+    ]
+    new_context['followup_qas'] = [
+      QA(question, get_or_none(FollowupAnswer, question=question, event=event))
+      for question in FollowupQuestion.objects.filter(funder__event_applied_funders=event)
+    ]
 
   if not user.is_authenticated() or user.get_profile().is_funder \
     or event and event.funded:
-    new_context['extra_attrs'] = 'disabled'
+    new_context['extra_attrs'] = 'readonly'
+
   return render_to_string('app/templatetags/application.html', new_context)
