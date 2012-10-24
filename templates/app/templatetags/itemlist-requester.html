@@ -15,7 +15,6 @@
       <th>Category</th>
       <th>Quantity</th>
       <th>Price Per Unit</th>
-      <th>Already Received</th>
       <th>Amount</th>
       {% if not funded %}
       <th class='action-column'>Action</th>
@@ -57,15 +56,7 @@
                 value="{{ item.price_per_unit }}"/>
             </div>
           </td>
-          <td> 
-            <div class="input-prepend">
-              <span class="add-on">$</span>
-              <input class="inputIcon small input-with-dollar" name="item_funding_already_received"
-                type="number" required {% if funded %} disabled {% endif %}
-                pattern="^\d*(\.\d{2}$)?"
-                value="{{ item.funding_already_received }}" />
-            </div>
-          </td>
+            
           <td>
             $<span class="item-amount">0.00</span>
           </td>
@@ -100,12 +91,7 @@
           <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_price_per_unit" type="number"/>
         </div>
       </td>
-      <td> 
-        <div class="input-prepend">
-          <span class="add-on">$</span>
-          <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_funding_already_received" type="number"/>
-        </div>
-      </td>
+
       <td>
         $<span class="item-amount">0.00</span>
       </td>
