@@ -426,5 +426,5 @@ class FunderConstraint(models.Model):
                               unicode(self.question),
                               self.answer)
 
-class Meta:
-    unique_together = ("funder", "question")
+    class Meta:
+        unique_together = ("funder", "question")
