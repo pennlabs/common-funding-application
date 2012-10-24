@@ -5,9 +5,9 @@ function addItem(e) {
   $row.find('.item-amount').html(0);
   $clone.find('.add').replaceWith($('.remove').html());
   $clone.find('input').removeAttr('required');
+  //maintain selection in cloned row
+  $clone.find('.item-category').val($row.find('.item-category').val()); 
   $row.find('input').removeAttr('required').val('');
-  console.log("inside additem");
-
 }
 
 function removeItem(e) {
