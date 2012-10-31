@@ -173,17 +173,18 @@ class Event(models.Model):
     prices_per_unit = POST.getlist('item_price_per_unit')
     funding_already_received = POST.getlist('item_funding_already_received')
     categories = POST.getlist('item_category')
+    revenues = POST.getlist('item_revenue')
 
     self.item_set.all().delete()
-    for name, quantity, price, funding, cat in zip(names, quantities, prices_per_unit, funding_already_received, categories):
+    for name, quantity, price, funding, cat, rev in zip(names, quantities, prices_per_unit, funding_already_received, categories, revenues):
+      funding = funding or 0
       # set correct category letter 
       for tup in CATEGORIES:
-        if tup[1] == cat:  
-          cat = tup[0] 
+        if tup[1] == cat:
+          cat = tup[0]
 
-      # category defaults to F because we haven' implemented the different category choices
-      if str(name) and str(quantity) and str(funding) and str(price):
-        self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category=cat)
+      if str(name):
+        self.item_set.create(name=name, quantity=quantity,price_per_unit=price,funding_already_received=funding,category=cat, revenue=int(rev))
 
     # save questions
 
@@ -395,6 +396,7 @@ class Item(models.Model):
     # funding already received before applications
     funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
     category = models.CharField(max_length=1, choices=CATEGORIES)
+    revenue = models.BooleanField()
 
     @property
     def total(self):

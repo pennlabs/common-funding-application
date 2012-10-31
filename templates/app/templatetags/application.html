@@ -237,7 +237,29 @@ function populate() {
   <div class="section-content">
     <fieldset>
       {% if user.get_profile.is_requester %}
-      {% itemlist_requester event.item_set.all event.funded%}
+      {% itemlist_requester 1 event.item_set.all event.funded%}
+      {% itemlist_requester 0 event.item_set.all event.funded%}
+
+      <table class="items-total">
+        <tr>
+          <td>Sum Total</td>
+          <td>$<span class="items-exp-total">0.00</span></td>
+        </tr>
+        <tr>
+          <td>Revenue Total</td>
+          <td>&ndash;$<span class="items-rev-total">0.00</span></td>
+        </tr>
+        <tr>
+          <td>Already Funded</td>
+          <td>&ndash;$<span class="items-funded">0.00</span></td>
+        </tr>
+        <tr>
+          <td>Final Total</td>
+          <td>$<span class="items-final-total">0.00</span></td>
+        </tr>
+      </table>
+
+
       {% else %}
       {% itemlist_funder event.item_set.all event.applied_funders.all user.get_profile.id %}
       {% endif %}
@@ -330,7 +352,7 @@ function populate() {
     {% endfor %}
     {% if user.get_profile.is_funder %}
     <p>Specify any conditions and stipulations here.</p>
-		<textarea name="new-comment" class="span6 input-xlarge"></textarea>
+    <textarea name="new-comment" class="span6 input-xlarge"></textarea>
     {% endif %}
   </div>
 </section>
