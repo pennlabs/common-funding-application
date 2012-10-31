@@ -14,14 +14,12 @@ register = template.Library()
 # question-answer pair
 QA = namedtuple('QA', 'question answer')
 
-@tag(register, [Variable(), Variable()])
-def itemlist_requester(context, items, funded):
+@tag(register, [Variable(), Variable(), Variable()])
+def itemlist_requester(context, is_revenue, items, funded):
   """ Render the table of items in the requester view """
-  # takes a dictionary of items
-  new_context = {'items':items, 'funded':funded, 'CATEGORIES': CATEGORIES}
+  new_context = {'funded':funded, 'CATEGORIES': CATEGORIES, 'is_revenue': is_revenue}
+  new_context['items'] = [item for item in items if bool(item.revenue) == bool(is_revenue)]
   return render_to_string('app/templatetags/itemlist-requester.html', new_context)
-
-
 
 @tag(register, [Variable(), Variable(), Variable()])
 def itemlist_funder(context, item_list, applied_funders, funder_id):
