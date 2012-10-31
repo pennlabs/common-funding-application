@@ -135,5 +135,5 @@ table.items-total tr:last-child {
   color: #b94a48;
 }
 .hidden {
-  display: none;
+  display: none !important;
 }

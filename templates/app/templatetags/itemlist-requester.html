@@ -24,9 +24,7 @@
       <th>Category</th>
       <th>Quantity</th>
       <th>Price Per Unit</th>
-      {% if not is_revenue %}
-      <th>Already Received</th>
-      {% endif %}
+      <th {% if is_revenue %}class='hidden'{% endif %}>Already Received</th>
       <th>Amount</th>
       {% if not funded %}
       <th class='action-column'>Action</th>
@@ -109,14 +107,12 @@
           <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_price_per_unit" type="number"/>
         </div>
       </td>
-      {% if not is_revenue %}
-      <td> 
+      <td {% if is_revenue %}class='hidden'{% endif %}> 
         <div class="input-prepend">
           <span class="add-on">$</span>
           <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_funding_already_received" type="number"/>
         </div>
       </td>
-      {% endif %}
       <td>
         $<span class="item-amount">0.00</span>
       </td>

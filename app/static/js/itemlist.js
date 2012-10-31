@@ -7,7 +7,7 @@ function addItem(e) {
   $clone.find('input').removeAttr('required');
   //maintain selection in cloned row
   $clone.find('.item-category').val($row.find('.item-category').val()); 
-  $row.find('input').removeAttr('required').val('');
+  $row.find('input[type!="hidden"]').removeAttr('required').val('');
 }
 
 function removeItem(e) {
@@ -18,10 +18,11 @@ function removeItem(e) {
 function makeRequired(input) {
   var $inputs = $(input).closest('tr').find('input');
   var input = $inputs.map(function(){ return $(this).val(); }).get().join('');
-  if (input !== "")
+  if (input !== "") {
     $inputs.attr('required','required');
-  else
+  } else {
     $inputs.removeAttr('required');
+  }
 }
 
 function newInputClicked(e) {
