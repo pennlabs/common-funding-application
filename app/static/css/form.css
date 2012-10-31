@@ -134,3 +134,6 @@ table.items-total tr:last-child {
 .errorlist li {
   color: #b94a48;
 }
+.hidden {
+  display: none;
+}
