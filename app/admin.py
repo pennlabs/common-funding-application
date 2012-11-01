@@ -5,7 +5,7 @@ from models import (CFAUser, CommonFreeResponseQuestion, EligibilityQuestion,
 
 
 class CFAUserAdmin(admin.ModelAdmin):
-    list_display = ('user_type', 'osa_email')
+    list_display = ('user', 'user_type', 'osa_email')
 
 
 admin.site.register(CFAUser, CFAUserAdmin)
