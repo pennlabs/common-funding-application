@@ -52,7 +52,10 @@ class CFAUser(models.Model):
   mission_statement = models.TextField(max_length=256)
 
   def __unicode__(self):
-    return unicode(self.user)
+    if self.user_type == 'F':
+      return unicode(self.funder_name)
+    else:
+      return unicode(self.user)
 
   @property
   def is_funder(self):
