@@ -17,11 +17,7 @@ from app.models import Event, EligibilityQuestion, EligibilityAnswer, \
     CommonFreeResponseQuestion, CommonFreeResponseAnswer, Comment
 
 
-NOT_AUTHORIZED = 'app.views.index'
-
-def index(request):
-    return redirect('app.views.events')
-
+NOT_AUTHORIZED = 'app.views.events'
 
 def authorization_required(view):
   """Ensure only a permitted user can access an event.
