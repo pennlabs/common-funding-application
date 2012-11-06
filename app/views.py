@@ -104,7 +104,7 @@ def event_edit(request, event_id):
   event = Event.objects.get(pk=event_id)
   if event.funded:
     return redirect('app.views.event_show', event_id)
-  if request.method == 'POST':
+  elif request.method == 'POST':
     event.name = request.POST['name']
     event.date = request.POST['date']
     event.organizations = request.POST['organizations']
@@ -121,11 +121,8 @@ def event_edit(request, event_id):
     event.save_from_form(request.POST)
     return redirect('app.views.events')
   elif request.method == 'GET':
-    # can't get the event's funders?
     return render_to_response('app/application-requester.html',
-        {
-          'event': event
-        },
+        {'event': event},
         context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
@@ -145,7 +142,7 @@ def event_show(request, event_id):
           grant, _ = Grant.objects.get_or_create(funder=user.cfauser,
                                               item=item,
                                               defaults={'amount': 0})
-          amount_funded = sum(grant.amount for grant in 
+          amount_funded = sum(grant.amount for grant in
                   Grant.objects.filter(item=item))
           amount_funded += item.funding_already_received
 
@@ -170,63 +167,17 @@ def event_show(request, event_id):
         comment = Comment(comment=request.POST['new-comment'],
           funder=user.get_profile(), event=event)
         comment.save()
-      return redirect('app.views.event_show', event_id)
+      # uuTODO: redirect with success
+      return redirect('app.views.events')
     else:
-      for key, value in request.POST.items():
-        if key in ('csrfmiddlewaretoken', 'event_id'):
-          continue
-        if key == 'name':
-          event.name = value
-        elif key == 'date':
-          event.date = value
-        elif key == 'location':
-          event.location = value
-        elif key == 'organizations':
-          event.organizations = value
-        elif key.endswith("?"):
-          question = EligibilityQuestion.objects.get(question=key)
-          try:
-            answer = event.eligibilityanswer_set.get(question=question)
-          except EligibilityAnswer.DoesNotExist:
-            event.eligibilityanswer_set.create(question=question,
-                                    answer=value)
-          else:
-            answer.answer = value
-            answer.save()
-      event.save()
-      return redirect('app.views.items', event_id)
+      return redirect('app.views.events')
   elif request.method == 'GET':
     # can't get the event's funders?
     return render_to_response('app/application-show.html',
-        {
-          'event': event,
-        },
+        {'event': event},
         context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['POST'])
-
-@login_required
-@requester_only
-def items(request, event_id):
-  user = request.user
-  if request.method == 'POST':
-    event_id = request.POST.get('event_id', None)
-    event = Event.objects.get(pk=event_id)
-    item_names = request.POST.getlist('item_name')
-    item_amounts = request.POST.getlist('item_amount')
-    item_units = request.POST.getlist('item_units')
-    event.item_set.all().delete()
-    for name, amount, units in zip(item_names, item_amounts, item_units):
-      event.item_set.create(name=name, amount= amount, units=units, funding_already_received=0)
-    return redirect('app.views.funders', event_id)
-  elif request.method == 'GET':
-    event = Event.objects.get(pk=event_id)
-    return render_to_response('app/itemlist.html',
-                              {'event': event},
-                              context_instance=RequestContext(request))
-  else:
-    return HttpResponseNotAllowed(['GET', 'POST'])
-
 
 @login_required
 @requester_only
