@@ -7,6 +7,5 @@ urlpatterns = patterns('',
     url(r'^new/$',           event_new),
     url(r'^(\d+)/$',         event_show),
     url(r'^(\d+)/edit/$',    event_edit),
-    url(r'^(\d+)/items/$',   items),
     url(r'^(\d+)/destroy/$', event_destroy),
 )
