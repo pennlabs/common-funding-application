@@ -261,7 +261,8 @@ function populate() {
 
 
       {% else %}
-      {% itemlist_funder event.item_set.all event.applied_funders.all user.get_profile.id %}
+      {% itemlist_funder 1 event.item_set.all event.applied_funders.all user.get_profile.id %}
+      {% itemlist_funder 0 event.item_set.all event.applied_funders.all user.get_profile.id %}
       {% endif %}
     </fieldset>
   </div>
