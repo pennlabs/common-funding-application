@@ -1,3 +1,18 @@
+{% if is_revenue %}
+<div>
+  <h3>
+    Revenue Items
+    <small>list your projected revenue items</small>
+  </h3>
+</div>
+{% else %}
+<div>
+  <h3>
+    Expense Items
+    <small>list your projected expense items</small>
+  </h3>
+</div>
+{% endif %}
 <table class='table table-striped' id='item-table'>
   <thead>
     {% if items_data %}

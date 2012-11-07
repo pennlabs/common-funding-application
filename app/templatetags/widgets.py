@@ -21,16 +21,25 @@ def itemlist_requester(context, is_revenue, items, funded):
   new_context['items'] = [item for item in items if bool(item.revenue) == bool(is_revenue)]
   return render_to_string('app/templatetags/itemlist-requester.html', new_context)
 
-@tag(register, [Variable(), Variable(), Variable()])
-def itemlist_funder(context, item_list, applied_funders, funder_id):
+@tag(register, [Variable(), Variable(), Variable(), Variable()])
+def itemlist_funder(context, is_revenue, items, applied_funders, funder_id):
   """ Render the table of items in the funder view """
   items_data = []
   title_row = ['Name', 'Quantity', 'Price Per Unit', 'Total Amount', 'Category']
-  for funder in applied_funders:
-    title_row.append(funder.user.username)
-  for item in item_list:
-    items_data.append(funder_item_data(context, item, applied_funders))
+  # TODO: add amount received to expenses table
+  if not bool(is_revenue):
+    for funder in applied_funders:
+      title_row.append(funder.user.username)
+
+  for item in items:
+    # only add certain items to items_data array
+    if item.revenue == bool(is_revenue):
+      if item.revenue:
+        items_data.append(funder_item_data(context, item, [])) # applied_funders = []
+      else:
+        items_data.append(funder_item_data(context, item, applied_funders))
   new_context = {
+                  'is_revenue': is_revenue,
                   'titles': title_row,
                   'current_funder': funder_id,
                   'items_data': items_data

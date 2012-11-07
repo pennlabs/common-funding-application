@@ -3,11 +3,10 @@ from django.conf.urls.defaults import patterns, include, url
 from views import *
 
 urlpatterns = patterns('',
-    url(r'^$', index),
-    url(r'^events/$',               events),
-    url(r'^events/new/$',           event_new),
-    url(r'^events/(\d+)/$',         event_show),
-    url(r'^events/(\d+)/edit/$',    event_edit),
-    url(r'^events/(\d+)/items/$',   items),
-    url(r'^events/(\d+)/destroy/$', event_destroy),
+    url(r'^$',               events),
+    url(r'^new/$',           event_new),
+    url(r'^(\d+)/$',         event_show),
+    url(r'^(\d+)/edit/$',    event_edit),
+    url(r'^(\d+)/items/$',   items),
+    url(r'^(\d+)/destroy/$', event_destroy),
 )
