@@ -61,6 +61,7 @@ def events(request):
       apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
     else: #TODO: filter for funders once submitting functionality has been implemented
       apps = user.get_profile().event_applied_funders.all().extra(order_by=['date'])
+      # funder name information, defaults to username if funder name doesn't exist
     return render_to_response('app/events.html',
                               {'apps': apps},
                               context_instance=RequestContext(request))
