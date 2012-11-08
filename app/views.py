@@ -59,10 +59,15 @@ def events(request):
     user = request.user
     if user.get_profile().is_requester:
       apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
+      full_name = user.username 
     else: #TODO: filter for funders once submitting functionality has been implemented
       apps = user.get_profile().event_applied_funders.all().extra(order_by=['date'])
+      # funder name information, defaults to username if funder name doesn't exist
+      full_name = CFAUser.objects.filter(user_id=user.id)[0].funder_name
+      if full_name == '':
+        full_name = user.username
     return render_to_response('app/events.html',
-                              {'apps': apps},
+                              {'apps': apps, 'full_name': full_name },
                               context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])

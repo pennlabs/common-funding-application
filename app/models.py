@@ -37,6 +37,9 @@ class CFAUser(models.Model):
   >>> cfau.is_funder
   False
   """
+
+  funder_name = models.CharField(max_length=256, default='')
+
   user = models.OneToOneField(User, help_text='You must first create a user '
                               'before adding them to the CFA.')
   user_type = models.CharField(max_length=1,
@@ -49,7 +52,10 @@ class CFAUser(models.Model):
   mission_statement = models.TextField(max_length=256)
 
   def __unicode__(self):
-    return unicode(self.user)
+    if self.is_funder:
+      return unicode(self.funder_name)
+    else:
+      return unicode(self.user)
 
   @property
   def is_funder(self):
