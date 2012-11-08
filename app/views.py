@@ -41,7 +41,6 @@ def authorization_required(view):
         return redirect(NOT_AUTHORIZED)
   return protected_view
 
-
 def requester_only(view):
   """Ensure only the user who requested the event can access a page."""
   def protected_view(request, event_id, *args, **kwargs):
@@ -53,7 +52,7 @@ def requester_only(view):
       return redirect(NOT_AUTHORIZED)
   return protected_view
 
-
+# GET  /
 @login_required
 def events(request):
   if request.method == 'GET':
@@ -68,7 +67,8 @@ def events(request):
   else:
     return HttpResponseNotAllowed(['GET'])
 
-
+# GET  /new
+# POST /new
 @login_required
 def event_new(request):
   """Form to create a new event."""
@@ -96,7 +96,8 @@ def event_new(request):
   else:
     return HttpResponseNotAllowed(['GET'])
 
-
+# GET  /1/edit
+# POST /1/edit
 @login_required
 @requester_only
 def event_edit(request, event_id):
@@ -127,7 +128,8 @@ def event_edit(request, event_id):
   else:
     return HttpResponseNotAllowed(['GET'])
 
-
+# GET  /1
+# POST /1
 @authorization_required
 def event_show(request, event_id):
   user = request.user
@@ -177,6 +179,7 @@ def event_show(request, event_id):
   else:
     return HttpResponseNotAllowed(['POST'])
 
+# GET  /1/destroy
 @login_required
 @requester_only
 def event_destroy(request, event_id):
