@@ -7,8 +7,6 @@ This and nothing else.  (In the ominous words of AMK.)
 @Date: 2012-Feb-22
 """
 
-import os
-
 # The domain URL, e.g., 'http://penncfa.com/', or 'http://kyleh.pennapps.com/'
 DOMAIN_URL = 'http://XXX.pennapps.com'
 
@@ -20,7 +18,7 @@ URL_ROOT = '/' + DISPLAY_NAME
 SITE_NAME = DOMAIN_URL + URL_ROOT
 
 # The e-mail assigned to all the users in `import_demo`. For testing only.
-TEST_EMAIL = 'kylehardgrave@gmail.com'
+TEST_EMAIL = ''
 
 DATABASE_NAME = ''
 DATABASE_USER = ''
