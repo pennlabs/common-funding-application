@@ -11,9 +11,9 @@ Common Funding Application
 
 * Modify sandbox_config to match the settings that you set up for yourself in the previous steps.
 
-* Run `python manage.py collectstatic -l` to symlink static files (do not forget the "-l" for symlinks).
-
 * Navigate to app/static and run `coffee -o js/ -c coffeescripts/` to compile the CoffeeScript.
+
+* Run `python manage.py collectstatic -l` to symlink static files (do not forget the "-l" for symlinks).
 
 * Run python import_demo.py
 
