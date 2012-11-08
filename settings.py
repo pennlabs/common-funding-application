@@ -15,8 +15,8 @@ ACCOUNT_ACTIVATION_DAYS = 7
 # Email address to use for automated registration emails
 DEFAULT_FROM_EMAIL = "no-reply@pennapps.com"
 
-LOGIN_URL = URL_ROOT + "/accounts/login/"
-LOGOUT_URL = URL_ROOT + "/accounts/logout/"
+LOGIN_URL = os.path.join(URL_ROOT, "accounts/login/")
+LOGOUT_URL = os.path.join(URL_ROOT, "accounts/logout/")
 LOGIN_REDIRECT_URL = URL_ROOT
 
 AUTH_PROFILE_MODULE = "app.CFAUser"
@@ -79,12 +79,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = os.path.join(SITE_NAME, 'static/')
-
-# URL prefix for admin static files -- CSS, JavaScript and images.
-# Make sure to use a trailing slash.
-# Examples: "http://foo.com/static/admin/", "/static/admin/".
-ADMIN_MEDIA_PREFIX = os.path.join(URL_ROOT, 'static/admin/')
+STATIC_URL = os.path.join(URL_ROOT, 'static/')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
