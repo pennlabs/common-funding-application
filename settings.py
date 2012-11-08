@@ -15,8 +15,8 @@ ACCOUNT_ACTIVATION_DAYS = 7
 # Email address to use for automated registration emails
 DEFAULT_FROM_EMAIL = "no-reply@pennapps.com"
 
-LOGIN_URL = URL_ROOT + "/accounts/login/"
-LOGOUT_URL = URL_ROOT + "/accounts/logout/"
+LOGIN_URL = os.path.join(URL_ROOT, "accounts/login/")
+LOGOUT_URL = os.path.join(URL_ROOT, "accounts/logout/")
 LOGIN_REDIRECT_URL = URL_ROOT
 
 AUTH_PROFILE_MODULE = "app.CFAUser"
