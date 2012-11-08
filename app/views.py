@@ -104,7 +104,7 @@ def event_edit(request, event_id):
   event = Event.objects.get(pk=event_id)
   if event.funded:
     return redirect('app.views.event_show', event_id)
-  elif request.method == 'POST':
+  if request.method == 'POST':
     event.name = request.POST['name']
     event.date = request.POST['date']
     event.organizations = request.POST['organizations']
@@ -167,12 +167,11 @@ def event_show(request, event_id):
         comment = Comment(comment=request.POST['new-comment'],
           funder=user.get_profile(), event=event)
         comment.save()
-      # uuTODO: redirect with success
+      # TODO: redirect with success
       return redirect('app.views.events')
     else:
       return redirect('app.views.events')
   elif request.method == 'GET':
-    # can't get the event's funders?
     return render_to_response('app/application-show.html',
         {'event': event},
         context_instance=RequestContext(request))
