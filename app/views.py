@@ -167,7 +167,6 @@ def event_show(request, event_id):
         comment = Comment(comment=request.POST['new-comment'],
           funder=user.get_profile(), event=event)
         comment.save()
-      # TODO: redirect with success
       return redirect('app.views.events')
     else:
       return redirect('app.views.events')
