@@ -53,7 +53,8 @@ class CFAUser(models.Model):
 
   def __unicode__(self):
     if self.is_funder:
-      return unicode(self.funder_name)
+      # some funders might not have funder_names
+      return unicode(self.funder_name) or unicode(self.user)
     else:
       return unicode(self.user)
 
