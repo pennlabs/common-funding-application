@@ -64,7 +64,7 @@
       <div class="span3 buttons">        
         {% if user.get_profile.is_requester %}
         {% if app.funded %}
-        <a class="btn btn-info pull-right" href="{% url app.views.event_show app.id %}">
+        <a class="btn btn-success pull-right" href="{% url app.views.event_show app.id %}">
           <i class="icon-file icon-white"></i>
           View
         </a>
@@ -74,8 +74,8 @@
           Delete
         </a>
         <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
-          <i class="icon-file icon-white"></i>
-          View
+          <i class="icon-edit icon-white"></i>
+          Edit
         </a>
         {% endif %}
         {% else %}
