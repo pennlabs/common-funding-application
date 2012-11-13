@@ -8,7 +8,7 @@ Common Funding Application
 
 * Install [node.js](http://nodejs.org/)
 
-* Install CoffeeScript (`sudo npm install -g coffee-script`)
+* Install [CoffeeScript](http://coffeescript.org) (`sudo npm install -g coffee-script`)
 
 * Compile the CoffeeScript files (`coffee -o app/static/js/ -c app/static/coffeescripts/`)
 
