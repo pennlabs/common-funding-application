@@ -4,22 +4,23 @@ Common Funding Application
 ## Local Setup
 * Install [pip](http://www.pip-installer.org/en/latest/installing.html)
 
-* Install dependencies
-`pip install -r requirements.txt`
+* Install python dependencies (`sudo pip install -r requirements.txt`)
 
-* Create a configuration file
-`cp sandbox_config.py_default sandbox_config.py`
+* Install [node.js](http://nodejs.org/)
 
-* Fill in missing fields in `sandbox_config.py`
+* Install CoffeeScript (`sudo npm install -g coffee-script`)
 
-* Create database
-`python manage.py syncdb`
+* Compile the CoffeeScript files (`coffee -o app/static/js/ -c app/static/coffeescripts/`)
 
-* Import dummy data
-`python import_demo.py`
+* Create a configuration file (`cp sandbox_config.py_default sandbox_config.py`)
 
-* Run the server
-`python manage.py runserver`
+* Fill in missing fields in sandbox_config.py
+
+* Create database (`python manage.py syncdb`)
+
+* Import dummy data (`python import_demo.py`)
+
+* Run the server (`python manage.py runserver`)
 
 * Navigate to the [app](http://localhost:8000/)
 
