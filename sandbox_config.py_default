@@ -3,15 +3,15 @@ This is a development-specific file that lets us set personalized variables
 (such as db name, etc) in settings.py. This should be configured per-sandbox.
 This and nothing else.  (In the ominous words of AMK.)
 
-@Author: kevinsu
-@Date: 2012-Feb-22
+@Author: Geoffrey Vedernikoff (yefim323@gmail.com)
+@Date: 2012-Nov-12
 """
 
-# The domain URL, e.g., 'http://penncfa.com/', or 'http://kyleh.pennapps.com/'
-DOMAIN_URL = 'http://XXX.pennapps.com'
+# The domain URL (e.g., 'http://penncfa.com/', 'http://localhost:8000', or 'http://kyleh.pennapps.com/')
+DOMAIN_URL = 'http://localhost:8000'
 
-# The path CFA is serving off of, e.g., 'cfa', or '' in prod
-DISPLAY_NAME = 'cfa'
+# The path CFA is serving off of (e.g., 'cfa' or '')
+DISPLAY_NAME = ''
 URL_ROOT = '/' + DISPLAY_NAME
 
 # The whole shebang.
@@ -20,6 +20,7 @@ SITE_NAME = DOMAIN_URL + URL_ROOT
 # The e-mail assigned to all the users in `import_demo`. For testing only.
 TEST_EMAIL = ''
 
-DATABASE_NAME = ''
-DATABASE_USER = ''
-DATABASE_PASSWORD = ''
+DATABASE_ENGINE = 'sqlite3'  # You can use 'mysql', 'sqlite3', 'postgresql_psycopg2', 'postgresql', or 'oracle'
+DATABASE_NAME = 'cfa'        # Or relative path to database file if using sqlite3
+DATABASE_USER = ''           # Not used with sqlite3
+DATABASE_PASSWORD = ''       # Not used with sqlite3

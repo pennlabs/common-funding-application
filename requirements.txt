@@ -1,0 +1,4 @@
+django
+south
+django-registration
+django-templatetag-sugar
