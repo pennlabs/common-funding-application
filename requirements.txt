@@ -1,4 +1,4 @@
-django
-south
-django-registration
-django-templatetag-sugar
+Django==1.4
+South==0.7.6
+django-registration==0.8
+django-templatetag-sugar==0.1
