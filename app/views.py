@@ -32,8 +32,10 @@ def authorization_required(view):
       key = request.GET['key']
     except KeyError:
       user = request.user.get_profile()
-      if user.is_funder or user.requested(event):
+      if request.user.is_staff or user.is_funder or user.requested(event):
         return view(request, event_id, *args, **kwargs)
+      else:
+        return redirect(NOT_AUTHORIZED)
     else:
       if key == event.secret_key:
         return view(request, event_id, *args, **kwargs)
@@ -57,11 +59,12 @@ def requester_only(view):
 def events(request):
   if request.method == 'GET':
     user = request.user
-    if user.get_profile().is_requester:
+    if user.is_staff:
+      apps = Event.objects.order_by('date')
+    elif user.get_profile().is_requester:
       apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
-    else: #TODO: filter for funders once submitting functionality has been implemented
+    else:
       apps = user.get_profile().event_applied_funders.all().extra(order_by=['date'])
-      # funder name information, defaults to username if funder name doesn't exist
     return render_to_response('app/events.html',
                               {'apps': apps},
                               context_instance=RequestContext(request))
