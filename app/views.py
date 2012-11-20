@@ -166,7 +166,7 @@ def event_show(request, event_id):
           user.get_profile().notify_osa(event, grants)
         except smtplib.SMTPException:
           pass
-      if 'new-comment' in request.POST:
+      if request.POST.get('new-coment', None):
         comment = Comment(comment=request.POST['new-comment'],
           funder=user.get_profile(), event=event)
         comment.save()
