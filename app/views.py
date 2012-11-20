@@ -59,12 +59,13 @@ def requester_only(view):
 def events(request):
   if request.method == 'GET':
     user = request.user
+    cfauser = user.get_profile()
     if user.is_staff:
       apps = Event.objects.order_by('date')
-    elif user.get_profile().is_requester:
-      apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
-    else:
-      apps = user.get_profile().event_applied_funders.all().extra(order_by=['date'])
+    elif cfauser.is_requester:
+      apps = Event.objects.filter(requester=cfauser).order_by('date')
+    else: # cfauser.is_funder
+      apps = cfauser.event_applied_funders.order_by('date')
     return render_to_response('app/events.html',
                               {'apps': apps},
                               context_instance=RequestContext(request))
