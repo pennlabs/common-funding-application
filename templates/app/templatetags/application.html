@@ -236,7 +236,7 @@ function populate() {
   </div>
   <div class="section-content">
     <fieldset>
-      {% if user.get_profile.is_requester %}
+      {% if not user.is_staff and user.get_profile.is_requester %}
       {% itemlist_requester 1 event.item_set.all event.funded%}
       {% itemlist_requester 0 event.item_set.all event.funded%}
 
@@ -311,7 +311,7 @@ function populate() {
   <div class="section-content">
     <fieldset>
     <p id="funder-no-q">
-      {% if user.get_profile.is_requester %}
+      {% if not user.is_staff and user.get_profile.is_requester %}
       No questions yet. Please select funders.
       {% else %}
       No other questions answered.

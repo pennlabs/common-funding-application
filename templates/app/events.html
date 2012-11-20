@@ -61,23 +61,20 @@
           {% endif %}
         {% endif %}
       </div>
-      <div class="span3 buttons">        
-        {% if user.get_profile.is_requester %}
-        {% if app.funded %}
-        <a class="btn btn-success pull-right" href="{% url app.views.event_show app.id %}">
-          <i class="icon-file icon-white"></i>
-          View
-        </a>
-        {% else %}
-        <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
-          <i class="icon-trash icon-white"></i>
-          Delete
-        </a>
-        <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
-          <i class="icon-edit icon-white"></i>
-          Edit
-        </a>
-        {% endif %}
+      <div class="span3 buttons">
+        {% if not user.is_staff and user.get_profile.is_requester %}
+          {% if app.funded %}
+          <a class="btn btn-success pull-right" href="{% url app.views.event_show app.id %}">
+            <i class="icon-file icon-white"></i>View
+          </a>
+          {% else %}
+          <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
+            <i class="icon-trash icon-white"></i>Delete
+          </a>
+          <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
+            <i class="icon-edit icon-white"></i>Edit
+          </a>
+          {% endif %}
         {% else %}
         <a class="btn btn-info pull-right" href="{% url app.views.event_show app.id %}">
           <i class="icon-file icon-white"></i>

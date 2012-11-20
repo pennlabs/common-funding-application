@@ -74,7 +74,7 @@ def application(context, user, event=None):
       for question in FollowupQuestion.objects.filter(funder__event_applied_funders=event)
     ]
 
-  if not user.is_authenticated() or user.get_profile().is_funder \
+  if not user.is_authenticated() or user.is_staff or user.get_profile().is_funder \
     or event and event.funded:
     new_context['extra_attrs'] = 'readonly'
 
