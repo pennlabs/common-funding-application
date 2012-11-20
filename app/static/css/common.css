@@ -40,6 +40,20 @@ footer {
   padding: 18px 0px;
   border-top: 1px solid #eee;
 }
+footer li {
+  list-style: none;
+  display: inline;
+  border-right: 1px solid #e1e1e1;
+  padding: 0 10px;
+  color: #969696;
+}
+footer li:first-child {
+  margin-left: 0px;
+}
+footer li:last-child {
+  padding-right: 0;
+  border-right: none;
+}
 
 #main {
   margin-top: 30px;
