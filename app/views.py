@@ -2,6 +2,7 @@ import os
 from decimal import Decimal
 from collections import namedtuple
 from datetime import datetime
+import json
 
 import smtplib
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -191,4 +192,4 @@ def event_show(request, event_id):
 def event_destroy(request, event_id):
   event = Event.objects.get(pk=event_id)
   event.delete()
-  return redirect('app.views.events')
+  return HttpResponse(json.dumps({'event_id': event_id}), mimetype="application/json")
