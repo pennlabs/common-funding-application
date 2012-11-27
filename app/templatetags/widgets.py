@@ -29,7 +29,7 @@ def itemlist_funder(context, is_revenue, items, applied_funders, funder_id):
   # TODO: add amount received to expenses table
   if not bool(is_revenue):
     for funder in applied_funders:
-      title_row.append(funder.user.username)
+      title_row.append(str(funder))
 
   for item in items:
     # only add certain items to items_data array
