@@ -91,7 +91,7 @@ function populate() {
       <div class="control-group">
         <label for="questiondate" class="control-label">Event Date</label>
         <div class="controls">
-          <input required value="{{ event.date.isoformat }}" type="text" name='date' id="questiondate" class="input-xlarge datepicker" {{extra_attrs}} {{event_over_disable}}>
+          <input required {% if event %}data-edit="true"{% endif %} data-year="{{ event.date.year }}" data-month="{{ event.date.month }}" data-day="{{ event.date.day }}" type="text" name='date' id="questiondate" class="input-xlarge datepicker" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Date of the event</p>
         </div>
       </div>
