@@ -68,7 +68,7 @@
             <i class="icon-file icon-white"></i>View
           </a>
           {% else %}
-          <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
+          <a class="destroy-event btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
             <i class="icon-trash icon-white"></i>Delete
           </a>
           <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
