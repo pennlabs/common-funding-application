@@ -107,6 +107,14 @@ $ ->
     step: 30
     scrollDefaultNow: true
   )
+
+  $calendar = $("#questiondate")
+  $calendar.pickadate(
+    format: 'mm/dd/yyyy'
+    format_submit: 'mm/dd/yyyy'
+    onStart: () ->
+      @setDate $calendar.data("year"), $calendar.data("month"), $calendar.data("day") if $calendar.data("edit")
+  )
   
   # toggle sections
   $(".section-toggle").click -> toggleSection(this)

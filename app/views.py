@@ -1,6 +1,7 @@
 import os
 from decimal import Decimal
 from collections import namedtuple
+from datetime import datetime
 
 import smtplib
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -80,7 +81,7 @@ def event_new(request):
   if request.method == 'POST':
     event = Event.objects.create(
                             name=request.POST['name'],
-                            date=request.POST['date'],
+                            date=datetime.strptime(request.POST['date'],'%m/%d/%Y'),
                             requester=request.user.get_profile(),
                             location=request.POST['location'],
                             organizations=request.POST['organizations'],
@@ -112,7 +113,7 @@ def event_edit(request, event_id):
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
     event.name = request.POST['name']
-    event.date = request.POST['date']
+    event.date = datetime.strptime(request.POST['date'],'%m/%d/%Y')
     event.organizations = request.POST['organizations']
     event.location = request.POST['location']
     event.time = request.POST['time']
