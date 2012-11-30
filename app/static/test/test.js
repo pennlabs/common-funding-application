@@ -1,6 +1,8 @@
+_ = require("../js/lib/underscore.min"); // global because recs depends on _
+
 var assert = require("assert"),
-    recs = require("../js/recs"),
-    _ = require("../js/underscore");
+    recs = require("../js/recs");
+
 
 describe('Recommendations', function(){
   describe("#addExpectation()", function() {
@@ -10,7 +12,7 @@ describe('Recommendations', function(){
   })
   describe("#getRecommended()", function() {
     it("should be empty array", function() {
-      assert.ok( _.isEmpty( recs.getRecommended({}) ) );
+      assert.equal(recs.getRecommended({}).length, 0);
     })
   })
   describe("#checkExpectations()", function() {
