@@ -9,5 +9,5 @@ $ ->
       $("#id_email").addClass("email-error")
       e.preventDefault()
     
-  $("#id_email").on "keyup", () ->
+  $("#id_email").on "keyup", ->
     $(this).removeClass("email-error")
