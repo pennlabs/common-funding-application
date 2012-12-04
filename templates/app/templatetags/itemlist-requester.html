@@ -15,7 +15,7 @@
 {% endif %}
 
 <div class='remove' style='display:none'>
-  <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
+  <button class='btn btn-danger remove-item'>Remove</button>
 </div>
 <table id='item-table' class='table table-striped'>
   <thead>
@@ -33,7 +33,7 @@
   </thead>
   <tbody>
     {% for item in items %}
-        <tr class='app-itemrow {% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
+        <tr class='itemrow {% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
           <input name="item_revenue" type="hidden" value="{{ is_revenue }}" />
           <td>
             <input name="item_name" type="text" class='small' 
@@ -80,7 +80,7 @@
 
           {% if not funded %}
           <td>
-            <button class='btn btn-danger remove_button' onclick="removeItem(this); return false;">Remove</button>
+            <button class='btn btn-danger remove-item'>Remove</button>
           </td>
           {% endif %}
         </tr>
@@ -89,7 +89,7 @@
     <tr class='itemrow {% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
       <input name="item_revenue" type="hidden" value="{{ is_revenue }}" />
       <td>
-        <input class="new small" onkeyup="makeRequired(this)" name="item_name" type="text"/>
+        <input class="new small" name="item_name" type="text"/>
       </td>
       <td>
         <select class="item-category" name='item_category'>
@@ -99,18 +99,18 @@
         </select>
       </td>
       <td>
-        <input class="new small" onkeyup="makeRequired(this)" name="item_quantity" type="number"/>
+        <input class="new small" name="item_quantity" type="number"/>
       </td>
       <td> 
         <div class="input-prepend">
           <span class="add-on">$</span>
-          <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_price_per_unit" type="number"/>
+          <input class="new inputIcon small input-with-dollar" name="item_price_per_unit" type="number"/>
         </div>
       </td>
       <td {% if is_revenue %}class='hidden'{% endif %}> 
         <div class="input-prepend">
           <span class="add-on">$</span>
-          <input class="new inputIcon small input-with-dollar" onkeyup="makeRequired(this)" name="item_funding_already_received" type="number"/>
+          <input class="new inputIcon small input-with-dollar" name="item_funding_already_received" type="number"/>
         </div>
       </td>
       <td>
@@ -118,7 +118,7 @@
       </td>
 
       <td>
-        <button class='btn add' onclick='addItem(this); return false;'>Add</button>
+        <button class='btn add add-item'>Add</button>
       </td>
     </tr>
 
