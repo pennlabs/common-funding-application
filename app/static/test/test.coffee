@@ -1,3 +1,4 @@
+# need a global _ because recs depends on it
 `_ = require("../js/lib/underscore.min")`
 
 assert = require "assert"
@@ -32,20 +33,16 @@ describe "Recommendations", ->
 
   describe "#checkRelations()", ->
     it "should remain the same", ->
-      y = ["1"]
-      E = recs.addExpectation(y, [])
-      expected = 1: true
-      assert.ok _.isEqual(E, expected)
+      E = recs.addExpectation(["1"], [])
+      # E is now {1: true}
       is_checked = true
-      reality = 1: true
-      assert.ok _.isEqual(recs.checkExpectations(is_checked, E), reality)
+      # expectations are met because is_checked is true
+      assert.ok recs.checkExpectations(is_checked, E)[1]
 
   describe "#checkRelations()", ->
     it "should differ from reality", ->
-      y = ["1"]
-      E = recs.addExpectation(y, [])
-      expected = 1: true
-      assert.ok _.isEqual(E, expected)
+      E = recs.addExpectation(["1"], [])
+      # E is now {1: true}
       is_checked = false
-      reality = 1: false
-      assert.ok _.isEqual(recs.checkExpectations(is_checked, E), reality)
+      # expections are not met because is_checked is false
+      assert.equal recs.checkExpectations(is_checked, E)[1], false
