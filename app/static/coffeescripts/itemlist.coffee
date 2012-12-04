@@ -33,8 +33,7 @@ root.calculateAmount = ->
 
   amountSel = ".itemrow #{quantSel}, .itemrow #{ppuSel}, .itemrow #{alreadyReceivedSel}"
   $(amountSel).live "input", (e) ->
-    $currRow = $(this).closest('.itemrow')
-    setRowAmount $currRow
+    setRowAmount $(e.target).closest('.itemrow')
     updateTotal()
 
   $('#fundingalreadyreceived').on 'input', -> updateTotal()
