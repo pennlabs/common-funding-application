@@ -273,12 +273,12 @@ class Event(models.Model):
     return ('app.views.event_show', [str(self.id)])
 
   def __unicode__(self):
-      return "%s: %s, %s" % (unicode(self.requester),
-                             self.name,
-                             self.date.isoformat())
+    return "%s: %s, %s" % (unicode(self.requester),
+                           self.name,
+                           self.date.isoformat())
 
   class Meta:
-      unique_together = ("name", "date", "requester")
+    unique_together = ("name", "date", "requester")
 
 
 class Comment(models.Model):
