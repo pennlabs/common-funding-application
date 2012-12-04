@@ -10,7 +10,7 @@ Common Funding Application
 
 * Install [CoffeeScript](http://coffeescript.org) (`sudo npm install -g coffee-script`)
 
-* Compile the CoffeeScript files (`coffee -o app/static/js/ -c app/static/coffeescripts/`)
+* Compile the CoffeeScript files (`coffee -o app/static/js/ -c app/static/coffeescripts/` or `cake build` if you are in the app/static directory)
 
 * Create a configuration file (`cp sandbox_config.py_default sandbox_config.py`)
 
@@ -39,6 +39,12 @@ Common Funding Application
 * Run `python manage.py collectstatic -l` to symlink static files (do not forget the "-l" for symlinks).
 
 * Run python import_demo.py
+
+## Front-End Testing
+
+* Navigate to app/static
+
+* Run tests (`cake test`)
 
 ## DB migrations
 
