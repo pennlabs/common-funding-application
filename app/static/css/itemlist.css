@@ -6,19 +6,6 @@
   /* display: none; */
 }
 
-.app-item-row input.new {
+.event-row input.new {
   color: #999999;
-}
-
-.app-item-row .funders-list {
-  display: none;
-}
-
-.app-item-row .funders-list td {
-  padding-right: 15px;
-}
-
-/* Fixed floating issue for Chrome */
-.app-item-row input.fund-amount {
-  float: right;
 }
