@@ -51,12 +51,12 @@
         <!--<span class="label label-success">Submitted</span>-->
         
         {% if app.over %}
-          <span class="label label-warning">Followup</span>
+          <span class="label label-warning">FOLLOWUP</span>
         {% else %}
           {% if app.funded %}
-          <span class="label label-success">Funded</span>
+          <span class="label label-success">FUNDED</span>
           {% else %}
-          <span class="label label-important">UnFunded</span>
+          <span class="label label-important">UNFUNDED</span>
           {% endif %}
         {% endif %}
       </div>
