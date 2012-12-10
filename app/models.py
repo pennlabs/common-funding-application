@@ -172,6 +172,10 @@ class Event(models.Model):
     """The total amount of money requested for an event."""
     return sum(item.total for item in self.item_set.all())
 
+  @property
+  def comments(self):
+    return self.comment_set.order_by('created')
+
   def save_from_form(self, POST):
     """Save an event from form data."""
     # save items

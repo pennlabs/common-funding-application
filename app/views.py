@@ -7,6 +7,7 @@ import json
 import smtplib
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
@@ -96,6 +97,7 @@ def event_new(request):
                             funding_already_received=request.POST['fundingalreadyreceived'],
                           )
     event.save_from_form(request.POST)
+    messages.success(request, 'Scheduled %s for %s!' % (event.name, event.date.strftime("%b %d, %Y")))
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
@@ -127,6 +129,7 @@ def event_edit(request, event_id):
     event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
+    messages.success(request, 'Saved %s!' % event.name)
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
@@ -142,29 +145,28 @@ def event_show(request, event_id):
   user = request.user
   event = Event.objects.get(pk=event_id)
   if request.method == 'POST': #TODO: should really be PUT
-    if user.cfauser.is_funder:
+    if user.get_profile().is_funder:
       grants = []
       for item in event.item_set.all():
         amount = request.POST.get("item_" + str(item.id), None)
         if amount:
           amount = Decimal(amount)
-          grant, _ = Grant.objects.get_or_create(funder=user.cfauser,
+          grant, _ = Grant.objects.get_or_create(funder=user.get_profile(),
                                               item=item,
                                               defaults={'amount': 0})
           amount_funded = sum(grant.amount for grant in
                   Grant.objects.filter(item=item))
           amount_funded += item.funding_already_received
-
           # if the funder gave too much, adjust the price to be only enough
           if amount + amount_funded - grant.amount > item.total:
             amount = item.total - amount_funded + grant.amount
-
-          grant.amount = amount
-          grant.save()
-
-          grants.append(grant)
-
+          # only append if the amount has changed
+          if grant.amount != amount:
+            grant.amount = amount
+            grant.save()
+            grants.append(grant)
       if grants:
+        messages.success(request, "Saved grant!")
         # email the event requester indicating that they've been funded
         event.notify_requester(grants)
         # try to notify osa, but osa is not guaranteed to exist

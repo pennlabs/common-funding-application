@@ -4,9 +4,12 @@ $ ->
 
   $(".event-row .btn").on "click", (e) -> e.stopPropagation()
 
+  $('.alert [data-dismiss="alert"]').on 'click', (e) ->
+    $(@).parent().remove()
+
   $(".destroy-event").on "click", (e) ->
     e.preventDefault()
-    $target = $(e.target)
+    $target = $(@)
     $target.addClass("disabled")
     $.ajax(
       type: 'GET'
