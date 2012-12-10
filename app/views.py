@@ -129,7 +129,7 @@ def event_edit(request, event_id):
     event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
-    messages.success(request, 'Edited %s!' % event.name)
+    messages.success(request, 'Saved %s!' % event.name)
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
@@ -166,6 +166,7 @@ def event_show(request, event_id):
             grant.save()
             grants.append(grant)
       if grants:
+        messages.success(request, "Saved grant!")
         # email the event requester indicating that they've been funded
         event.notify_requester(grants)
         # try to notify osa, but osa is not guaranteed to exist
