@@ -3,8 +3,7 @@
 {% load widgets %}
 
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{{ STATIC_URL }}/css/applist.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}/css/fundingbar.css">
+<link rel="stylesheet" href="{{ STATIC_URL }}css/applist.css">
 {% endblock %}
 
 {% block htmllink-js %}
@@ -13,7 +12,7 @@
 
 {% block container %}
 <header>
-  {% if user.get_profile.is_requester %}
+  {% if not user.is_staff and user.get_profile.is_requester %}
   <div class="btns pull-right">
     <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
   </div>
@@ -21,11 +20,20 @@
   <div>
     <h2>
       Current Applications
-      <small>Welcome, {{ user.username }}!</small>
+      <small>Welcome, {{ user.get_profile }}!</small>
     </h2>
   </div>
 </header>
-	
+
+{% if messages %}
+  {% for message in messages %}
+  <div class='alert {% if message.tags %}alert-{{ message.tags }}{% endif %}'>
+    <button type='button' class='close' data-dismiss='alert'>&times;</button>
+    <strong>{{ message.tags|capfirst }}!</strong> {{ message }}
+  </div>
+  {% endfor %}
+{% endif %}
+
 <div id="main">
     <div class="row">
         <div class="span4">
@@ -39,7 +47,7 @@
         </div>
     </div>
   {% for app in apps %}
-  <div class="app-item-row">
+  <div class="event-row">
     <div class="row">
       <div class="span4 name">
         <span>{{ app.name }}</span>
@@ -52,32 +60,29 @@
         <!--<span class="label label-success">Submitted</span>-->
         
         {% if app.over %}
-          <span class="label label-warning">Followup</span>
+          <span class="label label-warning">FOLLOWUP</span>
         {% else %}
           {% if app.funded %}
-          <span class="label label-success">Funded</span>
+          <span class="label label-success">FUNDED</span>
           {% else %}
-          <span class="label label-important">UnFunded</span>
+          <span class="label label-important">UNFUNDED</span>
           {% endif %}
         {% endif %}
       </div>
-      <div class="span3 buttons">        
-        {% if user.get_profile.is_requester %}
-        {% if app.funded %}
-        <a class="btn btn-info pull-right" href="{% url app.views.event_show app.id %}">
-          <i class="icon-file icon-white"></i>
-          View
-        </a>
-        {% else %}
-        <a class="btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
-          <i class="icon-trash icon-white"></i>
-          Delete
-        </a>
-        <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
-          <i class="icon-file icon-white"></i>
-          View
-        </a>
-        {% endif %}
+      <div class="span3 buttons">
+        {% if not user.is_staff and user.get_profile.is_requester %}
+          {% if app.funded %}
+          <a class="btn btn-success pull-right" href="{% url app.views.event_show app.id %}">
+            <i class="icon-file icon-white"></i>View
+          </a>
+          {% else %}
+          <a class="destroy-event btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
+            <i class="icon-trash icon-white"></i>Delete
+          </a>
+          <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
+            <i class="icon-edit icon-white"></i>Edit
+          </a>
+          {% endif %}
         {% else %}
         <a class="btn btn-info pull-right" href="{% url app.views.event_show app.id %}">
           <i class="icon-file icon-white"></i>

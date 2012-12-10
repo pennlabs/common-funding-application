@@ -1,10 +1,13 @@
 import os
 from decimal import Decimal
 from collections import namedtuple
+from datetime import datetime
+import json
 
 import smtplib
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
@@ -17,11 +20,7 @@ from app.models import Event, EligibilityQuestion, EligibilityAnswer, \
     CommonFreeResponseQuestion, CommonFreeResponseAnswer, Comment
 
 
-NOT_AUTHORIZED = 'app.views.index'
-
-def index(request):
-    return redirect('app.views.events')
-
+NOT_AUTHORIZED = 'app.views.events'
 
 def authorization_required(view):
   """Ensure only a permitted user can access an event.
@@ -36,15 +35,16 @@ def authorization_required(view):
       key = request.GET['key']
     except KeyError:
       user = request.user.get_profile()
-      if user.is_funder or user.requested(event):
+      if request.user.is_staff or user.is_funder or user.requested(event):
         return view(request, event_id, *args, **kwargs)
+      else:
+        return redirect(NOT_AUTHORIZED)
     else:
       if key == event.secret_key:
         return view(request, event_id, *args, **kwargs)
       else:
         return redirect(NOT_AUTHORIZED)
   return protected_view
-
 
 def requester_only(view):
   """Ensure only the user who requested the event can access a page."""
@@ -57,29 +57,33 @@ def requester_only(view):
       return redirect(NOT_AUTHORIZED)
   return protected_view
 
-
+# GET  /
 @login_required
 def events(request):
   if request.method == 'GET':
     user = request.user
-    if user.get_profile().is_requester:
-      apps = Event.objects.filter(requester=user.get_profile()).extra(order_by=['date'])
-    else: #TODO: filter for funders once submitting functionality has been implemented
-      apps = user.get_profile().event_applied_funders.all().extra(order_by=['date'])
+    cfauser = user.get_profile()
+    if user.is_staff:
+      apps = Event.objects.order_by('date')
+    elif cfauser.is_requester:
+      apps = Event.objects.filter(requester=cfauser).order_by('date')
+    else: # cfauser.is_funder
+      apps = cfauser.event_applied_funders.order_by('date')
     return render_to_response('app/events.html',
                               {'apps': apps},
                               context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
 
-
+# GET  /new
+# POST /new
 @login_required
 def event_new(request):
   """Form to create a new event."""
   if request.method == 'POST':
     event = Event.objects.create(
                             name=request.POST['name'],
-                            date=request.POST['date'],
+                            date=datetime.strptime(request.POST['date'],'%m/%d/%Y'),
                             requester=request.user.get_profile(),
                             location=request.POST['location'],
                             organizations=request.POST['organizations'],
@@ -93,6 +97,7 @@ def event_new(request):
                             funding_already_received=request.POST['fundingalreadyreceived'],
                           )
     event.save_from_form(request.POST)
+    messages.success(request, 'Scheduled %s for %s!' % (event.name, event.date.strftime("%b %d, %Y")))
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
@@ -100,7 +105,8 @@ def event_new(request):
   else:
     return HttpResponseNotAllowed(['GET'])
 
-
+# GET  /1/edit
+# POST /1/edit
 @login_required
 @requester_only
 def event_edit(request, event_id):
@@ -110,7 +116,7 @@ def event_edit(request, event_id):
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
     event.name = request.POST['name']
-    event.date = request.POST['date']
+    event.date = datetime.strptime(request.POST['date'],'%m/%d/%Y')
     event.organizations = request.POST['organizations']
     event.location = request.POST['location']
     event.time = request.POST['time']
@@ -123,46 +129,44 @@ def event_edit(request, event_id):
     event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
+    messages.success(request, 'Saved %s!' % event.name)
     return redirect('app.views.events')
   elif request.method == 'GET':
-    # can't get the event's funders?
     return render_to_response('app/application-requester.html',
-        {
-          'event': event
-        },
+        {'event': event},
         context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
 
-
+# GET  /1
+# POST /1
 @authorization_required
 def event_show(request, event_id):
   user = request.user
   event = Event.objects.get(pk=event_id)
   if request.method == 'POST': #TODO: should really be PUT
-    if user.cfauser.is_funder:
+    if user.get_profile().is_funder:
       grants = []
       for item in event.item_set.all():
         amount = request.POST.get("item_" + str(item.id), None)
         if amount:
           amount = Decimal(amount)
-          grant, _ = Grant.objects.get_or_create(funder=user.cfauser,
+          grant, _ = Grant.objects.get_or_create(funder=user.get_profile(),
                                               item=item,
                                               defaults={'amount': 0})
-          amount_funded = sum(grant.amount for grant in 
+          amount_funded = sum(grant.amount for grant in
                   Grant.objects.filter(item=item))
           amount_funded += item.funding_already_received
-
           # if the funder gave too much, adjust the price to be only enough
           if amount + amount_funded - grant.amount > item.total:
             amount = item.total - amount_funded + grant.amount
-
-          grant.amount = amount
-          grant.save()
-
-          grants.append(grant)
-
+          # only append if the amount has changed
+          if grant.amount != amount:
+            grant.amount = amount
+            grant.save()
+            grants.append(grant)
       if grants:
+        messages.success(request, "Saved grant!")
         # email the event requester indicating that they've been funded
         event.notify_requester(grants)
         # try to notify osa, but osa is not guaranteed to exist
@@ -170,71 +174,24 @@ def event_show(request, event_id):
           user.get_profile().notify_osa(event, grants)
         except smtplib.SMTPException:
           pass
-      if 'new-comment' in request.POST:
+      if request.POST.get('new-comment', None):
         comment = Comment(comment=request.POST['new-comment'],
           funder=user.get_profile(), event=event)
         comment.save()
-      return redirect('app.views.event_show', event_id)
+      return redirect('app.views.events')
     else:
-      for key, value in request.POST.items():
-        if key in ('csrfmiddlewaretoken', 'event_id'):
-          continue
-        if key == 'name':
-          event.name = value
-        elif key == 'date':
-          event.date = value
-        elif key == 'location':
-          event.location = value
-        elif key == 'organizations':
-          event.organizations = value
-        elif key.endswith("?"):
-          question = EligibilityQuestion.objects.get(question=key)
-          try:
-            answer = event.eligibilityanswer_set.get(question=question)
-          except EligibilityAnswer.DoesNotExist:
-            event.eligibilityanswer_set.create(question=question,
-                                    answer=value)
-          else:
-            answer.answer = value
-            answer.save()
-      event.save()
-      return redirect('app.views.items', event_id)
+      return redirect('app.views.events')
   elif request.method == 'GET':
-    # can't get the event's funders?
     return render_to_response('app/application-show.html',
-        {
-          'event': event,
-        },
+        {'event': event},
         context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['POST'])
 
-@login_required
-@requester_only
-def items(request, event_id):
-  user = request.user
-  if request.method == 'POST':
-    event_id = request.POST.get('event_id', None)
-    event = Event.objects.get(pk=event_id)
-    item_names = request.POST.getlist('item_name')
-    item_amounts = request.POST.getlist('item_amount')
-    item_units = request.POST.getlist('item_units')
-    event.item_set.all().delete()
-    for name, amount, units in zip(item_names, item_amounts, item_units):
-      event.item_set.create(name=name, amount= amount, units=units, funding_already_received=0)
-    return redirect('app.views.funders', event_id)
-  elif request.method == 'GET':
-    event = Event.objects.get(pk=event_id)
-    return render_to_response('app/itemlist.html',
-                              {'event': event},
-                              context_instance=RequestContext(request))
-  else:
-    return HttpResponseNotAllowed(['GET', 'POST'])
-
-
+# GET  /1/destroy
 @login_required
 @requester_only
 def event_destroy(request, event_id):
   event = Event.objects.get(pk=event_id)
   event.delete()
-  return redirect('app.views.events')
+  return HttpResponse(json.dumps({'event_id': event_id}), mimetype="application/json")

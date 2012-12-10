@@ -1,42 +1,5 @@
 {% load widgets %}
 
-<!-- Remove me eventually! -->
-<script type="text/javascript">
-
-/** Populate these fields */
-function populate() {
-  $("#questionname").val("Socrates Speaks");
-  $("#questiondate").val("2012-05-02");
-  $("#questiontime").val("12:00:00");
-  $("#questionlocation").val("Philo Halls");
-  $("#questioncontactemail").val("kyleh@sas.upenn.edu");
-  $("#questioncontactphone").val("3013054038");
-  $("#questionanticipatedattendance").val("40");
-  $("#questionadmissionfee").val("0");
-  $("#questionadvisoremail").val("kyleh@seas.upenn.edu");
-  $("#questionadvisorphone").val("3013054038");
-  $("#questionorganizations").val("The Philomathean Society, SCUE");
-  $(".commonfreeresponsequestion").val("My thoughtful response to this question");
-  addItem(); addItem();
-  $("#item-table tr input[name='item_name']")[0].value = "Soda";
-  $("#item-table tr input[name='item_name']")[1].value = "Juice";
-  $("#item-table tr input[name='item_name']")[2].value = "Milkshakes";
-
-  $("#item-table tr input[name='item_quantity']")[0].value = "3";
-  $("#item-table tr input[name='item_quantity']")[1].value = "40";
-  $("#item-table tr input[name='item_quantity']")[2].value = "5";
-
-  $("#item-table tr input[name='item_price_per_unit']")[0].value = "10";
-  $("#item-table tr input[name='item_price_per_unit']")[1].value = "5";
-  $("#item-table tr input[name='item_price_per_unit']")[2].value = "12";
-
-  $("#item-table tr input[name='item_funding_already_received']")[0].value = "0";
-  $("#item-table tr input[name='item_funding_already_received']")[1].value = "15";
-  $("#item-table tr input[name='item_funding_already_received']")[2].value = "0";
-}
-</script>
-
-
 {% if event.over %}
 <section id="followup" class="short-answer">
   <div class="section-header">
@@ -91,7 +54,7 @@ function populate() {
       <div class="control-group">
         <label for="questiondate" class="control-label">Event Date</label>
         <div class="controls">
-          <input required value="{{ event.date.isoformat }}" type="text" name='date' id="questiondate" class="input-xlarge datepicker" {{extra_attrs}} {{event_over_disable}}>
+          <input required {% if event %}data-edit="true"{% endif %} data-year="{{ event.date.year }}" data-month="{{ event.date.month }}" data-day="{{ event.date.day }}" type="text" name='date' id="questiondate" class="input-xlarge datepicker" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Date of the event</p>
         </div>
       </div>
@@ -127,14 +90,14 @@ function populate() {
       <div class="control-group">
         <label for="questionanticipatedattendance" class="control-label">Anticipated Attendance</label>
         <div class="controls">
-          <input required value="{{ event.anticipated_attendance }}" type="number" name="anticipatedattendance" id="questionanticipatedattendance" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input required value="{{ event.anticipated_attendance }}" type="number" min="0" name="anticipatedattendance" id="questionanticipatedattendance" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Anticipated number of people attending the event</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questionadmissionfee" class="control-label">Admission Fee</label>
         <div class="controls">
-          <input required value="{{ event.admission_fee }}" type="number" name="admissionfee" id="questionadmissionfee" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input required value="{{ event.admission_fee }}" type="number" min="0" name="admissionfee" id="questionadmissionfee" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Amount you plan charge as admission</p>
         </div>
       </div>
@@ -164,7 +127,7 @@ function populate() {
         <div class="controls">
           <div class="input-prepend">
               <span class="add-on">$</span>
-              <input required value="{{ event.funding_already_received }}" type="number" name='fundingalreadyreceived' id="fundingalreadyreceived" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+              <input required value="{{ event.funding_already_received }}" type="number" min="0" name='fundingalreadyreceived' id="fundingalreadyreceived" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           </div>
           <p class="help-block">Amount of funding already received that has not been allocated for any particular item</p>
         </div>
@@ -214,8 +177,8 @@ function populate() {
   </div>
   <div class="section-content">
     <fieldset>
-      {% for qa in commonfreeresponse_qas %}        
-      <label for="commonfreeresponsequestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>        
+      {% for qa in commonfreeresponse_qas %}
+      <label for="commonfreeresponsequestion_{{qa.question.id}}">{{ qa.question.question }}</label>        
       <textarea type="text"
         id="commonfreeresponsequestion_{{qa.question.id}}"
         name="commonfreeresponsequestion_{{qa.question.id}}"
@@ -236,7 +199,7 @@ function populate() {
   </div>
   <div class="section-content">
     <fieldset>
-      {% if user.get_profile.is_requester %}
+      {% if not user.is_staff and user.get_profile.is_requester %}
       {% itemlist_requester 1 event.item_set.all event.funded%}
       {% itemlist_requester 0 event.item_set.all event.funded%}
 
@@ -261,7 +224,8 @@ function populate() {
 
 
       {% else %}
-      {% itemlist_funder event.item_set.all event.applied_funders.all user.get_profile.id %}
+      {% itemlist_funder 1 event.item_set.all event.applied_funders.all user.get_profile.id %}
+      {% itemlist_funder 0 event.item_set.all event.applied_funders.all user.get_profile.id %}
       {% endif %}
     </fieldset>
   </div>
@@ -286,7 +250,7 @@ function populate() {
           class="funder-checkbox"
           {% if funder in event.applied_funders.all %}checked{% endif %}
           type="checkbox" {{extra_attrs}} {{event_over_disable}}>
-          {{funder.user.username}}
+          {{funder}}
       </label>
       <p class="help-block">{{funder.mission_statement}}</p>
     </div>
@@ -310,7 +274,7 @@ function populate() {
   <div class="section-content">
     <fieldset>
     <p id="funder-no-q">
-      {% if user.get_profile.is_requester %}
+      {% if not user.is_staff and user.get_profile.is_requester %}
       No questions yet. Please select funders.
       {% else %}
       No other questions answered.
@@ -344,7 +308,7 @@ function populate() {
     </h2>
   </div>
   <div class="section-content">
-    {% for comment in event.comment_set.all %}
+    {% for comment in event.comments %}
     <p><strong>{{ comment.funder }}</strong> wrote on {{ comment.created }}</p>
     <blockquote>{{ comment }}</blockquote>
     {% empty %}

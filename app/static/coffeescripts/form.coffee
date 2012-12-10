@@ -44,7 +44,7 @@ Expectations = {}
 Reality = {}
 
 # initialize expected answers to questions
-initExpectations = () ->
+initExpectations = ->
   $(".bool-q").each (index, el) ->
     question_id = $(el).data("qid")
     expectations = (type) -> $(el).data(type).toString().split(',')
@@ -52,7 +52,7 @@ initExpectations = () ->
     Expectations[question_id] = addExpectation(y, n)
 
 # Show questions based on which funders are selected
-showQuestions = () ->
+showQuestions = ->
   funder_ids = (".funder-q-#{fid}" for fid in Selected)
   funders = funder_ids.join()
   $(".extra-answer").hide() # hide elements
@@ -63,7 +63,7 @@ showQuestions = () ->
     $("#funder-no-q").show()
 
 # show labels on the funders who are recommended
-showRecommendations = () ->
+showRecommendations = ->
   $(".funder-check .checkbox .recommended-label").remove()
   label = $("#recommended-label").html()
   funders = getRecommended(Reality)
@@ -82,7 +82,7 @@ toggleSection = (e) ->
 $ ->
   initExpectations()
 
-  $(".funder-checkbox").change () ->
+  $(".funder-checkbox").change ->
     funder_id = $(this).data("funderid")
     if !this.checked
       Selected = _.without(Selected, funder_id)
@@ -90,7 +90,7 @@ $ ->
       Selected.push funder_id
     showQuestions()
 
-  $(".bool-q").change () ->
+  $(".bool-q").change ->
     updateRecommendations(this)
     showRecommendations()
 
@@ -106,6 +106,14 @@ $ ->
     timeFormat: "G:i"
     step: 30
     scrollDefaultNow: true
+  )
+
+  $calendar = $("#questiondate")
+  $calendar.pickadate(
+    format: 'mm/dd/yyyy'
+    format_submit: 'mm/dd/yyyy'
+    onStart: ->
+      @setDate $calendar.data("year"), $calendar.data("month"), $calendar.data("day") if $calendar.data("edit")
   )
   
   # toggle sections

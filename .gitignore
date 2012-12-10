@@ -1,6 +1,8 @@
 *.pyc
 sandbox_config.py
 /app/migrations
+/app/static/js/*.js
+/app/static/test/*.js
 /static
 *.swp
 *~

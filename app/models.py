@@ -1,6 +1,6 @@
 from collections import namedtuple
 import re
-import sha
+from hashlib import sha1
 
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.forms import USPhoneNumberField
@@ -37,6 +37,9 @@ class CFAUser(models.Model):
   >>> cfau.is_funder
   False
   """
+
+  funder_name = models.CharField(max_length=256, default='')
+
   user = models.OneToOneField(User, help_text='You must first create a user '
                               'before adding them to the CFA.')
   user_type = models.CharField(max_length=1,
@@ -50,7 +53,11 @@ class CFAUser(models.Model):
   mission_statement = models.TextField(max_length=256)
 
   def __unicode__(self):
-    return unicode(self.user)
+    if self.is_funder:
+      # some funders might not have funder_names
+      return unicode(self.funder_name) or unicode(self.user)
+    else:
+      return unicode(self.user)
 
   @property
   def is_funder(self):
@@ -166,6 +173,10 @@ class Event(models.Model):
     """The total amount of money requested for an event."""
     return sum(item.total for item in self.item_set.all())
 
+  @property
+  def comments(self):
+    return self.comment_set.order_by('created')
+
   def save_from_form(self, POST):
     """Save an event from form data."""
     # save items
@@ -260,19 +271,19 @@ class Event(models.Model):
   def secret_key(self):
     """Unique key that can be shared so that anyone can view the event."""
     """To use the key append ?key=<key>"""
-    return sha.new("".join([self.name, str(self.date), str(self.requester)])).hexdigest()
+    return sha1("".join([self.name, str(self.date), str(self.requester)])).hexdigest()
 
   @models.permalink
   def get_absolute_url(self):
     return ('app.views.event_show', [str(self.id)])
 
   def __unicode__(self):
-      return "%s: %s, %s" % (unicode(self.requester),
-                             self.name,
-                             self.date.isoformat())
+    return "%s: %s, %s" % (unicode(self.requester),
+                           self.name,
+                           self.date.isoformat())
 
   class Meta:
-      unique_together = ("name", "date", "requester")
+    unique_together = ("name", "date", "requester")
 
 
 class Comment(models.Model):

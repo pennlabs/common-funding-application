@@ -3,24 +3,24 @@ This is a development-specific file that lets us set personalized variables
 (such as db name, etc) in settings.py. This should be configured per-sandbox.
 This and nothing else.  (In the ominous words of AMK.)
 
-@Author: kevinsu
-@Date: 2012-Feb-22
+@Author: Geoffrey Vedernikoff (yefim323@gmail.com)
+@Date: 2012-Nov-12
 """
 
-import os
+# The domain URL (e.g., 'http://penncfa.com/', 'http://localhost:8000', or 'http://kyleh.pennapps.com/')
+DOMAIN_URL = 'http://localhost:8000'
 
-# Name of the site you are developing on. This is needed for registration AND static file links to work.
-# (e.g., http://cfa.pennapps.com, http://geoff.pennapps.com/cfa)
-SITE_NAME = "http://XXX.pennapps.com"
+# The path CFA is serving off of (e.g., 'cfa' or '')
+DISPLAY_NAME = ''
+URL_ROOT = '/' + DISPLAY_NAME
 
-# i.e., <SITE_NAME>/<DISPLAY_NAME>, this should be the empty string in prod
-# e.g., cfa
-DISPLAY_NAME = ""
-URL_ROOT = "/" + DISPLAY_NAME
+# The whole shebang.
+SITE_NAME = DOMAIN_URL + URL_ROOT
 
 # The e-mail assigned to all the users in `import_demo`. For testing only.
 TEST_EMAIL = ''
 
-DATABASE_NAME = ""
-DATABASE_USER = ""
-DATABASE_PASSWORD = ""
+DATABASE_ENGINE = 'sqlite3'  # You can use 'mysql', 'sqlite3', 'postgresql_psycopg2', 'postgresql', or 'oracle'
+DATABASE_NAME = 'cfa'        # Or relative path to database file if using sqlite3
+DATABASE_USER = ''           # Not used with sqlite3
+DATABASE_PASSWORD = ''       # Not used with sqlite3

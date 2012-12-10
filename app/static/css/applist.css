@@ -1,17 +1,17 @@
-div.app-item-row {
+div.event-row {
   cursor: pointer;
   padding: 12px 0px;
 }
-div.app-item-row:hover {
+div.event-row:hover {
   background-color: #f5f5f5;
 }
-div.app-item-row > .row > div:first-child > *:first-child {
+div.event-row > .row > div:first-child > *:first-child {
   margin-left: 12px;  
 }
-div.app-item-row > .row > .buttons > *:first-child {
+div.event-row > .row > .buttons > *:first-child {
   margin-right: 12px;
 }
-div.app-item-row:not(:first-child) {
+div.event-row:not(:first-child) {
   border-top: 1px solid #EEEEEE;
 }
 
@@ -19,20 +19,20 @@ div.app-item-row:not(:first-child) {
   background-color: #FF0;
 }
 
-div.app-item-row .buttons .btn {
+div.event-row .buttons .btn {
   margin-left: 8px;
 }
 
-div.app-item-row .name {
+div.event-row .name {
   font-weight: bold;
 }
-div.app-item-row .funders > table {
+div.event-row .funders > table {
   margin-left: 12px;
 }
-div.app-item-row .funders > table td {
+div.event-row .funders > table td {
   padding-right: 15px;
 }
-div.app-item-row .funders > table td.pending {
+div.event-row .funders > table td.pending {
   font-style: italic;
   color: #999;
 }
