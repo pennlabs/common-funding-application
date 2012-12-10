@@ -308,7 +308,7 @@
     </h2>
   </div>
   <div class="section-content">
-    {% for comment in event.comment_set.all %}
+    {% for comment in event.comments %}
     <p><strong>{{ comment.funder }}</strong> wrote on {{ comment.created }}</p>
     <blockquote>{{ comment }}</blockquote>
     {% empty %}
