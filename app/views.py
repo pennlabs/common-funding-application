@@ -7,6 +7,7 @@ import json
 import smtplib
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
@@ -96,6 +97,7 @@ def event_new(request):
                             funding_already_received=request.POST['fundingalreadyreceived'],
                           )
     event.save_from_form(request.POST)
+    messages.success(request, 'Scheduled %s for %s!' % (event.name, event.date.strftime("%b %d, %Y")))
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
@@ -127,6 +129,7 @@ def event_edit(request, event_id):
     event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
+    messages.success(request, 'Edited %s!' % event.name)
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',

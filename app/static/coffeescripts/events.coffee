@@ -4,6 +4,11 @@ $ ->
 
   $(".event-row .btn").on "click", (e) -> e.stopPropagation()
 
+  $('.alert [data-dismiss="alert"]').on 'click', (e) ->
+    $this = $(e.target)
+    $parent = if $this.hasClass('alert') then $this else $this.parent()
+    $parent.remove()
+
   $(".destroy-event").on "click", (e) ->
     e.preventDefault()
     $target = $(e.target)
