@@ -46,6 +46,7 @@ class CFAUser(models.Model):
   osa_email = models.EmailField('OSA Contact Email', null=True,
                                 help_text='The email address for contacting '
                                 'OSA when an app is funded.')
+  cc_emails = models.ManyToManyField("CCEmail")
   mission_statement = models.TextField(max_length=256)
 
   def __unicode__(self):
@@ -421,6 +422,9 @@ class Grant(models.Model):
 
 
 class FunderConstraint(models.Model):
+    """
+    Questions which funders require (yes/no/don't care) answers to by the requesters in order to be eligible to recieve money
+    """
     funder = models.ForeignKey(CFAUser)
     question = models.ForeignKey(EligibilityQuestion)
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
@@ -432,3 +436,10 @@ class FunderConstraint(models.Model):
 
     class Meta:
         unique_together = ("funder", "question")
+
+class CCEmail(models.Model):
+    """Emails which can be CCd for every funder"""
+    email = models.EmailField()
+
+    def __unicode__(self):
+      return self.email
