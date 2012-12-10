@@ -38,7 +38,7 @@ class CFAUser(models.Model):
   False
   """
 
-  funder_name = models.CharField(max_length=256, default='')
+  funder_name = models.CharField(max_length=256, default='', blank=True)
 
   user = models.OneToOneField(User, help_text='You must first create a user '
                               'before adding them to the CFA.')
@@ -48,9 +48,10 @@ class CFAUser(models.Model):
   # The e-mail of the contact in OSA
   osa_email = models.EmailField('OSA Contact Email', null=True,
                                 help_text='The email address for contacting '
-                                'OSA when an app is funded.')
+                                'OSA when an app is funded.',
+                                blank=True)
   cc_emails = models.ManyToManyField("CCEmail")
-  mission_statement = models.TextField(max_length=256)
+  mission_statement = models.TextField(max_length=256, blank=True)
 
   def __unicode__(self):
     if self.is_funder:
