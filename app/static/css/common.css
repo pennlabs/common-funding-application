@@ -54,6 +54,13 @@ footer li:last-child {
   padding-right: 0;
   border-right: none;
 }
+footer a {
+  color: #969696;
+}
+footer a:hover {
+  color: #444;
+  text-decoration: none;
+}
 
 #main {
   margin-top: 30px;
