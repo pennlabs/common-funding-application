@@ -246,7 +246,12 @@ class Event(models.Model):
     subject = render_to_string('app/application_email_subject.txt',
         context).strip()
     message = render_to_string('app/application_email.txt', context)
-    funder.user.email_user(subject, message)
+    email = EmailMessage(subject=subject,
+                         body=message,
+                         from_email=DEFAULT_FROM_EMAIL,
+                         to=[funder.user.email],
+                         cc=funder.cc_emails.values_list('email',flat=True))
+    email.send()
 
   def notify_requester(self, grants):
     """Notify a requester that an event has been funded."""
