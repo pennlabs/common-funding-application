@@ -1,6 +1,6 @@
 {% load widgets %}
 
-{% if event.over %}
+{% if event.status == Event.OVER %}
 <section id="followup" class="short-answer">
   <div class="section-header">
     <a class='section-toggle'></a>

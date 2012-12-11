@@ -140,7 +140,6 @@ class Event(models.Model):
       models.ManyToManyField(CFAUser,
                              related_name='event_applied_funders')
   funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
-  over = models.BooleanField()
 
   @property
   def total_funds_already_received(self):
@@ -165,7 +164,17 @@ class Event(models.Model):
   @property
   def funded(self):
     """Whether or not an event has been funded."""
-    return self.total_funds_granted > 0
+    return self.status == Event.FUNDED
+
+  @property
+  def over(self):
+    """Whether or not an event is over and needs followup q's answered"""
+    return self.status == Event.OVER
+
+  @property
+  def done(self):
+    """Whether or not an event has is over AND the followup q's are answered"""
+    return self.status == Event.DONE
 
   @property
   def total_funds_received(self):

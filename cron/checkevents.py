@@ -16,10 +16,10 @@ now = date.today()
 events = Event.objects.all()
 
 for event in events:
-  if not event.over:
+  if not (event.over or event.done):
     then = event.date
     if (now - then) > timedelta(days=DAYS):
-      event.over = True
+      event.status = Event.OVER
       event.save()
       event.notify_requester_for_followups()
       print "%s has been over for more than 3 days" % event.name

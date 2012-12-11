@@ -56,17 +56,12 @@
         <span>{{ app.date }}</span>
       </div>
       <div class="offset2 span1 status">
-        <!--<span class="label label-info">Saved</span>-->
-        <!--<span class="label label-success">Submitted</span>-->
-        
         {% if app.over %}
-          <span class="label label-warning">FOLLOWUP</span>
+        <span class="label label-warning">FOLLOWUP</span>
+        {% elif app.funded %}
+        <span class="label label-success">{{ app.get_status_display }}</span>
         {% else %}
-          {% if app.funded %}
-          <span class="label label-success">FUNDED</span>
-          {% else %}
-          <span class="label label-important">UNFUNDED</span>
-          {% endif %}
+        <span class="label label-important">{{ app.get_status_display }}</span>
         {% endif %}
       </div>
       <div class="span3 buttons">

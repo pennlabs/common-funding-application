@@ -121,7 +121,7 @@ def event_new(request):
 def event_edit(request, event_id):
   user = request.user
   event = Event.objects.get(pk=event_id)
-  if event.funded:
+  if event.status is Event.FUNDED:
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
     status = Event.SAVED if 'save' in request.POST else Event.SUBMITTED
@@ -187,6 +187,8 @@ def event_show(request, event_id):
         messages.success(request, "Saved grant!")
         # email the event requester indicating that they've been funded
         event.notify_requester(grants)
+        event.status = Event.FUNDED
+        event.save()
         # try to notify osa, but osa is not guaranteed to exist
         try:
           user.get_profile().notify_osa(event, grants)
