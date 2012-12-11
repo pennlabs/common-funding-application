@@ -1,4 +1,5 @@
 from collections import namedtuple
+from datetime import datetime
 import re
 from hashlib import sha1
 
@@ -111,23 +112,82 @@ class Event(models.Model):
   * A list of collaborating organizations
   * The amount of money already received that is not allocated for any item
   """
-  name = models.CharField(max_length=256)
-  date = models.DateField()
-  time = models.TimeField()
-  location = models.CharField(max_length=256)
+  SAVED = 0
+  SUBMITTED = 1
+  FUNDED = 2
+  OVER = 3
+  DONE = 4
+  STATUS = (
+    (SAVED, 'SAVED'),
+    (SUBMITTED, 'SUBMITTED'),
+    (FUNDED, 'FUNDED'),
+    (OVER, 'OVER'),
+    (DONE, 'DONE')
+  )
+  status = models.IntegerField(choices=STATUS, default=SAVED)
+  name = models.CharField(
+      max_length=256,
+      null=True,
+      default=''
+    )
+  date = models.DateField(
+      null=True,
+      default=datetime.now()
+    )
+  time = models.TimeField(
+      null=True,
+      default=datetime.now()
+    )
+  location = models.CharField(
+      max_length=256,
+      null=True,
+      default=''
+    )
   requester = models.ForeignKey(CFAUser, related_name='event_requester')
-  contact_email = models.EmailField()
-  contact_phone = models.CharField(max_length=10)
-  anticipated_attendance = models.IntegerField()
-  admission_fee = models.DecimalField(max_digits=6, decimal_places=2)
-  advisor_email = models.EmailField(blank=True)
-  advisor_phone = models.CharField(max_length=10, blank=True)
-  organizations = models.CharField(max_length=256)
+  contact_email = models.EmailField(
+      null=True,
+      default=''
+    )
+  contact_phone = models.CharField(
+      max_length=10,
+      null=True,
+      default=''
+    )
+  anticipated_attendance = models.IntegerField(
+      null=True,
+      default=0
+    )
+  admission_fee = models.DecimalField(
+      max_digits=6,
+      decimal_places=2,
+      null=True,
+      default=0
+    )
+  advisor_email = models.EmailField(
+      blank=True,
+      null=True,
+      default=''
+    )
+  advisor_phone = models.CharField(
+      blank=True,
+      max_length=10,
+      null=True,
+      default=''
+    )
+  organizations = models.CharField(
+      max_length=256,
+      null=True,
+      default=''
+    )
+  funding_already_received = models.DecimalField(
+      max_digits=17,
+      decimal_places=2,
+      null=True,
+      default=0
+    )
   applied_funders =\
       models.ManyToManyField(CFAUser,
                              related_name='event_applied_funders')
-  funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
-  over = models.BooleanField()
 
   @property
   def total_funds_already_received(self):
@@ -148,11 +208,26 @@ class Event(models.Model):
   def total_funds_granted(self):
     """The total amount of money received via grants."""
     return sum(self.amounts.values())
-  
+
   @property
   def funded(self):
     """Whether or not an event has been funded."""
-    return self.total_funds_granted > 0
+    return self.status == Event.FUNDED
+
+  @property
+  def over(self):
+    """Whether or not an event is over and needs followup q's answered"""
+    return self.status == Event.OVER
+
+  @property
+  def done(self):
+    """Whether or not an event has is over AND the followup q's are answered"""
+    return self.status == Event.DONE
+
+  @property
+  def submitted(self):
+    """Whether or not an event has been submitted"""
+    return self.status == Event.SUBMITTED
 
   @property
   def total_funds_received(self):
@@ -233,6 +308,8 @@ class Event(models.Model):
   def notify_funder(self, funder):
     """Notify a funder that the requester has applied to them."""
     assert funder.is_funder
+    if not funder.user.email:
+      return
     context = {'requester': self.requester, 'event': self}
     subject = render_to_string('app/application_email_subject.txt',
         context).strip()

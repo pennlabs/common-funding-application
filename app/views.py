@@ -68,7 +68,7 @@ def events(request):
     elif cfauser.is_requester:
       apps = Event.objects.filter(requester=cfauser).order_by('date')
     else: # cfauser.is_funder
-      apps = cfauser.event_applied_funders.order_by('date')
+      apps = cfauser.event_applied_funders.exclude(status=Event.SAVED).order_by('date')
     return render_to_response('app/events.html',
                               {'apps': apps},
                               context_instance=RequestContext(request))
@@ -81,23 +81,52 @@ def events(request):
 def event_new(request):
   """Form to create a new event."""
   if request.method == 'POST':
+    POST = request.POST
+    name = POST['name']
+    status = Event.SAVED if 'save' in POST else Event.SUBMITTED
+    time, date = [POST.get('time', None), POST.get('date', None)]
+    if bool(date):
+      date = datetime.strptime(date,'%m/%d/%Y')
+    else:
+      date = datetime.now()
+    if not bool(time):
+      time = datetime.now()
+    admission_fee = POST['admissionfee'] if bool(POST['admissionfee']) else 0
+    anticipated_attendance = POST['anticipatedattendance'] if bool(POST['anticipatedattendance']) else 0
+    funding_already_received = POST['fundingalreadyreceived'] if bool(POST['fundingalreadyreceived']) else 0
     event = Event.objects.create(
-                            name=request.POST['name'],
-                            date=datetime.strptime(request.POST['date'],'%m/%d/%Y'),
+                            status=status,
+                            name=name,
+                            date=date,
                             requester=request.user.get_profile(),
-                            location=request.POST['location'],
-                            organizations=request.POST['organizations'],
-                            contact_email=request.POST['contactemail'],
-                            time=request.POST['time'],
-                            contact_phone=request.POST['contactphone'],
-                            anticipated_attendance=request.POST['anticipatedattendance'],
-                            admission_fee=request.POST['admissionfee'],
-                            advisor_email=request.POST['advisoremail'],
-                            advisor_phone=request.POST['advisorphone'],
-                            funding_already_received=request.POST['fundingalreadyreceived'],
+                            location=POST['location'],
+                            organizations=POST['organizations'],
+                            contact_email=POST['contactemail'],
+                            time=time,
+                            contact_phone=POST['contactphone'],
+                            anticipated_attendance=anticipated_attendance,
+                            admission_fee=admission_fee,
+                            advisor_email=POST['advisoremail'],
+                            advisor_phone=POST['advisorphone'],
+                            funding_already_received=funding_already_received
                           )
-    event.save_from_form(request.POST)
-    messages.success(request, 'Scheduled %s for %s!' % (event.name, event.date.strftime("%b %d, %Y")))
+    event.save_from_form(POST)
+    # need to move this up in order to not save the event
+    if not bool(name):
+      messages.error(request, "Please provide a name for the event")
+      return render_to_response('app/application-requester.html',
+          {'event': event},
+          context_instance=RequestContext(request))
+    if status is Event.SAVED:
+      message = 'Saved application for %s' % event.name
+    else:
+      funders = event.applied_funders.all()
+      length = len(funders)
+      plural = "funder" if length == 1 else "funders"
+      message = 'Submitted application for %s to %d %s' % (event.name, length, plural)
+      for funder in funders:
+        event.notify_funder(funder)
+    messages.success(request, message)
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
@@ -112,9 +141,11 @@ def event_new(request):
 def event_edit(request, event_id):
   user = request.user
   event = Event.objects.get(pk=event_id)
-  if event.funded:
+  if event.funded or event.submitted:
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
+    status = Event.SAVED if 'save' in request.POST else Event.SUBMITTED
+    event.status = status
     event.name = request.POST['name']
     event.date = datetime.strptime(request.POST['date'],'%m/%d/%Y')
     event.organizations = request.POST['organizations']
@@ -129,7 +160,14 @@ def event_edit(request, event_id):
     event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
-    messages.success(request, 'Saved %s!' % event.name)
+    if status is Event.SAVED:
+      message = 'Saved application for %s' % event.name
+    else:
+      funders = event.applied_funders.all()
+      message = 'Submitted application for %s to %d funders' % (event.name, len(funders))
+      for funder in funders:
+        event.notify_funder(funder)
+    messages.success(request, message)
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
@@ -169,6 +207,8 @@ def event_show(request, event_id):
         messages.success(request, "Saved grant!")
         # email the event requester indicating that they've been funded
         event.notify_requester(grants)
+        event.status = Event.FUNDED
+        event.save()
         # try to notify osa, but osa is not guaranteed to exist
         try:
           user.get_profile().notify_osa(event, grants)
