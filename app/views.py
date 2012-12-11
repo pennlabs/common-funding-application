@@ -121,7 +121,7 @@ def event_new(request):
 def event_edit(request, event_id):
   user = request.user
   event = Event.objects.get(pk=event_id)
-  if event.status is Event.FUNDED:
+  if event.funded or event.submitted:
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
     status = Event.SAVED if 'save' in request.POST else Event.SUBMITTED

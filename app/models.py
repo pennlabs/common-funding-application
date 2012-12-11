@@ -160,7 +160,7 @@ class Event(models.Model):
   def total_funds_granted(self):
     """The total amount of money received via grants."""
     return sum(self.amounts.values())
-  
+
   @property
   def funded(self):
     """Whether or not an event has been funded."""
@@ -175,6 +175,11 @@ class Event(models.Model):
   def done(self):
     """Whether or not an event has is over AND the followup q's are answered"""
     return self.status == Event.DONE
+
+  @property
+  def submitted(self):
+    """Whether or not an event has been submitted"""
+    return self.status == Event.SUBMITTED
 
   @property
   def total_funds_received(self):
