@@ -111,6 +111,17 @@ class Event(models.Model):
   * A list of collaborating organizations
   * The amount of money already received that is not allocated for any item
   """
+  SAVED = 0
+  SUBMITTED = 1
+  OVER = 2
+  DONE = 3
+  STATUS = (
+    (SAVED, 'SAVED'),
+    (SUBMITTED, 'SUBMITTED'),
+    (OVER, 'OVER'),
+    (DONE, 'DONE')
+  )
+  status = models.IntegerField(choices=STATUS, default=SAVED)
   name = models.CharField(max_length=256)
   date = models.DateField()
   time = models.TimeField()

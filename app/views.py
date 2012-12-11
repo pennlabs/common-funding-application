@@ -68,7 +68,7 @@ def events(request):
     elif cfauser.is_requester:
       apps = Event.objects.filter(requester=cfauser).order_by('date')
     else: # cfauser.is_funder
-      apps = cfauser.event_applied_funders.order_by('date')
+      apps = cfauser.event_applied_funders.exclude(status=Event.SAVED).order_by('date')
     return render_to_response('app/events.html',
                               {'apps': apps},
                               context_instance=RequestContext(request))
@@ -82,6 +82,7 @@ def event_new(request):
   """Form to create a new event."""
   if request.method == 'POST':
     event = Event.objects.create(
+                            status=Event.SAVED if 'save' in request.POST else Event.SUBMITTED,
                             name=request.POST['name'],
                             date=datetime.strptime(request.POST['date'],'%m/%d/%Y'),
                             requester=request.user.get_profile(),
@@ -115,6 +116,7 @@ def event_edit(request, event_id):
   if event.funded:
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
+    event.status = Event.SAVED if 'save' in request.POST else Event.SUBMITTED
     event.name = request.POST['name']
     event.date = datetime.strptime(request.POST['date'],'%m/%d/%Y')
     event.organizations = request.POST['organizations']
