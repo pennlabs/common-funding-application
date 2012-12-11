@@ -261,7 +261,7 @@ class Event(models.Model):
     email = EmailMessage(subject=subject,
                          body=html_content,
                          from_email=DEFAULT_FROM_EMAIL,
-                         to=[self.requester.user.email]
+                         to=[self.requester.user.email],
                          cc=self.requester.cc_emails.values_list('email', flat=True))
     email.content_subtype = "html" # main content is not text/html
     email.send()
