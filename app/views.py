@@ -81,24 +81,42 @@ def events(request):
 def event_new(request):
   """Form to create a new event."""
   if request.method == 'POST':
-    status = Event.SAVED if 'save' in request.POST else Event.SUBMITTED
+    POST = request.POST
+    name = POST['name']
+    status = Event.SAVED if 'save' in POST else Event.SUBMITTED
+    time, date = [POST.get('time', None), POST.get('date', None)]
+    if bool(date):
+      date = datetime.strptime(date,'%m/%d/%Y')
+    else:
+      date = datetime.now()
+    if not bool(time):
+      time = datetime.now()
+    admission_fee = POST['admissionfee'] if bool(POST['admissionfee']) else 0
+    anticipated_attendance = POST['anticipatedattendance'] if bool(POST['anticipatedattendance']) else 0
+    funding_already_received = POST['fundingalreadyreceived'] if bool(POST['fundingalreadyreceived']) else 0
     event = Event.objects.create(
                             status=status,
-                            name=request.POST['name'],
-                            date=datetime.strptime(request.POST['date'],'%m/%d/%Y'),
+                            name=name,
+                            date=date,
                             requester=request.user.get_profile(),
-                            location=request.POST['location'],
-                            organizations=request.POST['organizations'],
-                            contact_email=request.POST['contactemail'],
-                            time=request.POST['time'],
-                            contact_phone=request.POST['contactphone'],
-                            anticipated_attendance=request.POST['anticipatedattendance'],
-                            admission_fee=request.POST['admissionfee'],
-                            advisor_email=request.POST['advisoremail'],
-                            advisor_phone=request.POST['advisorphone'],
-                            funding_already_received=request.POST['fundingalreadyreceived'],
+                            location=POST['location'],
+                            organizations=POST['organizations'],
+                            contact_email=POST['contactemail'],
+                            time=time,
+                            contact_phone=POST['contactphone'],
+                            anticipated_attendance=anticipated_attendance,
+                            admission_fee=admission_fee,
+                            advisor_email=POST['advisoremail'],
+                            advisor_phone=POST['advisorphone'],
+                            funding_already_received=funding_already_received
                           )
-    event.save_from_form(request.POST)
+    event.save_from_form(POST)
+    # need to move this up in order to not save the event
+    if not bool(name):
+      messages.error(request, "Please provide a name for the event")
+      return render_to_response('app/application-requester.html',
+          {'event': event},
+          context_instance=RequestContext(request))
     if status is Event.SAVED:
       message = 'Saved application for %s' % event.name
     else:

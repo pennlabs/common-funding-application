@@ -1,4 +1,5 @@
 from collections import namedtuple
+from datetime import datetime
 import re
 from hashlib import sha1
 
@@ -124,22 +125,69 @@ class Event(models.Model):
     (DONE, 'DONE')
   )
   status = models.IntegerField(choices=STATUS, default=SAVED)
-  name = models.CharField(max_length=256)
-  date = models.DateField()
-  time = models.TimeField()
-  location = models.CharField(max_length=256)
+  name = models.CharField(
+      max_length=256,
+      null=True,
+      default=''
+    )
+  date = models.DateField(
+      null=True,
+      default=datetime.now()
+    )
+  time = models.TimeField(
+      null=True,
+      default=datetime.now()
+    )
+  location = models.CharField(
+      max_length=256,
+      null=True,
+      default=''
+    )
   requester = models.ForeignKey(CFAUser, related_name='event_requester')
-  contact_email = models.EmailField()
-  contact_phone = models.CharField(max_length=10)
-  anticipated_attendance = models.IntegerField()
-  admission_fee = models.DecimalField(max_digits=6, decimal_places=2)
-  advisor_email = models.EmailField(blank=True)
-  advisor_phone = models.CharField(max_length=10, blank=True)
-  organizations = models.CharField(max_length=256)
+  contact_email = models.EmailField(
+      null=True,
+      default=''
+    )
+  contact_phone = models.CharField(
+      max_length=10,
+      null=True,
+      default=''
+    )
+  anticipated_attendance = models.IntegerField(
+      null=True,
+      default=0
+    )
+  admission_fee = models.DecimalField(
+      max_digits=6,
+      decimal_places=2,
+      null=True,
+      default=0
+    )
+  advisor_email = models.EmailField(
+      blank=True,
+      null=True,
+      default=''
+    )
+  advisor_phone = models.CharField(
+      blank=True,
+      max_length=10,
+      null=True,
+      default=''
+    )
+  organizations = models.CharField(
+      max_length=256,
+      null=True,
+      default=''
+    )
+  funding_already_received = models.DecimalField(
+      max_digits=17,
+      decimal_places=2,
+      null=True,
+      default=0
+    )
   applied_funders =\
       models.ManyToManyField(CFAUser,
                              related_name='event_applied_funders')
-  funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
 
   @property
   def total_funds_already_received(self):
