@@ -103,7 +103,9 @@ def event_new(request):
       message = 'Saved application for %s' % event.name
     else:
       funders = event.applied_funders.all()
-      message = 'Submitted application for %s to %d funders' % (event.name, len(funders))
+      length = len(funders)
+      plural = "funder" if length == 1 else "funders"
+      message = 'Submitted application for %s to %d %s' % (event.name, length, plural)
       for funder in funders:
         event.notify_funder(funder)
     messages.success(request, message)
