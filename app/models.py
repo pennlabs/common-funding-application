@@ -68,16 +68,6 @@ class CFAUser(models.Model):
   def is_requester(self):
     return not self.is_funder
 
-  def is_willing_to_fund(self, event):
-    """Check if a funder is willing to fund an event."""
-    assert self.is_funder
-    for constraint in self.funderconstraint_set.all():
-      event_answer = event.eligibilityanswer_set.get(question=
-            constraint.question).answer
-      if not event_answer == constraint.answer:
-        return False
-    return True
-
   def requested(self, event):
     """Check if a user requested an event."""
     assert self.is_requester
@@ -268,10 +258,13 @@ class Event(models.Model):
     subject = render_to_string('app/over_event_email_subject.txt',
         context).strip()
     html_content = render_to_string('app/over_event_email.txt', context)
-    email = EmailMessage(subject, html_content, DEFAULT_FROM_EMAIL, [self.requester.user.email])
+    email = EmailMessage(subject=subject,
+                         body=html_content,
+                         from_email=DEFAULT_FROM_EMAIL,
+                         to=[self.requester.user.email]
+                         cc=self.requester.cc_emails.values_list('email', flat=True))
     email.content_subtype = "html" # main content is not text/html
     email.send()
-
 
   @property
   def secret_key(self):
