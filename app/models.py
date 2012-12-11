@@ -113,11 +113,13 @@ class Event(models.Model):
   """
   SAVED = 0
   SUBMITTED = 1
-  OVER = 2
-  DONE = 3
+  FUNDED = 2
+  OVER = 3
+  DONE = 4
   STATUS = (
     (SAVED, 'SAVED'),
     (SUBMITTED, 'SUBMITTED'),
+    (FUNDED, 'FUNDED'),
     (OVER, 'OVER'),
     (DONE, 'DONE')
   )
@@ -244,6 +246,8 @@ class Event(models.Model):
   def notify_funder(self, funder):
     """Notify a funder that the requester has applied to them."""
     assert funder.is_funder
+    if not funder.user.email:
+      return
     context = {'requester': self.requester, 'event': self}
     subject = render_to_string('app/application_email_subject.txt',
         context).strip()
