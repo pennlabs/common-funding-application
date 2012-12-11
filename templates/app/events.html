@@ -111,9 +111,8 @@
       </div>
     </div>
   </div>
-  {% endfor %}
-  {% if not apps %}
+  {% empty %}
   <div>You do not have any current applications.</div>
-  {% endif %}
+  {% endfor %}
 </div>
 {% endblock %}
