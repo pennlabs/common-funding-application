@@ -59,3 +59,7 @@ _Note_: instructions are from [our wiki](https://github.com/pennappslabs/wiki/wi
 * `python manage.py schemamigration app --auto NAME_OF_CHANGE`
 
 * `python manage.py migrate app`
+
+## Contributors
+
+* The development team at [PennApps Labs](http://labs.pennapps.com/team/)
