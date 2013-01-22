@@ -1,6 +1,8 @@
 Common Funding Application
 =============================
 
+The [Common Funding Application](http://cfa.pennapps.com) is an online application that allows student groups and organizations to request funding from various funding sources at the [University of Pennsylvania](http://www.upenn.edu).
+
 ## Local Setup
 * Install [pip](http://www.pip-installer.org/en/latest/installing.html)
 
@@ -24,7 +26,7 @@ Common Funding Application
 
 * Navigate to the [app](http://localhost:8000/)
 
-## Setup
+## Server Setup
 
 * Go to [pennapps.com/phpmyadmin](http://pennapps.com/phpmyadmin) and make a new database for yourself by copying an existing one.
 
