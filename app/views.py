@@ -1,26 +1,19 @@
-import os
 from decimal import Decimal
-from collections import namedtuple
 from datetime import datetime
 import json
 
 import smtplib
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
-from django.template.loader import render_to_string
 
-from sandbox_config import URL_ROOT
-
-from app.models import Event, EligibilityQuestion, EligibilityAnswer, \
-    FreeResponseQuestion, FreeResponseAnswer, Grant, CFAUser, \
-    CommonFreeResponseQuestion, CommonFreeResponseAnswer, Comment
+from app.models import Event, Grant, Comment
 
 
 NOT_AUTHORIZED = 'app.views.events'
+
 
 def authorization_required(view):
   """Ensure only a permitted user can access an event.
@@ -46,6 +39,7 @@ def authorization_required(view):
         return redirect(NOT_AUTHORIZED)
   return protected_view
 
+
 def requester_only(view):
   """Ensure only the user who requested the event can access a page."""
   def protected_view(request, event_id, *args, **kwargs):
@@ -57,6 +51,7 @@ def requester_only(view):
       return redirect(NOT_AUTHORIZED)
   return protected_view
 
+
 # GET  /
 @login_required
 def events(request):
@@ -67,13 +62,14 @@ def events(request):
       apps = Event.objects.order_by('date')
     elif cfauser.is_requester:
       apps = Event.objects.filter(requester=cfauser).order_by('date')
-    else: # cfauser.is_funder
+    else:  # cfauser.is_funder
       apps = cfauser.event_applied_funders.order_by('date')
     return render_to_response('app/events.html',
                               {'apps': apps},
                               context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
+
 
 # GET  /new
 # POST /new
@@ -105,12 +101,12 @@ def event_new(request):
   else:
     return HttpResponseNotAllowed(['GET'])
 
+
 # GET  /1/edit
 # POST /1/edit
 @login_required
 @requester_only
 def event_edit(request, event_id):
-  user = request.user
   event = Event.objects.get(pk=event_id)
   if event.funded:
     return redirect('app.views.event_show', event_id)
@@ -138,13 +134,14 @@ def event_edit(request, event_id):
   else:
     return HttpResponseNotAllowed(['GET'])
 
+
 # GET  /1
 # POST /1
 @authorization_required
 def event_show(request, event_id):
   user = request.user
   event = Event.objects.get(pk=event_id)
-  if request.method == 'POST': #TODO: should really be PUT
+  if request.method == 'POST':  # TODO: should really be PUT
     if user.get_profile().is_funder:
       grants = []
       for item in event.item_set.all():
@@ -188,10 +185,12 @@ def event_show(request, event_id):
   else:
     return HttpResponseNotAllowed(['POST'])
 
+
 # GET  /1/destroy
 @login_required
 @requester_only
 def event_destroy(request, event_id):
   event = Event.objects.get(pk=event_id)
   event.delete()
-  return HttpResponse(json.dumps({'event_id': event_id}), mimetype="application/json")
+  return HttpResponse(json.dumps({'event_id': event_id}),
+                      mimetype="application/json")
