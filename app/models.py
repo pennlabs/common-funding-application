@@ -229,6 +229,10 @@ class Event(models.Model):
         funder = CFAUser.objects.get(id=funder_id)
         self.applied_funders.add(funder)
 
+  def notify_funders(self):
+    """Notify all the funders of an event that they have been applied to"""
+    for funder in self.applied_funders.all():
+      self.notify_funder(funder)
 
   def notify_funder(self, funder):
     """Notify a funder that the requester has applied to them."""

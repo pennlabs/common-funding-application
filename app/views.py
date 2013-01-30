@@ -93,11 +93,13 @@ def event_new(request):
                             funding_already_received=request.POST['fundingalreadyreceived'],
                           )
     event.save_from_form(request.POST)
-    messages.success(request, 'Scheduled %s for %s!' % (event.name, event.date.strftime("%b %d, %Y")))
+    event.notify_funders()
+    messages.success(request,
+       'Scheduled %s for %s!' % (event.name, event.date.strftime("%b %d, %Y")))
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
-        context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
 
