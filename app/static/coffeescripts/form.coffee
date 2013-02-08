@@ -7,7 +7,7 @@ Selected = []
 
 ###
 #
-# Expectations is a hash of question ids with values of 
+# Expectations is a hash of question ids with values of
 # an object* that contains which funders want a check
 # and which do not. This object* will be referred to as
 # funder_relations
@@ -75,7 +75,7 @@ updateRecommendations = (el) ->
   funder_relations = Expectations[question_id]
   Reality[question_id] = checkExpectations(el.checked, funder_relations)
 
-toggleSection = (e) ->  
+toggleSection = (e) ->
   $(e).parent().siblings(".section-content").toggle()
   $(e).toggleClass("collapsed")
 
@@ -101,7 +101,7 @@ $ ->
 
   $(".bool-q").each (index, el) -> updateRecommendations(el)
   showRecommendations()
-  
+
   $("#questiontime").timepicker(
     timeFormat: "G:i"
     step: 30
@@ -115,10 +115,12 @@ $ ->
     onStart: ->
       @setDate $calendar.data("year"), $calendar.data("month"), $calendar.data("day") if $calendar.data("edit")
   )
-  
+
   # toggle sections
   $(".section-toggle").click -> toggleSection(this)
-  
+
+  $('#no-fund').click -> $('#funding-given').val 0
+
   if $("#followup").length
     $(".section-content").hide()
     $(".section-toggle").addClass("collapsed")
