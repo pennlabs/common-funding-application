@@ -147,7 +147,7 @@ class Event(models.Model):
   @property
   def total_funds_granted(self):
     """The total amount of money received via grants."""
-    return sum(self.amounts.values())
+    return reduce(lambda x, y: x + y if y is not None else x,  self.amounts.values())
 
   @property
   def funded(self):
