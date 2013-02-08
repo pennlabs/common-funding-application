@@ -35,6 +35,7 @@
           <div class="input-prepend">
             <span class="add-on">$</span>
             <input  class="funding-given inputIcon small input-with-dollar" name="item_{{ item_id }}"
+              type='text'
               {% ifnotequal grant_amount None %}
               value="{{ grant_amount }}"
               {% endifnotequal %}
