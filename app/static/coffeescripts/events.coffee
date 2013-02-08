@@ -20,3 +20,4 @@ $ ->
         $target.removeClass("disabled")
     )
     return false
+

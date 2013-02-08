@@ -96,7 +96,7 @@
             {% for funder, amount in app.amounts.items %}
             <tr>
               <td>{{funder}}</td>
-              {% if amount %}
+              {% if amount != None %}
               <td>$ {{ amount }}</td>
               {% else %}
               <td class="pending">pending</td>

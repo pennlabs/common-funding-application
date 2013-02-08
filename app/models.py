@@ -138,17 +138,20 @@ class Event(models.Model):
   @property
   def amounts(self):
     """Get a dictionary containing the amount each funder has granted."""
-    amounts = dict((funder, 0) for funder in self.applied_funders.all())
+    amounts = dict((funder, None) for funder in self.applied_funders.all())
     for item in self.item_set.all():
       for grant in item.grant_set.all():
-        amounts[grant.funder] += grant.amount
+        amounts[grant.funder] = grant.amount if amounts[grant.funder] is None else amounts[grant.funder] + grant.amount
     return amounts
 
   @property
   def total_funds_granted(self):
     """The total amount of money received via grants."""
-    return sum(self.amounts.values())
-  
+    sum = 0
+    for val in self.amounts.values():
+        sum = sum + val if val is not None else sum
+    return sum
+
   @property
   def funded(self):
     """Whether or not an event has been funded."""
@@ -181,7 +184,7 @@ class Event(models.Model):
     self.item_set.all().delete()
     for name, quantity, price, funding, cat, rev in zip(names, quantities, prices_per_unit, funding_already_received, categories, revenues):
       funding = funding or 0
-      # set correct category letter 
+      # set correct category letter
       for tup in CATEGORIES:
         if tup[1] == cat:
           cat = tup[0]
@@ -424,7 +427,7 @@ class Item(models.Model):
 class Grant(models.Model):
     funder = models.ForeignKey(CFAUser)
     item = models.ForeignKey(Item)
-    amount = models.DecimalField(max_digits=17, decimal_places=2)
+    amount = models.DecimalField(max_digits=17, decimal_places=2, null=True)
 
     def __unicode__(self):
         return "%s, %s, %d" % (unicode(self.item),
@@ -442,7 +445,7 @@ class FunderConstraint(models.Model):
     funder = models.ForeignKey(CFAUser)
     question = models.ForeignKey(EligibilityQuestion)
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
-    
+
     def __unicode__(self):
         return "%s, %s %s" % (unicode(self.funder),
                               unicode(self.question),
