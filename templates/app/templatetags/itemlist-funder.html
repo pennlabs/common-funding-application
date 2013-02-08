@@ -49,7 +49,7 @@
         {% ifnotequal grant_amount None %}
           <td>${{ grant_amount }}</td>
           {% else %}
-          <td> Pending </td>
+          <td><em>pending</em></td>
         {% endifnotequal %}
       {% endifequal %}
       {% endfor %}
