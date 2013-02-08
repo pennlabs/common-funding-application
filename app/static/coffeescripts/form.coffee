@@ -119,7 +119,7 @@ $ ->
   # toggle sections
   $(".section-toggle").click -> toggleSection(this)
 
-  $('#no-fund').click -> $('#funding-given').val 0
+  $('#no-fund').click -> $('.funding-given').val 0
 
   if $("#followup").length
     $(".section-content").hide()
