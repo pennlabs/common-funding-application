@@ -75,7 +75,7 @@ def application(context, user, event=None):
     ]
 
   if not user.is_authenticated() or user.is_staff or user.get_profile().is_funder \
-    or event and event.funded:
+    or event and event.funded and not event.over:
     new_context['extra_attrs'] = 'readonly'
 
   return render_to_string('app/templatetags/application.html', new_context)

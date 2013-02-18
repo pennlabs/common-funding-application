@@ -71,7 +71,7 @@
       </div>
       <div class="span3 buttons">
         {% if not user.is_staff and user.get_profile.is_requester %}
-          {% if app.funded %}
+          {% if app.funded and not app.over %}
           <a class="btn btn-success pull-right" href="{% url app.views.event_show app.id %}">
             <i class="icon-file icon-white"></i>View
           </a>

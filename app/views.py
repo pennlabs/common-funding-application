@@ -27,11 +27,15 @@ def authorization_required(view):
     try:
       key = request.GET['key']
     except KeyError:
-      user = request.user.get_profile()
-      if request.user.is_staff or user.is_funder or user.requested(event):
-        return view(request, event_id, *args, **kwargs)
-      else:
+      try:
+        user = request.user.get_profile()
+      except:
         return redirect(NOT_AUTHORIZED)
+      else:
+        if request.user.is_staff or user.is_funder or user.requested(event):
+          return view(request, event_id, *args, **kwargs)
+        else:
+          return redirect(NOT_AUTHORIZED)
     else:
       if key == event.secret_key:
         return view(request, event_id, *args, **kwargs)
