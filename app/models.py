@@ -39,11 +39,9 @@ class CFAUser(models.Model):
   """
 
   funder_name = models.CharField(max_length=256, default='', blank=True)
-
   user = models.OneToOneField(User, help_text='You must first create a user '
                               'before adding them to the CFA.')
-  user_type = models.CharField(max_length=1,
-                               choices=REQUESTER_OR_FUNDER)
+  user_type = models.CharField(max_length=1, choices=REQUESTER_OR_FUNDER)
   phone = USPhoneNumberField()
   # The e-mail of the contact in OSA
   osa_email = models.EmailField('OSA Contact Email', null=True,
@@ -77,8 +75,7 @@ class CFAUser(models.Model):
     """Notify OSA that an event has been funded."""
     assert self.is_funder
     context = {'funder': self, 'event': event, 'grants': grants}
-    subject = render_to_string('app/osa_email_subject.txt',
-        context).strip()
+    subject = render_to_string('app/osa_email_subject.txt', context).strip()
     message = render_to_string('app/osa_email.txt', context)
     recipients = [str(self.osa_email)]
     headers = {'Reply-To': self.user.email}
@@ -96,9 +93,9 @@ def create_profile(sender, instance, signal, created, **kwargs):
   if created:
     CFAUser.objects.create(user=instance, user_type='R')
 
+
 class Event(models.Model):
   """An Event object.
-
   An Event consists of:
   * A name
   * A date
