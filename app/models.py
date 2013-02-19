@@ -28,16 +28,12 @@ REQUESTER_OR_FUNDER = (
 class CFAUser(models.Model):
   """
   A CFA User profile.
-
   # Create user
   >>> u = User.objects.create_user("alice", "alice@example.com", "1234")
   >>> cfau = u.get_profile()
   >>> cfau.is_requester
   True
-  >>> cfau.is_funder
-  False
   """
-
   funder_name = models.CharField(max_length=256, default='', blank=True)
   user = models.OneToOneField(User, help_text='You must first create a user '
                               'before adding them to the CFA.')
