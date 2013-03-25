@@ -9,10 +9,8 @@ $ ->
 
 
 ###
-#
 # Check that all form inputs are valid.
 # returns the input that is not valid to be scrolled to, else returns undefined
-#
 ###
 check_form_inputs = ->
   # always scroll to the first failed item
