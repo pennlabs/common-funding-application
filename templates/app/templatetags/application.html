@@ -1,6 +1,6 @@
 {% load widgets %}
 
-{% if event.over %}
+{% if event.followup_needed %}
 <section id="followup" class="short-answer">
   <div class="section-header">
     <a class='section-toggle'></a>
@@ -198,8 +198,8 @@
   <div class="section-content">
     <fieldset>
       {% if not user.is_staff and user.get_profile.is_requester %}
-      {% itemlist_requester 1 event.item_set.all event.funded%}
-      {% itemlist_requester 0 event.item_set.all event.funded%}
+      {% itemlist_requester 1 event.item_set.all event.funded %}
+      {% itemlist_requester 0 event.item_set.all event.funded %}
       <table class="items-total">
         <tr>
           <td>Sum Total</td>

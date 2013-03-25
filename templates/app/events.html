@@ -12,40 +12,40 @@
 
 {% block container %}
 <header>
-  {% if not user.is_staff and user.get_profile.is_requester %}
-  <div class="btns pull-right">
-    <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
-  </div>
-  {% endif %}
-  <div>
-    <h2>
-      Current Applications
-      <small>Welcome, {{ user.get_profile }}!</small>
-    </h2>
-  </div>
+{% if not user.is_staff and user.get_profile.is_requester %}
+<div class="btns pull-right">
+  <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
+</div>
+{% endif %}
+<div>
+  <h2>
+    Current Applications
+    <small>Welcome, {{ user.get_profile }}!</small>
+  </h2>
+</div>
 </header>
 
 {% if messages %}
-  {% for message in messages %}
-  <div class='alert {% if message.tags %}alert-{{ message.tags }}{% endif %}'>
-    <button type='button' class='close' data-dismiss='alert'>&times;</button>
-    <strong>{{ message.tags|capfirst }}!</strong> {{ message }}
-  </div>
-  {% endfor %}
+{% for message in messages %}
+<div class='alert {% if message.tags %}alert-{{ message.tags }}{% endif %}'>
+  <button type='button' class='close' data-dismiss='alert'>&times;</button>
+  <strong>{{ message.tags|capfirst }}!</strong> {{ message }}
+</div>
+{% endfor %}
 {% endif %}
 
 <div id="main">
-    <div class="row">
-        <div class="span4">
-            <strong>Event</strong>
-        </div>
-        <div class="span2">
-            <strong>Event Date</strong>
-        </div>
-        <div class="offset2 span1">
-            <strong>Status</strong>
-        </div>
+  <div class="row">
+    <div class="span4">
+      <strong>Event</strong>
     </div>
+    <div class="span2">
+      <strong>Event Date</strong>
+    </div>
+    <div class="offset2 span1">
+      <strong>Status</strong>
+    </div>
+  </div>
   {% for app in apps %}
   <div class="event-row">
     <div class="row">
@@ -56,37 +56,29 @@
         <span>{{ app.date }}</span>
       </div>
       <div class="offset2 span1 status">
-        <!--<span class="label label-info">Saved</span>-->
-        <!--<span class="label label-success">Submitted</span>-->
-        
-        {% if app.over %}
-          <span class="label label-warning">FOLLOWUP</span>
+        {% if app.followup_needed %}
+        <span class="label label-warning">FOLLOWUP</span>
+        {% elif app.over %}
+        <span class="label">OVER</span>
+        {% elif app.submitted %}
+        <span class="label label-success">SUBMITTED</span>
+        {% elif app.funded %}
+        <span class="label label-success">FUNDED</span>
         {% else %}
-          {% if app.funded %}
-          <span class="label label-success">FUNDED</span>
-          {% else %}
-          <span class="label label-important">UNFUNDED</span>
-          {% endif %}
+        <span class="label label-info">SAVED</span>
         {% endif %}
       </div>
       <div class="span3 buttons">
-        {% if not user.is_staff and user.get_profile.is_requester %}
-          {% if app.funded and not app.over %}
-          <a class="btn btn-success pull-right" href="{% url app.views.event_show app.id %}">
-            <i class="icon-file icon-white"></i>View
-          </a>
-          {% else %}
-          <a class="destroy-event btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
-            <i class="icon-trash icon-white"></i>Delete
-          </a>
-          <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
-            <i class="icon-edit icon-white"></i>Edit
-          </a>
-          {% endif %}
-        {% else %}
+        {% if user.is_staff or app.locked or user.get_profile.is_funder %}
         <a class="btn btn-info pull-right" href="{% url app.views.event_show app.id %}">
-          <i class="icon-file icon-white"></i>
-          View
+          <i class="icon-file icon-white"></i> View
+        </a>
+        {% else %}
+        <a class="destroy-event btn btn-danger pull-right" href="{% url app.views.event_destroy app.id %}">
+          <i class="icon-trash icon-white"></i> Delete
+        </a>
+        <a class="btn btn-info pull-right" href="{% url app.views.event_edit app.id %}">
+          <i class="icon-edit icon-white"></i> Edit
         </a>
         {% endif %}
       </div>

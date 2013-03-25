@@ -91,19 +91,14 @@ def create_profile(sender, instance, signal, created, **kwargs):
 
 
 class Event(models.Model):
-  """An Event object.
-  An Event consists of:
-  * A name
-  * A date
-  * A time
-  * A location
-  * An anticipated attendance
-  * An admission fee
-  * A requester
-  * An advisor
-  * A list of collaborating organizations
-  * The amount of money already received that is not allocated for any item
-  """
+  STATUS = (
+    ('S', 'SAVED'),
+    ('B', 'SUBMITTED'),
+    ('F', 'FUNDED'),
+    ('W', 'FOLLOWUP'),
+    ('O', 'OVER')
+  )
+  """An Event object."""
   name = models.CharField(max_length=256)
   date = models.DateField()
   time = models.TimeField()
@@ -121,7 +116,23 @@ class Event(models.Model):
                              related_name='event_applied_funders')
   funding_already_received = models.DecimalField(max_digits=17,
                                                  decimal_places=2)
-  over = models.BooleanField()
+  status = models.CharField(max_length=1, choices=STATUS)
+
+  @property
+  def over(self):
+    return self.status == 'O'
+
+  @property
+  def followup_needed(self):
+    return self.status == 'W'
+
+  @property
+  def submitted(self):
+    return self.status == 'B'
+
+  @property
+  def locked(self):
+    return self.submitted or self.funded or self.over
 
   @property
   def total_funds_already_received(self):
