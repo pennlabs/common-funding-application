@@ -106,8 +106,9 @@ def event_new(request):
     )
     event.save_from_form(request.POST)
     event.notify_funders()
-    messages.success(request,
-       'Scheduled %s for %s!' % (event.name, event.date.strftime("%b %d, %Y")))
+    msg = "Scheduled %s for %s!" %\
+        (event.name, event.date.strftime("%b %d, %Y"))
+    messages.success(request, msg)
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
