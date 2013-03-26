@@ -222,7 +222,6 @@ class Event(models.Model):
     # clear existing funders to re-add new ones
     self.applied_funders.clear()
 
-    followups_answered = False
     # create new answers and save funders
     # unchecked checkboxes will have neither answers nor funders
     # associated with them
@@ -241,7 +240,6 @@ class Event(models.Model):
         q_id = re.search("[0-9]+", k).group(0)
         question = FollowupQuestion.objects.get(id=q_id)
         self.followupanswer_set.create(question=question, event=self, answer=v)
-        followups_answered = True
       elif k.startswith('commonfreeresponse'):
         q_id = re.search("[0-9]+", k).group(0)
         question = CommonFreeResponseQuestion.objects.get(id=q_id)
@@ -256,10 +254,6 @@ class Event(models.Model):
         funder_id = re.search("[0-9]+", k).group(0)
         funder = CFAUser.objects.get(id=funder_id)
         self.applied_funders.add(funder)
-
-    if followups_answered:
-      self.status = 'O'
-      self.save()
 
   def notify_funders(self):
     """Notify all the funders of an event that they have been applied to"""

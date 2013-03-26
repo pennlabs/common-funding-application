@@ -122,10 +122,12 @@ def event_new(request):
 @requester_only
 def event_edit(request, event_id):
   event = Event.objects.get(pk=event_id)
-  if event.funded:
+  if event.locked:
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
-    if "submit-event" in request.POST:
+    if event.followup_needed:
+      status = 'O'  # O for OVER
+    elif "submit-event" in request.POST:
       status = 'B'  # B for SUBMITTED
     else:
       status = 'S'  # S for SAVED
@@ -149,8 +151,8 @@ def event_edit(request, event_id):
     return redirect('app.views.events')
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
-        {'event': event},
-        context_instance=RequestContext(request))
+                              {'event': event},
+                              context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
 
