@@ -120,8 +120,3 @@ $ ->
   $(".section-toggle").click -> toggleSection(this)
 
   $('#no-fund').click -> $('.funding-given').val 0
-
-  if $("#followup").length
-    $(".section-content").hide()
-    $(".section-toggle").addClass("collapsed")
-    toggleSection($(".section-toggle")[0])

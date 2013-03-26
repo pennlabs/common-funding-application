@@ -77,7 +77,7 @@ def application(context, user, event):
   if event is None:
     return render_to_string('app/templatetags/application.html', new_context)
 
-  if event.followup_needed:
+  if event.followup_needed or event.over:
     new_context['event_over_disable'] = 'readonly'
     new_context['commonfollowup_qas'] = [
       QA(question, get_or_none(CommonFollowupAnswer,

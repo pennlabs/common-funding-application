@@ -132,7 +132,8 @@ class Event(models.Model):
 
   @property
   def locked(self):
-    return self.submitted or self.funded or self.over
+    return self.funded or self.over
+    # return self.submitted or self.funded or self.over
 
   @property
   def total_funds_already_received(self):
