@@ -256,18 +256,21 @@ class Event(models.Model):
         funder = CFAUser.objects.get(id=funder_id)
         self.applied_funders.add(funder)
 
-  def notify_funders(self):
+  def notify_funders(self, new=False):
     """Notify all the funders of an event that they have been applied to"""
-    for funder in self.applied_funders.all():
-      self.notify_funder(funder)
+    context = {'requester': self.requester, 'event': self}
 
-  def notify_funder(self, funder):
+    template = 'app/application_email' if new else 'app/application_changed'
+
+    subject = render_to_string('%s_subject.txt' % template, context).strip()
+    message = render_to_string('%s.txt' % template, context)
+
+    for funder in self.applied_funders.all():
+      self.notify_funder(subject, message, funder)
+
+  def notify_funder(self, subject, message, funder):
     """Notify a funder that the requester has applied to them."""
     assert funder.is_funder
-    context = {'requester': self.requester, 'event': self}
-    subject = render_to_string('app/application_email_subject.txt',
-                               context).strip()
-    message = render_to_string('app/application_email.txt', context)
     email = EmailMessage(subject=subject,
                          body=message,
                          from_email=DEFAULT_FROM_EMAIL,

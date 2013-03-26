@@ -105,7 +105,7 @@ def event_new(request):
       funding_already_received=request.POST['fundingalreadyreceived'],
     )
     event.save_from_form(request.POST)
-    event.notify_funders()
+    event.notify_funders(new=True)
     msg = "Scheduled %s for %s!" %\
         (event.name, event.date.strftime("%b %d, %Y"))
     messages.success(request, msg)
@@ -148,7 +148,7 @@ def event_edit(request, event_id):
     event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
-    event.notify_funders()
+    event.notify_funders(new=False)
     messages.success(request, 'Saved %s!' % event.name)
     return redirect(EVENTS_HOME)
   elif request.method == 'GET':
