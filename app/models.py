@@ -166,7 +166,7 @@ class Event(models.Model):
   @property
   def funded(self):
     """Whether or not an event has been funded."""
-    return self.total_funds_granted > 0
+    return self.status == 'F'
 
   @property
   def total_funds_received(self):

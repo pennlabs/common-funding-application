@@ -81,21 +81,29 @@ def events(request):
 def event_new(request):
   """Form to create a new event."""
   if request.method == 'POST':
+    if "submit-event" in request.POST:
+      status = 'B'  # B for SUBMITTED
+    else:
+      status = 'S'  # S for SAVED
+
+    date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
+
     event = Event.objects.create(
-                            name=request.POST['name'],
-                            date=datetime.strptime(request.POST['date'],'%m/%d/%Y'),
-                            requester=request.user.get_profile(),
-                            location=request.POST['location'],
-                            organizations=request.POST['organizations'],
-                            contact_email=request.POST['contactemail'],
-                            time=request.POST['time'],
-                            contact_phone=request.POST['contactphone'],
-                            anticipated_attendance=request.POST['anticipatedattendance'],
-                            admission_fee=request.POST['admissionfee'],
-                            advisor_email=request.POST['advisoremail'],
-                            advisor_phone=request.POST['advisorphone'],
-                            funding_already_received=request.POST['fundingalreadyreceived'],
-                          )
+      name=request.POST['name'],
+      status=status,
+      date=date,
+      requester=request.user.get_profile(),
+      location=request.POST['location'],
+      organizations=request.POST['organizations'],
+      contact_email=request.POST['contactemail'],
+      time=request.POST['time'],
+      contact_phone=request.POST['contactphone'],
+      anticipated_attendance=request.POST['anticipatedattendance'],
+      admission_fee=request.POST['admissionfee'],
+      advisor_email=request.POST['advisoremail'],
+      advisor_phone=request.POST['advisorphone'],
+      funding_already_received=request.POST['fundingalreadyreceived'],
+    )
     event.save_from_form(request.POST)
     event.notify_funders()
     messages.success(request,
@@ -117,8 +125,14 @@ def event_edit(request, event_id):
   if event.funded:
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
+    if "submit-event" in request.POST:
+      status = 'B'  # B for SUBMITTED
+    else:
+      status = 'S'  # S for SAVED
+
     event.name = request.POST['name']
-    event.date = datetime.strptime(request.POST['date'],'%m/%d/%Y')
+    event.status = status
+    event.date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
     event.organizations = request.POST['organizations']
     event.location = request.POST['location']
     event.time = request.POST['time']
@@ -155,10 +169,10 @@ def event_show(request, event_id):
         if amount:
           amount = Decimal(amount)
           grant, _ = Grant.objects.get_or_create(funder=user.get_profile(),
-                                              item=item,
-                                              defaults={'amount': 0})
+                                                 item=item,
+                                                 defaults={'amount': 0})
           amount_funded = sum(grant.amount for grant in
-                  Grant.objects.filter(item=item))
+                              Grant.objects.filter(item=item))
           amount_funded += item.funding_already_received
           # if the funder gave too much, adjust the price to be only enough
           if amount + amount_funded - grant.amount > item.total:
@@ -171,6 +185,8 @@ def event_show(request, event_id):
       if grants:
         messages.success(request, "Saved grant!")
         # email the event requester indicating that they've been funded
+        event.status = 'F'  # F for FUNDED
+        event.save()
         event.notify_requester(grants)
         # try to notify osa, but osa is not guaranteed to exist
         try:
@@ -179,15 +195,14 @@ def event_show(request, event_id):
           pass
       if request.POST.get('new-comment', None):
         comment = Comment(comment=request.POST['new-comment'],
-          funder=user.get_profile(), event=event)
+                          funder=user.get_profile(), event=event)
         comment.save()
       return redirect('app.views.events')
     else:
       return redirect('app.views.events')
   elif request.method == 'GET':
-    return render_to_response('app/application-show.html',
-        {'event': event},
-        context_instance=RequestContext(request))
+    return render_to_response('app/application-show.html', {'event': event},
+                              context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['POST'])
 
