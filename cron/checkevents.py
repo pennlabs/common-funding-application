@@ -23,5 +23,5 @@ for event in events:
     if (now - then) > timedelta(days=DAYS):
       event.status = 'W'
       event.save()
-      # event.notify_requester_for_followups()
+      event.notify_requester_for_followups()
       print "%s has been over for more than 3 days" % event.name

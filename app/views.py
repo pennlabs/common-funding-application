@@ -12,7 +12,7 @@ from django.template import RequestContext
 from app.models import Event, Grant, Comment
 
 
-NOT_AUTHORIZED = 'app.views.events'
+EVENTS_HOME = 'app.views.events'
 
 
 def authorization_required(view):
@@ -30,17 +30,17 @@ def authorization_required(view):
       try:
         user = request.user.get_profile()
       except:
-        return redirect(NOT_AUTHORIZED)
+        return redirect(EVENTS_HOME)
       else:
         if request.user.is_staff or user.is_funder or user.requested(event):
           return view(request, event_id, *args, **kwargs)
         else:
-          return redirect(NOT_AUTHORIZED)
+          return redirect(EVENTS_HOME)
     else:
       if key == event.secret_key:
         return view(request, event_id, *args, **kwargs)
       else:
-        return redirect(NOT_AUTHORIZED)
+        return redirect(EVENTS_HOME)
   return protected_view
 
 
@@ -52,7 +52,7 @@ def requester_only(view):
     if user.is_requester and user.requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
-      return redirect(NOT_AUTHORIZED)
+      return redirect(EVENTS_HOME)
   return protected_view
 
 
@@ -109,7 +109,7 @@ def event_new(request):
     msg = "Scheduled %s for %s!" %\
         (event.name, event.date.strftime("%b %d, %Y"))
     messages.success(request, msg)
-    return redirect('app.views.events')
+    return redirect(EVENTS_HOME)
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
                               context_instance=RequestContext(request))
@@ -148,8 +148,9 @@ def event_edit(request, event_id):
     event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
+    event.notify_funders()
     messages.success(request, 'Saved %s!' % event.name)
-    return redirect('app.views.events')
+    return redirect(EVENTS_HOME)
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
                               {'event': event},
@@ -200,9 +201,9 @@ def event_show(request, event_id):
         comment = Comment(comment=request.POST['new-comment'],
                           funder=user.get_profile(), event=event)
         comment.save()
-      return redirect('app.views.events')
+      return redirect(EVENTS_HOME)
     else:
-      return redirect('app.views.events')
+      return redirect(EVENTS_HOME)
   elif request.method == 'GET':
     return render_to_response('app/application-show.html', {'event': event},
                               context_instance=RequestContext(request))
