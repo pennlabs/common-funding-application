@@ -97,6 +97,6 @@ def application(context, user, event):
     if not user or not user.is_authenticated() or user.is_staff or is_funder or event.locked:
       new_context['extra_attrs'] = 'readonly'
   except:
-    next_context['extra_attrs'] = 'readonly'
+    new_context['extra_attrs'] = 'readonly'
 
   return render_to_string('app/templatetags/application.html', new_context)
