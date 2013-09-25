@@ -92,8 +92,8 @@ def application(context, user, event):
       for question in
         FollowupQuestion.objects.filter(funder__event_applied_funders=event)]
 
-  is_funder = user.get_profile().is_funder
-  if not user.is_authenticated() or user.is_staff or is_funder or event.locked:
+  is_funder = user and user.get_profile().is_funder
+  if not user or not user.is_authenticated() or user.is_staff or is_funder or event.locked:
     new_context['extra_attrs'] = 'readonly'
 
   return render_to_string('app/templatetags/application.html', new_context)
