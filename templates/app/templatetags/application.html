@@ -1,6 +1,6 @@
 {% load widgets %}
 
-{% if event.over %}
+{% if event.followup_needed or event.over %}
 <section id="followup" class="short-answer">
   <div class="section-header">
     <a class='section-toggle'></a>
@@ -14,7 +14,7 @@
   <div class="section-content">
     <fieldset>
     {% for qa in followup_qas %}
-    <label for="followupquestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>
+    <label for="followupquestion_{{qa.question.id}}">{{ qa.question.question }}</label>
     <textarea type="text"
       id="followupquestion_{{qa.question.id}}"
       name="followupquestion_{{qa.question.id}}"
@@ -22,7 +22,7 @@
       {{extra_attrs}}>{{qa.answer.answer}}</textarea>
     {% endfor %}
     {% for qa in commonfollowup_qas %}
-    <label for="commonfollowupquestion_{{qa.question.id}}" class="control-label">{{ qa.question.question }}</label>
+    <label for="commonfollowupquestion_{{qa.question.id}}">{{ qa.question.question }}</label>
     <textarea type="text"
       id="commonfollowupquestion_{{qa.question.id}}"
       name="commonfollowupquestion_{{qa.question.id}}"
@@ -198,8 +198,8 @@
   <div class="section-content">
     <fieldset>
       {% if not user.is_staff and user.get_profile.is_requester %}
-      {% itemlist_requester 1 event.item_set.all event.funded%}
-      {% itemlist_requester 0 event.item_set.all event.funded%}
+      {% itemlist_requester 1 event.item_set.all event.funded %}
+      {% itemlist_requester 0 event.item_set.all event.funded %}
       <table class="items-total">
         <tr>
           <td>Sum Total</td>

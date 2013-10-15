@@ -13,7 +13,7 @@ PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 ACCOUNT_ACTIVATION_DAYS = 7
 
 # Email address to use for automated registration emails
-DEFAULT_FROM_EMAIL = "no-reply@pennapps.com"
+DEFAULT_FROM_EMAIL = "cfa-bot@pennapps.com"
 
 LOGIN_URL = os.path.join(URL_ROOT, "accounts/login/")
 LOGOUT_URL = os.path.join(URL_ROOT, "accounts/logout/")
@@ -23,7 +23,7 @@ AUTH_PROFILE_MODULE = "app.CFAUser"
 
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('PennApps Labs', 'pennappslabs+cfaprod@googlegroups.com'),
 )
 
 MANAGERS = ADMINS

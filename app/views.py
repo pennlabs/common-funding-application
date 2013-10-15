@@ -12,7 +12,7 @@ from django.template import RequestContext
 from app.models import Event, Grant, Comment
 
 
-NOT_AUTHORIZED = 'app.views.events'
+EVENTS_HOME = 'app.views.events'
 
 
 def authorization_required(view):
@@ -27,16 +27,20 @@ def authorization_required(view):
     try:
       key = request.GET['key']
     except KeyError:
-      user = request.user.get_profile()
-      if request.user.is_staff or user.is_funder or user.requested(event):
-        return view(request, event_id, *args, **kwargs)
+      try:
+        user = request.user.get_profile()
+      except:
+        return redirect(EVENTS_HOME)
       else:
-        return redirect(NOT_AUTHORIZED)
+        if request.user.is_staff or user.is_funder or user.requested(event):
+          return view(request, event_id, *args, **kwargs)
+        else:
+          return redirect(EVENTS_HOME)
     else:
       if key == event.secret_key:
         return view(request, event_id, *args, **kwargs)
       else:
-        return redirect(NOT_AUTHORIZED)
+        return redirect(EVENTS_HOME)
   return protected_view
 
 
@@ -48,7 +52,7 @@ def requester_only(view):
     if user.is_requester and user.requested(event):
       return view(request, event_id, *args, **kwargs)
     else:
-      return redirect(NOT_AUTHORIZED)
+      return redirect(EVENTS_HOME)
   return protected_view
 
 
@@ -77,26 +81,35 @@ def events(request):
 def event_new(request):
   """Form to create a new event."""
   if request.method == 'POST':
+    if "submit-event" in request.POST:
+      status = 'B'  # B for SUBMITTED
+    else:
+      status = 'S'  # S for SAVED
+
+    date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
+
     event = Event.objects.create(
-                            name=request.POST['name'],
-                            date=datetime.strptime(request.POST['date'],'%m/%d/%Y'),
-                            requester=request.user.get_profile(),
-                            location=request.POST['location'],
-                            organizations=request.POST['organizations'],
-                            contact_email=request.POST['contactemail'],
-                            time=request.POST['time'],
-                            contact_phone=request.POST['contactphone'],
-                            anticipated_attendance=request.POST['anticipatedattendance'],
-                            admission_fee=request.POST['admissionfee'],
-                            advisor_email=request.POST['advisoremail'],
-                            advisor_phone=request.POST['advisorphone'],
-                            funding_already_received=request.POST['fundingalreadyreceived'],
-                          )
+      name=request.POST['name'],
+      status=status,
+      date=date,
+      requester=request.user.get_profile(),
+      location=request.POST['location'],
+      organizations=request.POST['organizations'],
+      contact_email=request.POST['contactemail'],
+      time=request.POST['time'],
+      contact_phone=request.POST['contactphone'],
+      anticipated_attendance=request.POST['anticipatedattendance'],
+      admission_fee=request.POST['admissionfee'],
+      advisor_email=request.POST['advisoremail'],
+      advisor_phone=request.POST['advisorphone'],
+      funding_already_received=request.POST['fundingalreadyreceived'],
+    )
     event.save_from_form(request.POST)
-    event.notify_funders()
-    messages.success(request,
-       'Scheduled %s for %s!' % (event.name, event.date.strftime("%b %d, %Y")))
-    return redirect('app.views.events')
+    event.notify_funders(new=True)
+    msg = "Scheduled %s for %s!" %\
+        (event.name, event.date.strftime("%b %d, %Y"))
+    messages.success(request, msg)
+    return redirect(EVENTS_HOME)
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
                               context_instance=RequestContext(request))
@@ -110,11 +123,19 @@ def event_new(request):
 @requester_only
 def event_edit(request, event_id):
   event = Event.objects.get(pk=event_id)
-  if event.funded:
+  if event.locked:
     return redirect('app.views.event_show', event_id)
   if request.method == 'POST':
+    if event.followup_needed:
+      status = 'O'  # O for OVER
+    elif "submit-event" in request.POST:
+      status = 'B'  # B for SUBMITTED
+    else:
+      status = 'S'  # S for SAVED
+
     event.name = request.POST['name']
-    event.date = datetime.strptime(request.POST['date'],'%m/%d/%Y')
+    event.status = status
+    event.date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
     event.organizations = request.POST['organizations']
     event.location = request.POST['location']
     event.time = request.POST['time']
@@ -127,12 +148,13 @@ def event_edit(request, event_id):
     event.funding_already_received = request.POST['fundingalreadyreceived']
     event.save()
     event.save_from_form(request.POST)
+    event.notify_funders(new=False)
     messages.success(request, 'Saved %s!' % event.name)
-    return redirect('app.views.events')
+    return redirect(EVENTS_HOME)
   elif request.method == 'GET':
     return render_to_response('app/application-requester.html',
-        {'event': event},
-        context_instance=RequestContext(request))
+                              {'event': event},
+                              context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['GET'])
 
@@ -151,10 +173,10 @@ def event_show(request, event_id):
         if amount:
           amount = Decimal(amount)
           grant, _ = Grant.objects.get_or_create(funder=user.get_profile(),
-                                              item=item,
-                                              defaults={'amount': 0})
+                                                 item=item,
+                                                 defaults={'amount': 0})
           amount_funded = sum(grant.amount for grant in
-                  Grant.objects.filter(item=item))
+                              Grant.objects.filter(item=item))
           amount_funded += item.funding_already_received
           # if the funder gave too much, adjust the price to be only enough
           if amount + amount_funded - grant.amount > item.total:
@@ -167,6 +189,8 @@ def event_show(request, event_id):
       if grants:
         messages.success(request, "Saved grant!")
         # email the event requester indicating that they've been funded
+        event.status = 'F'  # F for FUNDED
+        event.save()
         event.notify_requester(grants)
         # try to notify osa, but osa is not guaranteed to exist
         try:
@@ -175,15 +199,14 @@ def event_show(request, event_id):
           pass
       if request.POST.get('new-comment', None):
         comment = Comment(comment=request.POST['new-comment'],
-          funder=user.get_profile(), event=event)
+                          funder=user.get_profile(), event=event)
         comment.save()
-      return redirect('app.views.events')
+      return redirect(EVENTS_HOME)
     else:
-      return redirect('app.views.events')
+      return redirect(EVENTS_HOME)
   elif request.method == 'GET':
-    return render_to_response('app/application-show.html',
-        {'event': event},
-        context_instance=RequestContext(request))
+    return render_to_response('app/application-show.html', {'event': event},
+                              context_instance=RequestContext(request))
   else:
     return HttpResponseNotAllowed(['POST'])
 

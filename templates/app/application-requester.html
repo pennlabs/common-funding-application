@@ -12,6 +12,7 @@
 <script src="{{ STATIC_URL }}js/recs.js"></script>
 <script src="{{ STATIC_URL }}js/form.js"></script>
 <script src="{{ STATIC_URL }}js/itemlist.js"></script>
+<script src="{{ STATIC_URL }}js/requester.js"></script>
 {% endblock %}
 
 {% block container %}      
@@ -27,9 +28,9 @@
     {% application user event %}
 
     <div class="form-actions">
-      <button class="btn btn" type="submit" name="submit">Cancel</button>
-      <button class="btn btn" type="submit" name="submit">Save</button>
-      <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+      <a class="btn" href="{% url app.views.events %}">Cancel</a>
+      <!--<button class="btn" type="submit" name="save-event">Save</button>-->
+      <button class="btn btn-primary" type="submit" name="submit-event">Submit</button>
     </div>
   </form>
 </div>      
