@@ -38,7 +38,7 @@
   <div class="section-header">
     <a class='section-toggle'></a>
     <h2>
-      Event
+      Event 
       <small>details about the event</small>
     </h2>
   </div>    
@@ -47,7 +47,7 @@
       <div class="control-group">
         <label for="questionname" class="control-label">Event Name</label>
         <div class="controls">
-          <input value="{{ event.name }}" type="text" name="name" id="questionname" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.name }}{{info.name}}" type="text" name="name" id="questionname" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Name of the event</p>
         </div>
       </div>
@@ -69,56 +69,56 @@
       <div class="control-group">
         <label for="questionlocation" class="control-label">Location</label>
         <div class="controls">
-          <input value="{{ event.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.location }}{{ info.location }}" name="location" type="text" id="questionlocation" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Location of the event</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questioncontactemail" class="control-label">Contact Email</label>
         <div class="controls">
-          <input value="{{ event.contact_email }}" type="email" name="contactemail" id="questioncontactemail" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.contact_email }}{{ info.contactemail }}" type="email" name="contactemail" id="questioncontactemail" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Primary contact's email address</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questioncontactphone" class="control-label">Contact Phone</label>
         <div class="controls">
-          <input value="{{ event.contact_phone }}" type="text" name="contactphone" id="questioncontactphone" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.contact_phone }}{{ info.contactphone }}" type="text" name="contactphone" id="questioncontactphone" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Primary contact's phone number</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questionanticipatedattendance" class="control-label">Anticipated Attendance</label>
         <div class="controls">
-          <input value="{{ event.anticipated_attendance }}" type="number" min="0" name="anticipatedattendance" id="questionanticipatedattendance" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.anticipated_attendance }}{{ info.anticipatedattendance }}" type="number" min="0" name="anticipatedattendance" id="questionanticipatedattendance" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Anticipated number of people attending the event</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questionadmissionfee" class="control-label">Admission Fee</label>
         <div class="controls">
-          <input value="{{ event.admission_fee }}" type="number" min="0" name="admissionfee" id="questionadmissionfee" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.admission_fee }}{{ info.admissionfee }}" type="number" min="0" name="admissionfee" id="questionadmissionfee" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Amount you plan charge as admission</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questionadvisoremail" class="control-label">Advisor Email</label>
         <div class="controls">
-          <input value="{{ event.advisor_email }}" type="email" name="advisoremail" id="questionadvisoremail" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.advisor_email }}{{ info.advisoremail }}" type="email" name="advisoremail" id="questionadvisoremail" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Advisor's email address</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questionadvisorphone" class="control-label">Advisor Phone</label>
         <div class="controls">
-          <input value="{{ event.advisor_phone }}" type="text" name="advisorphone" id="questionadvisorphone" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.advisor_phone }}{{ info.advisorphone }}" type="text" name="advisorphone" id="questionadvisorphone" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Advisor's phone number</p>
         </div>
       </div>
       <div class="control-group">
         <label for="questionorganizations" class="control-label">Organization(s)</label>
         <div class="controls">
-          <input value="{{ event.organizations }}" type="text" name="organizations" id="questionorganizations" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.organizations }}{{ info.organizations }}" type="text" name="organizations" id="questionorganizations" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           <p class="help-block">Organization(s) involved with the event</p>
         </div>
       </div>
@@ -127,7 +127,7 @@
         <div class="controls">
           <div class="input-prepend">
               <span class="add-on">$</span>
-              <input value="{{ event.funding_already_received }}" type="number" min="0" name='fundingalreadyreceived' id="fundingalreadyreceived" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+              <input value="{{ event.funding_already_received }}{{ info.fundingalreadyreceived }}" type="number" min="0" name='fundingalreadyreceived' id="fundingalreadyreceived" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
           </div>
           <p class="help-block">Amount of funding already received that has not been allocated for any particular item</p>
         </div>
@@ -159,7 +159,12 @@
               class="bool-q"
               data-qid="{{qa.question.id}}"
               {{extra_attrs}} {{event_over_disable}}
-              {% if qa.answer.answer %}checked{% endif %}>
+              {% with qa.question.id|slugify as temp %}
+                {% with "eligibilityquestion_"|add:temp as quest %}
+                
+                  {% if qa.answer.answer or info|get_item:quest %}checked{% endif %}>
+                {% endwith %}
+              {% endwith %}
           {{ qa.question.question }}</label>
         </div>
       </div>
@@ -181,7 +186,7 @@
         id="commonfreeresponsequestion_{{qa.question.id}}"
         name="commonfreeresponsequestion_{{qa.question.id}}"
         class="span6 commonfreeresponsequestion input-xlarge"
-        {{extra_attrs}} {{event_over_disable}}>{{qa.answer.answer}}</textarea>        
+        {{extra_attrs}} {{event_over_disable}}>{{qa.answer.answer}}{% with qa.question.id|slugify as temp %}{% with "commonfreeresponsequestion_"|add:temp as quest %}{{ info|get_item:quest|trim }}{% endwith %}{% endwith %}</textarea>        
       {% endfor %}
     </fieldset>
   </div>
@@ -243,7 +248,12 @@
           data-funderid="{{funder.id}}"
           name="funder_{{ funder.id }}"
           class="funder-checkbox"
-          {% if funder in event.applied_funders.all %}checked{% endif %}
+          
+              {% with funder.id|slugify as temp %}
+                {% with "funder_"|add:temp as quest %}
+                  {% if funder in event.applied_funders.all or info|get_item:quest%}checked{% endif %}
+                {% endwith %}
+              {% endwith %}
           type="checkbox" {{extra_attrs}} {{event_over_disable}}>
           {{funder}}
       </label>
@@ -281,7 +291,8 @@
       <textarea type="text"
         name="freeresponsequestion_{{qa.question.id}}"
         class="span6 input-xlarge"
-        {{extra_attrs}} {{event_over_disable}}>{{qa.answer.answer}}</textarea>
+        {{extra_attrs}} {{event_over_disable}}>{{qa.answer.answer}}{% with qa.question.id|slugify as temp %}{% with "freeresponsequestion_"|add:temp as quest %}{{ info|get_item:quest|trim }}{% endwith %}{% endwith %}</textarea>        
+      </textarea>
     </div>
     {% endfor %}
     </fieldset>

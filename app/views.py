@@ -86,6 +86,13 @@ def event_new(request):
     else:
       status = 'S'  # S for SAVED
 
+    # iterate over the post object and make sure all attributes are there
+    for field in Event._meta.fields:
+        if not request.POST.__contains__(field.name):
+            return render_to_response('app/application-requester.html',
+                                    {'info': request.POST},
+                                    context_instance=RequestContext(request))
+
     date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
 
     event = Event.objects.create(

@@ -13,6 +13,20 @@ register = template.Library()
 # question-answer pair
 QA = namedtuple('QA', 'question answer')
 
+@register.filter(name="get_item")
+def get_item(dictionary, key):
+  if dictionary:
+    return dictionary.get(key)
+  return ''
+
+@register.filter
+def append_string(a, b):
+  return a + b
+
+
+@register.filter
+def trim(value):
+        return value.strip()
 
 @tag(register, [Variable(), Variable(), Variable()])
 def itemlist_requester(context, is_revenue, items, funded):
@@ -51,13 +65,14 @@ def itemlist_funder(context, is_revenue, items, applied_funders, funder_id):
   return render_to_string('app/templatetags/itemlist-funder.html', new_context)
 
 
-@tag(register, [Variable(), Optional([Variable()])])
-def application(context, user, event):
+@tag(register, [Variable(), Optional([Variable(), Variable()])])
+def application(context, user, event, info):
   event = event or None
 
   new_context = {
     'user': user,
     'event': event,
+    'info': info,
     'funder_qas': [QA(question, get_or_none(FreeResponseAnswer,
                                             question=question,
                                             event=event))
