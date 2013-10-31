@@ -37,6 +37,9 @@
 <section>
   <div class="section-header">
     <a class='section-toggle'></a>
+    {% if info %}
+    <div class="error"> Something went wrong. Please double check and ensure that you've filled out all form elements. </div>
+    {% endif%}
     <h2>
       Event 
       <small>details about the event</small>

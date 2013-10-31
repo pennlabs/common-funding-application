@@ -66,3 +66,36 @@ footer a:hover {
   margin-top: 30px;
   margin-bottom: 30px;
 }
+
+@keyframes flash-hide {
+  from {  opacity: 1; }
+  to {  opacity: 0;display:none; }
+}
+@-webkit-keyframes flash-hide {
+  from {  opacity: 1; }
+  to {  opacity: 0;display:none; }
+}
+
+@-moz-keyframes flash-hide {
+  from {  opacity: 1; }
+  to {  opacity: 0;display:none; }
+}
+ 
+@-o-keyframes flash-hide {
+  from {  opacity: 1; }
+  to {  opacity: 0;display:none; }
+}   
+
+.error {
+  animation: flash-hide 1s linear 2s;
+  -webkit-animation: flash-hide 1s linear 2s 1 forwards;
+  -moz-animation: flash-hide 1s linear 2s 1 forwards;
+  -o-animation: flash-hide 1s linear 2s 1 forwards;
+  background-color: #f2dede;
+  color: #b94a48;
+  width: 100%;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
