@@ -442,7 +442,7 @@ CATEGORIES = (
     ('F', 'Food/Drinks'),
     ('S', 'Facilities/Security'),
     ('T', 'Travel/Conference'),
-    ('P', 'Photocopgies/Printing/Publicity'),
+    ('P', 'Photocopies/Printing/Publicity'),
     ('O', 'Other'),
 )
 
