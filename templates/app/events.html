@@ -14,6 +14,7 @@
 <header>
 {% if not user.is_staff and user.get_profile.is_requester %}
 <div class="btns pull-right">
+   <a class="btn btn-primary" href="{% url app.views.events_old %}">Old Applications</a>
   <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
 </div>
 {% endif %}
