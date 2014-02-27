@@ -38,12 +38,15 @@
 <div id="main">
   <div class="row">
     <div class="span4">
-      <strong>Event</strong>
+      <strong><a href="{{ request.path }}?sort=event">Event</a></strong>
     </div>
     <div class="span2">
-      <strong>Event Date</strong>
+      <strong><a href="{{ request.path }}?sort=date">Event Date</a></strong>
     </div>
-    <div class="offset2 span1">
+    <div class="span1">
+      <strong><a href="{{ request.path }}?sort=org">Organization</a></strong>
+    </div>
+    <div class="offset1 span2">
       <strong>Status</strong>
     </div>
   </div>
@@ -56,7 +59,10 @@
       <div class="span2 date">
         <span>{{ app.date }}</span>
       </div>
-      <div class="offset2 span1 status">
+      <div class="span2 org">
+        <span>{{ app.organizations }}</span>
+      </div>
+      <div class="span2 status">
         {% if app.followup_needed %}
         <span class="label label-warning">FOLLOWUP</span>
         {% elif app.over %}
@@ -69,7 +75,7 @@
         <span class="label label-info">SAVED</span>
         {% endif %}
       </div>
-      <div class="span3 buttons">
+      <div class="span2 buttons">
         {% if user.is_staff or app.locked or user.get_profile.is_funder %}
         <a class="btn btn-info pull-right" href="{% url app.views.event_show app.id %}">
           <i class="icon-file icon-white"></i> View
