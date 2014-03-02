@@ -69,10 +69,13 @@ def events(request):
                       'org' : 'organizations'
                       }
         sort_by = query_dict[sorted_type] if sorted_type in query_dict else 'date'
+        print sort_by
         cfauser = user.get_profile()
-        apps = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
-        if cfauser.is_requester:
-            apps = apps.filter(requester=cfauser)
+        app = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
+        if user.is_staff:
+            apps = app
+        elif cfauser.is_requester:
+            apps = app.filter(requester=cfauser)
         else:  # cfauser.is_funder
             apps = cfauser.event_applied_funders.order_by(sort_by)
         return render_to_response('app/events.html',
