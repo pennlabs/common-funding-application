@@ -64,6 +64,7 @@ def events(request):
     if request.method == 'GET':
         user = request.user
         sorted_type = request.GET.get('sort').strip() if 'sort' in request.GET else 'date'
+        print sorted_type
         query_dict = {'event':'name',
                       'org' : 'organizations'
                       }
