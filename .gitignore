@@ -6,3 +6,4 @@ sandbox_config.py
 /static
 *.swp
 *~
+venv

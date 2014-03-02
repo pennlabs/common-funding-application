@@ -46,4 +46,4 @@ _Note_: instructions are from [our wiki](https://github.com/pennappslabs/wiki/wi
 
 ## Contributors
 
-* The development team at [PennApps Labs](http://labs.pennapps.com/team/)
+* The development team at [Penn Labs](http://pennlabs.org/#team)
