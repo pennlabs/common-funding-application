@@ -57,19 +57,23 @@ def requester_only(view):
     return protected_view
 
 
-# GET  / 
+# GET  /
 # upcoming events
 @login_required
 def events(request):
     if request.method == 'GET':
         user = request.user
+        sorted_type = request.GET.get('sort').strip() if 'sort' in request.GET else 'date'
+        query_dict = {'event':'name',
+                      'org' : 'organizations'
+                      }
+        sort_by = query_dict[sorted_type] if sorted_type in query_dict else 'date'
         cfauser = user.get_profile()
-        if user.is_staff:
-            apps = Event.objects.filter(date__gt= datetime.today().date()).order_by('date')
-        elif cfauser.is_requester:
-            apps = Event.objects.filter(requester=cfauser).filter(date__gt= datetime.today().date()).order_by("date")
+        app = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
+        if cfauser.is_requester:
+            apps = Event.objects.filter(requester=cfauser)
         else:  # cfauser.is_funder
-            apps = cfauser.event_applied_funders.order_by('date')
+            apps = cfauser.event_applied_funders.order_by(sort_by)
         return render_to_response('app/events.html',
                                   {'apps': apps},
                                   context_instance=RequestContext(request))
