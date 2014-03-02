@@ -69,7 +69,6 @@ def events(request):
                       'org' : 'organizations'
                       }
         sort_by = query_dict[sorted_type] if sorted_type in query_dict else 'date'
-        print sort_by
         cfauser = user.get_profile()
         app = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
         if user.is_staff:
