@@ -63,16 +63,16 @@ def requester_only(view):
 def events(request):
     if request.method == 'GET':
         user = request.user
+        #if the request type has GET query type, set it as the parameter
         sorted_type = request.GET.get('sort').strip() if 'sort' in request.GET else 'date'
-        print sorted_type
         query_dict = {'event':'name',
                       'org' : 'organizations'
                       }
         sort_by = query_dict[sorted_type] if sorted_type in query_dict else 'date'
         cfauser = user.get_profile()
-        app = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
+        apps = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
         if cfauser.is_requester:
-            apps = Event.objects.filter(requester=cfauser)
+            apps = apps.filter(requester=cfauser)
         else:  # cfauser.is_funder
             apps = cfauser.event_applied_funders.order_by(sort_by)
         return render_to_response('app/events.html',
