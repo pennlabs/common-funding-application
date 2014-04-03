@@ -7,7 +7,7 @@ This and nothing else.  (In the ominous words of AMK.)
 @Date: 2012-Nov-12
 """
 
-# The domain URL (e.g., 'http://penncfa.com/', 'http://localhost:8000', or 'http://kyleh.pennapps.com/')
+# The domain URL (e.g., 'http://penncfa.com', 'http://localhost:8000', or 'http://kyleh.pennapps.com')
 DOMAIN_URL = 'http://localhost:8000'
 
 # The path CFA is serving off of (e.g., 'cfa' or '')
@@ -21,6 +21,7 @@ SITE_NAME = DOMAIN_URL + URL_ROOT
 TEST_EMAIL = ''
 
 DATABASE_ENGINE = 'sqlite3'  # You can use 'mysql', 'sqlite3', 'postgresql_psycopg2', 'postgresql', or 'oracle'
+DATABASE_HOST = ''           # Leave as empty string for localhost
 DATABASE_NAME = 'cfa'        # Or relative path to database file if using sqlite3
 DATABASE_USER = ''           # Not used with sqlite3
 DATABASE_PASSWORD = ''       # Not used with sqlite3
