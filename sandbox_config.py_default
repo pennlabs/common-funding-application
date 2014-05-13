@@ -25,3 +25,9 @@ DATABASE_HOST = ''           # Leave as empty string for localhost
 DATABASE_NAME = 'cfa'        # Or relative path to database file if using sqlite3
 DATABASE_USER = ''           # Not used with sqlite3
 DATABASE_PASSWORD = ''       # Not used with sqlite3
+
+# Email client info, for registration and notification emails
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
