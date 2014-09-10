@@ -68,7 +68,7 @@ def events(request):
         query_dict = {'event':'name',
                       'org' : 'organizations'
                       }
-        sort_by = query_dict[sorted_type] if sorted_type in query_dict else 'date'
+        sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
         cfauser = user.get_profile()
         app = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
         if user.is_staff:
@@ -91,11 +91,11 @@ def events_old(request):
         user = request.user
         cfauser = user.get_profile()
         if user.is_staff:
-            apps = Event.objects.filter(date__lt= datetime.today().date()).order_by('date')
+            apps = Event.objects.filter(date__lt= datetime.today().date()).order_by('-date')
         elif cfauser.is_requester:
-            apps = Event.objects.filter(requester=cfauser).filter(date__lt= datetime.today().date()).order_by("date")
+            apps = Event.objects.filter(requester=cfauser).filter(date__lt= datetime.today().date()).order_by('-date')
         else:  # cfauser.is_funder
-            apps = cfauser.event_applied_funders.order_by('date')
+            apps = cfauser.event_applied_funders.order_by('-date')
         return render_to_response('app/events_old.html',
                                   {'apps': apps},
                                   context_instance=RequestContext(request))
