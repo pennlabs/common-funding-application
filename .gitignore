@@ -7,3 +7,4 @@ sandbox_config.py
 *.swp
 *~
 venv
+cfa
