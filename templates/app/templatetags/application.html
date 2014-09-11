@@ -41,7 +41,7 @@
       Event
       <small>details about the event</small>
     </h2>
-  </div>    
+  </div>
   <div class="section-content">
     <div class="alert alert-info">
       <strong>Heads up!</strong>
@@ -180,12 +180,12 @@
   <div class="section-content">
     <fieldset>
       {% for qa in commonfreeresponse_qas %}
-      <label for="commonfreeresponsequestion_{{qa.question.id}}">{{ qa.question.question }}</label>        
+      <label for="commonfreeresponsequestion_{{qa.question.id}}">{{ qa.question.question }}</label>
       <textarea type="text"
         id="commonfreeresponsequestion_{{qa.question.id}}"
         name="commonfreeresponsequestion_{{qa.question.id}}"
         class="span6 commonfreeresponsequestion input-xlarge"
-        {{extra_attrs}} {{event_over_disable}}>{{qa.answer.answer}}</textarea>        
+        {{extra_attrs}} {{event_over_disable}}>{{qa.answer.answer}}</textarea>
       {% endfor %}
     </fieldset>
   </div>
@@ -203,7 +203,7 @@
     <fieldset>
       {% if not user.is_staff and user.get_profile.is_requester %}
       {% itemlist_requester 0 event.item_set.all event.funded %}
-{% itemlist_requester 1 event.item_set.all event.funded %}
+      {% itemlist_requester 1 event.item_set.all event.funded %}
       <table class="items-total">
         <tr>
           <td>Sum Total</td>
