@@ -19,7 +19,7 @@ fieldset {
   margin-bottom: 0px;
 }
 
-.form-horizontal .form-actions {  
+.form-horizontal .form-actions {
   padding-left: 20px;
 }
 
@@ -116,7 +116,7 @@ table.items-total tr:last-child {
 #register-form input {
   width: 97%;
 }
-.email-error {
+#register-form .email-error {
   color: #b94a48;
   border-color: #b94a48;
 }
