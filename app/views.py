@@ -127,7 +127,6 @@ def event_new(request):
             time=request.POST['time'],
             contact_phone=request.POST['contactphone'],
             anticipated_attendance=request.POST['anticipatedattendance'],
-            admission_fee=request.POST['admissionfee'],
             advisor_email=request.POST['advisoremail'],
             advisor_phone=request.POST['advisorphone'],
             funding_already_received=request.POST['fundingalreadyreceived'],
@@ -170,7 +169,6 @@ def event_edit(request, event_id):
         event.contact_email = request.POST['contactemail']
         event.contact_phone = request.POST['contactphone']
         event.anticipated_attendance = request.POST['anticipatedattendance']
-        event.admission_fee = request.POST['admissionfee']
         event.advisor_email = request.POST['advisoremail']
         event.advisor_phone = request.POST['advisorphone']
         event.funding_already_received = request.POST['fundingalreadyreceived']
