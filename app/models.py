@@ -108,7 +108,6 @@ class Event(models.Model):
     contact_email = models.EmailField()
     contact_phone = models.CharField(max_length=15)
     anticipated_attendance = models.IntegerField()
-    admission_fee = models.DecimalField(max_digits=6, decimal_places=2)
     advisor_email = models.EmailField(blank=True)
     advisor_phone = models.CharField(max_length=15, blank=True)
     organizations = models.CharField(max_length=256)
