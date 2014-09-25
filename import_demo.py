@@ -232,14 +232,12 @@ def import_questions():
         CommonFreeResponseQuestion.objects.create(question=common_q)
     for common_followup_q in COMMON_FOLLOWUP_QS:
         CommonFollowupQuestion.objects.create(question=common_followup_q)
-        
+
 
 def import_sites():
-  site = Site.objects.get_current()
-  site.domain = SITE_NAME + URL_ROOT
-  site.name = "The Common Funding App"
-  site.save()
-
+    Site.objects.create(
+        domain='http://localhost:8000//',
+        name='The Common Funding App')
 
 def import_all():
     import_users()
