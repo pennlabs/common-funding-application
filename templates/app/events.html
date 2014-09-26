@@ -16,6 +16,11 @@
 <div class="btns pull-right">
    <a class="btn btn-primary" href="{% url app.views.events_old %}">Old Applications</a>
   <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
+
+</div>
+{% elif user.get_profile.is_funder %}
+<div class="btns pull-right">
+  <a class="btn btn-primary" href="{% url app.views.funder_edit user.id %}">Edit Info</a>
 </div>
 {% endif %}
 <div>

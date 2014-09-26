@@ -1,0 +1,49 @@
+{% extends "base-page.html" %}
+
+{% load widgets %}
+
+{% block htmllink-styles %}
+<link rel="stylesheet" href="{{STATIC_URL}}css/form.css">
+{% endblock %}
+
+{% block htmllink-js %}
+<script src="{{ STATIC_URL }}js/requester.js"></script>
+{% endblock %}
+
+{% block container %}
+<div id="main">
+  <section>
+    <div class="section-header">
+      <a class='section-toggle'></a>
+      <h2>
+        Funder
+        <small>Concise description of organization</small>
+      </h2>
+    </div>
+    <div class="section-content">
+      <form action="{% url app.views.funder_edit user.id %}" method="post" class="form-horizontal">
+        {% csrf_token %}
+
+        <div class="control-group">
+          <label for="fundername" class="control-label">Funder Name</label>
+          <div class="controls">
+            <input value="{{ user.get_profile.funder_name }}" type="text" name="fundername" id="fundername" class="input-xlarge">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="missionstatement" class="control-label">Mission Statement</label>
+          <div class="controls">
+            <textarea type="text" name="missionstatement" class="span7 input-xlarge" rows="5">{{user.get_profile.mission_statement}}</textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <a class="btn" href="{% url app.views.events %}">Cancel</a>
+          <button class="btn btn-primary" type="submit" name="submit-funder">Submit</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}
