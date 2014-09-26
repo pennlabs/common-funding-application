@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
-from app.models import Event, Grant, Comment
+from app.models import Event, Grant, Comment, User
 
 
 EVENTS_HOME = 'app.views.events'
@@ -248,3 +248,22 @@ def event_destroy(request, event_id):
     event.delete()
     return HttpResponse(json.dumps({'event_id': event_id}),
                         mimetype="application/json")
+
+# GET /funders/1/edit
+# POST /funders/1/edit
+@login_required
+def funder_edit(request, user_id):
+    user = User.objects.get(pk=user_id)
+    funder = user.get_profile()
+    if request.method == 'POST':
+        funder.funder_name = request.POST['fundername']
+        funder.mission_statement = request.POST['missionstatement']
+        funder.save()
+        messages.success(request, 'Saved Info.')
+        return redirect(EVENTS_HOME)
+    elif request.method == 'GET':
+        return render_to_response('app/funder_edit.html',
+                                  {'user': user },
+                                  context_instance=RequestContext(request))
+    else:
+        return HttpResponseNotAllowed(['GET'])

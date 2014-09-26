@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     url(r'^(\d+)/$',         event_show),
     url(r'^(\d+)/edit/$',    event_edit),
     url(r'^(\d+)/destroy/$', event_destroy),
+    url(r'^funders/(\d+)/edit/$', funder_edit),
 )
