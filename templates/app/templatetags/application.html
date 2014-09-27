@@ -18,7 +18,7 @@
     <textarea type="text"
       id="followupquestion_{{qa.question.id}}"
       name="followupquestion_{{qa.question.id}}"
-      class="span6 followupquestion input-xlarge"
+      class="span8 followupquestion input-xlarge"
       {{extra_attrs}}>{{qa.answer.answer}}</textarea>
     {% endfor %}
     {% for qa in commonfollowup_qas %}
@@ -26,7 +26,7 @@
     <textarea type="text"
       id="commonfollowupquestion_{{qa.question.id}}"
       name="commonfollowupquestion_{{qa.question.id}}"
-      class="span6 commonfollowupquestion input-xlarge"
+      class="span8 commonfollowupquestion input-xlarge"
       {{extra_attrs}}>{{qa.answer.answer}}</textarea>
     {% endfor %}
     </fieldset>
@@ -177,7 +177,7 @@
       <textarea type="text"
         id="commonfreeresponsequestion_{{qa.question.id}}"
         name="commonfreeresponsequestion_{{qa.question.id}}"
-        class="span6 commonfreeresponsequestion input-xlarge"
+        class="span8 commonfreeresponsequestion input-xlarge"
         {{extra_attrs}} {{event_over_disable}}>{{qa.answer.answer}}</textarea>
       {% endfor %}
     </fieldset>
@@ -277,7 +277,7 @@
       <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
       <textarea type="text"
         name="freeresponsequestion_{{qa.question.id}}"
-        class="span6 input-xlarge"
+        class="span8 input-xlarge"
         {{extra_attrs}} {{event_over_disable}}>{{qa.answer.answer}}</textarea>
     </div>
     {% endfor %}
@@ -308,7 +308,7 @@
     {% endfor %}
     {% if user.get_profile.is_funder %}
     <p>Specify any conditions and stipulations here.</p>
-    <textarea name="new-comment" class="span6 input-xlarge"></textarea>
+    <textarea name="new-comment" class="span8 input-xlarge"></textarea>
     {% endif %}
   </div>
 </section>

@@ -120,3 +120,6 @@ $ ->
   $(".section-toggle").click -> toggleSection(this)
 
   $('#no-fund').click -> $('.funding-given').val 0
+
+  # dynamic textarea elements heights to fit content.
+  $("textarea").autosize()
