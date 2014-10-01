@@ -43,29 +43,29 @@
           <p>
           Free Response Questions
           </p>
-        <table class="table">
-          <tbody>
-            {% for question in funder_questions %}
-            <tr>
-              <td>
-                <textarea type="text" name="freeresponsequestion" class="span7">{{question.question}}</textarea>
-              </td>
-              <td>
-                <button class="btn btn-danger remove-freeresponsequestion">Remove</button>
-              </td>
-            </tr>
-            {% endfor %}
-            <tr>
-              <td>
-                <textarea type="text" name="freeresponsequestion" class="span7" rows="1">{{question.question}}</textarea>
-              </td>
-              <td>
-                <button class="btn add-freeresponsequestion">Add</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-</div>
+          <table class="table">
+            <tbody>
+              {% for question in funder_questions %}
+              <tr>
+                <td>
+                  <textarea type="text" name="freeresponsequestion" class="span7">{{question.question}}</textarea>
+                </td>
+                <td>
+                  <button class="btn btn-danger remove-freeresponsequestion">Remove</button>
+                </td>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td>
+                  <textarea type="text" name="freeresponsequestion" class="span7" rows="1">{{question.question}}</textarea>
+                </td>
+                <td>
+                  <button class="btn add-freeresponsequestion">Add</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
         <div class="form-actions">
           <a class="btn" href="{% url app.views.events %}">Cancel</a>
