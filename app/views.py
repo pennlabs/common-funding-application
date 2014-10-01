@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 
-from app.models import Event, Grant, Comment, User
+from app.models import Event, Grant, Comment, User, FreeResponseQuestion
 
 
 EVENTS_HOME = 'app.views.events'
@@ -256,14 +256,25 @@ def funder_edit(request, user_id):
     user = User.objects.get(pk=user_id)
     funder = user.get_profile()
     if request.method == 'POST':
+        # edit funder basic info.
         funder.funder_name = request.POST['fundername']
         funder.mission_statement = request.POST['missionstatement']
         funder.save()
+
+        # recreate associated free response questions.
+        funder.freeresponsequestion_set.all().delete()
+        for question in request.POST.getlist('freeresponsequestion'):
+            if question:
+                funder.freeresponsequestion_set.create(funder=funder,
+                                                       question=question)
+
         messages.success(request, 'Saved Info.')
         return redirect(EVENTS_HOME)
     elif request.method == 'GET':
+        funder_questions = FreeResponseQuestion.objects.filter(funder_id=funder.id)
         return render_to_response('app/funder_edit.html',
-                                  {'user': user },
+                                  {'user': user,
+                                   'funder_questions': funder_questions},
                                   context_instance=RequestContext(request))
     else:
         return HttpResponseNotAllowed(['GET'])
