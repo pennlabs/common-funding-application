@@ -1,9 +1,10 @@
 addQuestion = (e) ->
   e.preventDefault()
-  $row = $(event.target).closest('tr')
-  $clone = $row.clone().insertAfter $row
-  $row.find('.add-freeresponsequestion').replaceWith(
-        $('.remove-freeresponsequestion').first().clone())
+  row = $(event.target).closest('tr')
+  clone = row.clone().insertAfter row
+  $(event.target)
+    .attr("class", "btn btn-danger remove-freeresponsequestion")
+    .html("Remove")
 
 removeQuestion= (e) ->
   e.preventDefault()
