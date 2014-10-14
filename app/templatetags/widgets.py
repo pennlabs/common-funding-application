@@ -96,7 +96,16 @@ def application(context, user, event):
     is_funder = user.get_profile().is_funder
     if not user or not user.is_authenticated() or user.is_staff or is_funder or event.locked:
       new_context['extra_attrs'] = 'readonly'
+      new_context['readonly'] = True
   except:
     new_context['extra_attrs'] = 'readonly'
+    new_context['readonly'] = True
 
   return render_to_string('app/templatetags/application.html', new_context)
+
+@tag(register, [])
+def event_details(context):
+  if 'readonly' in context:
+    return render_to_string('app/templatetags/event-details-show.html', context)
+  else:
+    return render_to_string('app/templatetags/event-details-form.html', context)
