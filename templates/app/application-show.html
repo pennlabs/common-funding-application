@@ -9,6 +9,7 @@
 {% block htmllink-js %}
 <script src="{{ STATIC_URL }}js/lib/jquery.timepicker.min.js"></script>
 <script src="{{ STATIC_URL }}js/lib/jquery.autosize.min.js"></script>
+<script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script>
 <script src="{{ STATIC_URL }}js/recs.js"></script>
 <script src="{{ STATIC_URL }}js/form.js"></script>
 <script src="{{ STATIC_URL }}js/itemlist.js"></script>
@@ -23,18 +24,34 @@
     {% application user event %}
 
     {% if user and user.get_profile.is_funder %}
-		<p>To submit your funding changes and any comments, click "Save." To create
-			a read-only copy of this application to share with your organization,
-			click "Share."</p>
+    <p>To submit your funding changes and any comments, click "Save." <br>
+      To share a read-only copy of this application, click "Share."</p>
     <div class="form-actions">
       <button class="btn btn" type="submit" name="submit">Cancel</button>
       <button class="btn btn-primary" type="submit" name="submit">Save</button>
-      <a class="btn btn-info" href="{{event.get_absolute_url}}?key={{event.secret_key}}">Share</a>
+      <a class="btn btn-info" href="#share" data-toggle="modal">Share</a>
       <button id="no-fund" class="btn btn-danger" type="submit" name="submit" hidden="">Do Not Fund</button>
     </div>
     {% else %}
     <a class="btn btn-primary" href="{% url app.views.events %}">Done</a>
     {% endif %}
   </form>
+</div>
+
+<div id="share" class="modal hide fade" tabindex="-1" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3>Share this link</h3>
+  </div>
+  <div class="modal-body">
+    <p>
+      Anyone with this link will be able to access a read-only version of this
+      application. <br><br>
+      <b><a href="{{event.get_absolute_url}}?key={{event.secret_key}}">penncfa.com{{event.get_absolute_url}}?key={{event.secret_key}}</a></b>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+  </div>
 </div>
 {% endblock %}
