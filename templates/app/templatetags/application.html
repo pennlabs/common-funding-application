@@ -180,7 +180,7 @@
       {% endif %}
     </p>
     {% for qa in funder_qas %}
-      {% if not readonly or qa.question.funder == user.get_profile %}
+      {% if not readonly or qa.question.funder == user.get_profile or qa.question.funder == event.shared_funder %}
       <div class="extra-answer funder-q-{{ qa.question.funder.id }}">
         <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
         <textarea type="text"

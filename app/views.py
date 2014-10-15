@@ -233,6 +233,9 @@ def event_show(request, event_id):
         else:
             return redirect(EVENTS_HOME)
     elif request.method == 'GET':
+        if 'id' in request.GET:
+            event.shared_funder = \
+                User.objects.get(id=request.GET['id']).get_profile()
         return render_to_response('app/application-show.html',
                                   {'event': event},
                                   context_instance=RequestContext(request))
