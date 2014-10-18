@@ -79,6 +79,11 @@ class CFAUser(models.Model):
                              DEFAULT_FROM_EMAIL, recipients, headers)
         email.send()
 
+    def required_eligibility_question_ids(self):
+        question_ids =\
+            self.funderconstraint_set.values_list("question_id", flat=True)
+        return ','.join(str(id) for id in question_ids)
+
     class Meta:
         verbose_name = 'CFA Users'
         verbose_name_plural = 'CFA Users'
@@ -379,6 +384,13 @@ class EligibilityQuestion(Question):
     def recs(self, answer):
         return self.funderconstraint_set.filter(
             answer=answer).values_list("funder_id", flat=True)
+
+    def required_funders(self):
+        return map(lambda fc: fc.funder, self.funderconstraint_set.all())
+
+    def required_funder_ids(self):
+        funder_ids = self.funderconstraint_set.values_list("funder_id", flat=True)
+        return ','.join(str(id) for id in funder_ids)
 
     @property
     def recs_yes(self):

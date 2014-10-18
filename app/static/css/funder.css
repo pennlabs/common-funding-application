@@ -1,4 +1,7 @@
-#free-response-questions {
+.funder-edit-subtable {
     margin-left: 40px;
     width: 700px;
+}
+.funder-edit-subtable button {
+    width: 110px;
 }
