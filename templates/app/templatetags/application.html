@@ -36,12 +36,12 @@
 
 {% event_details %}
 
-<section id="true-false">
+<section id="eligibility">
   <div class="section-header">
     <a class='section-toggle'></a>
     <h2>
-      True / False Questions
-      <small>to recommend funders</small>
+      Eligibility Questions
+      <small>select if applicable</small>
     </h2>
   </div>
   <div class="section-content">
@@ -49,14 +49,15 @@
       {% for qa in eligibility_qas %}
         {% if not readonly or qa.answer.answer %}
         <div class="control-group">
-          <label class="control-label">Question {{forloop.counter}}</label>
+          <label id="eligibilitylabel_{{qa.question.id}}"
+                 class="control-label">
+            Question {{forloop.counter}}</label>
           <div class="controls">
             <label>
               <input type="checkbox"
                      id="eligibilityquestion_{{qa.question.id}}"
                      name="eligibilityquestion_{{qa.question.id}}"
-                     data-recsyes="{{ qa.question.recs_yes }}"
-                     data-recsno="{{ qa.question.recs_no }}"
+                     data-required-funder-ids="{{qa.question.required_funder_ids}}"
                      class="bool-q"
                      data-qid="{{qa.question.id}}"
                      {{extra_attrs}} {{event_over_disable}}
@@ -143,7 +144,9 @@
       <div class="funder-check">
         <label class="checkbox">
           <input
+            id="funder-checkbox-{{funder.id}}"
             data-funderid="{{funder.id}}"
+            data-required-question-ids="{{funder.required_eligibility_question_ids}}"
             name="funder_{{ funder.id }}"
             class="funder-checkbox"
             {% if funder in event.applied_funders.all %}checked{% endif %}

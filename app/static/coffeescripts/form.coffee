@@ -7,24 +7,13 @@ Selected = []
 
 ###
 #
-# Expectations is a hash of question ids with values of
-# an object* that contains which funders want a check
-# and which do not. This object* will be referred to as
-# funder_relations
+# Expectations is a hash of eligibility question ids with values of
+# an array of funders that require that question.
 #
-# true if funder wants a check on this question
-# false if funder does NOT want a check on this question
-# otherwise funder is not included in object
 # Example:
 # {
-#   question_id1: {
-#     funder_id1: true,
-#     funder_id2: false,
-#     funder_id3: false
-#   },
-#   question_id2: {
-#     funder_id1: true
-#   }
+#   question_id1: [ funder_id1, funder_id2, funder_id3],
+#   question_id2: [ funder_id2, funder_id4],
 #   .
 #   .
 # }
@@ -34,53 +23,88 @@ Expectations = {}
 
 ###
 #
-# Reality is a hash of question ids with values of
-# an object that contains which funder questions have
-# satisfied the expectations.
-# It is essentially the same object as Expectations but checks each
-# expected answer with the checkboxes on the physical DOM
+# EligibleFunders is an array of funders that are still eligible:
+# [ funder_id1, funder_id3, ... ]
 #
 ###
-Reality = {}
+EligibleFunders = []
 
-# initialize expected answers to questions
+# initialize expected answers to eligibility questions
 initExpectations = ->
   $(".bool-q").each (index, el) ->
     question_id = $(el).data("qid")
-    expectations = (type) -> $(el).data(type).toString().split(',')
-    [y, n] = [expectations("recsyes"), expectations("recsno")]
-    Expectations[question_id] = addExpectation(y, n)
+    funder_ids = parseDataIds($(el), "required-funder-ids")
+    if funder_ids.length
+      Expectations[question_id] = funder_ids
 
-# Show questions based on which funders are selected
+# update the eligible funders
+updateEligibileFunders = ->
+  EligibleFunders = allFunderIds()
+  $(".bool-q").each (index, el) ->
+    question_id = $(el).data("qid")
+    if !el.checked and question_id of Expectations
+      for required_funder_id in Expectations[question_id]
+        EligibleFunders = _.without(EligibleFunders, required_funder_id)
+
+# disable ineligible funders
+disableIneligibleFunders = ->
+  enableAllFunders()
+  ineligible_funders = _.difference(allFunderIds(), EligibleFunders)
+  for funder_id in ineligible_funders
+    funder = $("#funder-checkbox-#{funder_id}")
+    question_ids = _.difference(parseDataIds(funder, "required-question-ids"),
+                                allCheckedQuestionIds())
+    question_labels =
+      ("#eligibilitylabel_#{qid}" for qid in question_ids).join()
+    insert_text = _.map($(question_labels), (l) -> l.innerText).join(", ")
+    funder.addClass("ineligible").attr("checked", false)
+      .attr("readonly", true).data("toggle", "tooltip")
+      .attr("title", "#{insert_text} is required to be eligible")
+  $(".funder-checkbox").tooltip()
+
+# enable all funders
+enableAllFunders = ->
+  $(".funder-checkbox").removeClass("ineligible")
+    .removeAttr("readonly").removeAttr("toggle").removeAttr("title")
+    .removeAttr("data-original-title").tooltip('destroy')
+
+# parse ids as an array of integers from associated data field
+parseDataIds = (elem, id_name) ->
+  ids = elem.data(id_name).toString().split(',').filter((id) -> id != "")
+  _.map(ids, (id) -> parseInt(id, 10))
+
+# retrieve all funder ids
+allFunderIds = ->
+  _.map($(".funder-checkbox"), (e) -> $(e).data("funderid"))
+
+# retrieve all checked eligibility questions ids
+allCheckedQuestionIds = ->
+  _.map($("#eligibility :checkbox[checked]"), (e) -> $(e).data("qid"))
+
+# show questions based on which funders are selected and eligible
 showQuestions = ->
-  funder_ids = (".funder-q-#{fid}" for fid in Selected)
-  funders = funder_ids.join()
+  funder_ids = _.intersection(Selected, EligibleFunders)
+  funders = (".funder-q-#{fid}" for fid in funder_ids).join()
   $(".extra-answer").hide() # hide elements
   $(funders).fadeIn()
-  if funders.length
+  if $(funders).length
     $("#funder-no-q").hide()
   else
     $("#funder-no-q").show()
-
-# show labels on the funders who are recommended
-showRecommendations = ->
-  $(".funder-check .checkbox .recommended-label").remove()
-  label = $("#recommended-label").html()
-  funders = getRecommended(Reality)
-  $(".funder-check input[data-funderid=#{f}]").parent().append(label) for f in funders
-
-# update the recommended funders
-updateRecommendations = (el) ->
-  question_id = $(el).data("qid")
-  funder_relations = Expectations[question_id]
-  Reality[question_id] = checkExpectations(el.checked, funder_relations)
 
 toggleSection = (e) ->
   $(e).parent().siblings(".section-content").toggle()
   $(e).toggleClass("collapsed")
 
+disableCheckbox = (e) ->
+  e.preventDefault()
+
 $ ->
   initExpectations()
+  updateEligibileFunders()
+  disableIneligibleFunders()
+
+  $('.ineligible').live 'click', disableCheckbox
 
   $(".funder-checkbox").change ->
     funder_id = $(this).data("funderid")
@@ -91,16 +115,14 @@ $ ->
     showQuestions()
 
   $(".bool-q").change ->
-    updateRecommendations(this)
-    showRecommendations()
+    updateEligibileFunders()
+    disableIneligibleFunders()
+    showQuestions()
 
   $(".funder-checkbox").each (index, el) ->
     funder_id = $(el).data("funderid")
     Selected.push(funder_id) if this.checked
   showQuestions()
-
-  $(".bool-q").each (index, el) -> updateRecommendations(el)
-  showRecommendations()
 
   $("#questiontime").timepicker(
     timeFormat: "G:i"
