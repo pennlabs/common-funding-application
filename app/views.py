@@ -264,12 +264,12 @@ def funder_edit(request, user_id):
         funder.mission_statement = request.POST['missionstatement']
         funder.save()
 
-        # recreate associated free response questions.
-        funder.freeresponsequestion_set.all().delete()
-        for question in request.POST.getlist('freeresponsequestion'):
-            if question:
-                funder.freeresponsequestion_set.create(funder=funder,
-                                                       question=question)
+        # # recreate associated free response questions.
+        # funder.freeresponsequestion_set.all().delete()
+        # for question in request.POST.getlist('freeresponsequestion'):
+        #     if question:
+        #         funder.freeresponsequestion_set.create(funder=funder,
+        #                                                question=question)
 
         # recreate associated funder constraints.
         funder.funderconstraint_set.all().delete()
