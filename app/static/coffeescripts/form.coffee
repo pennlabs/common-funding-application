@@ -108,6 +108,7 @@ $ ->
 
   $(".funder-checkbox").change ->
     funder_id = $(this).data("funderid")
+    return if $(this).hasClass("ineligible")
     if !this.checked
       Selected = _.without(Selected, funder_id)
     else if this.checked and !_.contains(Selected, funder_id)
