@@ -110,6 +110,7 @@ class Event(models.Model):
     time = models.TimeField()
     location = models.CharField(max_length=256)
     requester = models.ForeignKey(CFAUser, related_name='event_requester')
+    contact_name = models.CharField(max_length=256, blank=True)
     contact_email = models.EmailField()
     contact_phone = models.CharField(max_length=15)
     anticipated_attendance = models.IntegerField()

@@ -48,6 +48,12 @@
       </div>
       <div class="span4">
         <div class="control-group">
+          <label for="questioncontactname" class="control-label">Contact Name</label>
+          <div class="controls">
+            <input value="{{ event.contact_name }}" type="text" name="contactname" id="questioncontactname" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          </div>
+        </div>
+        <div class="control-group">
           <label for="questioncontactemail" class="control-label">Contact Email</label>
           <div class="controls">
             <input value="{{ event.contact_email }}" type="email" name="contactemail" id="questioncontactemail" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>

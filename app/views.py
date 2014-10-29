@@ -124,6 +124,7 @@ def event_new(request):
             requester=request.user.get_profile(),
             location=request.POST['location'],
             organizations=request.POST['organizations'],
+            contact_name = request.POST['contactname'],
             contact_email=request.POST['contactemail'],
             time=request.POST['time'],
             contact_phone=request.POST['contactphone'],
@@ -167,6 +168,7 @@ def event_edit(request, event_id):
         event.organizations = request.POST['organizations']
         event.location = request.POST['location']
         event.time = request.POST['time']
+        event.contact_name = request.POST['contactname']
         event.contact_email = request.POST['contactemail']
         event.contact_phone = request.POST['contactphone']
         event.anticipated_attendance = request.POST['anticipatedattendance']
