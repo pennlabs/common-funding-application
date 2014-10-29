@@ -1,6 +1,7 @@
 from decimal import Decimal
 from datetime import datetime
 import json
+import re
 
 import smtplib
 from django.contrib.auth.decorators import login_required
@@ -264,12 +265,18 @@ def funder_edit(request, user_id):
         funder.mission_statement = request.POST['missionstatement']
         funder.save()
 
-        # # recreate associated free response questions.
-        # funder.freeresponsequestion_set.all().delete()
-        # for question in request.POST.getlist('freeresponsequestion'):
-        #     if question:
-        #         funder.freeresponsequestion_set.create(funder=funder,
-        #                                                question=question)
+        # create new free response questions.
+        for question in request.POST.getlist('freeresponsequestion'):
+            if question:
+                funder.freeresponsequestion_set.create(funder=funder,
+                                                       question=question)
+        # edit existing free response questions.
+        for k, v in request.POST.items():
+            if '_' in k and k.startswith('freeresponsequestion'):
+                q_id = re.search("[0-9]+", k).group(0)
+                question = FreeResponseQuestion.objects.get(id=q_id)
+                question.question = v
+                question.save()
 
         # recreate associated funder constraints.
         funder.funderconstraint_set.all().delete()
