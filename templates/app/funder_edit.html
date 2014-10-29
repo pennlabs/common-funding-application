@@ -22,20 +22,30 @@
       </h2>
     </div>
     <div class="section-content">
-      <form action="{% url app.views.funder_edit user.id %}" method="post" class="form-horizontal">
+      <form action="{% url app.views.funder_edit user.id %}"
+            method="post"
+            class="form-horizontal">
         {% csrf_token %}
 
         <div class="control-group">
           <label for="fundername" class="control-label">Funder Name</label>
           <div class="controls">
-            <input value="{{ user.get_profile.funder_name }}" type="text" name="fundername" id="fundername" class="input-xlarge">
+            <input value="{{ user.get_profile.funder_name }}"
+                   type="text"
+                   name="fundername"
+                   id="fundername"
+                   class="input-xlarge">
           </div>
         </div>
 
         <div class="control-group">
-          <label for="missionstatement" class="control-label">Mission Statement</label>
+          <label for="missionstatement"
+                 class="control-label">Mission Statement</label>
           <div class="controls">
-            <textarea type="text" name="missionstatement" class="span7 input-xlarge" rows="5">{{user.get_profile.mission_statement}}</textarea>
+            <textarea type="text"
+                      name="missionstatement"
+                      class="span7 input-xlarge"
+                      rows="5">{{user.get_profile.mission_statement}}</textarea>
           </div>
         </div>
 
@@ -48,16 +58,24 @@
               {% for question in funder_questions %}
               <tr>
                 <td>
-                  <textarea type="text" name="freeresponsequestion" class="span7" data-qid="{{question.id}}">{{question.question}}</textarea>
+                  <textarea type="text"
+                            name="freeresponsequestion_{{question.id}}"
+                            data-qid="{{question.id}}"
+                            class="span7">{{question.question}}</textarea>
                 </td>
                 <td>
-                  <button class="btn btn-danger remove-freeresponsequestion">Remove</button>
+                  <button class="btn btn-danger remove-freeresponsequestion">
+                    Remove
+                  </button>
                 </td>
               </tr>
               {% endfor %}
               <tr>
                 <td>
-                  <textarea type="text" name="freeresponsequestion" class="span7" rows="1">{{question.question}}</textarea>
+                  <textarea type="text"
+                            name="freeresponsequestion"
+                            class="span7"
+                            rows="1">{{question.question}}</textarea>
                 </td>
                 <td>
                   <button class="btn add-freeresponsequestion">Add</button>
@@ -80,10 +98,14 @@
                 </td>
                 <td>
                   {% if user.get_profile in question.required_funders %}
-                  <button class="btn btn-danger remove-funderconstraint" data-qid="{{question.id}}"> Required</button>
-                  <input type="hidden" name="funderconstraint" value="{{question.id}}"/>
+                  <button class="btn btn-danger remove-funderconstraint"
+                          data-qid="{{question.id}}"> Required</button>
+                  <input type="hidden"
+                         name="funderconstraint"
+                         value="{{question.id}}"/>
                   {% else %}
-                  <button class="btn add-funderconstraint" data-qid="{{question.id}}">Not Required</button>
+                  <button class="btn add-funderconstraint"
+                          data-qid="{{question.id}}">Not Required</button>
                   <input type="hidden" name="funderconstraint" value=""/>
                   {% endif %}
                 </td>
@@ -93,10 +115,12 @@
           </table>
         </div>
 
-
         <div class="form-actions">
-          <a class="btn" href="{% url app.views.events %}">Cancel</a>
-          <button class="btn btn-primary" type="submit" name="submit-funder">Submit</button>
+          <a class="btn"
+             href="{% url app.views.events %}">Cancel</a>
+          <button class="btn btn-primary"
+                  type="submit"
+                  name="submit-funder">Submit</button>
         </div>
       </form>
     </div>
