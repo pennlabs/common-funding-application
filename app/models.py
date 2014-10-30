@@ -1,5 +1,6 @@
 from hashlib import sha1
 import re
+import datetime
 
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.forms import USPhoneNumberField
@@ -123,6 +124,12 @@ class Event(models.Model):
     funding_already_received = models.DecimalField(max_digits=17,
                                                    decimal_places=2)
     status = models.CharField(max_length=1, choices=STATUS)
+    created_at = models.DateTimeField(default=datetime.datetime.now)
+    updated_at = models.DateTimeField(default=datetime.datetime.now)
+
+    def save(self, *args, **kwargs):
+        self.updated_at = datetime.datetime.now()
+        return super(Event, self).save(*args, **kwargs)
 
     @property
     def over(self):
