@@ -125,6 +125,11 @@ class Event(models.Model):
                                                    decimal_places=2)
     status = models.CharField(max_length=1, choices=STATUS)
     created_at = models.DateTimeField(default=datetime.datetime.now)
+    updated_at = models.DateTimeField(default=datetime.datetime.now)
+
+    def save(self, *args, **kwargs):
+        self.updated_at = datetime.datetime.now()
+        return super(Event, self).save(*args, **kwargs)
 
     @property
     def over(self):
