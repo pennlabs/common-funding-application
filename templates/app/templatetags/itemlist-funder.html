@@ -1,8 +1,8 @@
 {% if is_revenue %}
 <div>
   <h3>
-    Revenue Items
-    <small>list your projected revenue items</small>
+    Additional Funds
+    <small>list all non-CFA funding sources and admission fees</small>
   </h3>
 </div>
 {% else %}
@@ -28,7 +28,7 @@
       {% for info in infos %}
       <td>{{ info }}</td>
       {% endfor %}
-      
+
       {% for funder_id, grant_amount, item_id in grant_datas %}
       {% ifequal funder_id current_funder %}
         <td>

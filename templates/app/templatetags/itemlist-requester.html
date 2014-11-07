@@ -1,8 +1,8 @@
 {% if is_revenue %}
 <div>
   <h3>
-    Revenue Items
-    <small>list your projected revenue items</small>
+    Additional Funds
+    <small>list all non-CFA funding sources and admission fees</small>
   </h3>
 </div>
 {% else %}
@@ -36,7 +36,7 @@
         <tr class='itemrow {% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
           <input name="item_revenue" type="hidden" value="{{ is_revenue }}" />
           <td>
-            <input name="item_name" type="text" class='small' 
+            <input name="item_name" type="text" class='small'
               required {% if funded %} disabled {% endif %}
               value="{{ item.name }}" />
           </td>
@@ -56,7 +56,7 @@
               pattern="^\d+"
               value="{{ item.quantity }}" />
           </td>
-          <td> 
+          <td>
             <div class="input-prepend">
               <span class="add-on">$</span>
               <input class="inputIcon small input-with-dollar" name="item_price_per_unit"
@@ -65,7 +65,7 @@
                 value="{{ item.price_per_unit }}"/>
             </div>
           </td>
-          <td {%if is_revenue %}class='hidden'{% endif %}> 
+          <td {%if is_revenue %}class='hidden'{% endif %}>
             <div class="input-prepend">
               <span class="add-on">$</span>
               <input class="inputIcon small input-with-dollar" name="item_funding_already_received"
@@ -101,13 +101,13 @@
       <td>
         <input class="new small" name="item_quantity" type="number"/>
       </td>
-      <td> 
+      <td>
         <div class="input-prepend">
           <span class="add-on">$</span>
           <input class="new inputIcon small input-with-dollar" name="item_price_per_unit" type="number"/>
         </div>
       </td>
-      <td {% if is_revenue %}class='hidden'{% endif %}> 
+      <td {% if is_revenue %}class='hidden'{% endif %}>
         <div class="input-prepend">
           <span class="add-on">$</span>
           <input class="new inputIcon small input-with-dollar" name="item_funding_already_received" type="number"/>
