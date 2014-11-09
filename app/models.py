@@ -326,8 +326,8 @@ class Event(models.Model):
     def secret_key(self):
         """Unique key that can be shared so that anyone can view the event."""
         """To use the key append ?key=<key>"""
-        return sha1("".join(
-            [self.name, str(self.date), str(self.requester)])).hexdigest()
+        return sha1("".join([self.name, str(self.date), str(self.requester)])
+                    .encode("utf-8")).hexdigest()
 
     @models.permalink
     def get_absolute_url(self):
