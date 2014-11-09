@@ -61,7 +61,7 @@
               <span class="add-on">$</span>
               <input class="inputIcon small input-with-dollar" name="item_price_per_unit"
                 required {% if funded %} disabled {% endif %} type="number"
-                pattern="^\d*(\.\d{2}$)?"
+                pattern="^\d*(\.\d{2}$)?" step="0.01"
                 value="{{ item.price_per_unit }}"/>
             </div>
           </td>
@@ -70,7 +70,7 @@
               <span class="add-on">$</span>
               <input class="inputIcon small input-with-dollar" name="item_funding_already_received"
                 type="number" required {% if funded %} disabled {% endif %}
-                pattern="^\d*(\.\d{2}$)?"
+                pattern="^\d*(\.\d{2}$)?" step="0.01"
                 value="{{ item.funding_already_received }}" />
             </div>
           </td>
