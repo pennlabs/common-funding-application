@@ -72,7 +72,7 @@ def events(request):
         sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
         cfauser = user.get_profile()
         app = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
-        if user.is_staff:
+        if user.is_staff and not user.username == "uacontingency":
             apps = app
         elif cfauser.is_requester:
             apps = app.filter(requester=cfauser)
