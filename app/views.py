@@ -152,11 +152,14 @@ def event_new(request):
 @requester_only
 def event_edit(request, event_id):
     event = Event.objects.get(pk=event_id)
-    if event.locked:
+    if event.over:
         return redirect('app.views.event_show', event_id)
     if request.method == 'POST':
         if event.followup_needed:
             status = 'O'  # O for OVER
+        elif event.funded:
+            # keep status as funded when partially funded event is edited.
+            status = 'F'  # F for FUNDED
         elif "submit-event" in request.POST:
             status = 'B'  # B for SUBMITTED
         else:

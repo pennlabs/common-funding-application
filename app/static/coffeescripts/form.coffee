@@ -105,6 +105,7 @@ $ ->
   disableIneligibleFunders()
 
   $('.ineligible').live 'click', disableCheckbox
+  $('.disable').live 'click', disableCheckbox
 
   $(".funder-checkbox").change ->
     funder_id = $(this).data("funderid")
@@ -116,6 +117,8 @@ $ ->
     showQuestions()
 
   $(".bool-q").change ->
+    if $(this).hasClass("disable")
+      return
     updateEligibileFunders()
     disableIneligibleFunders()
     showQuestions()

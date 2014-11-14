@@ -81,7 +81,7 @@
         {% endif %}
       </div>
       <div class="span2 buttons">
-        {% if user.is_staff or app.locked or user.get_profile.is_funder %}
+        {% if user.is_staff or event.over or user.get_profile.is_funder %}
         <a class="btn btn-info" href="{% url app.views.event_show app.id %}">
           <i class="icon-file icon-white"></i> View
         </a>
