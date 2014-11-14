@@ -276,10 +276,7 @@ def funder_edit(request, user_id):
              if '_' in k and k.startswith('freeresponsequestion')]
         for question in funder.freeresponsequestion_set.all():
             if not question.id in request_question_ids:
-                print "delete: %s" % question.question
                 question.delete()
-            else:
-                print "keep: %s" % question.question
 
         # create new free response questions.
         for question in request.POST.getlist('freeresponsequestion'):
