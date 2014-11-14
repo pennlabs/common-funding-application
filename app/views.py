@@ -270,11 +270,23 @@ def funder_edit(request, user_id):
         funder.mission_statement = request.POST['missionstatement']
         funder.save()
 
+        # delete removed free response questions.
+        request_question_ids = \
+            [int(re.search("[0-9]+", k).group(0)) for k,v in request.POST.items()
+             if '_' in k and k.startswith('freeresponsequestion')]
+        for question in funder.freeresponsequestion_set.all():
+            if not question.id in request_question_ids:
+                print "delete: %s" % question.question
+                question.delete()
+            else:
+                print "keep: %s" % question.question
+
         # create new free response questions.
         for question in request.POST.getlist('freeresponsequestion'):
             if question:
                 funder.freeresponsequestion_set.create(funder=funder,
                                                        question=question)
+
         # edit existing free response questions.
         for k, v in request.POST.items():
             if '_' in k and k.startswith('freeresponsequestion'):
