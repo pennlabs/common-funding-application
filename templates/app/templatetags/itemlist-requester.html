@@ -37,11 +37,11 @@
           <input name="item_revenue" type="hidden" value="{{ is_revenue }}" />
           <td>
             <input name="item_name" type="text" class='small'
-              required {% if funded %} disabled {% endif %}
+              required {% if funded %} readonly {% endif %}
               value="{{ item.name }}" />
           </td>
           <td>
-            <select class="item-category" name='item_category' {% if funded %} disabled {% endif %}>
+            <select class="item-category" name='item_category' {% if funded %} readonly {% endif %}>
               <option> {{ item.get_category_display }} </option>
               {% for item_category in CATEGORIES %}
                 {% if item_category.1 != item.get_category_display %}
@@ -52,7 +52,7 @@
           </td>
           <td>
             <input name="item_quantity" type="number" class='small'
-              required {% if funded %} disabled {% endif %}
+              required {% if funded %} readonly {% endif %}
               pattern="^\d+"
               value="{{ item.quantity }}" />
           </td>
@@ -60,7 +60,7 @@
             <div class="input-prepend">
               <span class="add-on">$</span>
               <input class="inputIcon small input-with-dollar" name="item_price_per_unit"
-                required {% if funded %} disabled {% endif %} type="number"
+                required {% if funded %} readonly {% endif %} type="number"
                 pattern="^\d*(\.\d{2}$)?" step="0.01"
                 value="{{ item.price_per_unit }}"/>
             </div>
@@ -69,7 +69,7 @@
             <div class="input-prepend">
               <span class="add-on">$</span>
               <input class="inputIcon small input-with-dollar" name="item_funding_already_received"
-                type="number" required {% if funded %} disabled {% endif %}
+                type="number" required {% if funded %} readonly {% endif %}
                 pattern="^\d*(\.\d{2}$)?" step="0.01"
                 value="{{ item.funding_already_received }}" />
             </div>
@@ -85,7 +85,6 @@
           {% endif %}
         </tr>
     {% endfor %}
-    {% if not funded %}
     <tr class='itemrow {% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
       <input name="item_revenue" type="hidden" value="{{ is_revenue }}" />
       <td>
@@ -121,8 +120,6 @@
         <button class='btn add add-item'>Add</button>
       </td>
     </tr>
-
-    {% endif %}
 
   </tbody>
 </table>

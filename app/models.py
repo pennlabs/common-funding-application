@@ -207,10 +207,15 @@ class Event(models.Model):
         categories = POST.getlist('item_category')
         revenues = POST.getlist('item_revenue')
 
-        self.item_set.all().delete()
+        for item in self.item_set.all():
+            if not Grant.objects.filter(item = item):
+                item.delete()
+
         zipped_items = zip(names, quantities, prices_per_unit,
                            funding_already_received, categories, revenues)
         for name, quantity, price, funding, cat, rev in zipped_items:
+            if Item.objects.filter(event = self, name = name):
+                continue
             funding = funding or 0
             # set correct category letter
             for tup in CATEGORIES:

@@ -47,7 +47,7 @@
   <div class="section-content">
     <fieldset>
       {% for qa in eligibility_qas %}
-        {% if not readonly or qa.answer.answer %}
+        {% if not readonly and not event.funded or qa.answer.answer %}
         <div class="control-group">
           <label id="eligibilitylabel_{{qa.question.id}}"
                  class="control-label">
@@ -58,7 +58,11 @@
                      id="eligibilityquestion_{{qa.question.id}}"
                      name="eligibilityquestion_{{qa.question.id}}"
                      data-required-funder-ids="{{qa.question.required_funder_ids}}"
+                     {% if event.funded %}
+                     class="bool-q disable" readonly
+                     {% else %}
                      class="bool-q"
+                     {% endif %}
                      data-qid="{{qa.question.id}}"
                      {{extra_attrs}} {{event_over_disable}}
                      {% if qa.answer.answer %}checked{% endif %}>
@@ -84,7 +88,8 @@
         id="commonfreeresponsequestion_{{qa.question.id}}"
         name="commonfreeresponsequestion_{{qa.question.id}}"
         class="span8 commonfreeresponsequestion input-xlarge"
-        {{extra_attrs}} {{event_over_disable}}>{{qa.answer.answer}}</textarea>
+        {{extra_attrs}} {{event_over_disable}}
+        {% if event.funded %}readonly{% endif %}>{{qa.answer.answer}}</textarea>
       {% endfor %}
     </fieldset>
   </div>
