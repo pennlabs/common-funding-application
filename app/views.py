@@ -131,7 +131,6 @@ def event_new(request):
             anticipated_attendance=request.POST['anticipatedattendance'],
             advisor_email=request.POST['advisoremail'],
             advisor_phone=request.POST['advisorphone'],
-            funding_already_received=request.POST['fundingalreadyreceived'],
         )
         event.save_from_form(request.POST)
         event.notify_funders(new=True)
@@ -177,7 +176,6 @@ def event_edit(request, event_id):
         event.anticipated_attendance = request.POST['anticipatedattendance']
         event.advisor_email = request.POST['advisoremail']
         event.advisor_phone = request.POST['advisorphone']
-        event.funding_already_received = request.POST['fundingalreadyreceived']
         event.save()
         event.save_from_form(request.POST)
         event.notify_funders(new=False)
