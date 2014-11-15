@@ -495,6 +495,14 @@ class Item(models.Model):
     def total(self):
         return self.price_per_unit * self.quantity
 
+    @property
+    def total_grants(self):
+        return sum([grant.amount for grant in self.grant_set.all()])
+
+    @property
+    def total_received(self):
+        return self.funding_already_received + self.total_grants
+
     def __unicode__(self):
         return self.name
 

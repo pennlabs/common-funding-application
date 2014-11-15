@@ -23,11 +23,21 @@
     </tr>
   </thead>
   <tbody>
-    {% for infos, grant_datas in items_data %}
-    <tr>
-      {% for info in infos %}
-      <td>{{ info }}</td>
-      {% endfor %}
+    {% for item, grant_datas in items_data %}
+    <tr class='{% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
+      <td>{{ item.name }}</td>
+      <td>{{ item.get_category_display }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>${{ item.price_per_unit }}</td>
+      <td>
+        $<span class="item-amount">{{item.total}}</span>
+      </td>
+
+      {% if not is_revenue %}
+      <td>
+        $<span class="item-received">{{ item.total_received }}</span>
+      </td>
+      {% endif %}
 
       {% for funder_id, grant_amount, item_id in grant_datas %}
       {% ifequal funder_id current_funder %}
@@ -40,9 +50,6 @@
               value="{{ grant_amount }}"
               {% endifnotequal %}
               pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
-              onfocus="newInputClicked(this)"
-              onblur="newInputCheck(this, '{{ grant_amount }}')"
-              onkeydown="numericOnly(event)"/>
           </div>
         </td>
       {% else %}

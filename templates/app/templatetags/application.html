@@ -108,28 +108,30 @@
       {% if not user.is_staff and user.get_profile.is_requester %}
       {% itemlist_requester 0 event.item_set.all event.funded %}
       {% itemlist_requester 1 event.item_set.all event.funded %}
+      {% else %}
+      {% itemlist_funder 0 event.item_set.all event.applied_funders.all user.get_profile.id %}
+      {% itemlist_funder 1 event.item_set.all event.applied_funders.all user.get_profile.id %}
+      {% endif %}
       <table class="items-total">
         <tr>
-          <td>Sum Total</td>
+          <td>Expense Total</td>
           <td>$<span class="items-exp-total">0.00</span></td>
         </tr>
+        {% if user.is_staff or not user.get_profile.is_requester %}
         <tr>
-          <td>Revenue Total</td>
-          <td>&ndash;$<span class="items-rev-total">0.00</span></td>
+          <td>Funding Received Total</td>
+          <td>&ndash;$<span class="items-recv-total">0.00</span></td>
         </tr>
+        {% endif %}
         <tr>
-          <td>Already Funded</td>
-          <td>&ndash;$<span class="items-funded">0.00</span></td>
+          <td>Additional Funds Total</td>
+          <td>&ndash;$<span class="items-rev-total">0.00</span></td>
         </tr>
         <tr>
           <td>Final Total</td>
           <td>$<span class="items-final-total">0.00</span></td>
         </tr>
       </table>
-      {% else %}
-      {% itemlist_funder 0 event.item_set.all event.applied_funders.all user.get_profile.id %}
-      {% itemlist_funder 1 event.item_set.all event.applied_funders.all user.get_profile.id %}
-      {% endif %}
     </fieldset>
   </div>
 </section>
