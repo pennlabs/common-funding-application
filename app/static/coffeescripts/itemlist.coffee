@@ -36,25 +36,23 @@ root.calculateAmount = ->
     setRowAmount $(e.target).closest('.itemrow')
     updateTotal()
 
-  $('#fundingalreadyreceived').on 'input', -> updateTotal()
-
 root.updateTotal = ->
   expTotal = 0
+  recvTotal = parseFloat $("#fundingalreadyreceived").val() or 0
   revTotal = 0
-  # lump sum
-  lumpFundingReceivedEl = $("#fundingalreadyreceived")
-  funded = parseFloat lumpFundingReceivedEl.val() or 0
 
-  $('.items-funded').html funded.toFixed(2)
   expItems = $('.expense-item .item-amount')
+  recvItems = $('.expense-item .item-received')
   revItems = $('.revenue-item .item-amount')
   expItems.each (index,el) -> expTotal = expTotal + parseFloat el.innerHTML
+  recvItems.each (index,el) -> recvTotal = recvTotal + parseFloat el.innerHTML
   revItems.each (index,el) -> revTotal = revTotal + parseFloat el.innerHTML
 
   $('.items-exp-total').html expTotal.toFixed(2)
+  $('.items-recv-total').html recvTotal.toFixed(2)
   $('.items-rev-total').html revTotal.toFixed(2)
 
-  $('.items-final-total').html (expTotal - revTotal - funded).toFixed(2)
+  $('.items-final-total').html (expTotal - recvTotal - revTotal).toFixed(2)
 
 $ ->
   calculateAmount()

@@ -29,10 +29,10 @@ def itemlist_requester(context, is_revenue, items, funded):
 def itemlist_funder(context, is_revenue, items, applied_funders, funder_id):
   """ Render the table of items in the funder view """
   items_data = []
-  title_row =\
-      ['Name', 'Quantity', 'Price Per Unit', 'Total Amount', 'Category']
-  # TODO: add amount received to expenses table
+  title_row = \
+      ['Name', 'Category', 'Quantity', 'Price Per Unit', 'Total Amount']
   if not bool(is_revenue):
+    title_row.append('Total Received')
     for funder in applied_funders:
       title_row.append(str(funder))
 
