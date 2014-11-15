@@ -188,9 +188,20 @@ class Event(models.Model):
         return self.total_funds_already_received + self.total_funds_granted
 
     @property
-    def total_funds_requested(self):
+    def total_expense(self):
         """The total amount of money requested for an event."""
-        return sum(item.total for item in self.item_set.all())
+        return sum(item.total for item in self.item_set.all() if not item.revenue)
+
+    @property
+    def total_additional_funds(self):
+        """The tatal amount of non-CFA funding and admission fees."""
+        return sum(item.total for item in self.item_set.all() if item.revenue)
+
+    @property
+    def total_remaining(self):
+        return (self.total_expense - self.total_funds_received -
+                self.total_additional_funds)
+
 
     @property
     def comments(self):
