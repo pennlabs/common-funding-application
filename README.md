@@ -34,7 +34,7 @@ The [Common Funding Application](http://cfa.pennapps.com) is an online applicati
 
 ## DB migrations
 
-_Note_: instructions are from [our wiki](https://github.com/pennappslabs/wiki/wiki/Setting-Up-South)
+_Note_: instructions are from [our wiki](https://github.com/pennlabs/wiki/wiki/Setting-Up-South)
 
 * Edit models.py
 
