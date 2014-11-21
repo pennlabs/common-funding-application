@@ -13,26 +13,32 @@
 </div>
 {% endif %}
 
-<div id="main" class="row">     
+<div id="main" class="row">
   <div class="span7">
     <h1>Common Funding Application</h1>
-    <p>This is your one-stop source to apply for event funding from a variety of sources accross the university.</p>
-    <p><strong>For student groups</strong>, you simply create an event, fill in the required information, and we recommend what funding sources to apply to. They then indicate what funding you will receive, and you get notifications along the way. Register now to get started!</p>
-    <p><strong>For funding sources</strong>, you see all the events of every student group that has applied to you in one view. You can see how much other funding sources have granted and for what items and keep groups accountable.</p>
-    <p>Questions or feedback? Use the "Feedback" button on the screen. If you're a funding source and want to get on the Common Funding App, email the <a href='mailto:treasurer@pennua.org'>UA treasurer</a>.</p>
+    <p>The Common Funding Application (CFA) is a one-stop online tool for student groups to request funding from multiple funding sources at once.</p><br>
+    <h4>First-time user?</h4>
+    <p>
+      <ul>
+        <li><a href="{{STATIC_URL}}/how-to-use.pdf">How to Use the Common Funding App</a></li>
+        <li><a href="{{STATIC_URL}}/img/info-graphic.png">Infographic about the Funding Sources</a></li>
+        <li><a href="{{STATIC_URL}}/funding-calendar.doc">Funding Calendar</a></li>
+        <li><a href="{{STATIC_URL}}/info-table.docx">Funding Sources Info Table</a></li>
+      </ul>
+    </p>
   </div>
-  
+
   <div id="login" class="span4 offset1">
     <div class="box">
       <h2>Login</h2>
-      
+
       <form method="post">
         {% csrf_token %}
-        <fieldset>              
+        <fieldset>
           <div class="clearfix">
             <label for="user">{{ form.username.label_tag }}</label>
             {{ form.username }}
-            
+
             <label for="user">{{ form.password.label_tag }}</label>
             {{ form.password }}
           </div>
@@ -40,9 +46,9 @@
         <button class="btn btn-primary" type="submit">Submit</button>
         <input type="hidden" name="next" value="{{ next }}" />
       </form>
-      
+
       <p><strong>Need an account?</strong> <a href="{% url registration.views.register %}">Sign up</a></p>
-      
+
     </div>
   </div>
 </div>
