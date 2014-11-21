@@ -136,6 +136,10 @@ class Event(models.Model):
         return self.status == 'O'
 
     @property
+    def saved(self):
+        return self.status == 'S'
+
+    @property
     def followup_needed(self):
         return self.status == 'W'
 
@@ -202,6 +206,9 @@ class Event(models.Model):
         return (self.total_expense - self.total_funds_received -
                 self.total_additional_funds)
 
+    @property
+    def date_passed(self):
+        return datetime.date.today() > self.date
 
     @property
     def comments(self):

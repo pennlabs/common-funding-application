@@ -59,13 +59,15 @@
       <div class="offset2 span1 status">
         {% if app.followup_needed %}
         <span class="label label-warning">FOLLOWUP</span>
-        {% elif app.over %}
+        {% elif app.date_passed %}
         <span class="label">OVER</span>
         {% elif app.submitted %}
         <span class="label label-success">SUBMITTED</span>
-        {% elif app.funded %}
+        {% elif app.funded and app.total_remaining > 0 %}
+        <span class="label label-warning">IN PROGRESS</span>
+        {% elif app.funded and app.total_remaining <= 0 %}
         <span class="label label-inverse">FUNDED</span>
-        {% else %}
+        {% elif app.saved %}
         <span class="label label-info">SAVED</span>
         {% endif %}
       </div>
