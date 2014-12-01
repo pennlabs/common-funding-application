@@ -47,7 +47,7 @@
   <div class="section-content">
     <fieldset>
       {% for qa in eligibility_qas %}
-        {% if not readonly and not event.funded or qa.answer.answer %}
+        {% if not readonly or qa.answer.answer %}
         <div class="control-group">
           <label id="eligibilitylabel_{{qa.question.id}}"
                  class="control-label">
