@@ -127,6 +127,29 @@
     </div>
   </div>
   {% endfor %}
+  {% if page_length != 1 %}
+  <div class="pagination pagination-centered">
+    <ul>
+      {% if page_obj.has_previous %}
+      <li><a href="{% url app.views.events %}?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+      {% endif %}
+
+      {% for i in page_range %}
+          {% if i == page_obj.number %}
+            <li class="active">
+              <a href="{% url app.views.events %}?page={{i}}">{{i}}</a>
+            </li>
+          {% else %}
+            <li><a href="{% url app.views.events %}?page={{i}}">{{i}}</a></li>
+          {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <li><a href="{% url app.views.events %}?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  {% endif %}
   {% if not apps %}
   <div>You do not have any current applications.</div>
   {% endif %}

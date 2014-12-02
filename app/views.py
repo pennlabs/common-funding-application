@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
+from django.core.paginator import Paginator
 
 from app.models import Event, Grant, Comment, User, FreeResponseQuestion, EligibilityQuestion
 
@@ -72,15 +73,26 @@ def events(request):
         sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
         cfauser = user.get_profile()
         app = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
+        if 'page' in request.GET:
+            page = request.GET['page']
+        else:
+            page = 1
+
         if user.is_staff and not user.username == "uacontingency":
             apps = app
         elif cfauser.is_requester:
             apps = app.filter(requester=cfauser)
         else:  # cfauser.is_funder
             apps = cfauser.event_applied_funders.order_by(sort_by)
+
+        p = Paginator(apps, 10)
         return render_to_response('app/events.html',
-                                  {'apps': apps},
+                                  {'apps': p.page(page).object_list,
+                                   'page_obj': p.page(page),
+                                   'page_range': p.page_range,
+                                   'page_length': len(p.page_range)},
                                   context_instance=RequestContext(request))
+
     else:
         return HttpResponseNotAllowed(['GET'])
 
