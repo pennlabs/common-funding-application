@@ -1,5 +1,5 @@
 from decimal import Decimal
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import re
 
@@ -72,7 +72,8 @@ def events(request):
                       }
         sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
         cfauser = user.get_profile()
-        app = Event.objects.filter(date__gt=datetime.today().date()).order_by(sort_by)
+        two_weeks_ago = datetime.today().date() - timedelta(days=14)
+        app = Event.objects.filter(date__gt=two_weeks_ago).order_by(sort_by)
         if 'page' in request.GET:
             page = request.GET['page']
         else:
@@ -103,10 +104,11 @@ def events_old(request):
     if request.method == 'GET':
         user = request.user
         cfauser = user.get_profile()
+        two_weeks_ago = datetime.today().date() - timedelta(days=14)
         if user.is_staff:
-            apps = Event.objects.filter(date__lt= datetime.today().date()).order_by('-date')
+            apps = Event.objects.filter(date__lt=two_weeks_ago).order_by('-date')
         elif cfauser.is_requester:
-            apps = Event.objects.filter(requester=cfauser).filter(date__lt= datetime.today().date()).order_by('-date')
+            apps = Event.objects.filter(requester=cfauser).filter(date__lt=two_weeks_ago).order_by('-date')
         else:  # cfauser.is_funder
             apps = cfauser.event_applied_funders.order_by('-date')
         return render_to_response('app/events_old.html',
