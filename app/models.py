@@ -208,7 +208,7 @@ class Event(models.Model):
 
     @property
     def date_passed(self):
-        return datetime.date.today() > self.date
+        return datetime.date.today() > self.date + datetime.timedelta(days=14)
 
     @property
     def comments(self):
