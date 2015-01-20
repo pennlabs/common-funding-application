@@ -1,1 +1,1 @@
-[{{event.name}}] {{funder}} has funded {{event.name|safe}}
+[{{event.name|safe}}] {{funder|safe}} has funded {{event.name|safe}}
