@@ -1,1 +1,1 @@
-[{{event.name}}] Event Application Changed
+[{{event.name|safe}}] Event Application Changed

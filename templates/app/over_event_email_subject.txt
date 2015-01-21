@@ -1,1 +1,1 @@
-Followup Questions for {{event.name}}
+Followup Questions for {{event.name|safe}}
