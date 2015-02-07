@@ -1,7 +1,7 @@
 Common Funding Application
 =============================
 
-The [Common Funding Application](http://cfa.pennapps.com) is an online application that allows student groups and organizations to request funding from various funding sources at the [University of Pennsylvania](http://www.upenn.edu).
+The [Common Funding Application](https://penncfa.com) is an online application that allows student groups and organizations to request funding from various funding sources at the [University of Pennsylvania](http://www.upenn.edu).
 
 ## Local Setup
 * Install [pip](http://www.pip-installer.org/en/latest/installing.html)

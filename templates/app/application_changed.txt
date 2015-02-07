@@ -1,3 +1,3 @@
 {{requester}} ({{requester.user.email}}) has just modified their application.
 
-Please log into the Common Funding App to view their application: http://cfa.pennapps.com/
+Please log into the Common Funding App to view their application: https://penncfa.com/
