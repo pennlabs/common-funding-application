@@ -167,7 +167,7 @@ class Event(models.Model):
         amounts = dict((funder, None) for funder in self.applied_funders.all())
         for item in self.item_set.all():
             for grant in item.grant_set.all():
-                if amounts[grant.funder] is None:
+                if grant.funder not in amounts or amounts[grant.funder] is None:
                     amounts[grant.funder] = grant.amount
                 else:
                     amounts[grant.funder] += grant.amount
