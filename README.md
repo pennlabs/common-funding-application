@@ -20,6 +20,8 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Create database (`python manage.py syncdb`)
 
+* Migrate database (`python manage.py migrate`)
+
 * Import dummy data (`python import_demo.py`)
 
 * Run the server (`python manage.py runserver`)
