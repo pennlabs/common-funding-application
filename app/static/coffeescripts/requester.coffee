@@ -39,5 +39,14 @@ check_form_inputs = ->
       first_failed = first_failed || failed_item
     else
       $(item).removeClass 'free-response-error'
+
+  _.each $('.itemrow input[type=number]'), (item) ->
+    siblingNodes = item.parentNode.parentNode.children
+    classList = siblingNodes[siblingNodes.length-1].children[0].classList
+    if not $(item).val() and 'remove-item' in classList
+      failed_item = $(item).addClass 'form-control-error'
+      $(item).closest('.itemrow').addClass 'error'
+      first_failed = first_failed || failed_item
+
   return first_failed
 
