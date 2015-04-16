@@ -239,6 +239,8 @@ class Event(models.Model):
             for tup in CATEGORIES:
                 if tup[1] == cat:
                     cat = tup[0]
+            # Remove unwanted commas for int parsing
+            rev = rev.replace(",", "")
 
             if str(name):
                 self.item_set.create(name=name,
