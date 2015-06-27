@@ -23,7 +23,7 @@ AUTH_PROFILE_MODULE = "app.CFAUser"
 
 
 ADMINS = (
-    ('PennApps Labs', 'pennappslabs+cfaprod@googlegroups.com'),
+    ('PennApps Labs', 'admin+cfaprod@pennlabs.org'),
 )
 
 MANAGERS = ADMINS
