@@ -11,6 +11,7 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 
 from settings import DEFAULT_FROM_EMAIL
+from settings import DEBUG
 from sandbox_config import SITE_NAME
 
 
@@ -78,7 +79,8 @@ class CFAUser(models.Model):
         headers = {'Reply-To': self.user.email}
         email = EmailMessage(subject, message,
                              DEFAULT_FROM_EMAIL, recipients, headers)
-        email.send()
+        if not DEBUG:
+            email.send()
 
     def required_eligibility_question_ids(self):
         question_ids =\
@@ -319,7 +321,8 @@ class Event(models.Model):
                              to=[funder.user.email],
                              cc=funder.cc_emails.values_list('email',
                                                              flat=True))
-        email.send()
+        if not DEBUG:
+            email.send()
 
     def notify_requester(self, grants):
         """Notify a requester that an event has been funded."""
@@ -345,7 +348,8 @@ class Event(models.Model):
                              cc=self.requester.cc_emails
                                     .values_list('email', flat=True))
         email.content_subtype = "html"  # main content is not text/html
-        email.send()
+        if not DEBUG:
+            email.send()
 
     @property
     def secret_key(self):
@@ -390,7 +394,9 @@ def notify_requester(sender, instance, signal, created, **kwargs):
         recipients = [instance.event.contact_email]
         headers = {'Reply-To': instance.funder.user.email}
         email = EmailMessage(subject, message, sender, recipients, headers)
-        email.send()
+        if not DEBUG:
+            email.send()
+
 
 
 class Question(models.Model):
