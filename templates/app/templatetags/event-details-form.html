@@ -30,7 +30,7 @@
         <label for="questiontime" class="control-label">Event Time</label>
         <div class="controls">
           <!-- refer to https://docs.djangoproject.com/en/dev/ref/templates/builtins/#date -->
-          <input value="{{ event.time|date:'H:i' }}" type="time" name="time" id="questiontime" class="input-xlarge" {{extra_attrs}} {{event_over_disable}}>
+          <input value="{{ event.time|date:'H:i' }}" type="time" name="time" id="questiontime" class="input-xlarge" {{extra_attrs}} {{event_over_disable}} required>
           <p class="help-block">Time of the event in 24-hour format</p>
         </div>
       </div>
