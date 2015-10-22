@@ -10,12 +10,12 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from django.core.paginator import Paginator
+from django.db import IntegrityError
 
 from app.models import Event, Grant, Comment, User, FreeResponseQuestion, EligibilityQuestion
 
 
 EVENTS_HOME = 'app.views.events'
-
 
 def authorization_required(view):
     """Ensure only a permitted user can access an event.
@@ -131,21 +131,25 @@ def event_new(request):
 
         date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
 
-        event = Event.objects.create(
-            name=request.POST['name'],
-            status=status,
-            date=date,
-            requester=request.user.get_profile(),
-            location=request.POST['location'],
-            organizations=request.POST['organizations'],
-            contact_name = request.POST['contactname'],
-            contact_email=request.POST['contactemail'],
-            time=request.POST['time'],
-            contact_phone=request.POST['contactphone'],
-            anticipated_attendance=request.POST['anticipatedattendance'],
-            advisor_email=request.POST['advisoremail'],
-            advisor_phone=request.POST['advisorphone'],
-        )
+        try:
+            event = Event.objects.create(
+                name=request.POST['name'],
+                status=status,
+                date=date,
+                requester=request.user.get_profile(),
+                location=request.POST['location'],
+                organizations=request.POST['organizations'],
+                contact_name = request.POST['contactname'],
+                contact_email = request.POST['contactemail'],
+                time=request.POST['time'],
+                contact_phone = request.POST['contactphone'],
+                anticipated_attendance=request.POST['anticipatedattendance'],
+                advisor_email = request.POST['advisoremail'],
+                advisor_phone = request.POST['advisorphone'],
+            )
+        except IntegrityError as e:
+            messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
+            return redirect(EVENTS_HOME)
         event.save_from_form(request.POST)
         event.notify_funders(new=True)
         msg = "Scheduled %s for %s!" %\
