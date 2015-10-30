@@ -244,6 +244,7 @@ class Event(models.Model):
             # Remove unwanted commas for int parsing
             rev = rev.replace(",", "")
 
+            name = name.encode('utf-8')
             if str(name):
                 self.item_set.create(name=name,
                                      quantity=quantity,
@@ -360,7 +361,8 @@ class Event(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('app.views.event_show', [str(self.id)])
+        if (self.id != None):
+            return ('app.views.event_show', [str(self.id)])
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),
