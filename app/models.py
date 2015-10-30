@@ -361,7 +361,7 @@ class Event(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        if (self.id != None):
+        if self.id:
             return ('app.views.event_show', [str(self.id)])
 
     def __unicode__(self):
