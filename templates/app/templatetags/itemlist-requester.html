@@ -51,9 +51,9 @@
             </select>
           </td>
           <td>
-            <input name="item_quantity" type="number" class='small'
+            <input name="item_quantity" type="number" class='small' 
               required {% if funded %} readonly {% endif %}
-              pattern="^\d+"
+              pattern="^\d+" step="1"
               value="{{ item.quantity }}" />
           </td>
           <td>
