@@ -1,4 +1,3 @@
-import datetime
 import os
 import sys
 
@@ -9,7 +8,7 @@ from django.contrib.sites.models import Site
 
 from app.models import *
 
-from sandbox_config import SITE_NAME, URL_ROOT, TEST_EMAIL
+from sandbox_config import TEST_EMAIL
 
 
 QUESTIONS = [
@@ -238,6 +237,7 @@ def import_sites():
     Site.objects.create(
         domain='http://localhost:8000//',
         name='The Common Funding App')
+
 
 def import_all():
     import_users()
