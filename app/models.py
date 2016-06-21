@@ -30,9 +30,9 @@ class CFAUser(models.Model):
     """
     A CFA User profile.
     # Create user
-    >>> u = User.objects.create_user("alice", "alice@example.com", "1234")
-    >>> cfau = u.get_profile()
-    >>> cfau.is_requester
+    >> u = User.objects.create_user("alice", "alice@example.com", "1234")
+    >> cfau = u.get_profile()
+    >> cfau.is_requester
     True
     """
     funder_name = models.CharField(max_length=256, default='', blank=True)
@@ -398,7 +398,6 @@ def notify_requester(sender, instance, signal, created, **kwargs):
         email = EmailMessage(subject, message, sender, recipients, headers)
         if not DEBUG:
             email.send()
-
 
 
 class Question(models.Model):
