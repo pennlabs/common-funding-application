@@ -1,6 +1,5 @@
 fs = require 'fs'
 {spawn} = require 'child_process'
-{print} = require 'sys'
 
 # TODO: Determine a better convention
 
@@ -14,14 +13,14 @@ testTargetJsDir      = 'test/'
 build = (cb, src, target) ->
   ps = spawn "coffee", ['-c', '-o', target, src]
   ps.stdout.on 'data', (data) ->
-    print data.toString()
+    process.stdout.write data.toString()
   ps.stderr.on 'data', (data) ->
     # ?
     process.stderr.write data.toString()
 
   ps.on 'exit', (code) ->
     if code != 0
-      console.log 'failed'
+      process.stdout.write 'failed'
     else
       cb?()
 
@@ -36,14 +35,14 @@ test = (cb) ->
     buildTests ->
       ps = spawn "mocha"
       ps.stdout.on 'data', (data) ->
-        print data.toString()
+        process.stdout.write data.toString()
       ps.stderr.on 'data', (data) ->
         # ?
         process.stderr.write data.toString()
 
       ps.on 'exit', (code) ->
         if code != 0
-          console.log 'failed'
+          process.stdout.write 'failed'
         else
           cb?()
 
