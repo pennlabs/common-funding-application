@@ -1,6 +1,8 @@
 Common Funding Application
 =============================
 
+[![Build Status](https://travis-ci.org/pennlabs/common-funding-application.svg?branch=master)](https://travis-ci.org/pennlabs/common-funding-application)
+
 The [Common Funding Application](https://penncfa.com) is an online application that allows student groups and organizations to request funding from various funding sources at the [University of Pennsylvania](http://www.upenn.edu).
 
 ## Local Setup
