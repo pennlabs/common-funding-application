@@ -1,8 +1,13 @@
 # Django settings for Common_Funding_Application project.
 import os
-import sys
+import imp
 
-from sandbox_config import *
+try:
+    from sandbox_config import *
+except ImportError:
+    print "Failed to import sandbox config, trying without..."
+    sandbox_config = imp.load_source('sandbox_config', 'sandbox_config.py_default')
+    from sandbox_config import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
