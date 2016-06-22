@@ -12,10 +12,11 @@ from django.template import RequestContext
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 
-from app.models import Event, Grant, Comment, User, FreeResponseQuestion, EligibilityQuestion
+from app.models import Event, Grant, Comment, User, FreeResponseQuestion, EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion, FollowupQuestion, CommonFreeResponseQuestion, CFAUser
 
 
 EVENTS_HOME = 'app.views.events'
+
 
 def authorization_required(view):
     """Ensure only a permitted user can access an event.
@@ -58,6 +59,90 @@ def requester_only(view):
             return redirect(EVENTS_HOME)
     return protected_view
 
+
+def save_from_form(event, POST):
+        """Save an event from form data."""
+        # save items
+        names = POST.getlist('item_name')
+        quantities = POST.getlist('item_quantity')
+        prices_per_unit = POST.getlist('item_price_per_unit')
+        funding_already_received =\
+            POST.getlist('item_funding_already_received')
+        categories = POST.getlist('item_category')
+        revenues = POST.getlist('item_revenue')
+
+        for item in event.item_set.all():
+            if not Grant.objects.filter(item=item):
+                item.delete()
+
+        zipped_items = zip(names, quantities, prices_per_unit,
+                           funding_already_received, categories, revenues)
+        for name, quantity, price, funding, cat, rev in zipped_items:
+            if Item.objects.filter(event=event, name=name):
+                continue
+            funding = funding or 0
+            # set correct category letter
+            for tup in CATEGORIES:
+                if tup[1] == cat:
+                    cat = tup[0]
+            # Remove unwanted commas for int parsing
+            rev = rev.replace(",", "")
+
+            name = name.encode('utf-8')
+            if str(name):
+                event.item_set.create(name=name,
+                                      quantity=quantity,
+                                      price_per_unit=price,
+                                      funding_already_received=funding,
+                                      category=cat,
+                                      revenue=int(rev))
+
+        # save questions
+
+        # delete existing answers
+        event.commonfollowupanswer_set.all().delete()
+        event.followupanswer_set.all().delete()
+        event.eligibilityanswer_set.all().delete()
+        event.commonfreeresponseanswer_set.all().delete()
+        event.freeresponseanswer_set.all().delete()
+
+        # clear existing funders to re-add new ones
+        event.applied_funders.clear()
+
+        # create new answers and save funders
+        # unchecked checkboxes will have neither answers nor funders
+        # associated with them
+        for k, v in POST.items():
+            if k.startswith('eligibility'):
+                q_id = re.search("[0-9]+", k).group(0)
+                question = EligibilityQuestion.objects.get(id=q_id)
+                event.eligibilityanswer_set.create(question=question,
+                                                   event=event, answer='Y')
+            elif k.startswith('commonfollowup'):
+                q_id = re.search("[0-9]+", k).group(0)
+                question = CommonFollowupQuestion.objects.get(id=q_id)
+                event.commonfollowupanswer_set.create(question=question,
+                                                      event=event, answer=v)
+            elif k.startswith('followup'):
+                q_id = re.search("[0-9]+", k).group(0)
+                question = FollowupQuestion.objects.get(id=q_id)
+                event.followupanswer_set.create(question=question,
+                                                event=event, answer=v)
+            elif k.startswith('commonfreeresponse'):
+                q_id = re.search("[0-9]+", k).group(0)
+                question = CommonFreeResponseQuestion.objects.get(id=q_id)
+                event.commonfreeresponseanswer_set.create(question=question,
+                                                          event=event,
+                                                          answer=v)
+            elif k.startswith('freeresponse'):
+                q_id = re.search("[0-9]+", k).group(0)
+                question = FreeResponseQuestion.objects.get(id=q_id)
+                event.freeresponseanswer_set.create(question=question,
+                                                    event=event, answer=v)
+            elif k.startswith('funder'):
+                funder_id = re.search("[0-9]+", k).group(0)
+                funder = CFAUser.objects.get(id=funder_id)
+                event.applied_funders.add(funder)
 
 # GET  /
 # upcoming events
@@ -150,7 +235,7 @@ def event_new(request):
         except IntegrityError as e:
             messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
             return redirect(EVENTS_HOME)
-        event.save_from_form(request.POST)
+        save_from_form(event, request.POST)
         event.notify_funders(new=True)
         msg = "Scheduled %s for %s!" %\
             (event.name, event.date.strftime("%b %d, %Y"))
@@ -195,7 +280,7 @@ def event_edit(request, event_id):
         event.advisor_email = request.POST['advisoremail']
         event.advisor_phone = request.POST['advisorphone']
         event.save()
-        event.save_from_form(request.POST)
+        save_from_form(event, request.POST)
         event.notify_funders(new=False)
         messages.success(request, 'Saved %s!' % event.name)
         return redirect(EVENTS_HOME)
