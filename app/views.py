@@ -11,6 +11,7 @@ from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from django.core.paginator import Paginator
 from django.db import IntegrityError
+from django.shortcuts import get_object_or_404
 
 from app.models import (Event, Grant, Comment, User, FreeResponseQuestion,
                         EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion,
@@ -28,7 +29,7 @@ def authorization_required(view):
       * They have a secret key to an event
     """
     def protected_view(request, event_id, *args, **kwargs):
-        event = Event.objects.get(pk=event_id)
+        event = get_object_or_404(Event, pk=event_id)
         try:
             key = request.GET['key']
         except KeyError:
