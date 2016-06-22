@@ -3,7 +3,7 @@ import json
 from django.test import TestCase
 
 from django.contrib.auth.models import User
-from .models import CFAUser
+from .models import CFAUser, Event
 
 
 class CFAUserTest(TestCase):
@@ -74,6 +74,13 @@ class TestEvents(TestCase):
         self.assertContains(resp, 'Current Applications')
         self.assertContains(resp, 'Penn Labs Team')
         self.assertContains(resp, 'SUBMITTED')
+
+    def test_index_remove_event(self):
+        Event.objects.get(pk=1).delete()
+        resp = self.client.get('/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Current Applications')
+        self.assertContains(resp, "You do not have any current applications.")
 
     def test_edit_event(self):
         resp = self.client.get('/1/edit/')
