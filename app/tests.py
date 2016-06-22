@@ -81,6 +81,8 @@ class TestEvents(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Current Applications')
         self.assertContains(resp, "You do not have any current applications.")
+        resp = self.client.get('/1/')
+        self.assertEqual(resp.status_code, 404)
 
     def test_edit_event(self):
         resp = self.client.get('/1/edit/')
