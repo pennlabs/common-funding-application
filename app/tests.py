@@ -94,3 +94,15 @@ class TestEvents(TestCase):
         resp = self.client.get('/1/edit/')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'First Round')
+
+    def test_event_is_old(self):
+        # Push event into the past, currently 2050-01-01
+        event = Event.objects.get(pk=1)
+        event.date = '2000-01-01'
+        event.save()
+        resp = self.client.get('/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Current Applications')
+        self.assertContains(resp, "You do not have any current applications.")
+        resp = self.client.get('/1/')
+        self.assertEqual(resp.status_code, 200)
