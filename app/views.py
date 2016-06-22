@@ -12,7 +12,9 @@ from django.template import RequestContext
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 
-from app.models import Event, Grant, Comment, User, FreeResponseQuestion, EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion, FollowupQuestion, CommonFreeResponseQuestion, CFAUser
+from app.models import (Event, Grant, Comment, User, FreeResponseQuestion,
+                        EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion,
+                        FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
 
 
 EVENTS_HOME = 'app.views.events'
