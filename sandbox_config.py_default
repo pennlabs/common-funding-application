@@ -7,7 +7,7 @@ This and nothing else.  (In the ominous words of AMK.)
 @Date: 2012-Nov-12
 """
 
-# The domain URL (e.g., 'http://penncfa.com', 'http://localhost:8000', or 'http://kyleh.pennapps.com')
+# The domain URL (e.g., 'http://penncfa.com', 'http://localhost:8000')
 DOMAIN_URL = 'http://localhost:8000'
 
 # The path CFA is serving off of (e.g., 'cfa' or '')

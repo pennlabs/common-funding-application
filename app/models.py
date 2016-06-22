@@ -392,7 +392,7 @@ def notify_requester(sender, instance, signal, created, **kwargs):
                    '%s said "%s" See the full application at %s.') %\
                   (instance.funder, instance.event.date, instance.funder,
                    instance.comment, 'link here')
-        sender = "no-reply@pennapps.com"
+        sender = "no-reply@pennlabs.org"
         recipients = [instance.event.contact_email]
         headers = {'Reply-To': instance.funder.user.email}
         email = EmailMessage(subject, message, sender, recipients, headers)
