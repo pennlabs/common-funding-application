@@ -1,3 +1,5 @@
+import json
+
 from django.test import TestCase
 
 from django.contrib.auth.models import User
@@ -55,3 +57,33 @@ class TestLoginViews(TestCase):
         self.client.logout()
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 302)
+
+
+class TestEvents(TestCase):
+    fixtures = ['events.json']
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='philo',
+                                             email='philo@upenn.edu',
+                                             password='we<3literature')
+        self.client.login(username='philo', password='we<3literature')
+
+    def test_index(self):
+        resp = self.client.get('/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Current Applications')
+        self.assertContains(resp, 'Penn Labs Team')
+        self.assertContains(resp, 'SUBMITTED')
+
+    def test_edit_event(self):
+        resp = self.client.get('/1/edit/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Houston Hall')
+
+    def test_edit_event_location(self):
+        with open('app/fixtures/event_edit.json', 'r') as f:
+            resp = self.client.post('/1/edit/', json.load(f))
+        self.assertEqual(resp.status_code, 302)
+        resp = self.client.get('/1/edit/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'First Round')
