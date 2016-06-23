@@ -115,3 +115,30 @@ class TestEvents(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Past Applications')
         self.assertContains(resp, 'Test Event')
+
+
+class TestShare(TestCase):
+    fixtures = ['events.json']
+    key = "a96055ddf995cce98469884fa202d3c40032e039"
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='philo',
+                                             email='philo@upenn.edu',
+                                             password='we<3literature')
+        self.event = Event.objects.get(pk=1)
+
+    def test_event_secret_key(self):
+        self.assertEqual(self.event.secret_key, TestShare.key)
+
+    def test_event_share_link_no_access(self):
+        resp = self.client.get('/1/')
+        self.assertEqual(resp.status_code, 302)
+
+    def test_event_access_with_login(self):
+        self.client.login(username='philo', password='we<3literature')
+        resp = self.client.get('/1/')
+        self.assertEqual(resp.status_code, 200)
+
+    def test_event_access_with_key(self):
+        resp = self.client.get('/1/?key=' + TestShare.key)
+        self.assertEqual(resp.status_code, 200)
