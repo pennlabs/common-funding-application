@@ -196,3 +196,21 @@ class TestEmail(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject,
                          'Followup Questions for Test Event')
+
+
+class TestEmailFunders(TestCase):
+    fixtures = ['events.json']
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='philo',
+                                             email='philo@upenn.edu',
+                                             password='we<3literature')
+        self.funder = create_funder()
+        self.event = Event.objects.get(pk=1)
+        self.event.applied_funders.add(self.funder.get_profile())
+
+    def test_notify_funders(self):
+        self.event.notify_funders()
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject,
+                         '[Test Event] Event Application Changed')
