@@ -1,10 +1,21 @@
 import json
 
 from django.test import TestCase
+from unittest import skip
 from django.core import mail
 
 from django.contrib.auth.models import User
 from .models import CFAUser, Event
+
+
+def create_funder():
+    funder = User.objects.create_user(username='spec',
+                                      email='spec@upenn.edu',
+                                      password='we<3money$$$')
+    cfau = funder.get_profile()
+    cfau.user_type = 'F'
+    cfau.save()
+    return funder
 
 
 class CFAUserTest(TestCase):
@@ -116,6 +127,32 @@ class TestEvents(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Past Applications')
         self.assertContains(resp, 'Test Event')
+
+
+class TestFunder(TestCase):
+    fixtures = ['events.json']
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='philo',
+                                             email='philo@upenn.edu',
+                                             password='we<3literature')
+        self.funder = create_funder()
+        self.client.login(username='spec', password='we<3money$$$')
+        self.event = Event.objects.get(pk=1)
+
+    def test_funder_is_funder(self):
+        self.assertTrue(self.funder.get_profile().is_funder)
+        self.assertTrue(self.user.get_profile().is_requester)
+
+    @skip("Currently all funders have access to all applications")
+    def test_event_no_funder_no_access(self):
+        resp = self.client.get('/1/')
+        self.assertEqual(resp.status_code, 302)
+
+    def test_event_has_funder_has_access(self):
+        self.event.applied_funders.add(self.funder.get_profile())
+        resp = self.client.get('/1/')
+        self.assertEqual(resp.status_code, 200)
 
 
 class TestShare(TestCase):
