@@ -4,6 +4,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.contrib.localflavor.us.forms import USPhoneNumberField
+from django.core import mail
 from django.core.mail import EmailMessage
 from django.db import models
 from django.db.models.signals import post_save
@@ -24,6 +25,15 @@ REQUESTER_OR_FUNDER = (
     ('R', 'REQUESTER'),
     ('F', 'FUNDER'),
 )
+
+
+def can_send_email():
+    """Only actually send the emails if not in DEBUG mode or if testing
+
+    To check if in testing, we see if mail has an outbox, which is part of
+    Django's testing tools.
+    """
+    return not DEBUG or hasattr(mail, 'outbox')
 
 
 class CFAUser(models.Model):
@@ -79,7 +89,7 @@ class CFAUser(models.Model):
         headers = {'Reply-To': self.user.email}
         email = EmailMessage(subject, message,
                              DEFAULT_FROM_EMAIL, recipients, headers)
-        if not DEBUG:
+        if can_send_email():
             email.send()
 
     def required_eligibility_question_ids(self):
@@ -239,7 +249,7 @@ class Event(models.Model):
                              to=[funder.user.email],
                              cc=funder.cc_emails.values_list('email',
                                                              flat=True))
-        if not DEBUG:
+        if can_send_email():
             email.send()
 
     def notify_requester(self, grants):
@@ -266,7 +276,7 @@ class Event(models.Model):
                              cc=self.requester.cc_emails
                                     .values_list('email', flat=True))
         email.content_subtype = "html"  # main content is not text/html
-        if not DEBUG:
+        if can_send_email():
             email.send()
 
     @property
@@ -313,7 +323,7 @@ def notify_requester(sender, instance, signal, created, **kwargs):
         recipients = [instance.event.contact_email]
         headers = {'Reply-To': instance.funder.user.email}
         email = EmailMessage(subject, message, sender, recipients, headers)
-        if not DEBUG:
+        if can_send_email():
             email.send()
 
 

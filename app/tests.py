@@ -1,6 +1,7 @@
 import json
 
 from django.test import TestCase
+from django.core import mail
 
 from django.contrib.auth.models import User
 from .models import CFAUser, Event
@@ -142,3 +143,19 @@ class TestShare(TestCase):
     def test_event_access_with_key(self):
         resp = self.client.get('/1/?key=' + TestShare.key)
         self.assertEqual(resp.status_code, 200)
+
+
+class TestEmail(TestCase):
+    fixtures = ['events.json']
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='philo',
+                                             email='philo@upenn.edu',
+                                             password='we<3literature')
+
+    def test_notify_requester(self):
+        event = Event.objects.get(pk=1)
+        event.notify_requester_for_followups()
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject,
+                         'Followup Questions for Test Event')
