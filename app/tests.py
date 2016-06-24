@@ -5,7 +5,7 @@ from unittest import skip
 from django.core import mail
 
 from django.contrib.auth.models import User
-from .models import CFAUser, Event
+from .models import CFAUser, Event, Grant
 
 
 def create_funder():
@@ -214,3 +214,34 @@ class TestEmailFunders(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject,
                          '[Test Event] Event Application Changed')
+
+
+class TestItemGrant(TestCase):
+    fixtures = ['events.json']
+
+    def create_item(self, event):
+        return event.item_set.create(name="Free Software",
+                                     quantity=10,
+                                     price_per_unit=100,
+                                     funding_already_received=0,
+                                     category="Honoraria/Services",
+                                     revenue=0)
+
+    def setUp(self):
+        self.funder = create_funder()
+        self.event = Event.objects.get(pk=1)
+
+    def test_total_amounts_not_funded(self):
+        self.create_item(self.event)
+        self.assertEqual(self.event.amounts, {})
+        self.assertEqual(self.event.total_funds_granted, 0)
+
+    def test_create_grant(self):
+        item = self.create_item(self.event)
+        grant = Grant.objects.create(funder=self.funder.get_profile(),
+                                     item=item,
+                                     amount=50)
+        grant.save()
+        item.grant_set.add(grant)
+        item.save()
+        self.assertEqual(self.event.total_funds_granted, 50)
