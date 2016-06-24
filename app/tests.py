@@ -6,7 +6,7 @@ from django.core import mail
 
 from django.contrib.auth.models import User
 from .models import CFAUser, Event, Grant
-
+from templatetags import helpers
 
 def create_funder():
     funder = User.objects.create_user(username='spec',
@@ -219,7 +219,8 @@ class TestEmailFunders(TestCase):
 class TestItemGrant(TestCase):
     fixtures = ['events.json']
 
-    def create_item(self, event):
+    @staticmethod
+    def create_item(event):
         return event.item_set.create(name="Free Software",
                                      quantity=10,
                                      price_per_unit=100,
@@ -232,12 +233,12 @@ class TestItemGrant(TestCase):
         self.event = Event.objects.get(pk=1)
 
     def test_total_amounts_not_funded(self):
-        self.create_item(self.event)
+        TestItemGrant.create_item(self.event)
         self.assertEqual(self.event.amounts, {})
         self.assertEqual(self.event.total_funds_granted, 0)
 
     def test_create_grant(self):
-        item = self.create_item(self.event)
+        item = TestItemGrant.create_item(self.event)
         grant = Grant.objects.create(funder=self.funder.get_profile(),
                                      item=item,
                                      amount=50)
@@ -245,3 +246,30 @@ class TestItemGrant(TestCase):
         item.grant_set.add(grant)
         item.save()
         self.assertEqual(self.event.total_funds_granted, 50)
+
+
+class TestHelpers(TestCase):
+    fixtures = ['events.json']
+
+    def setUp(self):
+        self.funder = create_funder()
+        self.event = Event.objects.get(pk=1)
+        self.item = TestItemGrant.create_item(self.event)
+        grant = Grant.objects.create(funder=self.funder.get_profile(),
+                                     item=self.item,
+                                     amount=50)
+        grant.save()
+        self.item.grant_set.add(grant)
+        self.item.save()
+
+    def test_funders_grant_data_to_item_no_grant(self):
+        self.item.grant_set.all().delete()
+        self.item.save()
+        item_tuple = helpers.funders_grant_data_to_item(
+            None, self.item, self.funder.id)
+        self.assertEqual((None, self.item.id), item_tuple)
+
+    def test_funders_grant_data_to_item(self):
+        item_tuple = helpers.funders_grant_data_to_item(
+            None, self.item, self.funder.id)
+        self.assertEqual((50, self.item.id), item_tuple)
