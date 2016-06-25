@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from .models import CFAUser, Event, Grant
 from templatetags import helpers
 
+
 def create_funder():
     funder = User.objects.create_user(username='spec',
                                       email='spec@upenn.edu',
@@ -273,3 +274,15 @@ class TestHelpers(TestCase):
         item_tuple = helpers.funders_grant_data_to_item(
             None, self.item, self.funder.id)
         self.assertEqual((50, self.item.id), item_tuple)
+
+    def test_funder_item_data(self):
+        result = helpers.funder_item_data(None, self.item, [self.funder])
+        # funder data - funder id, amount = 50, grant id = 1
+        expected = (self.item, [(self.funder.id, 50, 1)])
+        self.assertEqual(expected, result)
+
+    def test_get_or_none_exists(self):
+        self.assertEqual(self.event, helpers.get_or_none(Event, pk=1))
+
+    def test_get_or_none_does_not_exist(self):
+        self.assertEqual(None, helpers.get_or_none(Event, pk=2))
