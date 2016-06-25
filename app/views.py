@@ -360,7 +360,7 @@ def event_destroy(request, event_id):
     event = Event.objects.get(pk=event_id)
     event.delete()
     return HttpResponse(json.dumps({'event_id': event_id}),
-                        mimetype="application/json")
+                        content_type="application/json")
 
 # GET /funders/1/edit
 # POST /funders/1/edit
