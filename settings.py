@@ -142,6 +142,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'app',
     'registration',
+    'localflavor',
     'south'
 )
 
