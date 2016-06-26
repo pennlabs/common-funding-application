@@ -14,8 +14,8 @@
 <header>
 {% if not user.is_staff and user.get_profile.is_requester %}
 <div class="btns pull-right">
-     <a class="btn btn-primary" href="{% url app.views.events %}">Current Applications</a>
-  <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
+     <a class="btn btn-primary" href="{% url 'app.views.events' %}">Current Applications</a>
+  <a class="btn btn-primary" href="{% url 'app.views.event_new' %}">Create New</a>
 </div>
 {% endif %}
 <div>
@@ -73,14 +73,14 @@
       </div>
       <div class="span3 buttons">
         {% if user.is_staff or app.locked or user.get_profile.is_funder or app.date_passed %}
-        <a class="btn btn-info" href="{% url app.views.event_show app.id %}">
+        <a class="btn btn-info" href="{% url 'app.views.event_show' app.id %}">
           <i class="icon-file icon-white"></i> View
         </a>
         {% else %}
-        <a class="destroy-event btn btn-danger" href="{% url app.views.event_destroy app.id %}">
+        <a class="destroy-event btn btn-danger" href="{% url 'app.views.event_destroy' app.id %}">
           <i class="icon-trash icon-white"></i> Delete
         </a>
-        <a class="btn btn-info" href="{% url app.views.event_edit app.id %}">
+        <a class="btn btn-info" href="{% url 'app.views.event_edit' app.id %}">
           <i class="icon-edit icon-white"></i> Edit
         </a>
         {% endif %}
