@@ -1,9 +1,8 @@
 from hashlib import sha1
-import re
 import datetime
 
 from django.contrib.auth.models import User
-from django.contrib.localflavor.us.forms import USPhoneNumberField
+from localflavor.us.forms import USPhoneNumberField
 from django.core import mail
 from django.core.mail import EmailMessage
 from django.db import models

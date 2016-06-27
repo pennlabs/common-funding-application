@@ -14,13 +14,13 @@
 <header>
 {% if not user.is_staff and user.get_profile.is_requester %}
 <div class="btns pull-right">
-   <a class="btn btn-primary" href="{% url app.views.events_old %}">Old Applications</a>
-  <a class="btn btn-primary" href="{% url app.views.event_new %}">Create New</a>
+   <a class="btn btn-primary" href="{% url 'app.views.events_old' %}">Old Applications</a>
+  <a class="btn btn-primary" href="{% url 'app.views.event_new' %}">Create New</a>
 
 </div>
 {% elif user.get_profile.is_funder %}
 <div class="btns pull-right">
-  <a class="btn btn-primary" href="{% url app.views.funder_edit user.id %}">Edit Info</a>
+  <a class="btn btn-primary" href="{% url 'app.views.funder_edit' user.id %}">Edit Info</a>
 </div>
 {% endif %}
 <div>
@@ -84,14 +84,14 @@
       </div>
       <div class="span2 buttons">
         {% if user.is_staff or event.over or user.get_profile.is_funder %}
-        <a class="btn btn-info" href="{% url app.views.event_show app.id %}">
+        <a class="btn btn-info" href="{% url 'app.views.event_show' app.id %}">
           <i class="icon-file icon-white"></i> View
         </a>
         {% else %}
-        <a class="destroy-event btn btn-danger" href="{% url app.views.event_destroy app.id %}">
+        <a class="destroy-event btn btn-danger" href="{% url 'app.views.event_destroy' app.id %}">
           <i class="icon-trash icon-white"></i> Delete
         </a>
-        <a class="btn btn-info" href="{% url app.views.event_edit app.id %}">
+        <a class="btn btn-info" href="{% url 'app.views.event_edit' app.id %}">
           <i class="icon-edit icon-white"></i> Edit
         </a>
         {% endif %}
@@ -131,21 +131,21 @@
   <div class="pagination pagination-centered">
     <ul>
       {% if page_obj.has_previous %}
-      <li><a href="{% url app.views.events %}?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+      <li><a href="{% url 'app.views.events' %}?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
       {% endif %}
 
       {% for i in page_range %}
           {% if i == page_obj.number %}
             <li class="active">
-              <a href="{% url app.views.events %}?page={{i}}">{{i}}</a>
+              <a href="{% url 'app.views.events' %}?page={{i}}">{{i}}</a>
             </li>
           {% else %}
-            <li><a href="{% url app.views.events %}?page={{i}}">{{i}}</a></li>
+            <li><a href="{% url 'app.views.events' %}?page={{i}}">{{i}}</a></li>
           {% endif %}
       {% endfor %}
 
       {% if page_obj.has_next %}
-      <li><a href="{% url app.views.events %}?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+      <li><a href="{% url 'app.views.events' %}?page={{ page_obj.next_page_number }}">&raquo;</a></li>
       {% endif %}
     </ul>
   </div>

@@ -33,7 +33,7 @@
       <button id="no-fund" class="btn btn-danger" type="submit" name="submit" hidden="">Do Not Fund</button>
     </div>
     {% else %}
-    <a class="btn btn-primary" href="{% url app.views.events %}">Done</a>
+    <a class="btn btn-primary" href="{% url 'app.views.events' %}">Done</a>
     {% endif %}
   </form>
 </div>
