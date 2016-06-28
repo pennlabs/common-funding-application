@@ -15,17 +15,17 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/common.css">
     {% block htmllink-styles %}{% endblock %}
-    
+
     <!-- fav and touch icons -->
     <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico">
   </head>
 
   <body>
-    
+
     {% block body %}
-    
+
     <div class="container">
-      
+
       {% block container %}
       {% endblock %}
 
@@ -37,9 +37,9 @@
       </footer>
 
     </div>
-    
+
     {% endblock %}
-    
+
     <!-- javascript -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script type="text/javascript">
