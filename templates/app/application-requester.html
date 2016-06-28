@@ -21,7 +21,7 @@
 <div id="main">
 
   {% if event %}
-    <form action="{% url 'app.views.event_edit' event.id %}" method="post" class="form-horizontal">
+    <form action="{% url 'event-edit' event.id %}" method="post" class="form-horizontal">
   {% else %}
     <form action="{% url 'app.views.event_new' %}" method="post" class="form-horizontal">
   {% endif %}

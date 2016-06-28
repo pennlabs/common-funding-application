@@ -22,7 +22,7 @@
       </h2>
     </div>
     <div class="section-content">
-      <form action="{% url 'app.views.funder_edit' user.id %}"
+      <form action="{% url 'funder-edit' user.id %}"
             method="post"
             class="form-horizontal">
         {% csrf_token %}

@@ -153,11 +153,12 @@ def save_from_form(event, POST):
 def events(request):
     if request.method == 'GET':
         user = request.user
-        #if the request type has GET query type, set it as the parameter
+        # if the request type has GET query type, set it as the parameter
         sorted_type = request.GET.get('sort').strip() if 'sort' in request.GET else 'date'
-        query_dict = {'event':'name',
-                      'org' : 'organizations'
-                      }
+        query_dict = {
+            'event': 'name',
+            'org': 'organizations'
+        }
         sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
         cfauser = user.get_profile()
         two_weeks_ago = datetime.today().date() - timedelta(days=14)
@@ -185,7 +186,7 @@ def events(request):
     else:
         return HttpResponseNotAllowed(['GET'])
 
-# GET  /
+# GET  /old
 # previous events
 @login_required
 def events_old(request):

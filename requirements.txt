@@ -1,4 +1,4 @@
-Django==1.5.5
+Django==1.5.11
 South==0.8.4
 django-registration==1.0
 django-templatetag-sugar==0.1

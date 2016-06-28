@@ -73,14 +73,14 @@
       </div>
       <div class="span3 buttons">
         {% if user.is_staff or app.locked or user.get_profile.is_funder or app.date_passed %}
-        <a class="btn btn-info" href="{% url 'app.views.event_show' app.id %}">
+        <a class="btn btn-info" href="{% url 'event-show' app.id %}">
           <i class="icon-file icon-white"></i> View
         </a>
         {% else %}
-        <a class="destroy-event btn btn-danger" href="{% url 'app.views.event_destroy' app.id %}">
+        <a class="destroy-event btn btn-danger" href="{% url 'event-destroy' app.id %}">
           <i class="icon-trash icon-white"></i> Delete
         </a>
-        <a class="btn btn-info" href="{% url 'app.views.event_edit' app.id %}">
+        <a class="btn btn-info" href="{% url 'event-edit' app.id %}">
           <i class="icon-edit icon-white"></i> Edit
         </a>
         {% endif %}
