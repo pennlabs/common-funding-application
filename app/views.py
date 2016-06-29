@@ -34,7 +34,7 @@ def authorization_required(view):
             key = request.GET['key']
         except KeyError:
             try:
-                user = request.user.get_profile()
+                user = request.user.profile
             except:
                 return redirect(EVENTS_HOME)
             else:
@@ -54,7 +54,7 @@ def authorization_required(view):
 def requester_only(view):
     """Ensure only the user who requested the event can access a page."""
     def protected_view(request, event_id, *args, **kwargs):
-        user = request.user.get_profile()
+        user = request.user.profile
         event = Event.objects.get(pk=event_id)
         if user.is_requester and user.requested(event):
             return view(request, event_id, *args, **kwargs)
@@ -160,7 +160,7 @@ def events(request):
             'org': 'organizations'
         }
         sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
-        cfauser = user.get_profile()
+        cfauser = user.profile
         two_weeks_ago = datetime.today().date() - timedelta(days=14)
         app = Event.objects.filter(date__gt=two_weeks_ago).order_by(sort_by)
         if 'page' in request.GET:
@@ -192,7 +192,7 @@ def events(request):
 def events_old(request):
     if request.method == 'GET':
         user = request.user
-        cfauser = user.get_profile()
+        cfauser = user.profile
         two_weeks_ago = datetime.today().date() - timedelta(days=14)
         if user.is_staff:
             apps = Event.objects.filter(date__lt=two_weeks_ago).order_by('-date')
@@ -225,7 +225,7 @@ def event_new(request):
                 name=request.POST['name'],
                 status=status,
                 date=date,
-                requester=request.user.get_profile(),
+                requester=request.user.profile,
                 location=request.POST['location'],
                 organizations=request.POST['organizations'],
                 contact_name = request.POST['contactname'],
@@ -259,7 +259,7 @@ def event_new(request):
 def event_edit(request, event_id):
     event = Event.objects.get(pk=event_id)
     if event.over:
-        return redirect('app.views.event_show', event_id)
+        return redirect('event-show', event_id)
     if request.method == 'POST':
         if event.followup_needed:
             status = 'O'  # O for OVER
@@ -303,14 +303,14 @@ def event_show(request, event_id):
     user = request.user
     event = Event.objects.get(pk=event_id)
     if request.method == 'POST':  # TODO: should really be PUT
-        if user.get_profile().is_funder:
+        if user.profile.is_funder:
             grants = []
             for item in event.item_set.all():
                 amount = request.POST.get("item_" + str(item.id), None)
                 if amount:
                     amount = Decimal(amount)
                     grant, _ =\
-                        Grant.objects.get_or_create(funder=user.get_profile(),
+                        Grant.objects.get_or_create(funder=user.profile,
                                                     item=item,
                                                     defaults={'amount': 0})
                     amount_funded = sum(grant.amount for grant in
@@ -333,12 +333,12 @@ def event_show(request, event_id):
                 event.notify_requester(grants)
                 # try to notify osa, but osa is not guaranteed to exist
                 try:
-                    user.get_profile().notify_osa(event, grants)
+                    user.profile.notify_osa(event, grants)
                 except smtplib.SMTPException:
                     pass
             if request.POST.get('new-comment', None):
                 comment = Comment(comment=request.POST['new-comment'],
-                                  funder=user.get_profile(), event=event)
+                                  funder=user.profile, event=event)
                 comment.save()
             return redirect(EVENTS_HOME)
         else:
@@ -346,7 +346,7 @@ def event_show(request, event_id):
     elif request.method == 'GET':
         if 'id' in request.GET:
             event.shared_funder = \
-                User.objects.get(id=request.GET['id']).get_profile()
+                User.objects.get(id=request.GET['id']).profile
         return render_to_response('app/application-show.html',
                                   {'event': event},
                                   context_instance=RequestContext(request))
@@ -368,7 +368,7 @@ def event_destroy(request, event_id):
 @login_required
 def funder_edit(request, user_id):
     user = User.objects.get(pk=user_id)
-    funder = user.get_profile()
+    funder = user.profile
     if request.method == 'POST':
         # edit funder basic info.
         funder.funder_name = request.POST['fundername']

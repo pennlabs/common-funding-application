@@ -30,7 +30,7 @@
         <div class="control-group">
           <label for="fundername" class="control-label">Funder Name</label>
           <div class="controls">
-            <input value="{{ user.get_profile.funder_name }}"
+            <input value="{{ user.profile.funder_name }}"
                    type="text"
                    name="fundername"
                    id="fundername"
@@ -45,7 +45,7 @@
             <textarea type="text"
                       name="missionstatement"
                       class="span7 input-xlarge"
-                      rows="5">{{user.get_profile.mission_statement}}</textarea>
+                      rows="5">{{user.profile.mission_statement}}</textarea>
           </div>
         </div>
 
@@ -97,7 +97,7 @@
                   {{question.question}}
                 </td>
                 <td>
-                  {% if user.get_profile in question.required_funders %}
+                  {% if user.profile in question.required_funders %}
                   <button class="btn btn-danger remove-funderconstraint"
                           data-qid="{{question.id}}"> Required</button>
                   <input type="hidden"

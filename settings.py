@@ -24,8 +24,7 @@ LOGIN_URL = os.path.join(URL_ROOT, "accounts/login/")
 LOGOUT_URL = os.path.join(URL_ROOT, "accounts/logout/")
 LOGIN_REDIRECT_URL = URL_ROOT
 
-AUTH_PROFILE_MODULE = "app.CFAUser"
-
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 ADMINS = (
     ('Penn Labs', 'admin+cfaprod@pennlabs.org'),
@@ -143,7 +142,6 @@ INSTALLED_APPS = (
     'app',
     'registration',
     'localflavor',
-    'south'
 )
 
 

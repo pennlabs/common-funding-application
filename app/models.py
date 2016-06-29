@@ -39,14 +39,15 @@ class CFAUser(models.Model):
     """
     A CFA User profile.
     # Create user
-    >> u = User.objects.create_user("alice", "alice@example.com", "1234")
-    >> cfau = u.get_profile()
-    >> cfau.is_requester
+    >>> u = User.objects.create_user("alice", "alice@example.com", "1234")
+    >>> cfau = u.profile
+    >>> cfau.is_requester
     True
     """
     funder_name = models.CharField(max_length=256, default='', blank=True)
     user = models.OneToOneField(User, help_text='You must first create a user '
-                                'before adding them to the CFA.')
+                                'before adding them to the CFA.',
+                                related_name='profile')
     user_type = models.CharField(max_length=1, choices=REQUESTER_OR_FUNDER)
     phone = USPhoneNumberField()
     # The e-mail of the contact in OSA
@@ -288,7 +289,7 @@ class Event(models.Model):
     @models.permalink
     def get_absolute_url(self):
         if self.id:
-            return ('app.views.event_show', [str(self.id)])
+            return ('event-show', [str(self.id)])
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),
@@ -442,7 +443,7 @@ class Item(models.Model):
     funding_already_received = models.DecimalField(max_digits=17,
                                                    decimal_places=2)
     category = models.CharField(max_length=1, choices=CATEGORIES)
-    revenue = models.BooleanField()
+    revenue = models.BooleanField(default=False)
 
     @property
     def total(self):
