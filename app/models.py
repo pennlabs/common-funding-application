@@ -39,9 +39,9 @@ class CFAUser(models.Model):
     """
     A CFA User profile.
     # Create user
-    >> u = User.objects.create_user("alice", "alice@example.com", "1234")
-    >> cfau = u.profile
-    >> cfau.is_requester
+    >>> u = User.objects.create_user("alice", "alice@example.com", "1234")
+    >>> cfau = u.profile
+    >>> cfau.is_requester
     True
     """
     funder_name = models.CharField(max_length=256, default='', blank=True)
