@@ -24,6 +24,7 @@ LOGIN_URL = os.path.join(URL_ROOT, "accounts/login/")
 LOGOUT_URL = os.path.join(URL_ROOT, "accounts/logout/")
 LOGIN_REDIRECT_URL = URL_ROOT
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 ADMINS = (
     ('Penn Labs', 'admin+cfaprod@pennlabs.org'),
