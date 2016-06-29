@@ -259,7 +259,7 @@ def event_new(request):
 def event_edit(request, event_id):
     event = Event.objects.get(pk=event_id)
     if event.over:
-        return redirect('app.views.event_show', event_id)
+        return redirect('event-show', event_id)
     if request.method == 'POST':
         if event.followup_needed:
             status = 'O'  # O for OVER
