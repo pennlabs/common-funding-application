@@ -443,7 +443,7 @@ class Item(models.Model):
     funding_already_received = models.DecimalField(max_digits=17,
                                                    decimal_places=2)
     category = models.CharField(max_length=1, choices=CATEGORIES)
-    revenue = models.BooleanField()
+    revenue = models.BooleanField(default=False)
 
     @property
     def total(self):
