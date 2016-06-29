@@ -105,19 +105,19 @@
   </div>
   <div class="section-content">
     <fieldset>
-      {% if not user.is_staff and user.get_profile.is_requester %}
+      {% if not user.is_staff and user.profile.is_requester %}
       {% itemlist_requester 0 event.item_set.all event.funded %}
       {% itemlist_requester 1 event.item_set.all event.funded %}
       {% else %}
-      {% itemlist_funder 0 event.item_set.all event.applied_funders.all user.get_profile.id %}
-      {% itemlist_funder 1 event.item_set.all event.applied_funders.all user.get_profile.id %}
+      {% itemlist_funder 0 event.item_set.all event.applied_funders.all user.profile.id %}
+      {% itemlist_funder 1 event.item_set.all event.applied_funders.all user.profile.id %}
       {% endif %}
       <table class="items-total">
         <tr>
           <td>Expense Total</td>
           <td>$<span class="items-exp-total">0.00</span></td>
         </tr>
-        {% if user.is_staff or not user.get_profile.is_requester %}
+        {% if user.is_staff or not user.profile.is_requester %}
         <tr>
           <td>Funding Received Total</td>
           <td>&ndash;$<span class="items-recv-total">0.00</span></td>
@@ -183,14 +183,14 @@
   <div class="section-content">
     <fieldset>
     <p id="funder-no-q">
-      {% if not user.is_staff and user.get_profile.is_requester %}
+      {% if not user.is_staff and user.profile.is_requester %}
       No questions yet. Please select funders.
       {% else %}
       No other questions answered.
       {% endif %}
     </p>
     {% for qa in funder_qas %}
-      {% if not readonly or qa.question.funder == user.get_profile or qa.question.funder == event.shared_funder %}
+      {% if not readonly or qa.question.funder == user.profile or qa.question.funder == event.shared_funder %}
       <div class="extra-answer funder-q-{{ qa.question.funder.id }}">
         <label>{{ qa.question.question }} <em>for {{ qa.question.funder }}</em></label>
         <textarea type="text"
@@ -210,7 +210,7 @@
     <h2>
       Comments
       <small>
-        {% if user.get_profile.is_funder %}
+        {% if user.profile.is_funder %}
         feel free to leave a message
         {% else %}
         here are some comments from your potential funders
@@ -225,7 +225,7 @@
     {% empty %}
     There are no comments yet.
     {% endfor %}
-    {% if user.get_profile.is_funder %}
+    {% if user.profile.is_funder %}
     <p>Specify any conditions and stipulations here.</p>
     <textarea name="new-comment" class="span8 input-xlarge"></textarea>
     {% endif %}

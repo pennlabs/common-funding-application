@@ -93,7 +93,7 @@ def application(context, user, event):
         FollowupQuestion.objects.filter(funder__event_applied_funders=event)]
 
   try:
-    is_funder = user.get_profile().is_funder
+    is_funder = user.profile.is_funder
     if not user or not user.is_authenticated() or user.is_staff or is_funder or event.over:
       new_context['extra_attrs'] = 'readonly'
       new_context['readonly'] = True

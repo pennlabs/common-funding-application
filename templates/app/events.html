@@ -12,13 +12,13 @@
 
 {% block container %}
 <header>
-{% if not user.is_staff and user.get_profile.is_requester %}
+{% if not user.is_staff and user.profile.is_requester %}
 <div class="btns pull-right">
    <a class="btn btn-primary" href="{% url 'app.views.events_old' %}">Old Applications</a>
   <a class="btn btn-primary" href="{% url 'app.views.event_new' %}">Create New</a>
 
 </div>
-{% elif user.get_profile.is_funder %}
+{% elif user.profile.is_funder %}
 <div class="btns pull-right">
   <a class="btn btn-primary" href="{% url 'funder-edit' user.id %}">Edit Info</a>
 </div>
@@ -26,7 +26,7 @@
 <div>
   <h2>
     Current Applications
-    <small>Welcome, {{ user.get_profile }}!</small>
+    <small>Welcome, {{ user.profile }}!</small>
   </h2>
 </div>
 </header>
@@ -83,7 +83,7 @@
         {% endif %}
       </div>
       <div class="span2 buttons">
-        {% if user.is_staff or event.over or user.get_profile.is_funder %}
+        {% if user.is_staff or event.over or user.profile.is_funder %}
         <a class="btn btn-info" href="{% url 'event-show' app.id %}">
           <i class="icon-file icon-white"></i> View
         </a>

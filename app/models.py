@@ -40,13 +40,14 @@ class CFAUser(models.Model):
     A CFA User profile.
     # Create user
     >> u = User.objects.create_user("alice", "alice@example.com", "1234")
-    >> cfau = u.get_profile()
+    >> cfau = u.profile
     >> cfau.is_requester
     True
     """
     funder_name = models.CharField(max_length=256, default='', blank=True)
     user = models.OneToOneField(User, help_text='You must first create a user '
-                                'before adding them to the CFA.')
+                                'before adding them to the CFA.',
+                                related_name='profile')
     user_type = models.CharField(max_length=1, choices=REQUESTER_OR_FUNDER)
     phone = USPhoneNumberField()
     # The e-mail of the contact in OSA

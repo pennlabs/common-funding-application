@@ -176,7 +176,7 @@ def add_funder(name, un, desc, qs, fqs):
         password=un,
         email=TEST_EMAIL)
     user.first_name = name[:30]
-    profile = user.get_profile()
+    profile = user.profile
     profile.user_type = 'F'
     profile.mission_statement = desc
     profile.osa_email = TEST_EMAIL

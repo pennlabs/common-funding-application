@@ -13,7 +13,7 @@ def create_funder():
     funder = User.objects.create_user(username='spec',
                                       email='spec@upenn.edu',
                                       password='we<3money$$$')
-    cfau = funder.get_profile()
+    cfau = funder.profile
     cfau.user_type = 'F'
     cfau.save()
     return funder
@@ -142,8 +142,8 @@ class TestFunder(TestCase):
         self.event = Event.objects.get(pk=1)
 
     def test_funder_is_funder(self):
-        self.assertTrue(self.funder.get_profile().is_funder)
-        self.assertTrue(self.user.get_profile().is_requester)
+        self.assertTrue(self.funder.profile.is_funder)
+        self.assertTrue(self.user.profile.is_requester)
 
     @skip("Currently all funders have access to all applications")
     def test_event_no_funder_no_access(self):
@@ -151,7 +151,7 @@ class TestFunder(TestCase):
         self.assertEqual(resp.status_code, 302)
 
     def test_event_has_funder_has_access(self):
-        self.event.applied_funders.add(self.funder.get_profile())
+        self.event.applied_funders.add(self.funder.profile)
         resp = self.client.get('/1/')
         self.assertEqual(resp.status_code, 200)
 
@@ -208,7 +208,7 @@ class TestEmailFunders(TestCase):
                                              password='we<3literature')
         self.funder = create_funder()
         self.event = Event.objects.get(pk=1)
-        self.event.applied_funders.add(self.funder.get_profile())
+        self.event.applied_funders.add(self.funder.profile)
 
     def test_notify_funders(self):
         self.event.notify_funders()
@@ -240,7 +240,7 @@ class TestItemGrant(TestCase):
 
     def test_create_grant(self):
         item = TestItemGrant.create_item(self.event)
-        grant = Grant.objects.create(funder=self.funder.get_profile(),
+        grant = Grant.objects.create(funder=self.funder.profile,
                                      item=item,
                                      amount=50)
         grant.save()
@@ -256,7 +256,7 @@ class TestHelpers(TestCase):
         self.funder = create_funder()
         self.event = Event.objects.get(pk=1)
         self.item = TestItemGrant.create_item(self.event)
-        grant = Grant.objects.create(funder=self.funder.get_profile(),
+        grant = Grant.objects.create(funder=self.funder.profile,
                                      item=self.item,
                                      amount=50)
         grant.save()
