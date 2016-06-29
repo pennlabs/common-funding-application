@@ -142,7 +142,6 @@ INSTALLED_APPS = (
     'app',
     'registration',
     'localflavor',
-    'south'
 )
 
 
