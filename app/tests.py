@@ -76,9 +76,6 @@ class TestEvents(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
-        self.user = User.objects.create_user(username='philo',
-                                             email='philo@upenn.edu',
-                                             password='we<3literature')
         self.client.login(username='philo', password='we<3literature')
 
     def test_index(self):
@@ -134,9 +131,7 @@ class TestFunder(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
-        self.user = User.objects.create_user(username='philo',
-                                             email='philo@upenn.edu',
-                                             password='we<3literature')
+        self.user = User.objects.get(username='philo')
         self.funder = create_funder()
         self.client.login(username='spec', password='we<3money$$$')
         self.event = Event.objects.get(pk=1)
@@ -161,9 +156,6 @@ class TestShare(TestCase):
     key = "a96055ddf995cce98469884fa202d3c40032e039"
 
     def setUp(self):
-        self.user = User.objects.create_user(username='philo',
-                                             email='philo@upenn.edu',
-                                             password='we<3literature')
         self.event = Event.objects.get(pk=1)
 
     def test_event_secret_key(self):
@@ -186,11 +178,6 @@ class TestShare(TestCase):
 class TestEmail(TestCase):
     fixtures = ['events.json']
 
-    def setUp(self):
-        self.user = User.objects.create_user(username='philo',
-                                             email='philo@upenn.edu',
-                                             password='we<3literature')
-
     def test_notify_requester(self):
         event = Event.objects.get(pk=1)
         event.notify_requester_for_followups()
@@ -203,9 +190,6 @@ class TestEmailFunders(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
-        self.user = User.objects.create_user(username='philo',
-                                             email='philo@upenn.edu',
-                                             password='we<3literature')
         self.funder = create_funder()
         self.event = Event.objects.get(pk=1)
         self.event.applied_funders.add(self.funder.profile)
