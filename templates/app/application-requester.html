@@ -23,7 +23,7 @@
   {% if event %}
     <form action="{% url 'event-edit' event.id %}" method="post" class="form-horizontal">
   {% else %}
-    <form action="{% url 'app.views.event_new' %}" method="post" class="form-horizontal">
+    <form action="{% url 'new-event' %}" method="post" class="form-horizontal">
   {% endif %}
 
     {% csrf_token %}
@@ -31,7 +31,7 @@
 
     <div class="form-actions">
       <p>Make sure that no field is left empty to avoid errors.</p>
-      <a class="btn" href="{% url 'app.views.events' %}">Cancel</a>
+      <a class="btn" href="{% url 'events' %}">Cancel</a>
       <button class="btn" type="submit" name="save-event">Save</button>
       <button class="btn btn-primary" type="submit" name="submit-event">Submit</button>
     </div>

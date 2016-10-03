@@ -18,7 +18,7 @@ from app.models import (Event, Grant, Comment, User, FreeResponseQuestion,
                         FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
 
 
-EVENTS_HOME = 'app.views.events'
+EVENTS_HOME = 'events'
 
 
 def authorization_required(view):
