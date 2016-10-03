@@ -83,8 +83,8 @@ class CFAUser(models.Model):
         assert self.is_funder
         context = {'funder': self, 'event': event, 'grants': grants}
         subject =\
-            render_to_string('app/osa_email_subject.txt', context).strip()
-        message = render_to_string('app/osa_email.txt', context)
+            render_to_string('app/osa_email_subject.txt', context=context).strip()
+        message = render_to_string('app/osa_email.txt', context=context)
         recipients = [str(self.osa_email)]
         headers = {'Reply-To': self.user.email}
         email = EmailMessage(subject, message,
@@ -234,8 +234,8 @@ class Event(models.Model):
             'app/application_email' if new else 'app/application_changed'
 
         subject =\
-            render_to_string('%s_subject.txt' % template, context).strip()
-        message = render_to_string('%s.txt' % template, context)
+            render_to_string('%s_subject.txt' % template, context=context).strip()
+        message = render_to_string('%s.txt' % template, context=context)
 
         for funder in self.applied_funders.all():
             self.notify_funder(subject, message, funder)
@@ -256,8 +256,8 @@ class Event(models.Model):
         """Notify a requester that an event has been funded."""
         context = {'event': self, 'grants': grants}
         subject = render_to_string('app/grant_email_subject.txt',
-                                   context).strip()
-        message = render_to_string('app/grant_email.txt', context)
+                                   context=context).strip()
+        message = render_to_string('app/grant_email.txt', context=context)
         self.requester.user.email_user(subject, message)
 
     def notify_requester_for_followups(self):
@@ -267,8 +267,8 @@ class Event(models.Model):
         """
         context = {'event': self, 'SITE_NAME': SITE_NAME}
         subject = render_to_string('app/over_event_email_subject.txt',
-                                   context).strip()
-        html_content = render_to_string('app/over_event_email.txt', context)
+                                   context=context).strip()
+        html_content = render_to_string('app/over_event_email.txt', context=context)
         email = EmailMessage(subject=subject,
                              body=html_content,
                              from_email=DEFAULT_FROM_EMAIL,

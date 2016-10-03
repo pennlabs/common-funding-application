@@ -22,7 +22,7 @@ def itemlist_requester(context, is_revenue, items, funded):
   new_context['items'] =\
       [item for item in items if bool(item.revenue) == bool(is_revenue)]
   return render_to_string('app/templatetags/itemlist-requester.html',
-                          new_context)
+                          context=new_context)
 
 
 @tag(register, [Variable(), Variable(), Variable(), Variable()])
@@ -48,7 +48,7 @@ def itemlist_funder(context, is_revenue, items, applied_funders, funder_id):
                  'titles': title_row,
                  'current_funder': funder_id,
                  'items_data': items_data}
-  return render_to_string('app/templatetags/itemlist-funder.html', new_context)
+  return render_to_string('app/templatetags/itemlist-funder.html', context=new_context)
 
 
 @tag(register, [Variable(), Optional([Variable()])])
@@ -75,7 +75,7 @@ def application(context, user, event):
   }
 
   if event is None:
-    return render_to_string('app/templatetags/application.html', new_context)
+    return render_to_string('app/templatetags/application.html', context=new_context)
 
   if event.followup_needed or event.over:
     new_context['event_over_disable'] = 'readonly'
@@ -101,7 +101,7 @@ def application(context, user, event):
     new_context['extra_attrs'] = 'readonly'
     new_context['readonly'] = True
 
-  return render_to_string('app/templatetags/application.html', new_context)
+  return render_to_string('app/templatetags/application.html', context=new_context)
 
 @tag(register, [])
 def event_details(context):
