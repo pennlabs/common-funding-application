@@ -58,6 +58,7 @@ class TestLoginViews(TestCase):
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Current Applications')
+        self.assertContains(resp, 'Welcome, philo!')
 
     def test_index_not_logged_in(self):
         resp = self.client.get('/')
