@@ -56,7 +56,7 @@ class CFAUser(models.Model):
                                   'OSA when an app is funded.',
                                   blank=True)
     cc_emails = models.ManyToManyField("CCEmail", blank=True)
-    mission_statement = models.TextField(max_length=256, blank=True)
+    mission_statement = models.TextField(blank=True)
 
     def __unicode__(self):
         if self.is_funder:
