@@ -1,7 +1,9 @@
 import os
 import sys
+from django.core.wsgi import get_wsgi_application
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+application = get_wsgi_application()
 
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
@@ -219,11 +221,11 @@ def import_questions():
         q = EligibilityQuestion.objects.create(question=question['q'])
         for y in question['ys']:
             FunderConstraint.objects.create(
-                funder=User.objects.get(username=y).cfauser,
+                funder=User.objects.get(username=y).profile,
                 question=q, answer='Y')
         for n in question['ns']:
             FunderConstraint.objects.create(
-                funder=User.objects.get(username=n).cfauser,
+                funder=User.objects.get(username=n).profile,
                 question=q, answer='N')
 
     CommonFreeResponseQuestion.objects.all().delete()
