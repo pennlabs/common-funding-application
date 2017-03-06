@@ -13,6 +13,7 @@ DEBUG = bool(os.getenv('DEBUG', True))
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
+SITE_NAME = "https://penncfa.com"
 
 # Number of days a user has to activate his account after registration
 ACCOUNT_ACTIVATION_DAYS = 7
@@ -68,7 +69,7 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
