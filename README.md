@@ -10,7 +10,7 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Create a virtualenv (`virtualenv env`) and activate it (`source env/bin/activate`). You will need to re-activate the virtualenv in every new terminal you use.
 
-* Install python dependencies (`sudo pip install -r requirements.txt`)
+* Install python dependencies (`pip install -r requirements.txt`)
 
 * Create database (`python manage.py syncdb`)
 
