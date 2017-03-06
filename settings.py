@@ -1,4 +1,4 @@
-# Django settings for Common_Funding_Application project.
+# Django settings for the Common Funding Application project.
 import os
 import imp
 
@@ -19,6 +19,14 @@ ACCOUNT_ACTIVATION_DAYS = 7
 
 # Email address to use for automated registration emails
 DEFAULT_FROM_EMAIL = "cfa-bot@penncfa.com"
+# The e-mail assigned to all the users in `import_demo`. For testing only.
+TEST_EMAIL = 'cfa-test@penncfa.com'
+
+# Email client info, for registration and notification emails
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv("SENDGRID_USERNAME")
+EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_PASSWORD")
 
 LOGIN_URL = os.path.join(URL_ROOT, "accounts/login/")
 LOGOUT_URL = os.path.join(URL_ROOT, "accounts/logout/")
