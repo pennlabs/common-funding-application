@@ -1,6 +1,7 @@
 # Django settings for the Common Funding Application project.
 import os
 import imp
+import dj_database_url
 
 try:
     from sandbox_config import *
@@ -41,16 +42,18 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+# Database
+# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+
 DATABASES = {
     'default': {
-        'ENGINE': ('django.db.backends.%s' % DATABASE_ENGINE), # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': DATABASE_NAME,                      # Or path to database file if using sqlite3.
-        'USER': DATABASE_USER,                      # Not used with sqlite3.
-        'PASSWORD': DATABASE_PASSWORD,                  # Not used with sqlite3.
-        'HOST': DATABASE_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_ROOT, 'cfa-db.sqlite3'),
     }
 }
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

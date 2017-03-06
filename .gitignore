@@ -5,6 +5,7 @@ sandbox_config.py
 *.swp
 *~
 cfa
+cfa-db.sqlite3
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
