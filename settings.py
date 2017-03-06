@@ -104,6 +104,11 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.getenv("SECRET_KEY", 'cfa-secret-key')
 
