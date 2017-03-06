@@ -9,7 +9,7 @@ except ImportError:
     sandbox_config = imp.load_source('sandbox_config', 'sandbox_config.py_default')
     from sandbox_config import *
 
-DEBUG = True
+DEBUG = bool(os.getenv('DEBUG', True))
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -105,11 +105,10 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'fedj_fw+i*%ff#**q7+-ss@4%cbfyninbruc@$ea0k%mmf$1#3'
+SECRET_KEY = os.getenv("SECRET_KEY", 'cfa-secret-key')
 
 # New Django TEMPLATE settings that supersedes all
 TEMPLATES = [
@@ -151,7 +150,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
