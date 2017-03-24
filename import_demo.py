@@ -10,7 +10,7 @@ from django.contrib.sites.models import Site
 
 from app.models import *
 
-from sandbox_config import TEST_EMAIL
+from settings import TEST_EMAIL
 
 
 QUESTIONS = [

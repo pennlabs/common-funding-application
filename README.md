@@ -5,20 +5,12 @@ Common Funding Application
 
 The [Common Funding Application](https://penncfa.com) is an online application that allows student groups and organizations to request funding from various funding sources at the [University of Pennsylvania](http://www.upenn.edu).
 
-## Local Setup
+## Local Backend Setup
 * Install [pip](http://www.pip-installer.org/en/latest/installing.html)
 
-* Install python dependencies (`sudo pip install -r requirements.txt`)
+* Create a virtualenv (`virtualenv env`) and activate it (`source env/bin/activate`). You will need to re-activate the virtualenv in every new terminal you use.
 
-* Install [node.js](http://nodejs.org/)
-
-* Install [CoffeeScript](http://coffeescript.org) (`sudo npm install -g coffee-script`)
-
-* Compile the CoffeeScript files (`coffee -o app/static/js/ -c app/static/coffeescripts/` or `cake build` if you are in the app/static directory)
-
-* Create a configuration file (`cp sandbox_config.py_default sandbox_config.py`)
-
-* Fill in missing fields in sandbox_config.py
+* Install python dependencies (`pip install -r requirements.txt`)
 
 * Create database (`python manage.py syncdb`)
 
@@ -30,7 +22,13 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Navigate to the [app](http://localhost:8000/)
 
-## Front-End Testing
+## Front-End Setup
+
+* Install [node.js](http://nodejs.org/)
+
+* Install [CoffeeScript](http://coffeescript.org) (`sudo npm install -g coffee-script`)
+
+* Compile the CoffeeScript files (`coffee -o app/static/js/ -c app/static/coffeescripts/` or `cake build` if you are in the app/static directory)
 
 * Navigate to app/static
 
@@ -42,11 +40,20 @@ _Note_: instructions are from [our wiki](https://github.com/pennlabs/wiki/wiki/S
 
 * Edit models.py
 
-* _first migration only_ `python manage.py convert_to_south app`
-
 * `python manage.py schemamigration app --auto NAME_OF_CHANGE`
 
 * `python manage.py migrate app`
+
+## Environment Variables
+
+In development, you do not need to add any environment variables.
+However, in production, there are a few that need to be set:
+
+    DEBUG=False
+    SENDGRID_USERNAME=pennlabs
+    SENDGRID_PASSWORD
+    SECRET_KEY
+    DATABASE_URL
 
 ## Contributors
 

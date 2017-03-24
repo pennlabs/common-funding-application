@@ -1,25 +1,28 @@
-# Django settings for Common_Funding_Application project.
+# Django settings for the Common Funding Application project.
 import os
-import imp
+import dj_database_url
 
-try:
-    from sandbox_config import *
-except ImportError:
-    print "Failed to import sandbox config, trying without..."
-    sandbox_config = imp.load_source('sandbox_config', 'sandbox_config.py_default')
-    from sandbox_config import *
-
-DEBUG = True
+DEBUG = bool(os.getenv('DEBUG', True))
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
+SITE_NAME = "https://penncfa.com"
 
 # Number of days a user has to activate his account after registration
 ACCOUNT_ACTIVATION_DAYS = 7
 
 # Email address to use for automated registration emails
 DEFAULT_FROM_EMAIL = "cfa-bot@penncfa.com"
+# The e-mail assigned to all the users in `import_demo`. For testing only.
+TEST_EMAIL = 'cfa-test@penncfa.com'
 
+# Email client info, for registration and notification emails
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv("SENDGRID_USERNAME")
+EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_PASSWORD")
+
+URL_ROOT = "/"
 LOGIN_URL = os.path.join(URL_ROOT, "accounts/login/")
 LOGOUT_URL = os.path.join(URL_ROOT, "accounts/logout/")
 LOGIN_REDIRECT_URL = URL_ROOT
@@ -32,16 +35,18 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+# Database
+# https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+
 DATABASES = {
     'default': {
-        'ENGINE': ('django.db.backends.%s' % DATABASE_ENGINE), # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': DATABASE_NAME,                      # Or path to database file if using sqlite3.
-        'USER': DATABASE_USER,                      # Not used with sqlite3.
-        'PASSWORD': DATABASE_PASSWORD,                  # Not used with sqlite3.
-        'HOST': DATABASE_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(PROJECT_ROOT, 'cfa-db.sqlite3'),
     }
 }
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -60,7 +65,7 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = True
+USE_I18N = False
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
@@ -97,11 +102,15 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'fedj_fw+i*%ff#**q7+-ss@4%cbfyninbruc@$ea0k%mmf$1#3'
+SECRET_KEY = os.getenv("SECRET_KEY", 'cfa-secret-key')
 
 # New Django TEMPLATE settings that supersedes all
 TEMPLATES = [
@@ -143,7 +152,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

@@ -12,7 +12,7 @@ from django.template.loader import render_to_string
 
 from settings import DEFAULT_FROM_EMAIL
 from settings import DEBUG
-from sandbox_config import SITE_NAME
+from settings import SITE_NAME
 
 
 YES_OR_NO = (
