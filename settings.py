@@ -2,7 +2,7 @@
 import os
 import dj_database_url
 
-DEBUG = bool(os.getenv('DEBUG', True))
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
