@@ -1,0 +1,19 @@
+{
+  "name": "common-funding-application",
+  "version": "1.0.0",
+  "description": "Common Funding Application",
+  "scripts": {
+    "postinstall": "coffee -o app/static/js/ -c app/static/coffeescripts/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pennlabs/common-funding-application.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pennlabs/common-funding-application/issues"
+  },
+  "homepage": "https://github.com/pennlabs/common-funding-application#readme",
+  "devDependencies": {
+    "coffee-script": "^1.12.4"
+  }
+}
