@@ -6,6 +6,7 @@ sandbox_config.py
 *~
 cfa
 cfa-db.sqlite3
+!.buildpacks
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
