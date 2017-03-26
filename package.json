@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Common Funding Application",
   "scripts": {
-    "postinstall": "coffee -o app/static/js/ -c app/static/coffeescripts/"
+    "postinstall": "coffee --output static/js/ --compile app/static/coffeescripts/"
   },
   "repository": {
     "type": "git",
