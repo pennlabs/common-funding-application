@@ -13,7 +13,7 @@
     "url": "https://github.com/pennlabs/common-funding-application/issues"
   },
   "homepage": "https://github.com/pennlabs/common-funding-application#readme",
-  "devDependencies": {
+  "dependencies": {
     "coffee-script": "^1.12.4"
   }
 }
