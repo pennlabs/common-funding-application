@@ -1,3 +1,4 @@
 {{requester}} ({{requester.user.email}}) has just modified their application.
 
 Please log into the Common Funding App to view their application: https://penncfa.com/
+Link to event: <a href="{{ SITE_NAME }}/{{ event.id }}/">"{{event.name}}"</a>
