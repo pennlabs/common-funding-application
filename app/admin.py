@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from models import (CFAUser, CommonFreeResponseQuestion, EligibilityQuestion,
-                    FreeResponseQuestion, FunderConstraint, Event,
-                    CommonFollowupQuestion, FollowupQuestion, CCEmail)
+from .models import (CFAUser, CommonFreeResponseQuestion, EligibilityQuestion,
+                     FreeResponseQuestion, FunderConstraint, Event,
+                     CommonFollowupQuestion, FollowupQuestion, CCEmail)
 
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User, Group
