@@ -3,7 +3,6 @@ import os
 import dj_database_url
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-TEMPLATE_DEBUG = DEBUG
 
 PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
 SITE_NAME = "https://penncfa.com"
@@ -121,6 +120,7 @@ TEMPLATES = [
         ],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': DEBUG,
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.debug',
