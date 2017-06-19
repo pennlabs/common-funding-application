@@ -47,7 +47,8 @@ class CFAUser(models.Model):
     funder_name = models.CharField(max_length=256, default='', blank=True)
     user = models.OneToOneField(User, help_text='You must first create a user '
                                 'before adding them to the CFA.',
-                                related_name='profile')
+                                related_name='profile',
+                                on_delete=models.CASCADE)
     user_type = models.CharField(max_length=1, choices=REQUESTER_OR_FUNDER)
     phone = USPhoneNumberField()
     # The e-mail of the contact in OSA
@@ -122,7 +123,12 @@ class Event(models.Model):
     date = models.DateField()
     time = models.TimeField()
     location = models.CharField(max_length=256)
-    requester = models.ForeignKey(CFAUser, related_name='event_requester')
+    requester = models.ForeignKey(
+        CFAUser,
+        related_name='event_requester',
+        on_delete=models.SET_NULL,
+        null=True
+    )
     contact_name = models.CharField(max_length=256, blank=True)
     contact_email = models.EmailField()
     contact_phone = models.CharField(max_length=15)
@@ -130,11 +136,15 @@ class Event(models.Model):
     advisor_email = models.EmailField(blank=True)
     advisor_phone = models.CharField(max_length=15, blank=True)
     organizations = models.CharField(max_length=256)
-    applied_funders =\
-        models.ManyToManyField(CFAUser,
-                               related_name='event_applied_funders')
-    funding_already_received = \
-        models.DecimalField(max_digits=17, decimal_places=2, default=0)
+    applied_funders = models.ManyToManyField(
+        CFAUser,
+        related_name='event_applied_funders'
+    )
+    funding_already_received = models.DecimalField(
+        max_digits=17,
+        decimal_places=2,
+        default=0
+    )
     status = models.CharField(max_length=1, choices=STATUS)
     created_at = models.DateTimeField(default=datetime.datetime.now)
     updated_at = models.DateTimeField(default=datetime.datetime.now)
@@ -302,8 +312,8 @@ class Event(models.Model):
 
 class Comment(models.Model):
     """A comment, made by a funder, on an event application."""
-    funder = models.ForeignKey(CFAUser)
-    event = models.ForeignKey(Event)
+    funder = models.ForeignKey(CFAUser, models.CASCADE)
+    event = models.ForeignKey(Event, models.CASCADE)
     comment = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 
@@ -338,7 +348,7 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
-    event = models.ForeignKey(Event)
+    event = models.ForeignKey(Event, models.CASCADE)
 
     def __unicode__(self):
         return "%s %s" % (unicode(self.question), self.answer)
@@ -373,7 +383,7 @@ class EligibilityQuestion(Question):
 
 
 class EligibilityAnswer(Answer):
-    question = models.ForeignKey(EligibilityQuestion)
+    question = models.ForeignKey(EligibilityQuestion, models.CASCADE)
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
 
     class Meta:
@@ -386,17 +396,17 @@ class CommonFollowupQuestion(Question):
 
 
 class CommonFollowupAnswer(Answer):
-    question = models.ForeignKey(CommonFollowupQuestion)
+    question = models.ForeignKey(CommonFollowupQuestion, models.CASCADE)
     answer = models.TextField()
 
 
 class FollowupQuestion(Question):
     """A followup question specific to a funder."""
-    funder = models.ForeignKey(CFAUser)
+    funder = models.ForeignKey(CFAUser, models.CASCADE)
 
 
 class FollowupAnswer(Answer):
-    question = models.ForeignKey(FollowupQuestion)
+    question = models.ForeignKey(FollowupQuestion, models.CASCADE)
     answer = models.TextField()
 
 
@@ -407,17 +417,17 @@ class CommonFreeResponseQuestion(Question):
 
 class CommonFreeResponseAnswer(Answer):
     """An answer to a common free response question."""
-    question = models.ForeignKey(CommonFreeResponseQuestion)
+    question = models.ForeignKey(CommonFreeResponseQuestion, models.CASCADE)
     answer = models.TextField()
 
 
 class FreeResponseQuestion(Question):
     """A unique free response question specified by a single funder."""
-    funder = models.ForeignKey(CFAUser)
+    funder = models.ForeignKey(CFAUser, models.CASCADE)
 
 
 class FreeResponseAnswer(Answer):
-    question = models.ForeignKey(FreeResponseQuestion)
+    question = models.ForeignKey(FreeResponseQuestion, models.CASCADE)
     answer = models.TextField()
 
 CATEGORIES = (
@@ -433,7 +443,7 @@ CATEGORIES = (
 
 class Item(models.Model):
     """An item for an event."""
-    event = models.ForeignKey(Event)
+    event = models.ForeignKey(Event, models.CASCADE)
     name = models.CharField(max_length=256)
     # number of items
     quantity = models.IntegerField()
@@ -462,8 +472,8 @@ class Item(models.Model):
 
 
 class Grant(models.Model):
-    funder = models.ForeignKey(CFAUser)
-    item = models.ForeignKey(Item)
+    funder = models.ForeignKey(CFAUser, models.CASCADE)
+    item = models.ForeignKey(Item, models.CASCADE)
     amount = models.DecimalField(max_digits=17, decimal_places=2, null=True)
 
     def __unicode__(self):
@@ -480,8 +490,8 @@ class FunderConstraint(models.Model):
     Questions which funders require (yes/no/don't care) answers to
     by the requesters in order to be eligible to recieve money
     """
-    funder = models.ForeignKey(CFAUser)
-    question = models.ForeignKey(EligibilityQuestion)
+    funder = models.ForeignKey(CFAUser, on_delete=models.CASCADE)
+    question = models.ForeignKey(EligibilityQuestion, on_delete=models.CASCADE)
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
 
     def __unicode__(self):
