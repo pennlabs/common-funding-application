@@ -5,17 +5,14 @@ from collections import namedtuple
 from django import template
 from django.template.loader import render_to_string
 
-from templatetag_sugar.parser import Variable, Optional
-from templatetag_sugar.register import tag
-
-
 register = template.Library()
+
 # question-answer pair
 QA = namedtuple('QA', 'question answer')
 
 
-@tag(register, [Variable(), Variable(), Variable()])
-def itemlist_requester(context, is_revenue, items, funded):
+@register.simple_tag
+def itemlist_requester(is_revenue, items, funded):
   """ Render the table of items in the requester view """
   new_context = {'funded': funded,
                  'CATEGORIES': CATEGORIES, 'is_revenue': is_revenue}
@@ -25,8 +22,8 @@ def itemlist_requester(context, is_revenue, items, funded):
                           context=new_context)
 
 
-@tag(register, [Variable(), Variable(), Variable(), Variable()])
-def itemlist_funder(context, is_revenue, items, applied_funders, funder_id):
+@register.simple_tag
+def itemlist_funder(is_revenue, items, applied_funders, funder_id):
   """ Render the table of items in the funder view """
   items_data = []
   title_row = \
@@ -41,9 +38,9 @@ def itemlist_funder(context, is_revenue, items, applied_funders, funder_id):
     if item.revenue == bool(is_revenue):
       if item.revenue:
         # applied_funders = []
-        items_data.append(funder_item_data(context, item, []))
+        items_data.append(funder_item_data(item, []))
       else:
-        items_data.append(funder_item_data(context, item, applied_funders))
+        items_data.append(funder_item_data(item, applied_funders))
   new_context = {'is_revenue': is_revenue,
                  'titles': title_row,
                  'current_funder': funder_id,
@@ -51,8 +48,8 @@ def itemlist_funder(context, is_revenue, items, applied_funders, funder_id):
   return render_to_string('app/templatetags/itemlist-funder.html', context=new_context)
 
 
-@tag(register, [Variable(), Optional([Variable()])])
-def application(context, user, event):
+@register.simple_tag
+def application(user, event):
   event = event or None
 
   new_context = {
@@ -103,7 +100,7 @@ def application(context, user, event):
 
   return render_to_string('app/templatetags/application.html', context=new_context)
 
-@tag(register, [])
+@register.simple_tag(takes_context=True)
 def event_details(context):
   if 'readonly' in context:
     return render_to_string('app/templatetags/event-details-show.html', context)
