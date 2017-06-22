@@ -252,16 +252,16 @@ class TestHelpers(TestCase):
         self.item.grant_set.all().delete()
         self.item.save()
         item_tuple = helpers.funders_grant_data_to_item(
-            None, self.item, self.funder.id)
+            self.item, self.funder.id)
         self.assertEqual((None, self.item.id), item_tuple)
 
     def test_funders_grant_data_to_item(self):
         item_tuple = helpers.funders_grant_data_to_item(
-            None, self.item, self.funder.id)
+            self.item, self.funder.id)
         self.assertEqual((50, self.item.id), item_tuple)
 
     def test_funder_item_data(self):
-        result = helpers.funder_item_data(None, self.item, [self.funder])
+        result = helpers.funder_item_data(self.item, [self.funder])
         # funder data - funder id, amount = 50, grant id = 1
         expected = (self.item, [(self.funder.id, 50, 1)])
         self.assertEqual(expected, result)
