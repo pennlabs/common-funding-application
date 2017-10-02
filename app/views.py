@@ -7,8 +7,7 @@ import smtplib
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
-from django.shortcuts import redirect, render_to_response
-from django.template import RequestContext
+from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
@@ -176,12 +175,11 @@ def events(request):
             apps = cfauser.event_applied_funders.order_by(sort_by)
 
         p = Paginator(apps, 10)
-        return render_to_response('app/events.html',
-                                  {'apps': p.page(page).object_list,
-                                   'page_obj': p.page(page),
-                                   'page_range': p.page_range,
-                                   'page_length': len(p.page_range)},
-                                  context_instance=RequestContext(request))
+        return render(request, 'app/events.html',
+                      {'apps': p.page(page).object_list,
+                       'page_obj': p.page(page),
+                       'page_range': p.page_range,
+                       'page_length': len(p.page_range)})
 
     else:
         return HttpResponseNotAllowed(['GET'])
@@ -200,9 +198,7 @@ def events_old(request):
             apps = Event.objects.filter(requester=cfauser).filter(date__lt=two_weeks_ago).order_by('-date')
         else:  # cfauser.is_funder
             apps = cfauser.event_applied_funders.order_by('-date')
-        return render_to_response('app/events_old.html',
-                                  {'apps': apps},
-                                  context_instance=RequestContext(request))
+        return render(request, 'app/events_old.html', {'apps': apps})
     else:
         return HttpResponseNotAllowed(['GET'])
 
@@ -246,8 +242,7 @@ def event_new(request):
         messages.success(request, msg)
         return redirect(EVENTS_HOME)
     elif request.method == 'GET':
-        return render_to_response('app/application-requester.html',
-                                  context_instance=RequestContext(request))
+        return render(request, 'app/application-requester.html')
     else:
         return HttpResponseNotAllowed(['GET'])
 
@@ -289,9 +284,7 @@ def event_edit(request, event_id):
         messages.success(request, 'Saved %s!' % event.name)
         return redirect(EVENTS_HOME)
     elif request.method == 'GET':
-        return render_to_response('app/application-requester.html',
-                                  {'event': event},
-                                  context_instance=RequestContext(request))
+        return render(request, 'app/application-requester.html', {'event': event})
     else:
         return HttpResponseNotAllowed(['GET'])
 
@@ -347,9 +340,7 @@ def event_show(request, event_id):
         if 'id' in request.GET:
             event.shared_funder = \
                 User.objects.get(id=request.GET['id']).profile
-        return render_to_response('app/application-show.html',
-                                  {'event': event},
-                                  context_instance=RequestContext(request))
+        return render(request, 'app/application-show.html', {'event': event})
     else:
         return HttpResponseNotAllowed(['POST'])
 
@@ -409,10 +400,10 @@ def funder_edit(request, user_id):
     elif request.method == 'GET':
         funder_questions = FreeResponseQuestion.objects.filter(funder_id=funder.id)
         eligibility_questions = EligibilityQuestion.objects.all()
-        return render_to_response('app/funder_edit.html',
-                                  {'user': user,
-                                   'funder_questions': funder_questions,
-                                   'eligibility_questions': eligibility_questions },
-                                  context_instance=RequestContext(request))
+        return render(request,
+                      'app/funder_edit.html',
+                      {'user': user,
+                       'funder_questions': funder_questions,
+                       'eligibility_questions': eligibility_questions })
     else:
         return HttpResponseNotAllowed(['GET'])

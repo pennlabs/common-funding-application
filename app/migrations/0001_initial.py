@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('osa_email', models.EmailField(help_text=b'The email address for contacting OSA when an app is funded.', max_length=75, null=True, verbose_name=b'OSA Contact Email', blank=True)),
                 ('mission_statement', models.TextField(max_length=256, blank=True)),
                 ('cc_emails', models.ManyToManyField(to='app.CCEmail', null=True, blank=True)),
-                ('user', models.OneToOneField(related_name=b'profile', to=settings.AUTH_USER_MODEL, help_text=b'You must first create a user before adding them to the CFA.')),
+                ('user', models.OneToOneField(related_name=b'profile', to=settings.AUTH_USER_MODEL, help_text=b'You must first create a user before adding them to the CFA.', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'CFA Users',
@@ -136,7 +136,7 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(default=datetime.datetime.now)),
                 ('updated_at', models.DateTimeField(default=datetime.datetime.now)),
                 ('applied_funders', models.ManyToManyField(related_name=b'event_applied_funders', to='app.CFAUser')),
-                ('requester', models.ForeignKey(related_name=b'event_requester', to='app.CFAUser')),
+                ('requester', models.ForeignKey(null=True, related_name=b'event_requester', to='app.CFAUser', on_delete=models.SET_NULL)),
             ],
             options={
             },
@@ -147,7 +147,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('answer', models.TextField()),
-                ('event', models.ForeignKey(to='app.Event')),
+                ('event', models.ForeignKey(to='app.Event', on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -159,7 +159,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('question', models.TextField()),
-                ('funder', models.ForeignKey(to='app.CFAUser')),
+                ('funder', models.ForeignKey(to='app.CFAUser', on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -171,7 +171,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('answer', models.TextField()),
-                ('event', models.ForeignKey(to='app.Event')),
+                ('event', models.ForeignKey(to='app.Event', on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -183,7 +183,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('question', models.TextField()),
-                ('funder', models.ForeignKey(to='app.CFAUser')),
+                ('funder', models.ForeignKey(to='app.CFAUser', on_delete=models.CASCADE)),
             ],
             options={
                 'abstract': False,
@@ -195,8 +195,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('answer', models.CharField(max_length=1, choices=[(b'Y', b'YES'), (b'N', b'NO')])),
-                ('funder', models.ForeignKey(to='app.CFAUser')),
-                ('question', models.ForeignKey(to='app.EligibilityQuestion')),
+                ('funder', models.ForeignKey(to='app.CFAUser', on_delete=models.CASCADE)),
+                ('question', models.ForeignKey(to='app.EligibilityQuestion', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -207,7 +207,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('amount', models.DecimalField(null=True, max_digits=17, decimal_places=2)),
-                ('funder', models.ForeignKey(to='app.CFAUser')),
+                ('funder', models.ForeignKey(to='app.CFAUser', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -223,7 +223,7 @@ class Migration(migrations.Migration):
                 ('funding_already_received', models.DecimalField(max_digits=17, decimal_places=2)),
                 ('category', models.CharField(max_length=1, choices=[(b'H', b'Honoraria/Services'), (b'E', b'Equipment/Supplies'), (b'F', b'Food/Drinks'), (b'S', b'Facilities/Security'), (b'T', b'Travel/Conference'), (b'P', b'Photocopies/Printing/Publicity'), (b'O', b'Other')])),
                 ('revenue', models.BooleanField()),
-                ('event', models.ForeignKey(to='app.Event')),
+                ('event', models.ForeignKey(to='app.Event', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -232,7 +232,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='grant',
             name='item',
-            field=models.ForeignKey(to='app.Item'),
+            field=models.ForeignKey(to='app.Item', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -246,13 +246,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='freeresponseanswer',
             name='question',
-            field=models.ForeignKey(to='app.FreeResponseQuestion'),
+            field=models.ForeignKey(to='app.FreeResponseQuestion', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='followupanswer',
             name='question',
-            field=models.ForeignKey(to='app.FollowupQuestion'),
+            field=models.ForeignKey(to='app.FollowupQuestion', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -262,13 +262,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='eligibilityanswer',
             name='event',
-            field=models.ForeignKey(to='app.Event'),
+            field=models.ForeignKey(to='app.Event', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='eligibilityanswer',
             name='question',
-            field=models.ForeignKey(to='app.EligibilityQuestion'),
+            field=models.ForeignKey(to='app.EligibilityQuestion', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -278,37 +278,37 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='commonfreeresponseanswer',
             name='event',
-            field=models.ForeignKey(to='app.Event'),
+            field=models.ForeignKey(to='app.Event', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='commonfreeresponseanswer',
             name='question',
-            field=models.ForeignKey(to='app.CommonFreeResponseQuestion'),
+            field=models.ForeignKey(to='app.CommonFreeResponseQuestion', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='commonfollowupanswer',
             name='event',
-            field=models.ForeignKey(to='app.Event'),
+            field=models.ForeignKey(to='app.Event', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='commonfollowupanswer',
             name='question',
-            field=models.ForeignKey(to='app.CommonFollowupQuestion'),
+            field=models.ForeignKey(to='app.CommonFollowupQuestion', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='comment',
             name='event',
-            field=models.ForeignKey(to='app.Event'),
+            field=models.ForeignKey(to='app.Event', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='comment',
             name='funder',
-            field=models.ForeignKey(to='app.CFAUser'),
+            field=models.ForeignKey(to='app.CFAUser', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

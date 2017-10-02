@@ -6,7 +6,7 @@ from django.core import mail
 
 from django.contrib.auth.models import User
 from .models import CFAUser, Event, Grant
-from templatetags import helpers
+from .templatetags import helpers
 
 
 def create_funder():

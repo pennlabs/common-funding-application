@@ -193,7 +193,8 @@ LOGGING = {
     }
 }
 
-ALLOWED_HOSTS = [
-    ".penncfa.com",
-    ".penncfa.com.",
-]
+if not DEBUG:
+    ALLOWED_HOSTS = [
+        ".penncfa.com",
+        ".penncfa.com.",
+    ]

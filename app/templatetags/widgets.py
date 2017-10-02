@@ -102,7 +102,8 @@ def application(user, event):
 
 @register.simple_tag(takes_context=True)
 def event_details(context):
+  new_context = {"event": context["event"]}
   if 'readonly' in context:
-    return render_to_string('app/templatetags/event-details-show.html', context)
+    return render_to_string('app/templatetags/event-details-show.html', new_context)
   else:
-    return render_to_string('app/templatetags/event-details-form.html', context)
+    return render_to_string('app/templatetags/event-details-form.html', new_context)

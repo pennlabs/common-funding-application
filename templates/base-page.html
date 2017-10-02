@@ -10,7 +10,7 @@
         <ul class="nav">
           <li>
             {% if user.is_authenticated %}
-            <a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
+            <a href="{% url 'auth_logout' %}">Logout</a>
             {% else %}
             <a href="{% url 'events' %}">Login</a>
             {% endif %}
