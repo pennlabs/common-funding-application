@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import json
 
 from django.test import TestCase
@@ -103,6 +106,17 @@ class TestEvents(TestCase):
         resp = self.client.get('/2/')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'First Round')
+
+    def test_create_event_utf8(self):
+        unicode_string = 'Téßt؟'
+        with open('app/fixtures/event_edit.json', 'r') as f:
+            data = json.load(f)
+            data["name"] = unicode_string
+            resp = self.client.post('/new/', data)
+        self.assertEqual(resp.status_code, 302)
+        resp = self.client.get('/2/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, unicode_string)
 
     def test_edit_event(self):
         resp = self.client.get('/1/edit/')
