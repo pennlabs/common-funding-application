@@ -9,6 +9,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
+from django.urls import reverse
 
 from settings import DEFAULT_FROM_EMAIL
 from settings import DEBUG
@@ -299,10 +300,9 @@ class Event(models.Model):
         identifier = "".join(id_data).encode("utf-8")
         return sha1(identifier).hexdigest()
 
-    @models.permalink
     def get_absolute_url(self):
         if self.id:
-            return ('event-show', [str(self.id)])
+            return reverse('event-show', args=[str(self.id)])
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),
