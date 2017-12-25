@@ -95,6 +95,15 @@ class TestEvents(TestCase):
         resp = self.client.get('/1/')
         self.assertEqual(resp.status_code, 404)
 
+    def test_create_event(self):
+        resp = self.client.get('/new/')
+        with open('app/fixtures/event_edit.json', 'r') as f:
+            resp = self.client.post('/new/', json.load(f))
+        self.assertEqual(resp.status_code, 302)
+        resp = self.client.get('/2/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'First Round')
+
     def test_edit_event(self):
         resp = self.client.get('/1/edit/')
         self.assertEqual(resp.status_code, 200)
