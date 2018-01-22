@@ -204,5 +204,4 @@ if not DEBUG:
 if 'SENTRY_DSN' in os.environ:
     RAVEN_CONFIG = {
         'dsn': os.environ.get('SENTRY_DSN'),
-        'release': raven.fetch_git_sha(os.path.abspath(os.curdir))
     }
