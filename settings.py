@@ -1,5 +1,6 @@
 # Django settings for the Common Funding Application project.
 import os
+import raven
 import dj_database_url
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
@@ -158,6 +159,7 @@ INSTALLED_APPS = (
     'app',
     'registration',
     'localflavor',
+    'raven.contrib.django.raven_compat',
 )
 
 
@@ -198,3 +200,9 @@ if not DEBUG:
         ".penncfa.com",
         ".penncfa.com.",
     ]
+
+if 'SENTRY_DSN' in os.environ:
+    RAVEN_CONFIG = {
+        'dsn': os.environ.get('SENTRY_DSN'),
+        'release': raven.fetch_git_sha(os.path.abspath(os.curdir))
+    }
