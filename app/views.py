@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 
 from app.models import (Event, Grant, Comment, User, FreeResponseQuestion,
@@ -218,25 +218,26 @@ def event_new(request):
         date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
 
         try:
-            event = Event.objects.create(
-                name=request.POST['name'],
-                status=status,
-                date=date,
-                requester=request.user.profile,
-                location=request.POST['location'],
-                organizations=request.POST['organizations'],
-                contact_name=request.POST['contactname'],
-                contact_email=request.POST['contactemail'],
-                time=request.POST['time'],
-                contact_phone=request.POST['contactphone'],
-                anticipated_attendance=request.POST['anticipatedattendance'],
-                advisor_email=request.POST['advisoremail'],
-                advisor_phone=request.POST['advisorphone'],
-            )
+            with transaction.atomic():
+                event = Event.objects.create(
+                    name=request.POST['name'],
+                    status=status,
+                    date=date,
+                    requester=request.user.profile,
+                    location=request.POST['location'],
+                    organizations=request.POST['organizations'],
+                    contact_name=request.POST['contactname'],
+                    contact_email=request.POST['contactemail'],
+                    time=request.POST['time'],
+                    contact_phone=request.POST['contactphone'],
+                    anticipated_attendance=request.POST['anticipatedattendance'],
+                    advisor_email=request.POST['advisoremail'],
+                    advisor_phone=request.POST['advisorphone'],
+                )
+                save_from_form(event, request.POST)
         except IntegrityError:
             messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
             return redirect(EVENTS_HOME)
-        save_from_form(event, request.POST)
         event.notify_funders(new=True)
         msg = "Scheduled %s for %s!" %\
             (event.name, event.date.strftime("%b %d, %Y"))
@@ -267,20 +268,21 @@ def event_edit(request, event_id):
         else:
             status = 'S'  # S for SAVED
 
-        event.name = request.POST['name']
-        event.status = status
-        event.date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
-        event.organizations = request.POST['organizations']
-        event.location = request.POST['location']
-        event.time = request.POST['time']
-        event.contact_name = request.POST['contactname']
-        event.contact_email = request.POST['contactemail']
-        event.contact_phone = request.POST['contactphone']
-        event.anticipated_attendance = request.POST['anticipatedattendance']
-        event.advisor_email = request.POST['advisoremail']
-        event.advisor_phone = request.POST['advisorphone']
-        event.save()
-        save_from_form(event, request.POST)
+        with transaction.atomic():
+            event.name = request.POST['name']
+            event.status = status
+            event.date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
+            event.organizations = request.POST['organizations']
+            event.location = request.POST['location']
+            event.time = request.POST['time']
+            event.contact_name = request.POST['contactname']
+            event.contact_email = request.POST['contactemail']
+            event.contact_phone = request.POST['contactphone']
+            event.anticipated_attendance = request.POST['anticipatedattendance']
+            event.advisor_email = request.POST['advisoremail']
+            event.advisor_phone = request.POST['advisorphone']
+            event.save()
+            save_from_form(event, request.POST)
         event.notify_funders(new=False)
         messages.success(request, 'Saved %s!' % event.name)
         return redirect(EVENTS_HOME)
