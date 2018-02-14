@@ -9,6 +9,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
+from django.urls import reverse
 
 from settings import DEFAULT_FROM_EMAIL
 from settings import DEBUG
@@ -291,15 +292,17 @@ class Event(models.Model):
 
     @property
     def secret_key(self):
-        """Unique key that can be shared so that anyone can view the event."""
-        """To use the key append ?key=<key>"""
-        return sha1("".join([self.name, str(self.date), str(self.requester)])
-                    .encode("utf-8")).hexdigest()
+        """
+        Unique key that can be shared so that anyone can view the event.
+        To use the key append ?key=<key>
+        """
+        id_data = [self.name, str(self.date), str(self.requester.user)]
+        identifier = "".join(id_data).encode("utf-8")
+        return sha1(identifier).hexdigest()
 
-    @models.permalink
     def get_absolute_url(self):
         if self.id:
-            return ('event-show', [str(self.id)])
+            return reverse('event-show', args=[str(self.id)])
 
     def __unicode__(self):
         return "%s: %s, %s" % (unicode(self.requester),

@@ -90,8 +90,7 @@ def save_from_form(event, POST):
             # Remove unwanted commas for int parsing
             rev = rev.replace(",", "")
 
-            name = name.encode('utf-8')
-            if str(name):
+            if name:
                 event.item_set.create(name=name,
                                       quantity=quantity,
                                       price_per_unit=price,

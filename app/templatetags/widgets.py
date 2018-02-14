@@ -91,7 +91,7 @@ def application(user, event):
 
   try:
     is_funder = user.profile.is_funder
-    if not user or not user.is_authenticated() or user.is_staff or is_funder or event.over:
+    if not user or not user.is_authenticated or user.is_staff or is_funder or event.over:
       new_context['extra_attrs'] = 'readonly'
       new_context['readonly'] = True
   except:
