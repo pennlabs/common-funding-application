@@ -160,6 +160,7 @@ INSTALLED_APPS = (
     'registration',
     'localflavor',
     'raven.contrib.django.raven_compat',
+    'django_extensions'
 )
 
 
