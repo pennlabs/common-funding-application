@@ -51,12 +51,13 @@ def itemlist_funder(is_revenue, items, applied_funders, funder_id):
 
 
 @register.simple_tag
-def application(user, event):
+def application(user, event, form):
     event = event or None
 
     new_context = {
         'user': user,
         'event': event,
+        'form': form,
         'funder_qas': [QA(question, get_or_none(FreeResponseAnswer,
                                                 question=question,
                                                 event=event))
@@ -105,7 +106,7 @@ def application(user, event):
 
 @register.simple_tag(takes_context=True)
 def event_details(context):
-    new_context = {"event": context["event"]}
+    new_context = {"event": context["event"], "form": context["form"]}
     if 'readonly' in context:
         return render_to_string('app/templatetags/event-details-show.html', new_context)
     else:

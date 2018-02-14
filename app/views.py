@@ -5,16 +5,17 @@ import re
 
 import smtplib
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
-from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 
-from app.models import (Event, Grant, Comment, User, FreeResponseQuestion,
-                        EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion,
-                        FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
+from .models import (Event, Grant, Comment, User, FreeResponseQuestion,
+                     EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion,
+                     FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
+from .forms import EventForm
 
 
 EVENTS_HOME = 'events'
@@ -207,89 +208,55 @@ def events_old(request):
 # GET  /new
 # POST /new
 @login_required
+@require_http_methods(["GET", "POST"])
 def event_new(request):
     """Form to create a new event."""
     if request.method == 'POST':
-        if "submit-event" in request.POST:
-            status = 'B'  # B for SUBMITTED
-        else:
-            status = 'S'  # S for SAVED
-
-        date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
-
-        try:
-            with transaction.atomic():
-                event = Event.objects.create(
-                    name=request.POST['name'],
-                    status=status,
-                    date=date,
-                    requester=request.user.profile,
-                    location=request.POST['location'],
-                    organizations=request.POST['organizations'],
-                    contact_name=request.POST['contactname'],
-                    contact_email=request.POST['contactemail'],
-                    time=request.POST['time'],
-                    contact_phone=request.POST['contactphone'],
-                    anticipated_attendance=request.POST['anticipatedattendance'],
-                    advisor_email=request.POST['advisoremail'],
-                    advisor_phone=request.POST['advisorphone'],
-                )
-                save_from_form(event, request.POST)
-        except IntegrityError:
-            messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.requester = request.user.profile
+            event.save()
+            save_from_form(event, request.POST)
+            event.notify_funders(new=True)
+            msg = "Scheduled %s for %s!" %\
+                (event.name, event.date.strftime("%b %d, %Y"))
+            messages.success(request, msg)
             return redirect(EVENTS_HOME)
-        event.notify_funders(new=True)
-        msg = "Scheduled %s for %s!" %\
-            (event.name, event.date.strftime("%b %d, %Y"))
-        messages.success(request, msg)
-        return redirect(EVENTS_HOME)
-    elif request.method == 'GET':
-        return render(request, 'app/application-requester.html')
+        else:
+            messages.error(request, "You have one or more errors in your application.")
     else:
-        return HttpResponseNotAllowed(['GET'])
+        form = EventForm()
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'app/application-requester.html', context)
 
 
 # GET  /1/edit
 # POST /1/edit
 @login_required
 @requester_only
+@require_http_methods(["GET", "POST"])
 def event_edit(request, event_id):
     event = Event.objects.get(pk=event_id)
     if event.over:
         return redirect('event-show', event_id)
     if request.method == 'POST':
-        if event.followup_needed:
-            status = 'O'  # O for OVER
-        elif event.funded:
-            # keep status as funded when partially funded event is edited.
-            status = 'F'  # F for FUNDED
-        elif "submit-event" in request.POST:
-            status = 'B'  # B for SUBMITTED
-        else:
-            status = 'S'  # S for SAVED
-
-        with transaction.atomic():
-            event.name = request.POST['name']
-            event.status = status
-            event.date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
-            event.organizations = request.POST['organizations']
-            event.location = request.POST['location']
-            event.time = request.POST['time']
-            event.contact_name = request.POST['contactname']
-            event.contact_email = request.POST['contactemail']
-            event.contact_phone = request.POST['contactphone']
-            event.anticipated_attendance = request.POST['anticipatedattendance']
-            event.advisor_email = request.POST['advisoremail']
-            event.advisor_phone = request.POST['advisorphone']
-            event.save()
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            event = form.save()
             save_from_form(event, request.POST)
-        event.notify_funders(new=False)
-        messages.success(request, 'Saved %s!' % event.name)
-        return redirect(EVENTS_HOME)
-    elif request.method == 'GET':
-        return render(request, 'app/application-requester.html', {'event': event})
+            event.notify_funders(new=False)
+            messages.success(request, 'Saved %s!' % event.name)
+            return redirect(EVENTS_HOME)
+        else:
+            messages.error(request, "One or more errors occured while saving the application!")
     else:
-        return HttpResponseNotAllowed(['GET'])
+        form = EventForm(instance=event)
+    return render(request, 'app/application-requester.html', {'event': event, 'form': form})
 
 
 # GET  /1

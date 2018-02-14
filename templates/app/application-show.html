@@ -21,7 +21,7 @@
     <form action="." method="post" class="form-horizontal">
 
     {% csrf_token %}
-    {% application user event %}
+    {% application user event None %}
 
     {% if user and user.profile.is_funder %}
     <p>To submit your funding changes and any comments, click "Save." <br>

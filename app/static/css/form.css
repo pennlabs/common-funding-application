@@ -2,6 +2,22 @@ form {
   margin-bottom: 0;
 }
 
+.django-form p {
+    margin-bottom: 20px;
+    margin-left: 100px;
+}
+.django-form input {
+    width: 270px;
+}
+.django-form .errorlist {
+    float: none;
+    margin-left: 100px;
+}
+.django-form .helptext {
+    display: block;
+    color: #666;
+}
+
 form legend {
   margin-bottom: 0px;
   border: none;
