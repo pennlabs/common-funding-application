@@ -9,6 +9,7 @@ from django.contrib.auth.models import User, Group
 
 class CFAUserAdmin(admin.ModelAdmin):
     filter_horizontal = ('cc_emails',)
+    search_fields = ('user__username',)
     list_display = ('user', 'user_type', 'osa_email')
 
 admin.site.unregister(Group)
