@@ -433,6 +433,7 @@ class FreeResponseAnswer(Answer):
     question = models.ForeignKey(FreeResponseQuestion, models.CASCADE)
     answer = models.TextField()
 
+
 CATEGORIES = (
     ('H', 'Honoraria/Services'),
     ('E', 'Equipment/Supplies'),

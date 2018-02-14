@@ -34,7 +34,7 @@ def authorization_required(view):
         except KeyError:
             try:
                 user = request.user.profile
-            except:
+            except AttributeError:
                 return redirect(EVENTS_HOME)
             else:
                 if request.user.is_staff or user.is_funder or\
@@ -145,6 +145,7 @@ def save_from_form(event, POST):
                 funder = CFAUser.objects.get(id=funder_id)
                 event.applied_funders.add(funder)
 
+
 # GET  /
 # upcoming events
 @login_required
@@ -182,6 +183,7 @@ def events(request):
 
     else:
         return HttpResponseNotAllowed(['GET'])
+
 
 # GET  /old
 # previous events
@@ -223,15 +225,15 @@ def event_new(request):
                 requester=request.user.profile,
                 location=request.POST['location'],
                 organizations=request.POST['organizations'],
-                contact_name = request.POST['contactname'],
-                contact_email = request.POST['contactemail'],
+                contact_name=request.POST['contactname'],
+                contact_email=request.POST['contactemail'],
                 time=request.POST['time'],
-                contact_phone = request.POST['contactphone'],
+                contact_phone=request.POST['contactphone'],
                 anticipated_attendance=request.POST['anticipatedattendance'],
-                advisor_email = request.POST['advisoremail'],
-                advisor_phone = request.POST['advisorphone'],
+                advisor_email=request.POST['advisoremail'],
+                advisor_phone=request.POST['advisorphone'],
             )
-        except IntegrityError as e:
+        except IntegrityError:
             messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
             return redirect(EVENTS_HOME)
         save_from_form(event, request.POST)
@@ -353,6 +355,7 @@ def event_destroy(request, event_id):
     return HttpResponse(json.dumps({'event_id': event_id}),
                         content_type="application/json")
 
+
 # GET /funders/1/edit
 # POST /funders/1/edit
 @login_required
@@ -367,10 +370,10 @@ def funder_edit(request, user_id):
 
         # delete removed free response questions.
         request_question_ids = \
-            [int(re.search("[0-9]+", k).group(0)) for k,v in request.POST.items()
+            [int(re.search("[0-9]+", k).group(0)) for k, v in request.POST.items()
              if '_' in k and k.startswith('freeresponsequestion')]
         for question in funder.freeresponsequestion_set.all():
-            if not question.id in request_question_ids:
+            if question.id not in request_question_ids:
                 question.delete()
 
         # create new free response questions.
@@ -399,10 +402,14 @@ def funder_edit(request, user_id):
     elif request.method == 'GET':
         funder_questions = FreeResponseQuestion.objects.filter(funder_id=funder.id)
         eligibility_questions = EligibilityQuestion.objects.all()
-        return render(request,
-                      'app/funder_edit.html',
-                      {'user': user,
-                       'funder_questions': funder_questions,
-                       'eligibility_questions': eligibility_questions })
+        return render(
+            request,
+            'app/funder_edit.html',
+            {
+                'user': user,
+                'funder_questions': funder_questions,
+                'eligibility_questions': eligibility_questions
+            }
+        )
     else:
         return HttpResponseNotAllowed(['GET'])
