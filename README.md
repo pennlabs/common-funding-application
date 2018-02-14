@@ -12,8 +12,6 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Install python dependencies (`pip install -r requirements.txt`)
 
-* Create database (`python manage.py syncdb`)
-
 * Migrate database (`python manage.py migrate`)
 
 * Import dummy data (`python import_demo.py`)
@@ -28,6 +26,8 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Install [CoffeeScript](http://coffeescript.org) (`sudo npm install -g coffee-script`)
 
+* Install [Mocha](https://www.npmjs.com/package/mocha) (`sudo npm install -g mocha`)
+
 * Compile the CoffeeScript files (`coffee -o app/static/js/ -c app/static/coffeescripts/` or `cake build` if you are in the app/static directory)
 
 * Navigate to app/static
@@ -36,13 +36,11 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 ## DB migrations
 
-_Note_: instructions are from [our wiki](https://github.com/pennlabs/wiki/wiki/Setting-Up-South)
-
 * Edit models.py
 
-* `python manage.py schemamigration app --auto NAME_OF_CHANGE`
+* `python manage.py makemigrations`
 
-* `python manage.py migrate app`
+* `python manage.py migrate`
 
 ## Environment Variables
 
