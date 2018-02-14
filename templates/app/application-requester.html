@@ -20,6 +20,15 @@
 {% block container %}
 <div id="main">
 
+  {% if messages %}
+  {% for message in messages %}
+  <div class='alert {% if message.tags %}alert-{{ message.tags }}{% endif %}'>
+    <button type='button' class='close' data-dismiss='alert'>&times;</button>
+    <strong>{{ message.tags|capfirst }}!</strong> {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
   {% if event %}
     <form action="{% url 'event-edit' event.id %}" method="post" class="form-horizontal">
   {% else %}
