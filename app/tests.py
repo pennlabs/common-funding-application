@@ -107,6 +107,14 @@ class TestEvents(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'First Round')
 
+    def test_create_duplicate_event(self):
+        resp = self.client.get('/new/')
+        for _ in range(2):
+            with open('app/fixtures/event_edit.json', 'r') as f:
+                resp = self.client.post('/new/', json.load(f))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Event.objects.filter(name="Test").count(), 1)
+
     def test_create_event_utf8(self):
         unicode_string = 'Téßt؟'
         with open('app/fixtures/event_edit.json', 'r') as f:
