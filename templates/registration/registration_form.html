@@ -1,12 +1,13 @@
-
-
 {% extends "base-page.html" %}
+
+{% load static %}
+
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{{STATIC_URL}}/css/form.css">
+<link rel="stylesheet" href="{% static "/css/form.css" %}">
 {% endblock %}
 
 {% block htmllink-js %}
-<script src="{{ STATIC_URL }}/js/pennemail.js"></script>
+<script src="{% static "/js/pennemail.js" %}"></script>
 {% endblock %}
 
 {% block container %}

@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{{STATIC_URL}}css/index.css">
+<link rel="stylesheet" href="{% static "css/index.css" %}">
 {% endblock %}
 
 {% block container %}
@@ -21,9 +23,9 @@
     <h4>First-time user?</h4>
     <p>
       <ul>
-        <li><a href="{{STATIC_URL}}how-to-use.pdf">How to Use the Common Funding App</a></li>
-        <li><a href="{{STATIC_URL}}img/info-graphic.png">Infographic about the Funding Sources</a></li>
-        <li><a href="{{STATIC_URL}}funding-sources-info-table.pdf">Funding Sources Info Table</a></li>
+        <li><a href="{% static "how-to-use.pdf" %}">How to Use the Common Funding App</a></li>
+        <li><a href="{% static "img/info-graphic.png" %}">Infographic about the Funding Sources</a></li>
+        <li><a href="{% static "funding-sources-info-table.pdf" %}">Funding Sources Info Table</a></li>
       </ul>
     </p>
   </div>

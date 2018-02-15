@@ -1,20 +1,21 @@
 {% extends "base-page.html" %}
 
 {% load widgets %}
+{% load static %}
 
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.timepicker.css">
-<link rel="stylesheet" href="{{STATIC_URL}}css/form.css">
+<link rel="stylesheet" href="{% static "css/jquery.timepicker.css" %}">
+<link rel="stylesheet" href="{% static "css/form.css" %}">
 {% endblock %}
 
 {% block htmllink-js %}
-<script src="{{ STATIC_URL }}js/lib/jquery.timepicker.min.js"></script>
-<script src="{{ STATIC_URL }}js/lib/jquery.autosize.min.js"></script>
-<script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script>
-<script src="{{ STATIC_URL }}js/recs.js"></script>
-<script src="{{ STATIC_URL }}js/form.js"></script>
-<script src="{{ STATIC_URL }}js/itemlist.js"></script>
-<script src="{{ STATIC_URL }}js/requester.js"></script>
+<script src="{% static "js/lib/jquery.timepicker.min.js" %}"></script>
+<script src="{% static "js/lib/jquery.autosize.min.js" %}"></script>
+<script src="{% static "js/lib/bootstrap.min.js" %}"></script>
+<script src="{% static "js/recs.js" %}"></script>
+<script src="{% static "js/form.js" %}"></script>
+<script src="{% static "js/itemlist.js" %}"></script>
+<script src="{% static "js/requester.js" %}"></script>
 {% endblock %}
 
 {% block container %}

@@ -1,13 +1,14 @@
 {% extends "base-page.html" %}
 
 {% load widgets %}
+{% load static %}
 
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{{ STATIC_URL }}css/applist.css">
+<link rel="stylesheet" href="{% static "css/applist.css" %}">
 {% endblock %}
 
 {% block htmllink-js %}
-<script src="{{ STATIC_URL }}/js/events.js"></script>
+<script src="{% static "/js/events.js" %}"></script>
 {% endblock %}
 
 {% block container %}

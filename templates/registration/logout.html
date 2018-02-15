@@ -1,7 +1,9 @@
 {% extends "base-page.html" %}
 
+{% load static %}
+
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{{STATIC_URL}}css/index.css">
+<link rel="stylesheet" href="{% static "css/index.css" %}">
 {% endblock %}
 
 {% block container %}
