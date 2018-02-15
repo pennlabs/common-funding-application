@@ -128,13 +128,13 @@ $ ->
     Selected.push(funder_id) if this.checked
   showQuestions()
 
-  $("#questiontime").timepicker(
+  $("#id_time").timepicker(
     timeFormat: "G:i"
     step: 30
     scrollDefaultNow: true
   )
 
-  $calendar = $("#questiondate")
+  $calendar = $("#id_date")
   $calendar.pickadate(
     format: 'mm/dd/yyyy'
     format_submit: 'mm/dd/yyyy'
