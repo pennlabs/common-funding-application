@@ -217,7 +217,7 @@ def event_new(request):
                     event.save()
                     save_from_form(event, request.POST)
                 event.notify_funders(new=True)
-                msg = "Scheduled {} for {}!".format(event.name, event.date.strftime("%b %d, %Y"))
+                msg = u"Scheduled {} for {}!".format(event.name, event.date.strftime("%b %d, %Y"))
                 messages.success(request, msg)
                 return redirect(EVENTS_HOME)
             except IntegrityError:
@@ -251,7 +251,7 @@ def event_edit(request, event_id):
                     event = form.save()
                     save_from_form(event, request.POST)
                 event.notify_funders(new=False)
-                messages.success(request, 'Saved {}!'.format(event.name))
+                messages.success(request, u'Saved {}!'.format(event.name))
                 return redirect(EVENTS_HOME)
             except IntegrityError:
                 messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
