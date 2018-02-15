@@ -217,7 +217,7 @@ def event_new(request):
                     event.save()
                     save_from_form(event, request.POST)
                 event.notify_funders(new=True)
-                msg = "Scheduled {} for {}!".format((event.name, event.date.strftime("%b %d, %Y")))
+                msg = "Scheduled {} for {}!".format(event.name, event.date.strftime("%b %d, %Y"))
                 messages.success(request, msg)
                 return redirect(EVENTS_HOME)
             except IntegrityError:
