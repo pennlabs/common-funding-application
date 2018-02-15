@@ -151,59 +151,54 @@ def save_from_form(event, POST):
 # GET  /
 # upcoming events
 @login_required
+@require_http_methods(["GET"])
 def events(request):
-    if request.method == 'GET':
-        user = request.user
-        # if the request type has GET query type, set it as the parameter
-        sorted_type = request.GET.get('sort').strip() if 'sort' in request.GET else 'date'
-        query_dict = {
-            'event': 'name',
-            'org': 'organizations'
-        }
-        sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
-        cfauser = user.profile
-        two_weeks_ago = datetime.today().date() - timedelta(days=14)
-        app = Event.objects.filter(date__gt=two_weeks_ago).order_by(sort_by)
-        if 'page' in request.GET:
-            page = request.GET['page']
-        else:
-            page = 1
-
-        if user.is_staff and not user.username == "uacontingency":
-            apps = app
-        elif cfauser.is_requester:
-            apps = app.filter(requester=cfauser)
-        else:  # cfauser.is_funder
-            apps = cfauser.event_applied_funders.order_by(sort_by)
-
-        p = Paginator(apps, 10)
-        return render(request, 'app/events.html',
-                      {'apps': p.page(page).object_list,
-                       'page_obj': p.page(page),
-                       'page_range': p.page_range,
-                       'page_length': len(p.page_range)})
-
+    user = request.user
+    # if the request type has GET query type, set it as the parameter
+    sorted_type = request.GET.get('sort').strip() if 'sort' in request.GET else 'date'
+    query_dict = {
+        'event': 'name',
+        'org': 'organizations'
+    }
+    sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
+    cfauser = user.profile
+    two_weeks_ago = datetime.today().date() - timedelta(days=14)
+    app = Event.objects.filter(date__gt=two_weeks_ago).order_by(sort_by)
+    if 'page' in request.GET:
+        page = request.GET['page']
     else:
-        return HttpResponseNotAllowed(['GET'])
+        page = 1
+
+    if user.is_staff and not user.username == "uacontingency":
+        apps = app
+    elif cfauser.is_requester:
+        apps = app.filter(requester=cfauser)
+    else:  # cfauser.is_funder
+        apps = cfauser.event_applied_funders.order_by(sort_by)
+
+    p = Paginator(apps, 10)
+    return render(request, 'app/events.html',
+                  {'apps': p.page(page).object_list,
+                   'page_obj': p.page(page),
+                   'page_range': p.page_range,
+                   'page_length': len(p.page_range)})
 
 
 # GET  /old
 # previous events
 @login_required
+@require_http_methods(["GET"])
 def events_old(request):
-    if request.method == 'GET':
-        user = request.user
-        cfauser = user.profile
-        two_weeks_ago = datetime.today().date() - timedelta(days=14)
-        if user.is_staff:
-            apps = Event.objects.filter(date__lt=two_weeks_ago).order_by('-date')
-        elif cfauser.is_requester:
-            apps = Event.objects.filter(requester=cfauser).filter(date__lt=two_weeks_ago).order_by('-date')
-        else:  # cfauser.is_funder
-            apps = cfauser.event_applied_funders.order_by('-date')
-        return render(request, 'app/events_old.html', {'apps': apps})
-    else:
-        return HttpResponseNotAllowed(['GET'])
+    user = request.user
+    cfauser = user.profile
+    two_weeks_ago = datetime.today().date() - timedelta(days=14)
+    if user.is_staff:
+        apps = Event.objects.filter(date__lt=two_weeks_ago).order_by('-date')
+    elif cfauser.is_requester:
+        apps = Event.objects.filter(requester=cfauser).filter(date__lt=two_weeks_ago).order_by('-date')
+    else:  # cfauser.is_funder
+        apps = cfauser.event_applied_funders.order_by('-date')
+    return render(request, 'app/events_old.html', {'apps': apps})
 
 
 # GET  /new
