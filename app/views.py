@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
@@ -210,16 +210,18 @@ def event_new(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
-            with transaction.atomic():
-                event = form.save(commit=False)
-                event.requester = request.user.profile
-                event.save()
-                save_from_form(event, request.POST)
-            event.notify_funders(new=True)
-            msg = "Scheduled %s for %s!" %\
-                (event.name, event.date.strftime("%b %d, %Y"))
-            messages.success(request, msg)
-            return redirect(EVENTS_HOME)
+            try:
+                with transaction.atomic():
+                    event = form.save(commit=False)
+                    event.requester = request.user.profile
+                    event.save()
+                    save_from_form(event, request.POST)
+                event.notify_funders(new=True)
+                msg = "Scheduled {} for {}!".format((event.name, event.date.strftime("%b %d, %Y")))
+                messages.success(request, msg)
+                return redirect(EVENTS_HOME)
+            except IntegrityError:
+                messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
         else:
             messages.error(request, "You have one or more errors in your application.")
     else:
@@ -244,12 +246,15 @@ def event_edit(request, event_id):
     if request.method == 'POST':
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
-            with transaction.atomic():
-                event = form.save()
-                save_from_form(event, request.POST)
-            event.notify_funders(new=False)
-            messages.success(request, 'Saved %s!' % event.name)
-            return redirect(EVENTS_HOME)
+            try:
+                with transaction.atomic():
+                    event = form.save()
+                    save_from_form(event, request.POST)
+                event.notify_funders(new=False)
+                messages.success(request, 'Saved {}!'.format(event.name))
+                return redirect(EVENTS_HOME)
+            except IntegrityError:
+                messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
         else:
             messages.error(request, "One or more errors occured while saving the application!")
     else:
