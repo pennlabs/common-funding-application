@@ -262,6 +262,7 @@ def event_edit(request, event_id):
 # GET  /1
 # POST /1
 @authorization_required
+@require_http_methods(["GET", "POST"])
 def event_show(request, event_id):
     user = request.user
     event = Event.objects.get(pk=event_id)
@@ -306,13 +307,11 @@ def event_show(request, event_id):
             return redirect(EVENTS_HOME)
         else:
             return redirect(EVENTS_HOME)
-    elif request.method == 'GET':
+    else:
         if 'id' in request.GET:
             event.shared_funder = \
                 User.objects.get(id=request.GET['id']).profile
         return render(request, 'app/application-show.html', {'event': event})
-    else:
-        return HttpResponseNotAllowed(['POST'])
 
 
 # GET  /1/destroy
