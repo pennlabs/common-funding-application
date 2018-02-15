@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
+from django.db import transaction
 from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
@@ -214,10 +215,11 @@ def event_new(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
-            event = form.save(commit=False)
-            event.requester = request.user.profile
-            event.save()
-            save_from_form(event, request.POST)
+            with transaction.atomic():
+                event = form.save(commit=False)
+                event.requester = request.user.profile
+                event.save()
+                save_from_form(event, request.POST)
             event.notify_funders(new=True)
             msg = "Scheduled %s for %s!" %\
                 (event.name, event.date.strftime("%b %d, %Y"))
@@ -247,8 +249,9 @@ def event_edit(request, event_id):
     if request.method == 'POST':
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
-            event = form.save()
-            save_from_form(event, request.POST)
+            with transaction.atomic():
+                event = form.save()
+                save_from_form(event, request.POST)
             event.notify_funders(new=False)
             messages.success(request, 'Saved %s!' % event.name)
             return redirect(EVENTS_HOME)
