@@ -94,17 +94,8 @@ fieldset {
   content: "expand";
 }
 
-#item-table input {
-  width: 175px;
-}
-#item-table input.small {
-  width: 100px;
-}
 #item-table .action-column {
   width: 75px;
-}
-.item-category {
-  width: 100px;
 }
 table.items-total {
   font-size: 14px;
