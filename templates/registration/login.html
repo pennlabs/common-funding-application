@@ -9,14 +9,14 @@
 {% block container %}
 
 {% if form.errors %}
-<div id="login-error" class="alert alert-error">
+<div id="login-error" class="alert alert-danger">
         <a class="close" onclick="$('#login-error').slideUp(500)">x</a>
         <strong>Login Error!</strong> Incorrect username or password. Please try again.
 </div>
 {% endif %}
 
 <div id="main" class="row">
-  <div class="span7">
+  <div class="col-md-8">
     <h1>Common Funding Application</h1>
     <p>The Common Funding Application (CFA) is a one-stop online tool for student groups to request funding from multiple funding sources at once.</p>
     <p>Reminder: Apply for funding at least <strong>3 weeks before</strong> your event!</p><br>
@@ -30,7 +30,7 @@
     </p>
   </div>
 
-  <div id="login" class="span4 offset1">
+  <div id="login" class="col-md-4">
     <div class="box">
       <h2>Login</h2>
 
@@ -38,18 +38,22 @@
         {% csrf_token %}
         <fieldset>
           <div class="clearfix">
-            <label for="user">{{ form.username.label_tag }}</label>
-            {{ form.username }}
+              <div class="form-group">
+                  {{ form.username.label_tag }}
+                  {{ form.username }}
+              </div>
 
-            <label for="user">{{ form.password.label_tag }}</label>
-            {{ form.password }}
+              <div class="form-group">
+                  {{ form.password.label_tag }}
+                  {{ form.password }}
+              </div>
           </div>
         </fieldset>
         <button class="btn btn-primary" type="submit">Submit</button>
         <input type="hidden" name="next" value="{{ next }}" />
       </form>
 
-      <p><strong>Need an account?</strong> <a href="{% url 'registration_register' %}">Sign up</a></p>
+      <p><strong>Need an account?</strong> <a href="{% url 'registration_register' %}">Sign up!</a></p>
 
     </div>
   </div>

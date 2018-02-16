@@ -2,23 +2,17 @@
 
 {% block body %}
 
-<div class="navbar">
-  <div class="navbar-inner">
-    <div class="container">
-      <a href="{% url 'events' %}" class="brand">The Common Funding App</a>
-      <div class="pull-right">
-        <ul class="nav">
-          <li>
+<div class="navbar navbar-light bg-light">
+    <a href="{% url 'events' %}" class="navbar-brand">The Common Funding App</a>
+    <ul class="navbar-nav">
+        <li class="nav-item">
             {% if user.is_authenticated %}
             <a href="{% url 'auth_logout' %}">Logout</a>
             {% else %}
             <a href="{% url 'events' %}">Login</a>
             {% endif %}
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
+        </li>
+    </ul>
 </div>
 
 {{ block.super }}
