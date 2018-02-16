@@ -42,33 +42,59 @@
 {% endif %}
 
 <div id="main">
-  <div class="row">
-    <div class="span4">
-      <strong><a href="{{ request.path }}?sort=event">Event</a></strong>
-    </div>
-    <div class="span2">
-      <strong><a href="{{ request.path }}?sort=date">Event Date</a></strong>
-    </div>
-    <div class="span1">
-      <strong><a href="{{ request.path }}?sort=org">Organization</a></strong>
-    </div>
-    <div class="offset1 span2">
-      <strong>Status</strong>
-    </div>
-  </div>
+    <table id="events" class="table table-hover">
+        <thead>
+            <tr>
+                <th><strong><a href="{{ request.path }}?sort=event">Event</a></strong></th>
+                <th><strong><a href="{{ request.path }}?sort=date">Event Date</a></strong></th>
+                <th><strong><a href="{{ request.path }}?sort=org">Organization</a></strong></th>
+                <th><strong>Status</strong></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
   {% for app in apps %}
-  <div class="event-row">
-    <div class="row">
-      <div class="span4 name">
+  <tr class="event-row">
+      <td>
         <span>{{ app.name }}</span>
-      </div>
-      <div class="span2 date">
+        <div class="funders" style="display:none">
+            <br />
+            <table>
+                <tbody>
+                    {% for funder, amount in app.amounts.items %}
+                    <tr>
+                        <td>{{funder}}</td>
+                        {% if amount != None %}
+                        <td>$ {{ amount }}</td>
+                        {% else %}
+                        <td class="pending">pending</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>Funds already received</td>
+                        <td>$ {{ app.total_funds_already_received }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Received Total</b></td>
+                        <td>$ {{ app.total_funds_received }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Remaining</b></td>
+                        <td>$ {{ app.total_remaining }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+      </td>
+      <td>
         <span>{{ app.date }}</span>
-      </div>
-      <div class="span2 org">
+      </td>
+      <td>
         <span>{{ app.organizations }}</span>
-      </div>
-      <div class="span2 status">
+      </td>
+      <td>
         {% if app.date_passed %}
         <span class="label">OVER</span>
         {% elif app.followup_needed %}
@@ -82,52 +108,27 @@
         {% elif app.saved %}
         <span class="label label-info">SAVED</span>
         {% endif %}
-      </div>
-      <div class="span2 buttons">
+    </td>
+    <td>
+      <div class="buttons">
         {% if user.is_staff or event.over or user.profile.is_funder %}
-        <a class="btn btn-info" href="{% url 'event-show' app.id %}">
+        <a class="btn btn-sm btn-info" href="{% url 'event-show' app.id %}">
           <i class="icon-file icon-white"></i> View
         </a>
         {% else %}
-        <a class="destroy-event btn btn-danger" href="{% url 'event-destroy' app.id %}">
+        <a class="destroy-event btn btn-sm btn-danger" href="{% url 'event-destroy' app.id %}">
           <i class="icon-trash icon-white"></i> Delete
         </a>
-        <a class="btn btn-info" href="{% url 'event-edit' app.id %}">
+        <a class="btn btn-sm btn-info" href="{% url 'event-edit' app.id %}">
           <i class="icon-edit icon-white"></i> Edit
         </a>
         {% endif %}
       </div>
-      <div class="span12 funders">
-        <table>
-          <tbody>
-            {% for funder, amount in app.amounts.items %}
-            <tr>
-              <td>{{funder}}</td>
-              {% if amount != None %}
-              <td>$ {{ amount }}</td>
-              {% else %}
-              <td class="pending">pending</td>
-              {% endif %}
-            </tr>
-            {% endfor %}
-            <tr>
-              <td>Funds already received</td>
-              <td>$ {{ app.total_funds_already_received }}</td>
-            </tr>
-            <tr>
-              <td><b>Received Total</b></td>
-              <td>$ {{ app.total_funds_received }}</td>
-            </tr>
-            <tr>
-              <td><b>Remaining</b></td>
-              <td>$ {{ app.total_remaining }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+      </td>
+  </tr>
   {% endfor %}
+        </tbody>
+    </table>
   {% if page_length != 1 %}
   <div class="pagination pagination-centered">
     <ul>
