@@ -7,6 +7,8 @@ class EventForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         kwargs["label_suffix"] = ""
         super(EventForm, self).__init__(*args, **kwargs)
+        for f in self.fields.values():
+            f.widget.attrs.update({"class": "form-control"})
 
     def save(self, commit=True):
         m = super(EventForm, self).save(commit=False)

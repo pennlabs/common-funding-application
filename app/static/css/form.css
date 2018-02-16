@@ -18,6 +18,15 @@ form {
     color: #666;
 }
 
+#eligibility .controls {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.short-answer textarea {
+    margin-bottom: 15px;
+}
+
 form legend {
   margin-bottom: 0px;
   border: none;
