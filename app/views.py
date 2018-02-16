@@ -222,6 +222,8 @@ def event_new(request):
                 return redirect(EVENTS_HOME)
             except IntegrityError:
                 messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
+            except ValueError:
+                messages.error(request, "Please make sure you have entered valid values for all numeric fields!")
         else:
             messages.error(request, "You have one or more errors in your application.")
     else:
@@ -255,6 +257,8 @@ def event_edit(request, event_id):
                 return redirect(EVENTS_HOME)
             except IntegrityError:
                 messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
+            except ValueError:
+                messages.error(request, "Please make sure you have entered valid values for all numeric fields!")
         else:
             messages.error(request, "One or more errors occured while saving the application!")
     else:
