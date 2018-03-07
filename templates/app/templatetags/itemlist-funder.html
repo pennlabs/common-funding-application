@@ -41,10 +41,12 @@
 
       {% for funder_id, grant_amount, item_id in grant_datas %}
       {% ifequal funder_id current_funder %}
-        <td>
-          <div class="input-prepend">
-            <span class="add-on">$</span>
-            <input  class="funding-given inputIcon small input-with-dollar" name="item_{{ item_id }}"
+        <td style="min-width:125px">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$</span>
+            </div>
+            <input class="funding-given form-control" name="item_{{ item_id }}"
               type='text'
               {% ifnotequal grant_amount None %}
               value="{{ grant_amount }}"
