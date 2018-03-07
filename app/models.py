@@ -60,12 +60,12 @@ class CFAUser(models.Model):
     cc_emails = models.ManyToManyField("CCEmail", blank=True)
     mission_statement = models.TextField(blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.is_funder:
             # some funders might not have funder_names
-            return unicode(self.funder_name) or unicode(self.user)
+            return str(self.funder_name) or str(self.user)
         else:
-            return unicode(self.user)
+            return str(self.user)
 
     @property
     def is_funder(self):
@@ -304,8 +304,8 @@ class Event(models.Model):
         if self.id:
             return reverse('event-show', args=[str(self.id)])
 
-    def __unicode__(self):
-        return "%s: %s, %s" % (unicode(self.requester),
+    def __str__(self):
+        return "%s: %s, %s" % (str(self.requester),
                                self.name,
                                self.date.isoformat())
 
@@ -320,7 +320,7 @@ class Comment(models.Model):
     comment = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.comment
 
 
@@ -343,7 +343,7 @@ def notify_requester(sender, instance, signal, created, **kwargs):
 class Question(models.Model):
     question = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.question
 
     class Meta:
@@ -353,8 +353,8 @@ class Question(models.Model):
 class Answer(models.Model):
     event = models.ForeignKey(Event, models.CASCADE)
 
-    def __unicode__(self):
-        return "%s %s" % (unicode(self.question), self.answer)
+    def __str__(self):
+        return "%s %s" % (str(self.question), self.answer)
 
     class Meta:
         abstract = True
@@ -471,7 +471,7 @@ class Item(models.Model):
     def total_received(self):
         return self.funding_already_received + self.total_grants
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -480,9 +480,9 @@ class Grant(models.Model):
     item = models.ForeignKey(Item, models.CASCADE)
     amount = models.DecimalField(max_digits=17, decimal_places=2, null=True)
 
-    def __unicode__(self):
-        return "%s, %s, %d" % (unicode(self.item),
-                               unicode(self.funder),
+    def __str__(self):
+        return "%s, %s, %d" % (str(self.item),
+                               str(self.funder),
                                self.amount)
 
     class Meta:
@@ -498,9 +498,9 @@ class FunderConstraint(models.Model):
     question = models.ForeignKey(EligibilityQuestion, on_delete=models.CASCADE)
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
 
-    def __unicode__(self):
-        return "%s, %s %s" % (unicode(self.funder),
-                              unicode(self.question),
+    def __str__(self):
+        return "%s, %s %s" % (str(self.funder),
+                              str(self.question),
                               self.answer)
 
     class Meta:
@@ -511,5 +511,5 @@ class CCEmail(models.Model):
     """Emails which can be CCd for every funder"""
     email = models.EmailField()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.email
