@@ -3,8 +3,11 @@ form {
 }
 
 .django-form p {
+    float: left;
     margin-bottom: 20px;
-    margin-left: 100px;
+    padding-left: 40px;
+    min-width: 300px;
+    width: 50%;
 }
 .django-form input {
     width: 270px;
@@ -16,6 +19,7 @@ form {
 .django-form .helptext {
     display: block;
     color: #666;
+    font-size: small;
 }
 
 #eligibility .controls {
