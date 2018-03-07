@@ -133,8 +133,13 @@ table.items-total tr:last-child {
 .extra-answer {
   margin-bottom: 25px;
 }
-#register-form input {
-  width: 97%;
+#register {
+    max-width: 600px;
+    margin-bottom: 30px;
+}
+#register-form .helptext {
+    font-size: small;
+    color: #666;
 }
 #register-form .email-error {
   color: #b94a48;

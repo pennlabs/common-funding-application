@@ -6,20 +6,16 @@
 <link rel="stylesheet" href="{% static "/css/form.css" %}">
 {% endblock %}
 
-{% block htmllink-js %}
-<script src="{% static "/js/pennemail.js" %}"></script>
-{% endblock %}
-
 {% block container %}
-<div id="main" class="row">
-  <div id="register" class="span4 offset1">
+<div id="main">
+  <div id="register">
     <div class="box">
       <h2>Sign up</h2>
     <form id="register-form" method="post" class="form-horizotal">
       {% csrf_token %}
       {{ form.as_p }}
       <div class="form-actions">
-        <button class="btn btn-primary" type="submit" name="submit">Submit</button>
+        <button class="btn btn-primary" type="submit" name="submit">Sign Up</button>
       </div>
     </form>
     </div>
