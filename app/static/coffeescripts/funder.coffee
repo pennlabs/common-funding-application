@@ -1,7 +1,10 @@
 addQuestion = (e) ->
   e.preventDefault()
   row = $(event.target).closest('tr')
+  return unless row.find("textarea").val()
   clone = row.clone().insertAfter row
+  row.find("textarea").attr("name", "freeresponsequestion")
+  clone.find("textarea").val ""
   $(event.target)
     .attr("class", "btn btn-danger remove-freeresponsequestion")
     .html("Remove")
