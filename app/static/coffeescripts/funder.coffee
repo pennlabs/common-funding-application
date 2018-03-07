@@ -28,9 +28,9 @@ ignoreQuestion = (e) ->
     .html("Not Required")
 
 $ ->
-  $('.add-freeresponsequestion').live 'click', addQuestion
-  $('.remove-freeresponsequestion').live 'click', removeQuestion
+  $(document).on 'click', '.add-freeresponsequestion', addQuestion
+  $(document).on 'click', '.remove-freeresponsequestion', removeQuestion
   $("textarea").autosize()
 
-  $('.add-funderconstraint').live 'click', requireQuestion
-  $('.remove-funderconstraint').live 'click', ignoreQuestion
+  $(document).on 'click', '.add-funderconstraint', requireQuestion
+  $(document).on 'click', '.remove-funderconstraint', ignoreQuestion
