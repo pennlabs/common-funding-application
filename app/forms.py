@@ -11,7 +11,7 @@ class RegistrationForm(BaseRegistrationForm):
         super(RegistrationForm, self).__init__(*args, **kwargs)
         self.fields["email"].label = "Penn Email Address"
         self.fields["email"].help_text = "Required. Email address ending with '.upenn.edu'"
-        self.fields["email"].validators.append(RegexValidator(r"^.*@.*\.upenn\.edu$", "Enter a valid Penn email."))
+        self.fields["email"].validators.append(RegexValidator(r"^.+@([a-zA-Z]*\.)?upenn\.edu$", "Enter a valid Penn email."))
         for f in self.fields.values():
             f.widget.attrs.update({"class": "form-control"})
 

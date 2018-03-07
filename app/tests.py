@@ -50,6 +50,22 @@ class TestViews(TestCase):
         self.assertContains(resp, 'Login')
 
 
+class TestRegistrationViews(TestCase):
+    def test_register_page(self):
+        resp = self.client.get("/accounts/register/")
+        self.assertEqual(resp.status_code, 200)
+
+    def test_register(self):
+        resp = self.client.post("/accounts/register/", data={
+            "username": "philo",
+            "email": "philo@upenn.edu",
+            "password1": "we<3literature",
+            "password2": "we<3literature"
+        }, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(User.objects.filter(username="philo").exists())
+
+
 class TestLoginViews(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='philo',
