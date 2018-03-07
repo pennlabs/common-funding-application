@@ -10,6 +10,7 @@
 {% block htmllink-js %}
 <script src="{% static "js/lib/jquery.timepicker.min.js" %}"></script>
 <script src="{% static "js/lib/jquery.autosize.min.js" %}"></script>
+<script src="{% static "js/lib/popper.min.js" %}"></script>
 <script src="{% static "js/lib/bootstrap.min.js" %}"></script>
 <script src="{% static "js/recs.js" %}"></script>
 <script src="{% static "js/form.js" %}"></script>
@@ -30,7 +31,7 @@
     <div class="form-group">
       <button class="btn btn-secondary" type="submit" name="submit">Cancel</button>
       <button class="btn btn-primary" type="submit" name="submit">Save</button>
-      <a class="btn btn-info" href="#share" data-toggle="modal">Share</a>
+      <a class="btn btn-info" href="#" data-target="#share" data-toggle="modal">Share</a>
       <button id="no-fund" class="btn btn-danger" type="submit" name="submit" hidden="">Do Not Fund</button>
     </div>
     {% else %}
@@ -41,20 +42,23 @@
   </form>
 </div>
 
-<div id="share" class="modal hide fade" tabindex="-1" role="dialog">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h3>Share this link</h3>
-  </div>
-  <div class="modal-body">
-    <p>
-      Anyone with this link will be able to access a read-only version of this
-      application. <br><br>
-      <b><a href="{{event.get_absolute_url}}?key={{event.secret_key}}&id={{user.id}}">penncfa.com{{event.get_absolute_url}}?key={{event.secret_key}}&id={{user.id}}</a></b>
-    </p>
-  </div>
-  <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+<div id="share" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Share this link</h3>
+        <button type="button" class="close pull-right" data-dismiss="modal">×</button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Anyone with this link will be able to access a read-only version of this application.
+        </p>
+          <pre class="share-link"><a href="{{event.get_absolute_url}}?key={{event.secret_key}}&id={{user.id}}">https://penncfa.com{{event.get_absolute_url}}?key={{event.secret_key}}&id={{user.id}}</a></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

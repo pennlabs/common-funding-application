@@ -180,3 +180,8 @@ table.items-total tr:last-child {
 .form-control-error {
     border: 1px solid #b94a48 !important;
 }
+
+.share-link {
+    background-color: #fafafa;
+    padding: 10px;
+}
