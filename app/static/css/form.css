@@ -13,8 +13,14 @@ form {
     width: 270px;
 }
 .django-form .errorlist {
-    float: none;
-    margin-left: 100px;
+    float: left;
+}
+.django-form .errorlist li {
+    margin-left: 40px;
+}
+.django-form .errorlist li:before {
+    content: '▼';
+    margin-right: 5px;
 }
 .django-form .helptext {
     display: block;
