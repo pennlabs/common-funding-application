@@ -48,7 +48,7 @@
     <fieldset>
       {% for qa in eligibility_qas %}
         {% if not readonly or qa.answer.answer %}
-        <div class="control-group">
+        <div class="form-group">
           <label id="eligibilitylabel_{{qa.question.id}}"
                  class="control-label">
             Question {{forloop.counter}}</label>
