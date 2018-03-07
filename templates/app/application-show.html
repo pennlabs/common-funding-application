@@ -27,14 +27,16 @@
     {% if user and user.profile.is_funder %}
     <p>To submit your funding changes and any comments, click "Save." <br>
       To share a read-only copy of this application, click "Share."</p>
-    <div class="form-actions">
+    <div class="form-group">
       <button class="btn btn-secondary" type="submit" name="submit">Cancel</button>
       <button class="btn btn-primary" type="submit" name="submit">Save</button>
       <a class="btn btn-info" href="#share" data-toggle="modal">Share</a>
       <button id="no-fund" class="btn btn-danger" type="submit" name="submit" hidden="">Do Not Fund</button>
     </div>
     {% else %}
-    <a class="btn btn-primary" href="{% url 'events' %}">Done</a>
+    <div class="form-group">
+      <a class="btn btn-primary" href="{% url 'events' %}">Done</a>
+    </div>
     {% endif %}
   </form>
 </div>
