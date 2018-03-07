@@ -108,6 +108,8 @@ def application(user, event, form):
 def event_details(context):
     new_context = {"event": context["event"], "form": context["form"]}
     if 'readonly' in context or not context["form"]:
+        if 'readonly' in context:
+            new_context["extra_attrs"] = "disabled='disabled'"
         return render_to_string('app/templatetags/event-details-show.html', new_context)
     else:
         return render_to_string('app/templatetags/event-details-form.html', new_context)
