@@ -63,6 +63,12 @@ class TestRegistrationViews(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(User.objects.filter(username="philo").exists())
 
+    def test_reset_password(self):
+        resp = self.client.post("/accounts/password/reset/", data={
+            "email": "nonexistent@example.com"
+        }, follow=True)
+        self.assertEqual(resp.status_code, 200)
+
 
 class TestLoginViews(TestCase):
     def setUp(self):
