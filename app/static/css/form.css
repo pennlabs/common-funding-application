@@ -143,6 +143,9 @@ table.items-total tr:last-child {
     max-width: 600px;
     margin-bottom: 30px;
 }
+#register h2 {
+    margin-bottom: 10px;
+}
 #register-form .helptext {
     font-size: small;
     color: #666;
