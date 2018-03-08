@@ -104,8 +104,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.getenv("SECRET_KEY", 'cfa-secret-key')
 
