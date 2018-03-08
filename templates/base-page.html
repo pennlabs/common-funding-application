@@ -4,12 +4,12 @@
 
 <div class="navbar navbar-light bg-light">
     <a href="{% url 'events' %}" class="navbar-brand">The Common Funding App</a>
-    <ul class="navbar-nav">
+    <ul class="navbar-nav ml-auto">
         <li class="nav-item">
             {% if user.is_authenticated %}
-            <a href="{% url 'auth_logout' %}">Logout</a>
+            <a class="nav-link" href="{% url 'auth_logout' %}">Logout</a>
             {% else %}
-            <a href="{% url 'events' %}">Login</a>
+            <a class="nav-link" href="{% url 'events' %}">Login</a>
             {% endif %}
         </li>
     </ul>
