@@ -188,6 +188,7 @@ table.items-total tr:last-child {
     background-color: #fafafa;
     padding: 10px;
 }
-input.picker__input {
+input.picker__input[readonly] {
+    background-color: #fff;
     cursor: pointer;
 }
