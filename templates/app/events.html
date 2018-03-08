@@ -129,6 +129,8 @@
       </div>
       </td>
   </tr>
+  {% empty %}
+  <tr><td colspan="5">You do not have any {% if old %}old{% else %}current{% endif %} applications.</td></tr>
   {% endfor %}
         </tbody>
     </table>
@@ -154,9 +156,6 @@
       {% endif %}
     </ul>
   </div>
-  {% endif %}
-  {% if not apps %}
-  <div>You do not have any {% if old %}old{% else %}current{% endif %} applications.</div>
   {% endif %}
 </div>
 {% endblock %}
