@@ -20,7 +20,7 @@
     {% else %}
     <a class="btn btn-primary" href="{% url 'old-events' %}">Old Applications</a>
     {% endif %}
-    <a class="btn btn-primary" href="{% url 'new-event' %}">Create New</a>
+    <a class="btn btn-success" href="{% url 'new-event' %}">Create New</a>
 </div>
 {% elif user.profile.is_funder %}
 <div class="btns float-right">
