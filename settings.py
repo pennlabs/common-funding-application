@@ -23,7 +23,7 @@ EMAIL_HOST_USER = os.getenv("SENDGRID_USERNAME")
 EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_PASSWORD")
 
 URL_ROOT = "/"
-LOGIN_URL = os.path.join(URL_ROOT, "accounts/login/")
+LOGIN_URL = URL_ROOT
 LOGOUT_URL = os.path.join(URL_ROOT, "accounts/logout/")
 LOGIN_REDIRECT_URL = URL_ROOT
 

@@ -36,12 +36,10 @@ class CFAUserTest(TestCase):
 
 class TestViews(TestCase):
     def test_index(self):
-        """Test to see that index redirects to login page
-
-        TODO: In the future, index page should be the login page
-        """
+        """Test to see that index is the login page"""
         resp = self.client.get('/')
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Login')
 
     def test_login_page(self):
         resp = self.client.get('/accounts/login/')
@@ -81,7 +79,8 @@ class TestLoginViews(TestCase):
 
     def test_index_not_logged_in(self):
         resp = self.client.get('/')
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Login')
 
     def test_logout(self):
         self.client.login(username='philo', password='we<3literature')
@@ -89,7 +88,8 @@ class TestLoginViews(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.client.logout()
         resp = self.client.get('/')
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Login')
 
 
 class TestEvents(TestCase):
