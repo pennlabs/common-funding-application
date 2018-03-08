@@ -53,5 +53,5 @@ $ ->
 
   $(document).on 'click', '.email-delete', removeEmail
 
-  $("#cc-email").keypress (e) -> addEmail if e.which == 13
+  $("#cc-email").keypress (e) -> addEmail e if e.which == 13
   $("#add-cc-email").click addEmail
