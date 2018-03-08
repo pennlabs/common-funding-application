@@ -113,7 +113,7 @@
         {% endif %}
     </td>
     <td>
-      <div class="buttons">
+      <div class="buttons float-right">
         {% if user.is_staff or event.over or user.profile.is_funder or old %}
         <a class="btn btn-sm btn-info" href="{% url 'event-show' app.id %}">
           <i class="icon-file icon-white"></i> View
