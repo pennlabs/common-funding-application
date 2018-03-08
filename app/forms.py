@@ -31,6 +31,8 @@ class EventForm(forms.ModelForm):
         super(EventForm, self).__init__(*args, **kwargs)
         for f in self.fields.values():
             f.widget.attrs.update({"class": "form-control"})
+            if not f.required:
+                f.help_text += " (optional)"
 
     def save(self, commit=True):
         m = super(EventForm, self).save(commit=False)
