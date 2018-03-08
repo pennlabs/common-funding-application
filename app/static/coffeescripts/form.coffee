@@ -139,7 +139,7 @@ $ ->
     format: 'mm/dd/yyyy'
     format_submit: 'mm/dd/yyyy'
     onStart: ->
-      @setDate $calendar.data("year"), $calendar.data("month"), $calendar.data("day") if $calendar.data("edit")
+      @set 'select', [$calendar.data("year"), $calendar.data("month"), $calendar.data("day")] if $calendar.data("edit")
   )
 
   # toggle sections
