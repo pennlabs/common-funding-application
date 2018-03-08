@@ -371,6 +371,11 @@ def funder_edit(request, user_id):
                 question = EligibilityQuestion.objects.get(id=question_id)
                 funder.funderconstraint_set.create(question=question)
 
+        # update cc emails
+        funder.cc_emails.all().delete()
+        for email in request.POST.getlist('cc_email'):
+            funder.cc_emails.create(email=email)
+
         messages.success(request, 'Saved Info.')
         return redirect(EVENTS_HOME)
     elif request.method == 'GET':
