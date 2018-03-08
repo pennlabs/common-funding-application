@@ -14,6 +14,9 @@ from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+
 from .models import (Event, Grant, Comment, User, FreeResponseQuestion,
                      EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion,
                      FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
@@ -374,7 +377,11 @@ def funder_edit(request, user_id):
         # update cc emails
         funder.cc_emails.all().delete()
         for email in request.POST.getlist('cc_email'):
-            funder.cc_emails.create(email=email)
+            try:
+                validate_email(email)
+                funder.cc_emails.create(email=email)
+            except ValidationError:
+                messages.warning(request, 'The invalid email address "{}" was not added.'.format(email))
 
         messages.success(request, 'Saved Info.')
         return redirect(EVENTS_HOME)
