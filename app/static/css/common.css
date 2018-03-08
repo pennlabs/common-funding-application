@@ -29,6 +29,10 @@ header {
 header h1, h2, h3, h4, h5, h6 {
   margin:0px;
 }
+h2 small {
+    font-size: 70%;
+    color: #666;
+}
 header .btns {
   text-align: right;
 }
