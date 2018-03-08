@@ -104,8 +104,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.getenv("SECRET_KEY", 'cfa-secret-key')
 
@@ -139,7 +137,6 @@ MIDDLEWARE = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
