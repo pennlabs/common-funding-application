@@ -199,6 +199,10 @@ if not DEBUG:
         ".penncfa.com",
         ".penncfa.com.",
     ]
+else:
+    ALLOWED_HOSTS = [
+        "*"
+    ]
 
 if 'SENTRY_DSN' in os.environ:
     RAVEN_CONFIG = {
