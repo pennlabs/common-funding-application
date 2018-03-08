@@ -114,11 +114,11 @@
     </td>
     <td>
       <div class="buttons">
-        {% if user.is_staff or event.over or user.profile.is_funder %}
+        {% if user.is_staff or event.over or user.profile.is_funder or old %}
         <a class="btn btn-sm btn-info" href="{% url 'event-show' app.id %}">
           <i class="icon-file icon-white"></i> View
         </a>
-        {% else %}
+        {% elif not old %}
         <a class="destroy-event btn btn-sm btn-danger" href="{% url 'event-destroy' app.id %}">
           <i class="icon-trash icon-white"></i> Delete
         </a>
