@@ -9,6 +9,7 @@ $ ->
 
   $(".destroy-event").on "click", (e) ->
     e.preventDefault()
+    return unless confirm "Are you sure you want to delete this application?"
     $target = $(@)
     $target.addClass("disabled")
     $.ajax(
