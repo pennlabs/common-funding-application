@@ -179,6 +179,7 @@ def events(request):
     p = Paginator(apps, 10)
     return render(request, 'app/events.html',
                   {'apps': p.page(page).object_list,
+                   'old': False,
                    'page_obj': p.page(page),
                    'page_range': p.page_range,
                    'page_length': len(p.page_range)})
@@ -198,7 +199,7 @@ def events_old(request):
         apps = Event.objects.filter(requester=cfauser).filter(date__lt=two_weeks_ago).order_by('-date')
     else:  # cfauser.is_funder
         apps = cfauser.event_applied_funders.order_by('-date')
-    return render(request, 'app/events_old.html', {'apps': apps})
+    return render(request, 'app/events.html', {'apps': apps, 'old': True})
 
 
 # GET  /new
