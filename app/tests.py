@@ -62,12 +62,25 @@ class TestRegistrationViews(TestCase):
         }, follow=True)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(User.objects.filter(username="philo").exists())
+        self.assertEqual(len(mail.outbox), 1)
 
     def test_reset_password(self):
+        User.objects.create_user(username='philo',
+                                 email='philo@upenn.edu',
+                                 password='we<3literature')
+
+        resp = self.client.post("/accounts/password/reset/", data={
+            "email": "philo@upenn.edu"
+        }, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_reset_password_invalid(self):
         resp = self.client.post("/accounts/password/reset/", data={
             "email": "nonexistent@example.com"
         }, follow=True)
         self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
 
 
 class TestLoginViews(TestCase):

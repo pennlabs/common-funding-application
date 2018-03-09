@@ -1,5 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm as BasePasswordChangeForm, PasswordResetForm as BasePasswordResetForm
+from django.contrib.auth.forms import (PasswordChangeForm as BasePasswordChangeForm,
+                                       PasswordResetForm as BasePasswordResetForm,
+                                       SetPasswordForm as BaseSetPasswordForm)
 from django.core.validators import RegexValidator
 from registration.forms import RegistrationForm as BaseRegistrationForm
 
@@ -31,6 +33,14 @@ class PasswordResetForm(BasePasswordResetForm):
         super(PasswordResetForm, self).__init__(*args, **kwargs)
         self.fields["email"].label = "Penn Email Address"
         self.fields["email"].validators.append(RegexValidator(r"^.+@([a-zA-Z]*\.)?upenn\.edu$", "Enter a valid Penn email."))
+        for f in self.fields.values():
+            f.widget.attrs.update({"class": "form-control"})
+
+
+class SetPasswordForm(BaseSetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        kwargs["label_suffix"] = ""
+        super(SetPasswordForm, self).__init__(*args, **kwargs)
         for f in self.fields.values():
             f.widget.attrs.update({"class": "form-control"})
 
