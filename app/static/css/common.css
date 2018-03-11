@@ -72,5 +72,6 @@ footer a:hover {
 }
 
 footer .fa-heart {
+    width: 1em;
     color: #F56F71;
 }

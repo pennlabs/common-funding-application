@@ -93,16 +93,16 @@ fieldset {
 }
 
 .section-toggle {
-  font-family: "FontAwesome";
   float: right;
   cursor: pointer;
   margin-top: 10px;
+  font-weight: bold;
 }
 .section-toggle:after {
-  content: "\f068";
+  content: "-";
 }
 .section-toggle.collapsed:after {
-  content: "\f067";
+  content: "+";
 }
 
 #item-table .action-column {
