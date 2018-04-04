@@ -12,6 +12,7 @@ class CFAUserAdmin(admin.ModelAdmin):
     filter_horizontal = ('cc_emails',)
     search_fields = ('user__username',)
     list_display = ('user', 'user_type', 'osa_email')
+    list_filter = ('user_type',)
 
 
 class EventAdmin(admin.ModelAdmin):
