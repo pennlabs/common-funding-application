@@ -1,13 +1,16 @@
 {% extends "base-page.html" %}
 
+{% load static %}
+
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{{STATIC_URL}}css/index.css">
+<link rel="stylesheet" href="{% static "css/index.css" %}">
 {% endblock %}
 
 {% block container %}
 <div id="main" class="row">
-  <div class="span4 offset4">
+  <div class="col-12">
     <p>You have successfully logged out.</p>
+    <a href="{% url "events" %}" class="btn btn-secondary btn-sm">Back to Homepage</a>
   </div>
 </div>
 {% endblock %}

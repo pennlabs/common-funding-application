@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import sys
 from django.core.wsgi import get_wsgi_application
@@ -8,7 +10,8 @@ application = get_wsgi_application()
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
-from app.models import *
+from app.models import (FreeResponseQuestion, FollowupQuestion, CFAUser, EligibilityQuestion, FunderConstraint,
+                        CommonFreeResponseQuestion, CommonFollowupQuestion)
 
 from settings import TEST_EMAIL
 
@@ -16,49 +19,49 @@ from settings import TEST_EMAIL
 QUESTIONS = [
     {
         'q': ("Is your event primarily a speaker event (i.e., "
-            "over 50% speaking)?"),
+              "over 50% speaking)?"),
         'ys': ['connaissance'],
         'ns': ['tchange']
-        },
+    },
     {
         'q': ("Is your event primarily a performance event (i.e., over 50% "
-            "performance, not including speaking)?"),
+              "performance, not including speaking)?"),
         'ys': [],
         'ns': []
-        },
+    },
     {
         'q': "Is alcohol served at your event?",
         'ys': [],
         'ns': ['spectrum', 'connaissance', 'fullyplanned', 'icf', 'faithfund',
-            'tchange', 'uacontingency']
-        },
+               'tchange', 'uacontingency']
+    },
     {
-        'q': "Is your event a fundraiser for your group?", #TODO: Differentiate?
+        'q': "Is your event a fundraiser for your group?",  # TODO: Differentiate?
         'ys': [],
         'ns': ['spectrum', 'connaissance', 'fullyplanned', 'icf', 'tchange']
-        },
+    },
     {
         'q': "Is your event a closed event?",
         'ys': [],
         'ns': ['spectrum', 'icf', 'faithfund', 'tchange']
-        },
+    },
     {
         'q': ("Does your event involve multiple student organizations and "
-            "undergraduate communities?"),
+              "undergraduate communities?"),
         'ys': ['icf', 'tchange'],
         'ns': []
-        },
+    },
     {
         'q': ("Does this event does transport students via a private "
-            "transport service?"),
+              "transport service?"),
         'ys': [],
         'ns': ['tchange']
-        },
+    },
     {
         'q': "Are all your groups University-recognized?",
         'ys': ['icf'],
         'ns': []
-        },
+    },
 ]
 
 COMMON_QS = [
@@ -69,13 +72,13 @@ COMMON_QS = [
     ("Please list three past events held by the collaborating "
      "organizations and describe their outcomes."),
     ("How do you plan to publicize this event?"),
-    ]
+]
 
 COMMON_FOLLOWUP_QS = [
     ("How did your event go?"),
     ("Did your advisor attend?"),
     ("Why was it a success?")
-    ]
+]
 
 
 REQUESTERS = [
@@ -83,7 +86,7 @@ REQUESTERS = [
     'testrequester1',
     'testrequester2',
     'testrequester3',
-    ]
+]
 
 FUNDERS = [
     {
@@ -92,7 +95,7 @@ FUNDERS = [
         'desc': 'Host events serving multitude of minority interests on campus.',
         'qs': [],
         'fqs': []
-        },
+    },
 
     {
         'name': 'SPEC Connaissance',
@@ -100,49 +103,49 @@ FUNDERS = [
         'desc': 'Bring awesome speakers.',
         'qs': [],
         'fqs': []
-        },
+    },
 
     {
         'name': 'SPEC Fully Planned',
         'un': 'fullyplanned',
         'desc': ('Fund events that are ready to go but need financial '
-               'assistance to be viable.'),
+                 'assistance to be viable.'),
         'qs': [],
         'fqs': [
             ('SPEC has a followup.')
-            ]
-        },
+        ]
+    },
 
     {
         'name': 'Intercultural Fund',
         'un': 'icf',
         'desc': ('Fund events where at least one group sponsoring event '
-               'must be 5B.'),
+                 'must be 5B.'),
         'qs': [
             ('Please list which of the 5B groups are involved in your '
              'event (i.e., APSC, Lambda, PCUW, UMOJA, and/or UMC).'),
             ("How does your event fulfill the mission of the "
              "Intercultural Fund?"),
-            ],
+        ],
         'fqs': [
             ('ICF has a followup.')
-            ]
-        },
+        ]
+    },
 
     {
         'name': 'Faith Fund',
         'un': 'faithfund',
         'desc': ('Promote and support faith-based events that are '
-               'educational in nature and not exclusive'),
+                 'educational in nature and not exclusive'),
         'qs': [],
         'fqs': []
-        },
+    },
 
     {
         'name': 'T-Change',
         'un': 'tchange',
         'desc': ('Fund collaborative events that promote interaction among '
-               'disparate audiences.'),
+                 'disparate audiences.'),
         'qs': [
             ("The Vice-Provost of University Life (VPUL) charges "
              "Tangible Change with funding unique events that bring "
@@ -153,21 +156,21 @@ FUNDERS = [
              "event's collaborating groups. (Up to 200 words.)"),
             ("Please list the past 3 major events hosted by your "
              "event's collaborating organizations.")
-            ],
+        ],
         'fqs': [
             ('Tchange has some change for you')
-            ]
-        },
+        ]
+    },
 
     {
         'name': 'UA Contingency',
         'un': 'uacontingency',
         'desc': ('Fund events that need funding and have exhausted their other '
-               'alternatives.'),
+                 'alternatives.'),
         'qs': [],
         'fqs': []
-        }
-    ]
+    }
+]
 
 
 def add_funder(name, un, desc, qs, fqs):
@@ -246,6 +249,7 @@ def import_all():
     import_questions()
     import_sites()
     return 0
+
 
 if __name__ == '__main__':
     sys.exit(import_all())

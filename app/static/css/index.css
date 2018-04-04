@@ -1,20 +1,35 @@
+#login h2 {
+    margin-bottom: 10px;
+}
 #login input {
-  width:250px;
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 #login label {
-  margin: 10px 0px;
-  width:auto;
+  width: auto;
 }
 #login .box p:last-child {
-  margin-bottom: 0px;
+    margin-bottom: 0px;
 }
 #login fieldset {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
+}
+#login button {
+    margin-bottom: 15px;
 }
 h1 {
-  margin-bottom: 15px;
+    margin-bottom: 15px;
 }
 
 #login-error {
-  margin-top: 15px;
+    margin-top: 15px;
 }

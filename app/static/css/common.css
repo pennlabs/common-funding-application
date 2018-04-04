@@ -29,6 +29,10 @@ header {
 header h1, h2, h3, h4, h5, h6 {
   margin:0px;
 }
+h2 small {
+    font-size: 70%;
+    color: #666;
+}
 header .btns {
   text-align: right;
 }
@@ -65,4 +69,9 @@ footer a:hover {
 #main {
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+footer .fa-heart {
+    width: 1em;
+    color: #F56F71;
 }

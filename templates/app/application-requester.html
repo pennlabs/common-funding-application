@@ -1,24 +1,33 @@
 {% extends "base-page.html" %}
 
 {% load widgets %}
+{% load static %}
 
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{{STATIC_URL}}css/jquery.timepicker.css">
-<link rel="stylesheet" href="{{STATIC_URL}}css/form.css">
+<link rel="stylesheet" href="{% static "css/jquery.timepicker.css" %}">
+<link rel="stylesheet" href="{% static "css/form.css" %}">
 {% endblock %}
 
 {% block htmllink-js %}
-<script src="{{ STATIC_URL }}js/lib/jquery.timepicker.min.js"></script>
-<script src="{{ STATIC_URL }}js/lib/jquery.autosize.min.js"></script>
-<script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script>
-<script src="{{ STATIC_URL }}js/recs.js"></script>
-<script src="{{ STATIC_URL }}js/form.js"></script>
-<script src="{{ STATIC_URL }}js/itemlist.js"></script>
-<script src="{{ STATIC_URL }}js/requester.js"></script>
+<script src="{% static "js/lib/jquery.timepicker.min.js" %}"></script>
+<script src="{% static "js/lib/jquery.autosize.min.js" %}"></script>
+<script src="{% static "js/recs.js" %}"></script>
+<script src="{% static "js/form.js" %}"></script>
+<script src="{% static "js/itemlist.js" %}"></script>
+<script src="{% static "js/requester.js" %}"></script>
 {% endblock %}
 
 {% block container %}
 <div id="main">
+
+  {% if messages %}
+  {% for message in messages %}
+  <div class='alert {% if message.tags %}alert-{{ message.tags }}{% endif %}'>
+    <button type='button' class='close' data-dismiss='alert'>&times;</button>
+    <strong>{{ message.tags|capfirst }}!</strong> {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
 
   {% if event %}
     <form action="{% url 'event-edit' event.id %}" method="post" class="form-horizontal">
@@ -27,13 +36,13 @@
   {% endif %}
 
     {% csrf_token %}
-    {% application user event %}
+    {% application user event form %}
 
-    <div class="form-actions">
+    <div class="form-group">
       <p>Make sure that no field is left empty to avoid errors.</p>
-      <a class="btn" href="{% url 'events' %}">Cancel</a>
-      <button class="btn" type="submit" name="save-event">Save</button>
-      <button class="btn btn-primary" type="submit" name="submit-event">Submit</button>
+      <a class="btn btn-secondary" href="{% url 'events' %}">Cancel</a>
+      <button class="btn btn-primary ml-1" type="submit" name="save-event">Save</button>
+      <button class="btn btn-success ml-1" type="submit" name="submit-event">Submit</button>
     </div>
   </form>
 </div>

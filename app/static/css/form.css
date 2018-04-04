@@ -2,6 +2,41 @@ form {
   margin-bottom: 0;
 }
 
+.django-form p {
+    float: left;
+    margin-bottom: 20px;
+    padding-left: 40px;
+    min-width: 300px;
+    width: 50%;
+}
+.django-form input {
+    width: 270px;
+}
+.django-form .errorlist {
+    float: left;
+}
+.django-form .errorlist li {
+    margin-left: 40px;
+}
+.django-form .errorlist li:before {
+    content: '▼';
+    margin-right: 5px;
+}
+.django-form .helptext {
+    display: block;
+    color: #666;
+    font-size: small;
+}
+
+#eligibility .controls {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.short-answer textarea {
+    margin-bottom: 15px;
+}
+
 form legend {
   margin-bottom: 0px;
   border: none;
@@ -61,25 +96,17 @@ fieldset {
   float: right;
   cursor: pointer;
   margin-top: 10px;
+  font-weight: bold;
 }
 .section-toggle:after {
-  content: "collapse";
+  content: "-";
 }
 .section-toggle.collapsed:after {
-  content: "expand";
+  content: "+";
 }
 
-#item-table input {
-  width: 175px;
-}
-#item-table input.small {
-  width: 100px;
-}
 #item-table .action-column {
   width: 75px;
-}
-.item-category {
-  width: 100px;
 }
 table.items-total {
   font-size: 14px;
@@ -113,8 +140,16 @@ table.items-total tr:last-child {
 .extra-answer {
   margin-bottom: 25px;
 }
-#register-form input {
-  width: 97%;
+#register {
+    max-width: 600px;
+    margin-bottom: 30px;
+}
+#register h2 {
+    margin-bottom: 10px;
+}
+#register-form .helptext {
+    font-size: small;
+    color: #666;
 }
 #register-form .email-error {
   color: #b94a48;
@@ -148,4 +183,13 @@ table.items-total tr:last-child {
 }
 .form-control-error {
     border: 1px solid #b94a48 !important;
+}
+
+.share-link {
+    background-color: #fafafa;
+    padding: 10px;
+}
+input.picker__input[readonly]:not(:disabled) {
+    background-color: #fff;
+    cursor: pointer;
 }

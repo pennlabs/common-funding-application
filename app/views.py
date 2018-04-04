@@ -5,16 +5,22 @@ import re
 
 import smtplib
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import login
+from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
+from django.db import transaction, IntegrityError
 from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
-from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
 
-from app.models import (Event, Grant, Comment, User, FreeResponseQuestion,
-                        EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion,
-                        FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+
+from .models import (Event, Grant, Comment, User, FreeResponseQuestion,
+                     EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion,
+                     FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
+from .forms import EventForm
 
 
 EVENTS_HOME = 'events'
@@ -34,7 +40,7 @@ def authorization_required(view):
         except KeyError:
             try:
                 user = request.user.profile
-            except:
+            except AttributeError:
                 return redirect(EVENTS_HOME)
             else:
                 if request.user.is_staff or user.is_funder or\
@@ -145,152 +151,127 @@ def save_from_form(event, POST):
                 funder = CFAUser.objects.get(id=funder_id)
                 event.applied_funders.add(funder)
 
+
 # GET  /
 # upcoming events
-@login_required
-def events(request):
-    if request.method == 'GET':
-        user = request.user
-        # if the request type has GET query type, set it as the parameter
-        sorted_type = request.GET.get('sort').strip() if 'sort' in request.GET else 'date'
-        query_dict = {
-            'event': 'name',
-            'org': 'organizations'
-        }
-        sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
-        cfauser = user.profile
-        two_weeks_ago = datetime.today().date() - timedelta(days=14)
-        app = Event.objects.filter(date__gt=two_weeks_ago).order_by(sort_by)
-        if 'page' in request.GET:
-            page = request.GET['page']
-        else:
-            page = 1
+@require_http_methods(["GET", "POST"])
+def events(request, old=False):
+    if not request.user.is_authenticated:
+        return login(request)
 
-        if user.is_staff and not user.username == "uacontingency":
-            apps = app
-        elif cfauser.is_requester:
-            apps = app.filter(requester=cfauser)
-        else:  # cfauser.is_funder
-            apps = cfauser.event_applied_funders.order_by(sort_by)
-
-        p = Paginator(apps, 10)
-        return render(request, 'app/events.html',
-                      {'apps': p.page(page).object_list,
-                       'page_obj': p.page(page),
-                       'page_range': p.page_range,
-                       'page_length': len(p.page_range)})
-
+    user = request.user
+    # if the request type has GET query type, set it as the parameter
+    sorted_type = request.GET.get('sort').strip() if 'sort' in request.GET else 'date'
+    query_dict = {
+        'event': 'name',
+        'org': 'organizations'
+    }
+    sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
+    cfauser = user.profile
+    two_weeks_ago = datetime.today().date() - timedelta(days=14)
+    if old:
+        app = Event.objects.filter(date__lte=two_weeks_ago)
     else:
-        return HttpResponseNotAllowed(['GET'])
+        app = Event.objects.filter(date__gt=two_weeks_ago)
+    app = app.order_by(sort_by)
+    if 'page' in request.GET:
+        page = request.GET['page']
+    else:
+        page = 1
+
+    if user.is_staff and not user.username == "uacontingency":
+        apps = app
+    elif cfauser.is_requester:
+        apps = app.filter(requester=cfauser)
+    else:  # cfauser.is_funder
+        apps = cfauser.event_applied_funders.order_by(sort_by)
+
+    p = Paginator(apps, 10)
+    return render(request, 'app/events.html',
+                  {'apps': p.page(page).object_list,
+                   'old': old,
+                   'page_obj': p.page(page),
+                   'page_range': p.page_range,
+                   'page_length': len(p.page_range)})
+
 
 # GET  /old
 # previous events
 @login_required
+@require_http_methods(["GET"])
 def events_old(request):
-    if request.method == 'GET':
-        user = request.user
-        cfauser = user.profile
-        two_weeks_ago = datetime.today().date() - timedelta(days=14)
-        if user.is_staff:
-            apps = Event.objects.filter(date__lt=two_weeks_ago).order_by('-date')
-        elif cfauser.is_requester:
-            apps = Event.objects.filter(requester=cfauser).filter(date__lt=two_weeks_ago).order_by('-date')
-        else:  # cfauser.is_funder
-            apps = cfauser.event_applied_funders.order_by('-date')
-        return render(request, 'app/events_old.html', {'apps': apps})
-    else:
-        return HttpResponseNotAllowed(['GET'])
+    return events(request, old=True)
 
 
 # GET  /new
 # POST /new
 @login_required
+@require_http_methods(["GET", "POST"])
 def event_new(request):
     """Form to create a new event."""
     if request.method == 'POST':
-        if "submit-event" in request.POST:
-            status = 'B'  # B for SUBMITTED
+        form = EventForm(request.POST)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    event = form.save(commit=False)
+                    event.requester = request.user.profile
+                    event.save()
+                    save_from_form(event, request.POST)
+                event.notify_funders(new=True)
+                msg = u"Scheduled {} for {}!".format(event.name, event.date.strftime("%b %d, %Y"))
+                messages.success(request, msg)
+                return redirect(EVENTS_HOME)
+            except IntegrityError:
+                messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
+            except ValueError:
+                messages.error(request, "Please make sure you have entered valid values for all numeric fields!")
         else:
-            status = 'S'  # S for SAVED
-
-        date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
-
-        try:
-            event = Event.objects.create(
-                name=request.POST['name'],
-                status=status,
-                date=date,
-                requester=request.user.profile,
-                location=request.POST['location'],
-                organizations=request.POST['organizations'],
-                contact_name = request.POST['contactname'],
-                contact_email = request.POST['contactemail'],
-                time=request.POST['time'],
-                contact_phone = request.POST['contactphone'],
-                anticipated_attendance=request.POST['anticipatedattendance'],
-                advisor_email = request.POST['advisoremail'],
-                advisor_phone = request.POST['advisorphone'],
-            )
-        except IntegrityError as e:
-            messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
-            return redirect(EVENTS_HOME)
-        save_from_form(event, request.POST)
-        event.notify_funders(new=True)
-        msg = "Scheduled %s for %s!" %\
-            (event.name, event.date.strftime("%b %d, %Y"))
-        messages.success(request, msg)
-        return redirect(EVENTS_HOME)
-    elif request.method == 'GET':
-        return render(request, 'app/application-requester.html')
+            messages.error(request, "You have one or more errors in your application.")
     else:
-        return HttpResponseNotAllowed(['GET'])
+        form = EventForm()
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'app/application-requester.html', context)
 
 
 # GET  /1/edit
 # POST /1/edit
 @login_required
 @requester_only
+@require_http_methods(["GET", "POST"])
 def event_edit(request, event_id):
     event = Event.objects.get(pk=event_id)
     if event.over:
         return redirect('event-show', event_id)
     if request.method == 'POST':
-        if event.followup_needed:
-            status = 'O'  # O for OVER
-        elif event.funded:
-            # keep status as funded when partially funded event is edited.
-            status = 'F'  # F for FUNDED
-        elif "submit-event" in request.POST:
-            status = 'B'  # B for SUBMITTED
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    event = form.save()
+                    save_from_form(event, request.POST)
+                event.notify_funders(new=False)
+                messages.success(request, u'Saved {}!'.format(event.name))
+                return redirect(EVENTS_HOME)
+            except IntegrityError:
+                messages.error(request, "Please make sure your event name, date, and requester ID are UNIQUE!")
+            except ValueError:
+                messages.error(request, "Please make sure you have entered valid values for all numeric fields!")
         else:
-            status = 'S'  # S for SAVED
-
-        event.name = request.POST['name']
-        event.status = status
-        event.date = datetime.strptime(request.POST['date'], '%m/%d/%Y')
-        event.organizations = request.POST['organizations']
-        event.location = request.POST['location']
-        event.time = request.POST['time']
-        event.contact_name = request.POST['contactname']
-        event.contact_email = request.POST['contactemail']
-        event.contact_phone = request.POST['contactphone']
-        event.anticipated_attendance = request.POST['anticipatedattendance']
-        event.advisor_email = request.POST['advisoremail']
-        event.advisor_phone = request.POST['advisorphone']
-        event.save()
-        save_from_form(event, request.POST)
-        event.notify_funders(new=False)
-        messages.success(request, 'Saved %s!' % event.name)
-        return redirect(EVENTS_HOME)
-    elif request.method == 'GET':
-        return render(request, 'app/application-requester.html', {'event': event})
+            messages.error(request, "One or more errors occured while saving the application!")
     else:
-        return HttpResponseNotAllowed(['GET'])
+        form = EventForm(instance=event)
+    return render(request, 'app/application-requester.html', {'event': event, 'form': form})
 
 
 # GET  /1
 # POST /1
 @authorization_required
+@require_http_methods(["GET", "POST"])
 def event_show(request, event_id):
     user = request.user
     event = Event.objects.get(pk=event_id)
@@ -335,13 +316,11 @@ def event_show(request, event_id):
             return redirect(EVENTS_HOME)
         else:
             return redirect(EVENTS_HOME)
-    elif request.method == 'GET':
+    else:
         if 'id' in request.GET:
             event.shared_funder = \
                 User.objects.get(id=request.GET['id']).profile
         return render(request, 'app/application-show.html', {'event': event})
-    else:
-        return HttpResponseNotAllowed(['POST'])
 
 
 # GET  /1/destroy
@@ -352,6 +331,7 @@ def event_destroy(request, event_id):
     event.delete()
     return HttpResponse(json.dumps({'event_id': event_id}),
                         content_type="application/json")
+
 
 # GET /funders/1/edit
 # POST /funders/1/edit
@@ -367,10 +347,10 @@ def funder_edit(request, user_id):
 
         # delete removed free response questions.
         request_question_ids = \
-            [int(re.search("[0-9]+", k).group(0)) for k,v in request.POST.items()
+            [int(re.search("[0-9]+", k).group(0)) for k, v in request.POST.items()
              if '_' in k and k.startswith('freeresponsequestion')]
         for question in funder.freeresponsequestion_set.all():
-            if not question.id in request_question_ids:
+            if question.id not in request_question_ids:
                 question.delete()
 
         # create new free response questions.
@@ -394,15 +374,28 @@ def funder_edit(request, user_id):
                 question = EligibilityQuestion.objects.get(id=question_id)
                 funder.funderconstraint_set.create(question=question)
 
+        # update cc emails
+        funder.cc_emails.all().delete()
+        for email in request.POST.getlist('cc_email'):
+            try:
+                validate_email(email)
+                funder.cc_emails.create(email=email)
+            except ValidationError:
+                messages.warning(request, 'The invalid email address "{}" was not added.'.format(email))
+
         messages.success(request, 'Saved Info.')
         return redirect(EVENTS_HOME)
     elif request.method == 'GET':
         funder_questions = FreeResponseQuestion.objects.filter(funder_id=funder.id)
         eligibility_questions = EligibilityQuestion.objects.all()
-        return render(request,
-                      'app/funder_edit.html',
-                      {'user': user,
-                       'funder_questions': funder_questions,
-                       'eligibility_questions': eligibility_questions })
+        return render(
+            request,
+            'app/funder_edit.html',
+            {
+                'user': user,
+                'funder_questions': funder_questions,
+                'eligibility_questions': eligibility_questions
+            }
+        )
     else:
         return HttpResponseNotAllowed(['GET'])

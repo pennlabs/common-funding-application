@@ -36,12 +36,12 @@
         <tr class='itemrow {% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
           <input name="item_revenue" type="hidden" value="{{ is_revenue }}" />
           <td>
-            <input name="item_name" type="text" class='small'
+            <input name="item_name" type="text" class='form-control'
               required {% if funded %} readonly {% endif %}
               value="{{ item.name }}" />
           </td>
           <td>
-            <select class="item-category" name='item_category' {% if funded %} readonly {% endif %}>
+            <select class="form-control" name='item_category' {% if funded %} readonly {% endif %}>
               <option> {{ item.get_category_display }} </option>
               {% for item_category in CATEGORIES %}
                 {% if item_category.1 != item.get_category_display %}
@@ -51,24 +51,28 @@
             </select>
           </td>
           <td>
-            <input name="item_quantity" type="number" class='small' 
+            <input name="item_quantity" type="number" class='form-control' 
               required {% if funded %} readonly {% endif %}
               pattern="^\d+" step="1"
               value="{{ item.quantity }}" />
           </td>
           <td>
-            <div class="input-prepend">
-              <span class="add-on">$</span>
-              <input class="inputIcon small input-with-dollar" name="item_price_per_unit"
+            <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+            </div>
+              <input class="inputIcon form-control input-with-dollar" name="item_price_per_unit"
                 required {% if funded %} readonly {% endif %} type="number"
                 pattern="^\d*(\.\d{2}$)?" step="0.01"
                 value="{{ item.price_per_unit }}"/>
             </div>
           </td>
           <td {%if is_revenue %}class='hidden'{% endif %}>
-            <div class="input-prepend">
-              <span class="add-on">$</span>
-              <input class="inputIcon small input-with-dollar" name="item_funding_already_received"
+            <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+            </div>
+              <input class="inputIcon form-control input-with-dollar" name="item_funding_already_received"
                 type="number" required {% if funded %} readonly {% endif %}
                 pattern="^\d*(\.\d{2}$)?" step="0.01"
                 value="{{ item.funding_already_received }}" />
@@ -88,28 +92,32 @@
     <tr class='itemrow {% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
       <input name="item_revenue" type="hidden" value="{{ is_revenue }}" />
       <td>
-        <input class="new small" name="item_name" type="text"/>
+        <input class="new form-control" name="item_name" type="text"/>
       </td>
       <td>
-        <select class="item-category" name='item_category'>
+        <select class="form-control" name='item_category'>
           {% for item_category in CATEGORIES %}
           <option> {{ item_category.1 }} </option>
           {% endfor %}
         </select>
       </td>
       <td>
-        <input class="new small" name="item_quantity" type="number"/>
+        <input class="new form-control" name="item_quantity" type="number"/>
       </td>
       <td>
-        <div class="input-prepend">
-          <span class="add-on">$</span>
-          <input class="new inputIcon small input-with-dollar" name="item_price_per_unit" type="number" step="0.01"/>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+            </div>
+          <input class="new inputIcon form-control input-with-dollar" name="item_price_per_unit" type="number" step="0.01"/>
         </div>
       </td>
       <td {% if is_revenue %}class='hidden'{% endif %}>
-        <div class="input-prepend">
-          <span class="add-on">$</span>
-          <input class="new inputIcon small input-with-dollar" name="item_funding_already_received" type="number" step="0.01"/>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+            </div>
+          <input class="new inputIcon form-control input-with-dollar" name="item_funding_already_received" type="number" step="0.01"/>
         </div>
       </td>
       <td>

@@ -36,18 +36,51 @@ class CFAUserTest(TestCase):
 
 class TestViews(TestCase):
     def test_index(self):
-        """Test to see that index redirects to login page
-
-        TODO: In the future, index page should be the login page
-        """
+        """Test to see that index is the login page"""
         resp = self.client.get('/')
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Login')
 
     def test_login_page(self):
         resp = self.client.get('/accounts/login/')
         self.assertEqual(resp.status_code, 200)
         self.assertTrue('form' in resp.context)
         self.assertContains(resp, 'Login')
+
+
+class TestRegistrationViews(TestCase):
+    def test_register_page(self):
+        resp = self.client.get("/accounts/register/")
+        self.assertEqual(resp.status_code, 200)
+
+    def test_register(self):
+        resp = self.client.post("/accounts/register/", data={
+            "username": "philo",
+            "email": "philo@upenn.edu",
+            "password1": "we<3literature",
+            "password2": "we<3literature"
+        }, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertTrue(User.objects.filter(username="philo").exists())
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_reset_password(self):
+        User.objects.create_user(username='philo',
+                                 email='philo@upenn.edu',
+                                 password='we<3literature')
+
+        resp = self.client.post("/accounts/password/reset/", data={
+            "email": "philo@upenn.edu"
+        }, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+
+    def test_reset_password_invalid(self):
+        resp = self.client.post("/accounts/password/reset/", data={
+            "email": "nonexistent@example.com"
+        }, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
 
 
 class TestLoginViews(TestCase):
@@ -65,7 +98,8 @@ class TestLoginViews(TestCase):
 
     def test_index_not_logged_in(self):
         resp = self.client.get('/')
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Login')
 
     def test_logout(self):
         self.client.login(username='philo', password='we<3literature')
@@ -73,7 +107,8 @@ class TestLoginViews(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.client.logout()
         resp = self.client.get('/')
-        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'Login')
 
 
 class TestEvents(TestCase):
@@ -106,6 +141,14 @@ class TestEvents(TestCase):
         resp = self.client.get('/2/')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'First Round')
+
+    def test_create_duplicate_event(self):
+        resp = self.client.get('/new/')
+        for _ in range(2):
+            with open('app/fixtures/event_edit.json', 'r') as f:
+                resp = self.client.post('/new/', json.load(f))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(Event.objects.filter(name="Test").count(), 1)
 
     def test_create_event_utf8(self):
         unicode_string = 'Téßt؟'

@@ -21,9 +21,10 @@ EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.getenv("SENDGRID_USERNAME")
 EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_PASSWORD")
+EMAIL_USE_TLS = True
 
 URL_ROOT = "/"
-LOGIN_URL = os.path.join(URL_ROOT, "accounts/login/")
+LOGIN_URL = URL_ROOT
 LOGOUT_URL = os.path.join(URL_ROOT, "accounts/logout/")
 LOGIN_REDIRECT_URL = URL_ROOT
 
@@ -104,11 +105,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-# Simplified static file serving.
-# https://warehouse.python.org/project/whitenoise/
-
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.getenv("SECRET_KEY", 'cfa-secret-key')
 
@@ -136,6 +132,7 @@ TEMPLATES = [
 ]
 
 MIDDLEWARE = (
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
@@ -160,6 +157,7 @@ INSTALLED_APPS = (
     'registration',
     'localflavor',
     'raven.contrib.django.raven_compat',
+    'django_extensions'
 )
 
 
@@ -200,8 +198,13 @@ if not DEBUG:
         ".penncfa.com",
         ".penncfa.com.",
     ]
+else:
+    ALLOWED_HOSTS = [
+        "*"
+    ]
 
 if 'SENTRY_DSN' in os.environ:
     RAVEN_CONFIG = {
         'dsn': os.environ.get('SENTRY_DSN'),
+        'release': raven.fetch_git_sha(PROJECT_ROOT)
     }

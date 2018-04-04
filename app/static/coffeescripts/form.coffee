@@ -66,7 +66,7 @@ disableIneligibleFunders = ->
 enableAllFunders = ->
   $(".funder-checkbox").removeClass("ineligible")
     .removeAttr("readonly").removeAttr("toggle").removeAttr("title")
-    .removeAttr("data-original-title").tooltip('destroy')
+    .removeAttr("data-original-title").tooltip('dispose')
 
 # parse ids as an array of integers from associated data field
 parseDataIds = (elem, id_name) ->
@@ -79,7 +79,7 @@ allFunderIds = ->
 
 # retrieve all checked eligibility questions ids
 allCheckedQuestionIds = ->
-  _.map($("#eligibility :checkbox[checked]"), (e) -> $(e).data("qid"))
+  _.map($("#eligibility [type='checkbox']:checked"), (e) -> $(e).data("qid"))
 
 # show questions based on which funders are selected and eligible
 showQuestions = ->
@@ -104,8 +104,8 @@ $ ->
   updateEligibileFunders()
   disableIneligibleFunders()
 
-  $('.ineligible').live 'click', disableCheckbox
-  $('.disable').live 'click', disableCheckbox
+  $(document).on 'click', '.ineligible', disableCheckbox
+  $(document).on 'click', '.disable', disableCheckbox
 
   $(".funder-checkbox").change ->
     funder_id = $(this).data("funderid")
@@ -128,18 +128,18 @@ $ ->
     Selected.push(funder_id) if this.checked
   showQuestions()
 
-  $("#questiontime").timepicker(
+  $("#id_time").timepicker(
     timeFormat: "G:i"
     step: 30
     scrollDefaultNow: true
   )
 
-  $calendar = $("#questiondate")
+  $calendar = $("#id_date")
   $calendar.pickadate(
     format: 'mm/dd/yyyy'
     format_submit: 'mm/dd/yyyy'
     onStart: ->
-      @setDate $calendar.data("year"), $calendar.data("month"), $calendar.data("day") if $calendar.data("edit")
+      @set 'select', [$calendar.data("year"), $calendar.data("month"), $calendar.data("day")] if $calendar.data("edit")
   )
 
   # toggle sections

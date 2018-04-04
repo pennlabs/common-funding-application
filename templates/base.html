@@ -1,9 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <title>The Common Funding App</title>
     <meta name="description" content="The Common Funding App, University of Pennsylvania">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="Penn Labs">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
@@ -12,12 +14,12 @@
     <![endif]-->
 
     <!-- styles -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/common.css">
+    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "css/common.css" %}">
     {% block htmllink-styles %}{% endblock %}
 
     <!-- fav and touch icons -->
-    <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico">
+    <link rel="shortcut icon" href="{% static "img/favicon.ico" %}">
   </head>
 
   <body>
@@ -31,8 +33,8 @@
 
       <footer>
         <ul>
-          <li>Made at Penn</li>
-          <li>&copy; 2017 <a target="_blank" href='http://pennlabs.org/'>Penn Labs</a></li>
+            <li>Made with <svg class="fa-heart" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M414.9 24C361.8 24 312 65.7 288 89.3 264 65.7 214.2 24 161.1 24 70.3 24 16 76.9 16 165.5c0 72.6 66.8 133.3 69.2 135.4l187 180.8c8.8 8.5 22.8 8.5 31.6 0l186.7-180.2c2.7-2.7 69.5-63.5 69.5-136C560 76.9 505.7 24 414.9 24z"></path></svg> by Penn Labs</li>
+          <li>&copy; {% now 'Y' %} <a target="_blank" href='http://pennlabs.org/'>Penn Labs</a></li>
         </ul>
       </footer>
 
@@ -45,11 +47,14 @@
     <script type="text/javascript">
     var uvOptions = {}; (function() { var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true; uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/f4CP3tzmm1PwHOXJLOW3g.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s); })();
     </script>
-    <link type="text/css" href="{{ STATIC_URL }}css/pickadate.css" rel="Stylesheet">
+    <link type="text/css" href="{% static "css/pickadate.css" %}" rel="Stylesheet">
 
-    <script type="text/javascript" src="{{ STATIC_URL }}js/lib/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/lib/underscore.min.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}js/lib/pickadate.min.js"></script>
+    <script type="text/javascript" src="{% static "js/lib/jquery.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/lib/underscore.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/lib/popper.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/lib/bootstrap.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/lib/pickadate.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/lib/pickadate.date.min.js" %}"></script>
     {% block htmllink-js %}{% endblock %}
 
   </body>

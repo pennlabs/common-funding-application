@@ -1,15 +1,16 @@
 {% extends "base-page.html" %}
 
 {% load widgets %}
+{% load static %}
 
 {% block htmllink-styles %}
-<link rel="stylesheet" href="{{STATIC_URL}}css/form.css">
-<link rel="stylesheet" href="{{STATIC_URL}}css/funder.css">
+<link rel="stylesheet" href="{% static "css/form.css" %}">
+<link rel="stylesheet" href="{% static "css/funder.css" %}">
 {% endblock %}
 
 {% block htmllink-js %}
-<script src="{{ STATIC_URL }}js/lib/jquery.autosize.min.js"></script>
-<script src="{{ STATIC_URL }}js/funder.js"></script>
+<script src="{% static "js/lib/jquery.autosize.min.js" %}"></script>
+<script src="{% static "js/funder.js" %}"></script>
 {% endblock %}
 
 {% block container %}
@@ -27,26 +28,52 @@
             class="form-horizontal">
         {% csrf_token %}
 
-        <div class="control-group">
-          <label for="fundername" class="control-label">Funder Name</label>
-          <div class="controls">
-            <input value="{{ user.profile.funder_name }}"
-                   type="text"
-                   name="fundername"
-                   id="fundername"
-                   class="input-xlarge">
-          </div>
-        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group">
+                    <label for="fundername" class="control-label">Funder Name</label>
+                    <div class="controls">
+                        <input value="{{ user.profile.funder_name }}"
+                               type="text"
+                               name="fundername"
+                               id="fundername"
+                               class="form-control">
+                    </div>
+                </div>
 
-        <div class="control-group">
-          <label for="missionstatement"
-                 class="control-label">Mission Statement</label>
-          <div class="controls">
-            <textarea type="text"
-                      name="missionstatement"
-                      class="span7 input-xlarge"
-                      rows="5">{{user.profile.mission_statement}}</textarea>
-          </div>
+                <div class="form-group">
+                    <label for="missionstatement"
+                           class="control-label">Mission Statement</label>
+                    <div class="controls">
+                        <textarea type="text"
+                                  name="missionstatement"
+                                  class="form-control"
+                                  rows="5">{{user.profile.mission_statement}}</textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <label class="control-label">Funder Emails</label><br />
+                <p>You can add additional emails below. When an application is received, the emails below will be included in the notification.</p>
+                <ul id="cc-emails" class="list-group mb-3">
+                    <li class="list-group-item">{{ user.email }} <span class="badge badge-secondary float-right mt-1">Primary</span></li>
+                    {% for email in user.profile.cc_emails.all %}
+                    <li class="list-group-item">
+                        {{ email }}
+                        <button class='close email-delete'>&times;</button>
+                        <input type="hidden" name="cc_email" value="{{ email }}" />
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input id="cc-email" type="email" class="form-control" />
+                        <div class="input-group-append">
+                            <button id="add-cc-email" class="btn btn-success">Add Email</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="funder-edit-subtable">
@@ -61,7 +88,7 @@
                   <textarea type="text"
                             name="freeresponsequestion_{{question.id}}"
                             data-qid="{{question.id}}"
-                            class="span7">{{question.question}}</textarea>
+                            class="form-control">{{question.question}}</textarea>
                 </td>
                 <td>
                   <button class="btn btn-danger remove-freeresponsequestion">
@@ -73,8 +100,7 @@
               <tr>
                 <td>
                   <textarea type="text"
-                            name="freeresponsequestion"
-                            class="span7"
+                            class="form-control"
                             rows="1">{{question.question}}</textarea>
                 </td>
                 <td>
@@ -116,7 +142,7 @@
         </div>
 
         <div class="form-actions">
-          <a class="btn"
+          <a class="btn btn-secondary"
              href="{% url 'events' %}">Cancel</a>
           <button class="btn btn-primary"
                   type="submit"

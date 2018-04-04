@@ -32,7 +32,7 @@ root.calculateAmount = ->
   $('.itemrow').each (index, el) -> setRowAmount $(el)
 
   amountSel = ".itemrow #{quantSel}, .itemrow #{ppuSel}, .itemrow #{alreadyReceivedSel}"
-  $(amountSel).live "input", (e) ->
+  $(document).on "input", amountSel, (e) ->
     setRowAmount $(e.target).closest('.itemrow')
     updateTotal()
 
@@ -58,10 +58,10 @@ $ ->
   calculateAmount()
   updateTotal()
 
-  $('.add-item').live 'click', (e) ->
+  $(document).on 'click', '.add-item', (e) ->
     addItem e.target
     return false
 
-  $('.remove-item').live 'click', (e) ->
+  $(document).on 'click', '.remove-item', (e) ->
     removeItem e.target
     return false
