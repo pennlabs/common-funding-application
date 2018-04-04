@@ -16,6 +16,7 @@ class CFAUserAdmin(admin.ModelAdmin):
 
 class EventAdmin(admin.ModelAdmin):
     search_fields = ('name', 'requester__user__username')
+    list_filter = ('status', 'created_at')
 
 
 admin.site.unregister(Group)
