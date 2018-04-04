@@ -89,6 +89,7 @@
           {% endif %}
         </tr>
     {% endfor %}
+    {% if not funded %}
     <tr class='itemrow {% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
       <input name="item_revenue" type="hidden" value="{{ is_revenue }}" />
       <td>
@@ -128,6 +129,7 @@
         <button class='btn add add-item'>Add</button>
       </td>
     </tr>
+    {% endif %}
 
   </tbody>
 </table>
