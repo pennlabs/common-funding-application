@@ -14,6 +14,10 @@ class CFAUserAdmin(admin.ModelAdmin):
     list_display = ('user', 'user_type', 'osa_email')
 
 
+class EventAdmin(admin.ModelAdmin):
+    search_fields = ('name', 'requester__user__username')
+
+
 admin.site.unregister(Group)
 admin.site.unregister(Site)
 
@@ -24,5 +28,5 @@ admin.site.register(FreeResponseQuestion)
 admin.site.register(CommonFollowupQuestion)
 admin.site.register(FollowupQuestion)
 admin.site.register(FunderConstraint)
-admin.site.register(Event)
+admin.site.register(Event, EventAdmin)
 admin.site.register(CCEmail)
