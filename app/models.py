@@ -269,7 +269,8 @@ class Event(models.Model):
         subject = render_to_string('app/grant_email_subject.txt',
                                    context=context).strip()
         message = render_to_string('app/grant_email.txt', context=context)
-        self.requester.user.email_user(subject, message)
+        if can_send_email():
+            self.requester.user.email_user(subject, message)
 
     def notify_requester_for_followups(self):
         """
