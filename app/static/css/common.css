@@ -76,6 +76,11 @@ footer .fa-heart {
     color: #F56F71;
 }
 
-.pagination {
+.center-pagination {
+    display: flex;
+}
+
+.center-pagination .pagination {
     overflow-y: auto;
+    margin: auto;
 }

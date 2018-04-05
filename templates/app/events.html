@@ -135,8 +135,8 @@
         </tbody>
     </table>
   {% if page_length != 1 %}
-  <div>
-    <ul class="pagination justify-content-center">
+  <div class="center-pagination">
+    <ul class="pagination">
       {% if page_obj.has_previous %}
       <li class="page-item"><a class="page-link" href="{% url 'events' %}?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
       {% endif %}
