@@ -6,7 +6,7 @@ Common Funding Application
 The [Common Funding Application](https://penncfa.com) is an online application that allows student groups and organizations to request funding from various funding sources at the [University of Pennsylvania](http://www.upenn.edu).
 
 ## Local Backend Setup
-* Install [pip](http://www.pip-installer.org/en/latest/installing.html)
+* Install [pip](https://pip.pypa.io/en/latest/installing/)
 
 * Create a virtualenv (`virtualenv env`) and activate it (`source env/bin/activate`). You will need to re-activate the virtualenv in every new terminal you use.
 
@@ -26,7 +26,7 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Install [CoffeeScript](http://coffeescript.org) (`sudo npm install -g coffee-script`)
 
-* Install [Mocha](https://www.npmjs.com/package/mocha) (`sudo npm install -g mocha`)
+* Install [Mocha](https://mochajs.org/#installation) (`sudo npm install -g mocha`)
 
 * Compile the CoffeeScript files (`coffee -o app/static/js/ -c app/static/coffeescripts/` or `cake build` if you are in the app/static directory)
 
