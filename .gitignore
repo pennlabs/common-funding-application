@@ -1,5 +1,4 @@
 sandbox_config.py
-/app/static/test/*.js
 /static
 *.swp
 *~

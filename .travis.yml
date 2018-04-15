@@ -10,4 +10,4 @@ before_install:
   - npm install --global mocha
 script:
   - python manage.py test -v2 app
-  - mocha app/static/test
+  - mocha app/static/test/
