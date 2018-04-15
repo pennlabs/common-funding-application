@@ -1,5 +1,3 @@
-const root = typeof exports !== 'undefined' && exports !== null ? exports : window;
-
 const addItem = function(e) {
   const $row = $(e).closest('tr');
   const $clone = $row.clone().insertBefore($row);
@@ -16,7 +14,7 @@ const removeItem = function(e) {
 };
 
 // updates the total amount (quant * ppu) in the column
-root.calculateAmount = function() {
+const calculateAmount = function() {
   const quantSel = 'input[name="item_quantity"]';
   const ppuSel = 'input[name="item_price_per_unit"]';
   const alreadyReceivedSel = 'input[name="item_funding_already_received"]';
@@ -41,7 +39,7 @@ root.calculateAmount = function() {
   });
 };
 
-root.updateTotal = function() {
+const updateTotal = function() {
   let expTotal = 0;
   let recvTotal = parseFloat($("#fundingalreadyreceived").val() || 0);
   let revTotal = 0;
