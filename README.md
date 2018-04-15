@@ -24,15 +24,9 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Install [node.js](http://nodejs.org/)
 
-* Install [CoffeeScript](http://coffeescript.org) (`sudo npm install -g coffee-script`)
-
 * Install [Mocha](https://mochajs.org/#installation) (`sudo npm install -g mocha`)
 
-* Compile the CoffeeScript files (`coffee -o app/static/js/ -c app/static/coffeescripts/` or `cake build` if you are in the app/static directory)
-
-* Navigate to app/static
-
-* Run tests (`cake test`)
+* Run tests (`mocha app/static/test/`)
 
 ## DB migrations
 
