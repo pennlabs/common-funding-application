@@ -5,7 +5,9 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
-before_install: nvm install 9
+before_install:
+  - nvm install 9
+  - npm install --global mocha
 script:
   - python manage.py test -v2 app
   - mocha app/static/test
