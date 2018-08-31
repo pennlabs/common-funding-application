@@ -8,6 +8,8 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 ## Local Backend Setup
 * Install [pip](https://pip.pypa.io/en/latest/installing/)
 
+* Install `mysql_config` (`apt-get install libmysqlclient-dev`)
+
 * Create a virtualenv (`virtualenv env`) and activate it (`source env/bin/activate`). You will need to re-activate the virtualenv in every new terminal you use.
 
 * Install python dependencies (`pip install -r requirements.txt`)
