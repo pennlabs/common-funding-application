@@ -164,7 +164,8 @@ def events(request, old=False):
     sorted_type = request.GET.get('sort').strip() if 'sort' in request.GET else 'date'
     query_dict = {
         'event': 'name',
-        'org': 'organizations'
+        'org': 'organizations',
+        'submit': '-updated_at'
     }
     sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
     cfauser = user.profile
