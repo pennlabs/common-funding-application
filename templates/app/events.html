@@ -51,9 +51,7 @@
                 <th><strong><a href="{{ request.path }}?sort=event">Event</a></strong></th>
                 <th><strong><a href="{{ request.path }}?sort=date">Event Date</a></strong></th>
                 <th><strong><a href="{{ request.path }}?sort=org">Organization</a></strong></th>
-                {% if user.profile.is_funder %}
                 <th><strong><a href="{{ request.path }}?sort=submit">Submission Date</a></strong></th>
-                {% endif %}
                 <th><strong>Status</strong></th>
                 <th></th>
             </tr>
@@ -100,11 +98,9 @@
       <td>
         <span>{{ app.organizations }}</span>
       </td>
-      {% if user.profile.is_funder %}
       <td>
         <span>{{ app.updated_at }}</span>
       </td>
-      {% endif %}
       <td>
         {% if app.date_passed %}
         <span class="badge badge-default">OVER</span>
