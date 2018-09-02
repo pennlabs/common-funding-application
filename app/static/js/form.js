@@ -155,8 +155,8 @@ $(function() {
     format: 'mm/dd/yyyy',
     format_submit: 'mm/dd/yyyy',
     onStart() {
-      if ($calendar.data("edit")) {
-        this.set('select', [$calendar.data("year"), $calendar.data("month"), $calendar.data("day")]);
+      if ($calendar.val()) {
+        this.set('select', $calendar.val(), {format: 'yyyy-mm-dd'});
       }
     }
   });
