@@ -310,11 +310,12 @@ def event_show(request, event_id):
                     user.profile.notify_osa(event, grants)
                 except smtplib.SMTPException:
                     pass
-            if request.POST.get('new-comment', None):
+            if request.POST.get('new-comment'):
+                messages.success(request, "Saved comment!")
                 comment = Comment(comment=request.POST['new-comment'],
                                   funder=user.profile, event=event)
                 comment.save()
-            return redirect(EVENTS_HOME)
+            return redirect('event-show', event_id)
         else:
             return redirect(EVENTS_HOME)
     else:
