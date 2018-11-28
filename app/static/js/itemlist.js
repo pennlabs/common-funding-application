@@ -4,7 +4,7 @@ const addItem = function(e) {
   $row.find('.item-amount').html(0);
   $clone.find('.add').replaceWith($('.remove').html());
   $clone.find('input').removeAttr('required');
-  $clone.find('.item-category').val($row.find('.item-category').val());
+  $clone.find('[name="item_category"]').val($row.find('[name="item_category"]').val());
   $row.find('input[type!="hidden"]').removeAttr('required').val('');
 };
 
