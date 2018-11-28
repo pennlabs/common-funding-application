@@ -90,8 +90,9 @@ def save_from_form(event, POST):
                 continue
             funding = funding or 0
             # set correct category letter
+            cat = cat.strip().upper()
             for tup in CATEGORIES:
-                if tup[1].strip().lower() == cat.strip().lower():
+                if tup[1].strip().upper() == cat:
                     cat = tup[0]
                     break
             # Remove unwanted commas for int parsing
