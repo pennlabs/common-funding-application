@@ -42,7 +42,7 @@
           </td>
           <td>
             <select class="form-control" name='item_category' {% if funded %} readonly {% endif %}>
-            <option value="{{ item.category }}"> {{ item.get_category_display }} </option>
+            <option value="{{ item.category }}" selected> {{ item.get_category_display }} </option>
               {% for item_category in CATEGORIES %}
                 {% if item_category.1 != item.get_category_display %}
             <option value="{{ item_category.0 }}"> {{ item_category.1 }} </option>
