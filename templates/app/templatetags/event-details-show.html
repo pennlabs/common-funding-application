@@ -5,6 +5,9 @@
       {{event.name}}
     <small>details about the event</small>
     </h2>
+    {% if event.has_update %}
+    <h4><small>Last updated: {{ event.updated_at }}</small></h4>
+    {% endif %}
     <h4><small>Date submitted: {{ event.created_at }}</small></h4>
   </div>
   <div class="section-content">

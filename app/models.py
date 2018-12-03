@@ -155,6 +155,10 @@ class Event(models.Model):
         return super(Event, self).save(*args, **kwargs)
 
     @property
+    def has_update(self):
+        return abs((self.updated_at - self.created_at).seconds) > 60 * 60
+
+    @property
     def over(self):
         return self.status == 'O'
 
