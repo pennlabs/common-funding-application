@@ -126,8 +126,11 @@
         <a class="destroy-event btn btn-sm btn-danger" href="{% url 'event-destroy' app.id %}">
           <i class="icon-trash icon-white"></i> Delete
         </a>
-        <a class="btn btn-sm btn-info" href="{% url 'event-edit' app.id %}">
+        <a class="btn btn-sm btn-warning text-white" href="{% url 'event-edit' app.id %}">
           <i class="icon-edit icon-white"></i> Edit
+        </a>
+        <a class="btn btn-sm btn-info" target="_blank" href="{% url 'event-download' app.id %}">
+          <i class="icon-download icon-white"></i> Download
         </a>
         {% endif %}
       </div>

@@ -1,4 +1,6 @@
 from decimal import Decimal
+# from datetime import datetime as dt
+# import datetime
 from datetime import datetime, timedelta
 import json
 import re
@@ -21,6 +23,11 @@ from .models import (Event, Grant, Comment, User, FreeResponseQuestion,
                      EligibilityQuestion, Item, CATEGORIES, CommonFollowupQuestion,
                      FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
 from .forms import EventForm
+
+from django.views.generic import View
+from django.utils import timezone
+from .models import *
+from .render import Render
 
 
 EVENTS_HOME = 'events'
@@ -171,7 +178,7 @@ def events(request, old=False):
     }
     sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
     cfauser = user.profile
-    two_weeks_ago = datetime.today().date() - timedelta(days=14)
+    two_weeks_ago = timezone.now().date() - timedelta(days=14)
     if old:
         app = Event.objects.filter(date__lte=two_weeks_ago)
     else:
@@ -335,6 +342,40 @@ def event_destroy(request, event_id):
     event.delete()
     return HttpResponse(json.dumps({'event_id': event_id}),
                         content_type="application/json")
+import io
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
+from django.template.loader import get_template
+from django.http import HttpResponse
+import xhtml2pdf.pisa as pisa
+
+# GET  /1/download
+@login_required
+@requester_only
+def event_download(request, event_id):
+    today = timezone.now()
+    event = Event.objects.get(pk=event_id)
+    params = {
+        'today': today,
+        'event': event
+    }
+
+    template = get_template('pdf.html')
+    html = template.render(params)
+    response = io.BytesIO()
+
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), response)
+    if not pdf.err:
+        return HttpResponse(response.getvalue(), content_type='application/pdf')
+    else:
+        return HttpResponse("Error Rendering PDF", status=400)
+    # buffer = io.BytesIO()
+    # p = canvas.Canvas(buffer)
+    # p.showPage()
+    # p.save()
+    # response = FileResponse(buffer, content_type='application/pdf')
+    # response['Content-Disposition'] = 'attachment; filename="download.pdf"'
+    # return response
 
 
 # GET /funders/1/edit
