@@ -41,7 +41,7 @@
               value="{{ item.name }}" />
           </td>
           <td>
-            <select class="form-control" id='item_category' name='item_category' {% if funded %} readonly {% endif %}>
+            <select class="form-control item_category" name='item_category' {% if funded %} readonly {% endif %}>
             <option value="{{ item.category }}" selected> {{ item.get_category_display }} </option>
               {% for item_category in CATEGORIES %}
                 {% if item_category.1 != item.get_category_display %}
@@ -98,7 +98,7 @@
         <input class="new form-control" id="item_name" name="item_name" type="text"/>
       </td>
       <td>
-        <select class="form-control" id='item_category' name='item_category'>
+        <select class="form-control item_category" name='item_category'>
           {% for item_category in CATEGORIES %}
           <option value="{{ item_category.0 }}"> {{ item_category.1 }} </option>
           {% endfor %}

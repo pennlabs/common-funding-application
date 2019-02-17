@@ -93,7 +93,7 @@ $(function() {
         $clone.removeClass('expense-item-add-new');
         $clone.find('#item_name').val(f_json[i][0]);
         f_json[i][1] = $.trim(f_json[i][1])
-        $clone.find('#item_category option').filter(function() {
+        $clone.find('.item_category option').filter(function() {
                 return $.trim($(this).text()) == f_json[i][1];
             }).prop('selected', true);
         $clone.find('#item_quantity').val(f_json[i][2]);
@@ -101,7 +101,7 @@ $(function() {
         $clone.find('#item_funding_already_received').val(f_json[i][4]);
         $clone.find('.add').replaceWith($('.remove').html());
         $clone.find('input').removeAttr('required');
-        $clone.find('[name="item_category"]').val($row.find('[name="item_category"]').val());
+        // $clone.find('[name="item_category"]').val($row.find('[name="item_category"]').val());
 
         $row.find('input[type!="hidden"]').removeAttr('required').val('');
         calculateAmount();
@@ -109,7 +109,7 @@ $(function() {
       }
     };
     if(rABS) reader.readAsBinaryString(f); else reader.readAsArrayBuffer(f);
-      $("#expense-itemlist-file").replaceWith($("#expense-itemlist-file").val('').clone(true));
+    $("#expense-itemlist-file").replaceWith($("#expense-itemlist-file").val('').clone(true));
   });
 
   $("#revenue-itemlist-file").on('change',function(e){
@@ -133,15 +133,14 @@ $(function() {
         $row.find('.item-amount').html(0);
         $clone.removeClass('revenue-item-add-new');
         $clone.find('#item_name').val(f_json[i][0]);
-        $clone.find('#item_category option').filter(function() {
+        $clone.find('.item_category option').filter(function() {
                 return $.trim($(this).text()) == f_json[i][1];
             }).prop('selected', true);
         $clone.find('#item_quantity').val(f_json[i][2]);
         $clone.find('#item_price_per_unit').val(f_json[i][3]);
         $clone.find('.add').replaceWith($('.remove').html());
         $clone.find('input').removeAttr('required');
-        $clone.find('[name="item_category"]').val($row.find('[name="item_category"]').val());
-
+        // $clone.find('[name="item_category"]').val($row.find('[name="item_category"]').val());
         $row.find('input[type!="hidden"]').removeAttr('required').val('');
         calculateAmount();
         updateTotal();
