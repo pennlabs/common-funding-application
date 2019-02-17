@@ -2,6 +2,8 @@ const addItem = function(e) {
   const $row = $(e).closest('tr');
   const $clone = $row.clone().insertBefore($row);
   $row.find('.item-amount').html(0);
+  $clone.removeClass('expense-item-add-new');
+  $clone.removeClass('revenue-item-add-new');
   $clone.find('.add').replaceWith($('.remove').html());
   $clone.find('input').removeAttr('required');
   $clone.find('[name="item_category"]').val($row.find('[name="item_category"]').val());
@@ -65,6 +67,88 @@ $(function() {
   $(document).on('click', '.add-item', function(e) {
     addItem(e.target);
     return false;
+  });
+
+  var rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
+
+  $("#expense-itemlist-file").on('change',function(e){
+    const fileList = this.files;
+    var f = fileList[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var data = e.target.result;
+      if(!rABS) data = new Uint8Array(data);
+      var workbook = XLSX.read(data, {type: rABS ? 'binary' : 'array'});
+
+      var first_sheet_name = workbook.SheetNames[0];
+      /* Get worksheet */
+      var worksheet = workbook.Sheets[first_sheet_name];
+      var f_json = XLSX.utils.sheet_to_json(worksheet, {header:1,raw: true});
+      console.log(f_json);
+
+      for(var i=1; i < f_json.length; i++) {
+        const $row = $(".expense-item-add-new").first();
+        const $clone = $row.clone().insertBefore($row);
+        $row.find('.item-amount').html(0);
+        $clone.removeClass('expense-item-add-new');
+        $clone.find('#item_name').val(f_json[i][0]);
+        f_json[i][1] = $.trim(f_json[i][1])
+        $clone.find('#item_category option').filter(function() {
+                return $.trim($(this).text()) == f_json[i][1];
+            }).prop('selected', true);
+        $clone.find('#item_quantity').val(f_json[i][2]);
+        $clone.find('#item_price_per_unit').val(f_json[i][3]);
+        $clone.find('#item_funding_already_received').val(f_json[i][4]);
+        $clone.find('.add').replaceWith($('.remove').html());
+        $clone.find('input').removeAttr('required');
+        $clone.find('[name="item_category"]').val($row.find('[name="item_category"]').val());
+
+        $row.find('input[type!="hidden"]').removeAttr('required').val('');
+        calculateAmount();
+        updateTotal();
+      }
+    };
+    if(rABS) reader.readAsBinaryString(f); else reader.readAsArrayBuffer(f);
+      $("#expense-itemlist-file").replaceWith($("#expense-itemlist-file").val('').clone(true));
+  });
+
+  $("#revenue-itemlist-file").on('change',function(e){
+    const fileList = this.files;
+    var f = fileList[0];
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var data = e.target.result;
+      if(!rABS) data = new Uint8Array(data);
+      var workbook = XLSX.read(data, {type: rABS ? 'binary' : 'array'});
+
+      var first_sheet_name = workbook.SheetNames[0];
+      /* Get worksheet */
+      var worksheet = workbook.Sheets[first_sheet_name];
+      var f_json = XLSX.utils.sheet_to_json(worksheet, {header:1,raw: true});
+      console.log(f_json);
+
+      for(var i=1; i < f_json.length; i++) {
+        const $row = $(".revenue-item-add-new").first();
+        const $clone = $row.clone().insertBefore($row);
+        $row.find('.item-amount').html(0);
+        $clone.removeClass('revenue-item-add-new');
+        $clone.find('#item_name').val(f_json[i][0]);
+        $clone.find('#item_category option').filter(function() {
+                return $.trim($(this).text()) == f_json[i][1];
+            }).prop('selected', true);
+        $clone.find('#item_quantity').val(f_json[i][2]);
+        $clone.find('#item_price_per_unit').val(f_json[i][3]);
+        $clone.find('.add').replaceWith($('.remove').html());
+        $clone.find('input').removeAttr('required');
+        $clone.find('[name="item_category"]').val($row.find('[name="item_category"]').val());
+
+        $row.find('input[type!="hidden"]').removeAttr('required').val('');
+        calculateAmount();
+        updateTotal();
+      }
+    };
+    if(rABS) reader.readAsBinaryString(f); else reader.readAsArrayBuffer(f);
+    $("#revenue-itemlist-file").replaceWith($("#revenue-itemlist-file").val('').clone(true));
   });
 
   $(document).on('click', '.remove-item', function(e) {
