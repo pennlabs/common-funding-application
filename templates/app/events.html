@@ -33,6 +33,15 @@
     <small>Welcome, {{ user.username }}!</small>
   </h2>
 </div>
+<div class="section-content" style="margin-top: 20px">
+  <div class="alert alert-info">
+    <strong></strong>
+    Tip: If you want to download a pdf of the application, click the Edit/View button then "Ctrl + P" using Chrome to save as PDF.
+  </div>
+  <div class="django-form clearfix">
+      {{ form.as_p }}
+  </div>
+</div>
 </header>
 
 {% if messages %}
@@ -119,7 +128,7 @@
     <td>
       <div class="buttons float-right">
         {% if user.is_staff or event.over or user.profile.is_funder or old %}
-        <a class="btn btn-sm btn-info" href="{% url 'event-show' app.id %}">
+        <a class="btn btn-sm btn-info text-white" href="{% url 'event-show' app.id %}">
           <i class="icon-file icon-white"></i> View
         </a>
         {% elif not old %}
@@ -128,9 +137,6 @@
         </a>
         <a class="btn btn-sm btn-warning text-white" href="{% url 'event-edit' app.id %}">
           <i class="icon-edit icon-white"></i> Edit
-        </a>
-        <a class="btn btn-sm btn-info" target="_blank" href="{% url 'event-download' app.id %}">
-          <i class="icon-download icon-white"></i> Download
         </a>
         {% endif %}
       </div>

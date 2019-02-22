@@ -84,7 +84,6 @@ $(function() {
       /* Get worksheet */
       var worksheet = workbook.Sheets[first_sheet_name];
       var f_json = XLSX.utils.sheet_to_json(worksheet, {header:1,raw: true});
-      console.log(f_json);
 
       for(var i=1; i < f_json.length; i++) {
         const $row = $(".expense-item-add-new").first();
@@ -125,7 +124,6 @@ $(function() {
       /* Get worksheet */
       var worksheet = workbook.Sheets[first_sheet_name];
       var f_json = XLSX.utils.sheet_to_json(worksheet, {header:1,raw: true});
-      console.log(f_json);
 
       for(var i=1; i < f_json.length; i++) {
         const $row = $(".revenue-item-add-new").first();

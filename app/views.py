@@ -29,7 +29,6 @@ from django.utils import timezone
 from .models import *
 from .render import Render
 
-
 EVENTS_HOME = 'events'
 
 
@@ -350,33 +349,27 @@ from django.http import HttpResponse
 import xhtml2pdf.pisa as pisa
 
 # GET  /1/download
-@login_required
-@requester_only
-def event_download(request, event_id):
-    today = timezone.now()
-    event = Event.objects.get(pk=event_id)
-    params = {
-        'today': today,
-        'event': event
-    }
-
-    template = get_template('pdf.html')
-    html = template.render(params)
-    response = io.BytesIO()
-
-    pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), response)
-    if not pdf.err:
-        return HttpResponse(response.getvalue(), content_type='application/pdf')
-    else:
-        return HttpResponse("Error Rendering PDF", status=400)
-    # buffer = io.BytesIO()
-    # p = canvas.Canvas(buffer)
-    # p.showPage()
-    # p.save()
-    # response = FileResponse(buffer, content_type='application/pdf')
-    # response['Content-Disposition'] = 'attachment; filename="download.pdf"'
-    # return response
-
+# @login_required
+# @requester_only
+# def event_download(request, event_id):
+#     today = timezone.now()
+#
+#     user = request.user
+#     event = Event.objects.get(pk=event_id)
+#     params = {
+#         'today': today,
+#         'event': event
+#     }
+#
+#     template = get_template('pdf.html')
+#     html = template.render(params)
+#     response = io.BytesIO()
+#
+#     pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), response)
+#     if not pdf.err:
+#         return HttpResponse(response.getvalue(), content_type='application/pdf')
+#     else:
+#         return HttpResponse("Error Rendering PDF", status=400)
 
 # GET /funders/1/edit
 # POST /funders/1/edit

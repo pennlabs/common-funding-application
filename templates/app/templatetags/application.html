@@ -104,6 +104,12 @@
     </h2>
   </div>
   <div class="section-content">
+    <div class="alert alert-info">
+      <strong>Heads up!</strong>
+      If you are importing line items from a .xlsx file, make sure the column names are in the correct order is on our online form. The name of the columns do not matter, and make sure each category is a valid category in the selection dropdown.
+    </div>
+  </div>
+  <div class="section-content">
     <fieldset>
       {% if not user.is_staff and user.profile.is_requester %}
       {% itemlist_requester 0 event.item_set.all event.funded %}
