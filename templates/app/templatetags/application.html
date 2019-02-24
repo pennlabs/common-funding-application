@@ -164,7 +164,7 @@
             class="funder-checkbox"
             {% if funder in event.applied_funders.all %}checked{% endif %}
             type="checkbox" {{extra_attrs}} {{event_over_disable}}>
-            {{funder}}
+            {{funder}}: ({{funder.osa_email}})
         </label>
         <p class="help-block">{{funder.mission_statement}}</p>
       </div>
