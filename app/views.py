@@ -1,7 +1,5 @@
 from decimal import Decimal
-# from datetime import datetime as dt
-# import datetime
-from datetime import datetime, timedelta
+from datetime import timedelta
 import json
 import re
 
@@ -24,10 +22,7 @@ from .models import (Event, Grant, Comment, User, FreeResponseQuestion,
                      FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
 from .forms import EventForm
 
-from django.views.generic import View
 from django.utils import timezone
-from .models import *
-from .render import Render
 
 EVENTS_HOME = 'events'
 
@@ -75,89 +70,89 @@ def requester_only(view):
 
 
 def save_from_form(event, POST):
-        """Save an event from form data."""
-        # save items
-        names = POST.getlist('item_name')
-        quantities = POST.getlist('item_quantity')
-        prices_per_unit = POST.getlist('item_price_per_unit')
-        funding_already_received =\
-            POST.getlist('item_funding_already_received')
-        categories = POST.getlist('item_category')
-        revenues = POST.getlist('item_revenue')
+    """Save an event from form data."""
+    # save items
+    names = POST.getlist('item_name')
+    quantities = POST.getlist('item_quantity')
+    prices_per_unit = POST.getlist('item_price_per_unit')
+    funding_already_received =\
+        POST.getlist('item_funding_already_received')
+    categories = POST.getlist('item_category')
+    revenues = POST.getlist('item_revenue')
 
-        for item in event.item_set.all():
-            if not Grant.objects.filter(item=item):
-                item.delete()
+    for item in event.item_set.all():
+        if not Grant.objects.filter(item=item):
+            item.delete()
 
-        zipped_items = zip(names, quantities, prices_per_unit,
-                           funding_already_received, categories, revenues)
-        for name, quantity, price, funding, cat, rev in zipped_items:
-            if Item.objects.filter(event=event, name=name):
-                continue
-            funding = funding or 0
-            # set correct category letter
-            cat = cat.strip().upper()
-            for tup in CATEGORIES:
-                if tup[1].strip().upper() == cat:
-                    cat = tup[0]
-                    break
-            # Remove unwanted commas for int parsing
-            rev = rev.replace(",", "")
+    zipped_items = zip(names, quantities, prices_per_unit,
+                       funding_already_received, categories, revenues)
+    for name, quantity, price, funding, cat, rev in zipped_items:
+        if Item.objects.filter(event=event, name=name):
+            continue
+        funding = funding or 0
+        # set correct category letter
+        cat = cat.strip().upper()
+        for tup in CATEGORIES:
+            if tup[1].strip().upper() == cat:
+                cat = tup[0]
+                break
+        # Remove unwanted commas for int parsing
+        rev = rev.replace(",", "")
 
-            if name:
-                event.item_set.create(name=name,
-                                      quantity=quantity,
-                                      price_per_unit=price,
-                                      funding_already_received=funding,
-                                      category=cat,
-                                      revenue=int(rev))
+        if name:
+            event.item_set.create(name=name,
+                                  quantity=quantity,
+                                  price_per_unit=price,
+                                  funding_already_received=funding,
+                                  category=cat,
+                                  revenue=int(rev))
 
-        # save questions
+    # save questions
 
-        # delete existing answers
-        event.commonfollowupanswer_set.all().delete()
-        event.followupanswer_set.all().delete()
-        event.eligibilityanswer_set.all().delete()
-        event.commonfreeresponseanswer_set.all().delete()
-        event.freeresponseanswer_set.all().delete()
+    # delete existing answers
+    event.commonfollowupanswer_set.all().delete()
+    event.followupanswer_set.all().delete()
+    event.eligibilityanswer_set.all().delete()
+    event.commonfreeresponseanswer_set.all().delete()
+    event.freeresponseanswer_set.all().delete()
 
-        # clear existing funders to re-add new ones
-        event.applied_funders.clear()
+    # clear existing funders to re-add new ones
+    event.applied_funders.clear()
 
-        # create new answers and save funders
-        # unchecked checkboxes will have neither answers nor funders
-        # associated with them
-        for k, v in POST.items():
-            if k.startswith('eligibility'):
-                q_id = re.search("[0-9]+", k).group(0)
-                question = EligibilityQuestion.objects.get(id=q_id)
-                event.eligibilityanswer_set.create(question=question,
-                                                   event=event, answer='Y')
-            elif k.startswith('commonfollowup'):
-                q_id = re.search("[0-9]+", k).group(0)
-                question = CommonFollowupQuestion.objects.get(id=q_id)
-                event.commonfollowupanswer_set.create(question=question,
-                                                      event=event, answer=v)
-            elif k.startswith('followup'):
-                q_id = re.search("[0-9]+", k).group(0)
-                question = FollowupQuestion.objects.get(id=q_id)
-                event.followupanswer_set.create(question=question,
+    # create new answers and save funders
+    # unchecked checkboxes will have neither answers nor funders
+    # associated with them
+    for k, v in POST.items():
+        if k.startswith('eligibility'):
+            q_id = re.search("[0-9]+", k).group(0)
+            question = EligibilityQuestion.objects.get(id=q_id)
+            event.eligibilityanswer_set.create(question=question,
+                                               event=event, answer='Y')
+        elif k.startswith('commonfollowup'):
+            q_id = re.search("[0-9]+", k).group(0)
+            question = CommonFollowupQuestion.objects.get(id=q_id)
+            event.commonfollowupanswer_set.create(question=question,
+                                                  event=event, answer=v)
+        elif k.startswith('followup'):
+            q_id = re.search("[0-9]+", k).group(0)
+            question = FollowupQuestion.objects.get(id=q_id)
+            event.followupanswer_set.create(question=question,
+                                            event=event, answer=v)
+        elif k.startswith('commonfreeresponse'):
+            q_id = re.search("[0-9]+", k).group(0)
+            question = CommonFreeResponseQuestion.objects.get(id=q_id)
+            event.commonfreeresponseanswer_set.create(question=question,
+                                                      event=event,
+                                                      answer=v)
+        elif k.startswith('freeresponse'):
+            q_id = re.search("[0-9]+", k).group(0)
+            question = FreeResponseQuestion.objects.get(id=q_id)
+            event.freeresponseanswer_set.create(question=question,
                                                 event=event, answer=v)
-            elif k.startswith('commonfreeresponse'):
-                q_id = re.search("[0-9]+", k).group(0)
-                question = CommonFreeResponseQuestion.objects.get(id=q_id)
-                event.commonfreeresponseanswer_set.create(question=question,
-                                                          event=event,
-                                                          answer=v)
-            elif k.startswith('freeresponse'):
-                q_id = re.search("[0-9]+", k).group(0)
-                question = FreeResponseQuestion.objects.get(id=q_id)
-                event.freeresponseanswer_set.create(question=question,
-                                                    event=event, answer=v)
-            elif k.startswith('funder'):
-                funder_id = re.search("[0-9]+", k).group(0)
-                funder = CFAUser.objects.get(id=funder_id)
-                event.applied_funders.add(funder)
+        elif k.startswith('funder'):
+            funder_id = re.search("[0-9]+", k).group(0)
+            funder = CFAUser.objects.get(id=funder_id)
+            event.applied_funders.add(funder)
 
 
 # GET  /
@@ -341,35 +336,7 @@ def event_destroy(request, event_id):
     event.delete()
     return HttpResponse(json.dumps({'event_id': event_id}),
                         content_type="application/json")
-import io
-from django.http import FileResponse
-from reportlab.pdfgen import canvas
-from django.template.loader import get_template
-from django.http import HttpResponse
-import xhtml2pdf.pisa as pisa
 
-# GET  /1/download
-# @login_required
-# @requester_only
-# def event_download(request, event_id):
-#     today = timezone.now()
-#
-#     user = request.user
-#     event = Event.objects.get(pk=event_id)
-#     params = {
-#         'today': today,
-#         'event': event
-#     }
-#
-#     template = get_template('pdf.html')
-#     html = template.render(params)
-#     response = io.BytesIO()
-#
-#     pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), response)
-#     if not pdf.err:
-#         return HttpResponse(response.getvalue(), content_type='application/pdf')
-#     else:
-#         return HttpResponse("Error Rendering PDF", status=400)
 
 # GET /funders/1/edit
 # POST /funders/1/edit

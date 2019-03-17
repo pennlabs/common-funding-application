@@ -140,12 +140,11 @@
 
   </tbody>
 </table>
+
 {% if is_revenue %}
-<label for="revenue-itemlist-file">Choose file to populate items:</label>
-
-<input type="file" id="revenue-itemlist-file" name="revenue-itemlist-file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+<input type="file" id="revenue-itemlist-file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" hidden />
+<button id="revenue-itemlist-button" class="btn btn-info btn-sm">Upload Spreadsheet (Excel/CSV)</button>
 {% else %}
-<label for="expense-itemlist-file">Choose file to populate items:</label>
-
-<input type="file" id="expense-itemlist-file" name="expense-itemlist-file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+<input type="file" id="expense-itemlist-file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" hidden />
+<button id="expense-itemlist-button" class="btn btn-info btn-sm">Upload Spreadsheet (Excel/CSV)</button>
 {% endif %}
