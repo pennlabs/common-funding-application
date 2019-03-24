@@ -1,4 +1,5 @@
 from decimal import Decimal
+import datetime
 from datetime import timedelta
 import json
 import re
@@ -158,7 +159,7 @@ def save_from_form(event, POST):
 # GET  /
 # upcoming events
 @require_http_methods(["GET", "POST"])
-def events(request, old=False):
+def events(request):
     if not request.user.is_authenticated:
         return login(request)
 
@@ -173,10 +174,14 @@ def events(request, old=False):
     sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
     cfauser = user.profile
     two_weeks_ago = timezone.now().date() - timedelta(days=14)
-    if old:
-        app = Event.objects.filter(date__lte=two_weeks_ago)
-    else:
-        app = Event.objects.filter(date__gt=two_weeks_ago)
+    filter_val = request.GET.get('filter', '')
+    app = Event.objects.filter()
+    if len(filter_val) != 0:
+        if filter_val == 'O':
+            app = Event.objects.filter(date__lt=datetime.date.today() - datetime.timedelta(days=14))
+        else:
+            app = Event.objects.filter(date__gte=datetime.date.today() - datetime.timedelta(days=14))
+            app = app.filter(status__in=filter_val)
     app = app.order_by(sort_by)
     if 'page' in request.GET:
         page = request.GET['page']
@@ -193,18 +198,10 @@ def events(request, old=False):
     p = Paginator(apps, 10)
     return render(request, 'app/events.html',
                   {'apps': p.page(page).object_list,
-                   'old': old,
                    'page_obj': p.page(page),
                    'page_range': p.page_range,
-                   'page_length': len(p.page_range)})
-
-
-# GET  /old
-# previous events
-@login_required
-@require_http_methods(["GET"])
-def events_old(request):
-    return events(request, old=True)
+                   'page_length': len(p.page_range),
+                   'filter': filter_val})
 
 
 # GET  /new
@@ -336,7 +333,6 @@ def event_destroy(request, event_id):
     event.delete()
     return HttpResponse(json.dumps({'event_id': event_id}),
                         content_type="application/json")
-
 
 # GET /funders/1/edit
 # POST /funders/1/edit

@@ -15,11 +15,6 @@
 <header>
   {% if not user.is_staff and user.profile.is_requester %}
   <div class="btns float-right">
-    {% if old %}
-    <a class="btn btn-primary" href="{% url 'events' %}">Current Applications</a>
-    {% else %}
-    <a class="btn btn-primary" href="{% url 'old-events' %}">Past Applications</a>
-    {% endif %}
     <a class="btn btn-success" href="{% url 'new-event' %}">Create New</a>
   </div>
   {% elif user.profile.is_funder %}
@@ -29,7 +24,7 @@
   {% endif %}
   <div>
     <h2>
-      {% if old %}Past{% else %}Current{% endif %} Applications
+      Current Applications
       <small>Welcome, {{ user.username }}!</small>
     </h2>
   </div>
@@ -45,136 +40,58 @@
 {% endif %}
 
 <div id="main">
-  {% if old %}
-
-
-  <table id="events" class="table table-hover">
-    <thead>
-      <tr>
-        <th><strong><a href="{{ request.path }}?sort=event">Event</a></strong></th>
-        <th><strong><a href="{{ request.path }}?sort=date">Event Date</a></strong></th>
-        <th><strong><a href="{{ request.path }}?sort=org">Organization</a></strong></th>
-        <th><strong><a href="{{ request.path }}?sort=submit">Submission Date</a></strong></th>
-        <th><strong>Status</strong></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for app in apps %}
-      <tr class="event-row">
-        <td>
-          <span>{{ app.name }}</span>
-          <div class="funders" style="display:none">
-            <br />
-            <table>
-              <tbody>
-                {% for funder, amount in app.amounts.items %}
-                <tr>
-                  <td>{{funder}}</td>
-                  {% if amount != None %}
-                  <td>$ {{ amount }}</td>
-                  {% else %}
-                  <td class="pending">pending</td>
-                  {% endif %}
-                </tr>
-                {% endfor %}
-                <tr>
-                  <td>Funds already received</td>
-                  <td>$ {{ app.total_funds_already_received }}</td>
-                </tr>
-                <tr>
-                  <td><b>Received Total</b></td>
-                  <td>$ {{ app.total_funds_received }}</td>
-                </tr>
-                <tr>
-                  <td><b>Remaining</b></td>
-                  <td>$ {{ app.total_remaining }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </td>
-        <td>
-          <span>{{ app.date }}</span>
-        </td>
-        <td>
-          <span>{{ app.organizations }}</span>
-        </td>
-        <td>
-          <span>{{ app.updated_at }}</span>
-        </td>
-        <td>
-          {% if app.date_passed %}
-          <span class="badge badge-default">OVER</span>
-          {% elif app.followup_needed %}
-          <span class="badge badge-danger">FOLLOWUP</span>
-          {% elif app.submitted %}
-          <span class="badge badge-success">SUBMITTED</span>
-          {% elif app.funded and app.total_remaining > 0 %}
-          <span class="badge badge-warning">IN PROGRESS</span>
-          {% elif app.funded and app.total_remaining <= 0 %}
-          <span class="badge badge-primary">FUNDED</span>
-          {% elif app.saved %}
-          <span class="badge badge-info">SAVED</span>
-          {% endif %}
-        </td>
-        <td>
-          <div class="buttons float-right">
-            {% if user.is_staff or event.over or user.profile.is_funder or old %}
-            <a class="btn btn-sm btn-info text-white" href="{% url 'event-show' app.id %}">
-              <i class="icon-file icon-white"></i> View
-            </a>
-            {% elif not old %}
-            <a class="destroy-event btn btn-sm btn-danger" href="{% url 'event-destroy' app.id %}">
-              <i class="icon-trash icon-white"></i> Delete
-            </a>
-            <a class="btn btn-sm btn-warning text-white" href="{% url 'event-edit' app.id %}">
-              <i class="icon-edit icon-white"></i> Edit
-            </a>
-            {% endif %}
-          </div>
-        </td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="5">You do not have any {% if old %}old{% else %}current{% endif %} applications.</td></tr>
-      {% endfor %}
-
-    </tbody>
-  </table>
-
-
-
-  {% else %}
   <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    {% with params=request.GET.urlencode %}
     <li class="nav-item">
-      <a class="nav-link active" id="pills-all-tab" data-toggle="pill" href="#pills-all" role="tab" aria-controls="pills-all" aria-selected="true">All</a>
+      <a class="nav-link remove-page
+      {% ifequal filter ""%} active {% endifequal %}
+      " href="{% relative_url_2 '' 'filter' 1 'page' params %}">All</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="pills-submitted-tab" data-toggle="pill" href="#pills-submitted" role="tab" aria-controls="pills-submitted" aria-selected="true">Submitted</a>
+      <a class="nav-link remove-page
+      {% ifequal filter "B"%} active {% endifequal %}
+      " href="{% relative_url_2 'B' 'filter' 1 'page' params %}">Submitted</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="pills-followup-tab" data-toggle="pill" href="#pills-followup" role="tab" aria-controls="pills-followup" aria-selected="false">Followup</a>
+      <a class="nav-link remove-page
+      {% ifequal filter "W"%} active {% endifequal %}
+      " href="{% relative_url_2 'W' 'filter' 1 'page' params %}">Followup</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="pills-over-tab" data-toggle="pill" href="#pills-over" role="tab" aria-controls="pills-over" aria-selected="false">Over</a>
+      <a class="nav-link remove-page
+      {% ifequal filter "O"%} active {% endifequal %}
+      " href="{% relative_url_2 'O' 'filter' 1 'page' params %}">Over</a>
     </li>
+    {% endwith %}
   </ul>
-  <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab">
-      <table id="events" class="table table-hover">
+      <table id="events" class="table table-hover showAll">
         <thead>
           <tr>
-            <th><strong><a href="{{ request.path }}?sort=event">Event</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=date">Event Date</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=org">Organization</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=submit">Submission Date</a></strong></th>
+            {% with params=request.GET.urlencode %}
+            <th><strong><a class="remove-page" href="{% relative_url_2 'event' 'sort' 1 'page' params %}">Event</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url_2 'date' 'sort' 1 'page' params %}">Event Date</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url_2 'org' 'sort' 1 'page' params %}">Organization</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url_2 'submit' 'sort' 1 'page' params %}">Submission Date</a></strong></th>
             <th><strong>Status</strong></th>
             <th></th>
+            {% endwith %}
           </tr>
         </thead>
         <tbody>
           {% for app in apps %}
-          <tr class="event-row">
+          <tr class="event-row {% if app.date_passed %}
+          over
+          {% elif app.followup_needed %}
+          followup
+          {% elif app.submitted %}
+          submitted
+          {% elif app.funded and app.total_remaining > 0 %}
+          inprogress
+          {% elif app.funded and app.total_remaining <= 0 %}
+          funded
+          {% elif app.saved %}
+          saved
+          {% endif %}">
             <td>
               <span>{{ app.name }}</span>
               <div class="funders" style="display:none">
@@ -251,322 +168,14 @@
           {% empty %}
           <tr><td colspan="5">You do not have any {% if old %}old{% else %}current{% endif %} applications.</td></tr>
           {% endfor %}
-
         </tbody>
       </table>
-    </div>
-
-
-
-
-    <div class="tab-pane fade" id="pills-submitted" role="tabpanel" aria-labelledby="pills-submitted-tab">
-      <table id="events" class="table table-hover">
-        <thead>
-          <tr>
-            <th><strong><a href="{{ request.path }}?sort=event">Event</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=date">Event Date</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=org">Organization</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=submit">Submission Date</a></strong></th>
-            <th><strong>Status</strong></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for app in apps %}
-          {% if app.submitted %}
-          <tr class="event-row">
-            <td>
-              <span>{{ app.name }}</span>
-              <div class="funders" style="display:none">
-                <br />
-                <table>
-                  <tbody>
-                    {% for funder, amount in app.amounts.items %}
-                    <tr>
-                      <td>{{funder}}</td>
-                      {% if amount != None %}
-                      <td>$ {{ amount }}</td>
-                      {% else %}
-                      <td class="pending">pending</td>
-                      {% endif %}
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                      <td>Funds already received</td>
-                      <td>$ {{ app.total_funds_already_received }}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Received Total</b></td>
-                      <td>$ {{ app.total_funds_received }}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Remaining</b></td>
-                      <td>$ {{ app.total_remaining }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </td>
-            <td>
-              <span>{{ app.date }}</span>
-            </td>
-            <td>
-              <span>{{ app.organizations }}</span>
-            </td>
-            <td>
-              <span>{{ app.updated_at }}</span>
-            </td>
-            <td>
-              {% if app.date_passed %}
-              <span class="badge badge-default">OVER</span>
-              {% elif app.followup_needed %}
-              <span class="badge badge-danger">FOLLOWUP</span>
-              {% elif app.submitted %}
-              <span class="badge badge-success">SUBMITTED</span>
-              {% elif app.funded and app.total_remaining > 0 %}
-              <span class="badge badge-warning">IN PROGRESS</span>
-              {% elif app.funded and app.total_remaining <= 0 %}
-              <span class="badge badge-primary">FUNDED</span>
-              {% elif app.saved %}
-              <span class="badge badge-info">SAVED</span>
-              {% endif %}
-            </td>
-            <td>
-              <div class="buttons float-right">
-                {% if user.is_staff or event.over or user.profile.is_funder or old %}
-                <a class="btn btn-sm btn-info text-white" href="{% url 'event-show' app.id %}">
-                  <i class="icon-file icon-white"></i> View
-                </a>
-                {% elif not old %}
-                <a class="destroy-event btn btn-sm btn-danger" href="{% url 'event-destroy' app.id %}">
-                  <i class="icon-trash icon-white"></i> Delete
-                </a>
-                <a class="btn btn-sm btn-warning text-white" href="{% url 'event-edit' app.id %}">
-                  <i class="icon-edit icon-white"></i> Edit
-                </a>
-                {% endif %}
-              </div>
-            </td>
-          </tr>
-          {% endif %}
-          {% empty %}
-          <tr><td colspan="5">You do not have any {% if old %}old{% else %}current{% endif %} applications.</td></tr>
-          {% endfor %}
-
-        </tbody>
-      </table>
-    </div>
-
-
-
-    <div class="tab-pane fade" id="pills-followup" role="tabpanel" aria-labelledby="pills-followup-tab">
-      <table id="events" class="table table-hover">
-        <thead>
-          <tr>
-            <th><strong><a href="{{ request.path }}?sort=event">Event</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=date">Event Date</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=org">Organization</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=submit">Submission Date</a></strong></th>
-            <th><strong>Status</strong></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for app in apps %}
-          {% if app.followup_needed %}
-          <tr class="event-row">
-            <td>
-              <span>{{ app.name }}</span>
-              <div class="funders" style="display:none">
-                <br />
-                <table>
-                  <tbody>
-                    {% for funder, amount in app.amounts.items %}
-                    <tr>
-                      <td>{{funder}}</td>
-                      {% if amount != None %}
-                      <td>$ {{ amount }}</td>
-                      {% else %}
-                      <td class="pending">pending</td>
-                      {% endif %}
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                      <td>Funds already received</td>
-                      <td>$ {{ app.total_funds_already_received }}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Received Total</b></td>
-                      <td>$ {{ app.total_funds_received }}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Remaining</b></td>
-                      <td>$ {{ app.total_remaining }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </td>
-            <td>
-              <span>{{ app.date }}</span>
-            </td>
-            <td>
-              <span>{{ app.organizations }}</span>
-            </td>
-            <td>
-              <span>{{ app.updated_at }}</span>
-            </td>
-            <td>
-              {% if app.date_passed %}
-              <span class="badge badge-default">OVER</span>
-              {% elif app.followup_needed %}
-              <span class="badge badge-danger">FOLLOWUP</span>
-              {% elif app.submitted %}
-              <span class="badge badge-success">SUBMITTED</span>
-              {% elif app.funded and app.total_remaining > 0 %}
-              <span class="badge badge-warning">IN PROGRESS</span>
-              {% elif app.funded and app.total_remaining <= 0 %}
-              <span class="badge badge-primary">FUNDED</span>
-              {% elif app.saved %}
-              <span class="badge badge-info">SAVED</span>
-              {% endif %}
-            </td>
-            <td>
-              <div class="buttons float-right">
-                {% if user.is_staff or event.over or user.profile.is_funder or old %}
-                <a class="btn btn-sm btn-info text-white" href="{% url 'event-show' app.id %}">
-                  <i class="icon-file icon-white"></i> View
-                </a>
-                {% elif not old %}
-                <a class="destroy-event btn btn-sm btn-danger" href="{% url 'event-destroy' app.id %}">
-                  <i class="icon-trash icon-white"></i> Delete
-                </a>
-                <a class="btn btn-sm btn-warning text-white" href="{% url 'event-edit' app.id %}">
-                  <i class="icon-edit icon-white"></i> Edit
-                </a>
-                {% endif %}
-              </div>
-            </td>
-          </tr>
-          {% endif %}
-          {% empty %}
-          <tr><td colspan="5">You do not have any {% if old %}old{% else %}current{% endif %} applications.</td></tr>
-          {% endfor %}
-
-        </tbody>
-      </table>
-    </div>
-
-
-
-
-
-    <div class="tab-pane fade" id="pills-over" role="tabpanel" aria-labelledby="pills-over-tab">
-      <table id="events" class="table table-hover">
-        <thead>
-          <tr>
-            <th><strong><a href="{{ request.path }}?sort=event">Event</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=date">Event Date</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=org">Organization</a></strong></th>
-            <th><strong><a href="{{ request.path }}?sort=submit">Submission Date</a></strong></th>
-            <th><strong>Status</strong></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for app in apps %}
-          {% if app.date_passed %}
-          <tr class="event-row">
-            <td>
-              <span>{{ app.name }}</span>
-              <div class="funders" style="display:none">
-                <br />
-                <table>
-                  <tbody>
-                    {% for funder, amount in app.amounts.items %}
-                    <tr>
-                      <td>{{funder}}</td>
-                      {% if amount != None %}
-                      <td>$ {{ amount }}</td>
-                      {% else %}
-                      <td class="pending">pending</td>
-                      {% endif %}
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                      <td>Funds already received</td>
-                      <td>$ {{ app.total_funds_already_received }}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Received Total</b></td>
-                      <td>$ {{ app.total_funds_received }}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Remaining</b></td>
-                      <td>$ {{ app.total_remaining }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </td>
-            <td>
-              <span>{{ app.date }}</span>
-            </td>
-            <td>
-              <span>{{ app.organizations }}</span>
-            </td>
-            <td>
-              <span>{{ app.updated_at }}</span>
-            </td>
-            <td>
-              {% if app.date_passed %}
-              <span class="badge badge-default">OVER</span>
-              {% elif app.followup_needed %}
-              <span class="badge badge-danger">FOLLOWUP</span>
-              {% elif app.submitted %}
-              <span class="badge badge-success">SUBMITTED</span>
-              {% elif app.funded and app.total_remaining > 0 %}
-              <span class="badge badge-warning">IN PROGRESS</span>
-              {% elif app.funded and app.total_remaining <= 0 %}
-              <span class="badge badge-primary">FUNDED</span>
-              {% elif app.saved %}
-              <span class="badge badge-info">SAVED</span>
-              {% endif %}
-            </td>
-            <td>
-              <div class="buttons float-right">
-                {% if user.is_staff or event.over or user.profile.is_funder or old %}
-                <a class="btn btn-sm btn-info text-white" href="{% url 'event-show' app.id %}">
-                  <i class="icon-file icon-white"></i> View
-                </a>
-                {% elif not old %}
-                <a class="destroy-event btn btn-sm btn-danger" href="{% url 'event-destroy' app.id %}">
-                  <i class="icon-trash icon-white"></i> Delete
-                </a>
-                <a class="btn btn-sm btn-warning text-white" href="{% url 'event-edit' app.id %}">
-                  <i class="icon-edit icon-white"></i> Edit
-                </a>
-                {% endif %}
-              </div>
-            </td>
-          </tr>
-          {% endif %}
-          {% empty %}
-          <tr><td colspan="5">You do not have any {% if old %}old{% else %}current{% endif %} applications.</td></tr>
-          {% endfor %}
-
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-
 
   {% if page_length != 1 %}
   <div class="center-pagination">
     <ul class="pagination">
       {% if page_obj.has_previous %}
-      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% url 'events' %}?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page_obj.previous_page_number 'page' request.GET.urlencode %}">&laquo;</a></li>
       {% else %}
       <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&laquo;</a></li>
       {% endif %}
@@ -574,22 +183,20 @@
       {% for i in page_range %}
       {% if i == page_obj.number %}
       <li class="page-item active">
-        <a class="page-link" href="{% url 'events' %}?page={{i}}">{{i}}</a>
+        <a class="page-link" href="{% relative_url i 'page' request.GET.urlencode %}">{{i}}</a>
       </li>
       {% else %}
-      <li class="page-item"><a class="page-link" href="{% url 'events' %}?page={{i}}">{{i}}</a></li>
+      <li class="page-item"><a class="page-link" href="{% relative_url i 'page' request.GET.urlencode %}">{{i}}</a></li>
       {% endif %}
       {% endfor %}
 
       {% if page_obj.has_next %}
-      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% url 'events' %}?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page_obj.next_page_number 'page' request.GET.urlencode %}">&raquo;</a></li>
       {% else %}
       <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&raquo;</a></li>
       {% endif %}
     </ul>
   </div>
-  {% endif %}
-
   {% endif %}
 </div>
 {% endblock %}
