@@ -180,7 +180,8 @@ def events(request):
         if filter_val == 'O':
             app = Event.objects.filter(date__lt=datetime.date.today() - datetime.timedelta(days=14))
         else:
-            app = Event.objects.filter(status__in=filter_val)
+            app = Event.objects.filter(date__gte=datetime.date.today() - datetime.timedelta(days=14))
+            app = app.filter(status__in=filter_val)
     app = app.order_by(sort_by)
     if 'page' in request.GET:
         page = request.GET['page']
