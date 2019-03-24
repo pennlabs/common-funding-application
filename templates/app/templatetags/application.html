@@ -103,12 +103,14 @@
       <small>list line items for funding</small>
     </h2>
   </div>
+  {% if not readonly %}
   <div class="section-content">
-    <div class="alert alert-info">
+    <div class="alert alert-info d-print-none">
       <strong>Heads up!</strong>
-      If you are importing line items from a .xlsx file, make sure the column names are in the correct order is on our online form. The name of the columns do not matter, and make sure each category is a valid category in the selection dropdown.
+      If you are importing line items from a CSV or Excel file, make sure that your sheet contains the same column names as our online form. Additionally, make sure each category is a valid category in the selection dropdown.
     </div>
   </div>
+  {% endif %}
   <div class="section-content">
     <fieldset>
       {% if not user.is_staff and user.profile.is_requester %}
@@ -164,8 +166,9 @@
             class="funder-checkbox"
             {% if funder in event.applied_funders.all %}checked{% endif %}
             type="checkbox" {{extra_attrs}} {{event_over_disable}}>
-            {{funder}}: ({{funder.osa_email}})
+            {{funder}}
         </label>
+        <span class="text-secondary">(<a href="mailto:{{funder.osa_email}}">{{funder.osa_email}}</a>)</span>
         <p class="help-block">{{funder.mission_statement}}</p>
       </div>
       {% endif %}
