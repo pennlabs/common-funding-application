@@ -178,7 +178,7 @@ def events(request):
     app = Event.objects.filter()
     if len(filter_val) != 0:
         if filter_val == 'O':
-            app = Event.objects.filter(date__lte=datetime.date.today() - datetime.timedelta(days=14))
+            app = Event.objects.filter(date__lt=datetime.date.today() - datetime.timedelta(days=14))
         else:
             app = Event.objects.filter(status__in=filter_val)
     app = app.order_by(sort_by)
