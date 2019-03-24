@@ -230,8 +230,7 @@ class Event(models.Model):
 
     @property
     def total_remaining(self):
-        return (self.total_expense - self.total_funds_received -
-                self.total_additional_funds)
+        return (self.total_expense - self.total_funds_received - self.total_additional_funds)
 
     @property
     def date_passed(self):

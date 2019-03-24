@@ -9,3 +9,7 @@
 .event-row input.new {
   color: #999999;
 }
+
+#expense-itemlist-button, #revenue-itemlist-button {
+    margin-bottom: 15px;
+}
