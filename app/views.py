@@ -163,7 +163,7 @@ def save_from_form(event, POST):
 # GET  /
 # upcoming events
 @require_http_methods(["GET", "POST"])
-def events(request, old=False):
+def events(request):
     if not request.user.is_authenticated:
         return login(request)
 
@@ -178,10 +178,7 @@ def events(request, old=False):
     sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
     cfauser = user.profile
     two_weeks_ago = timezone.now().date() - timedelta(days=14)
-    if old:
-        app = Event.objects.filter(date__lte=two_weeks_ago)
-    else:
-        app = Event.objects.filter(date__gt=two_weeks_ago)
+    app = Event.objects.filter()
     app = app.order_by(sort_by)
     if 'page' in request.GET:
         page = request.GET['page']
@@ -194,22 +191,13 @@ def events(request, old=False):
         apps = app.filter(requester=cfauser)
     else:  # cfauser.is_funder
         apps = cfauser.event_applied_funders.order_by(sort_by)
-
+        
     p = Paginator(apps, 10)
     return render(request, 'app/events.html',
                   {'apps': p.page(page).object_list,
-                   'old': old,
                    'page_obj': p.page(page),
                    'page_range': p.page_range,
                    'page_length': len(p.page_range)})
-
-
-# GET  /old
-# previous events
-@login_required
-@require_http_methods(["GET"])
-def events_old(request):
-    return events(request, old=True)
 
 
 # GET  /new
@@ -347,29 +335,6 @@ from reportlab.pdfgen import canvas
 from django.template.loader import get_template
 from django.http import HttpResponse
 import xhtml2pdf.pisa as pisa
-
-# GET  /1/download
-# @login_required
-# @requester_only
-# def event_download(request, event_id):
-#     today = timezone.now()
-#
-#     user = request.user
-#     event = Event.objects.get(pk=event_id)
-#     params = {
-#         'today': today,
-#         'event': event
-#     }
-#
-#     template = get_template('pdf.html')
-#     html = template.render(params)
-#     response = io.BytesIO()
-#
-#     pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), response)
-#     if not pdf.err:
-#         return HttpResponse(response.getvalue(), content_type='application/pdf')
-#     else:
-#         return HttpResponse("Error Rendering PDF", status=400)
 
 # GET /funders/1/edit
 # POST /funders/1/edit
