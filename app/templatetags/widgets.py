@@ -123,3 +123,13 @@ def relative_url(value, field_name, urlencode=None):
         encoded_querystring = '&'.join(filtered_querystring)
         url = '{}&{}'.format(url, encoded_querystring)
     return url
+
+@register.simple_tag
+def relative_url_2(value1, field_name1, value2, field_name2, urlencode=None):
+    url = '?{}={}&{}={}'.format(field_name1, value1, field_name2, value2)
+    if urlencode:
+        querystring = urlencode.split('&')
+        filtered_querystring = filter(lambda p: (p.split('=')[0] != field_name1 and p.split('=')[0] != field_name2), querystring)
+        encoded_querystring = '&'.join(filtered_querystring)
+        url = '{}&{}'.format(url, encoded_querystring)
+    return url

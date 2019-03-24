@@ -41,38 +41,37 @@
 
 <div id="main">
   <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    {% with params=request.GET.urlencode %}
     <li class="nav-item">
-      <a class="nav-link active" id="pills-all-tab" data-toggle="pill" href="#pills-all" role="tab" aria-controls="pills-all" aria-selected="true">All</a>
+      <a class="nav-link remove-page
+      {% ifequal filter ""%} active {% endifequal %}
+      " href="{% relative_url_2 '' 'filter' 1 'page' params %}">All</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="pills-submitted-tab" data-toggle="pill" href="#pills-submitted" role="tab" aria-controls="pills-submitted" aria-selected="true">Submitted</a>
+      <a class="nav-link remove-page
+      {% ifequal filter "S"%} active {% endifequal %}
+      " href="{% relative_url_2 'S' 'filter' 1 'page' params %}">Submitted</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="pills-followup-tab" data-toggle="pill" href="#pills-followup" role="tab" aria-controls="pills-followup" aria-selected="false">Followup</a>
+      <a class="nav-link remove-page
+      {% ifequal filter "W"%} active {% endifequal %}
+      " href="{% relative_url_2 'W' 'filter' 1 'page' params %}">Followup</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="pills-over-tab" data-toggle="pill" href="#pills-over" role="tab" aria-controls="pills-over" aria-selected="false">Over</a>
+      <a class="nav-link remove-page
+      {% ifequal filter "O"%} active {% endifequal %}
+      " href="{% relative_url_2 'O' 'filter' 1 'page' params %}">Over</a>
     </li>
+    {% endwith %}
   </ul>
-
-  <style>
-    table tr { display:none; }
-    table.showAll tr { display: table-row; }
-    table.showSubmitted tr.submitted { display:table-row; }
-    table.showFollowup tr.followup { display:table-row; }
-    table.showOver tr.over { display:table-row; }
-  </style>
-
-  <div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab">
       <table id="events" class="table table-hover showAll">
         <thead>
           <tr>
             {% with params=request.GET.urlencode %}
-            <th><strong><a href="{% relative_url 'event' 'sort' params %}">Event</a></strong></th>
-            <th><strong><a href="{% relative_url 'date' 'sort' params %}">Event Date</a></strong></th>
-            <th><strong><a href="{% relative_url 'org' 'sort' params %}">Organization</a></strong></th>
-            <th><strong><a href="{% relative_url 'submit' 'sort' params %}">Submission Date</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url_2 'event' 'sort' 1 'page' params %}">Event</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url_2 'date' 'sort' 1 'page' params %}">Event Date</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url_2 'org' 'sort' 1 'page' params %}">Organization</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url_2 'submit' 'sort' 1 'page' params %}">Submission Date</a></strong></th>
             <th><strong>Status</strong></th>
             <th></th>
             {% endwith %}
@@ -171,43 +170,6 @@
           {% endfor %}
         </tbody>
       </table>
-    </div>
-  </div>
-
-  <script>
-  $("#pills-all-tab").click(function(){
-    $("#events").removeClass("showAll");
-    $("#events").removeClass("showSubmitted");
-    $("#events").removeClass("showFollowup");
-    $("#events").removeClass("showOver");
-    $("#events").addClass("showAll");
-  });
-
-  $("#pills-submitted-tab").click(function(){
-    $("#events").removeClass("showAll");
-    $("#events").removeClass("showSubmitted");
-    $("#events").removeClass("showFollowup");
-    $("#events").removeClass("showOver");
-    $("#events").addClass("showSubmitted");
-  });
-
-  $("#pills-followup-tab").click(function(){
-    $("#events").removeClass("showAll");
-    $("#events").removeClass("showSubmitted");
-    $("#events").removeClass("showFollowup");
-    $("#events").removeClass("showOver");
-    $("#events").addClass("showFollowup");
-  });
-
-  $("#pills-over-tab").click(function(){
-    $("#events").removeClass("showAll");
-    $("#events").removeClass("showSubmitted");
-    $("#events").removeClass("showFollowup");
-    $("#events").removeClass("showOver");
-    $("#events").addClass("showOver");
-  });
-
-  </script>
 
   {% if page_length != 1 %}
   <div class="center-pagination">
@@ -215,7 +177,7 @@
       {% if page_obj.has_previous %}
       <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page_obj.previous_page_number 'page' request.GET.urlencode %}">&laquo;</a></li>
       {% else %}
-      <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="">&laquo;</a></li>
+      <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&laquo;</a></li>
       {% endif %}
 
       {% for i in page_range %}
@@ -231,7 +193,7 @@
       {% if page_obj.has_next %}
       <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page_obj.next_page_number 'page' request.GET.urlencode %}">&raquo;</a></li>
       {% else %}
-      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="">&raquo;</a></li>
+      <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&raquo;</a></li>
       {% endif %}
     </ul>
   </div>

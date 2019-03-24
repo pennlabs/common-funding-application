@@ -1,4 +1,5 @@
 from decimal import Decimal
+import datetime
 from datetime import timedelta
 import json
 import re
@@ -173,7 +174,13 @@ def events(request):
     sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
     cfauser = user.profile
     two_weeks_ago = timezone.now().date() - timedelta(days=14)
+    filter_val = request.GET.get('filter', '')
     app = Event.objects.filter()
+    if len(filter_val) != 0:
+        if filter_val == 'O':
+            app = Event.objects.filter(date__lte=datetime.date.today() - datetime.timedelta(days=14))
+        else:
+            app = Event.objects.filter(status__in=filter_val)
     app = app.order_by(sort_by)
     if 'page' in request.GET:
         page = request.GET['page']
@@ -192,7 +199,8 @@ def events(request):
                   {'apps': p.page(page).object_list,
                    'page_obj': p.page(page),
                    'page_range': p.page_range,
-                   'page_length': len(p.page_range)})
+                   'page_length': len(p.page_range),
+                   'filter': filter_val})
 
 
 # GET  /new
