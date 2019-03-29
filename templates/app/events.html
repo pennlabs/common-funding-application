@@ -41,40 +41,46 @@
 
 <div id="main">
   <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-    {% with params=request.GET.urlencode %}
     <li class="nav-item">
       <a class="nav-link remove-page
       {% ifequal filter ""%} active {% endifequal %}
-      " href="{% relative_url_2 '' 'filter' 1 'page' params %}">All</a>
+      " href="{% relative_url filter='' page=1 %}">All</a>
     </li>
     <li class="nav-item">
       <a class="nav-link remove-page
       {% ifequal filter "B"%} active {% endifequal %}
-      " href="{% relative_url_2 'B' 'filter' 1 'page' params %}">Submitted</a>
+      " href="{% relative_url filter='B' page=1 %}">Submitted</a>
     </li>
     <li class="nav-item">
       <a class="nav-link remove-page
       {% ifequal filter "W"%} active {% endifequal %}
-      " href="{% relative_url_2 'W' 'filter' 1 'page' params %}">Followup</a>
+      " href="{% relative_url filter='W' page=1 %}">Followup</a>
     </li>
     <li class="nav-item">
       <a class="nav-link remove-page
       {% ifequal filter "O"%} active {% endifequal %}
-      " href="{% relative_url_2 'O' 'filter' 1 'page' params %}">Over</a>
+      " href="{% relative_url filter='O' page=1 %}">Over</a>
     </li>
-    {% endwith %}
+    <li class="nav-item">
+      <a class="nav-link remove-page
+      {% ifequal filter "S"%} active {% endifequal %}
+      " href="{% relative_url filter='S' page=1 %}">Saved</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link remove-page
+      {% ifequal filter "F"%} active {% endifequal %}
+      " href="{% relative_url filter='F' page=1 %}">Funded/In Progress</a>
+    </li>
   </ul>
       <table id="events" class="table table-hover showAll">
         <thead>
           <tr>
-            {% with params=request.GET.urlencode %}
-            <th><strong><a class="remove-page" href="{% relative_url_2 'event' 'sort' 1 'page' params %}">Event</a></strong></th>
-            <th><strong><a class="remove-page" href="{% relative_url_2 'date' 'sort' 1 'page' params %}">Event Date</a></strong></th>
-            <th><strong><a class="remove-page" href="{% relative_url_2 'org' 'sort' 1 'page' params %}">Organization</a></strong></th>
-            <th><strong><a class="remove-page" href="{% relative_url_2 'submit' 'sort' 1 'page' params %}">Submission Date</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url sort='event' page=1 %}">Event</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url sort='date' page=1 %}">Event Date</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url sort='org' page=1 %}">Organization</a></strong></th>
+            <th><strong><a class="remove-page" href="{% relative_url sort='submit' page=1 %}">Submission Date</a></strong></th>
             <th><strong>Status</strong></th>
             <th></th>
-            {% endwith %}
           </tr>
         </thead>
         <tbody>
@@ -166,7 +172,7 @@
             </td>
           </tr>
           {% empty %}
-          <tr><td colspan="5">You do not have any {% if old %}old{% else %}current{% endif %} applications.</td></tr>
+          <tr><td colspan="5">No applications.</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -175,7 +181,7 @@
   <div class="center-pagination">
     <ul class="pagination">
       {% if page_obj.has_previous %}
-      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page_obj.previous_page_number 'page' request.GET.urlencode %}">&laquo;</a></li>
+      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page=page_obj.previous_page_number %}">&laquo;</a></li>
       {% else %}
       <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&laquo;</a></li>
       {% endif %}
@@ -183,15 +189,15 @@
       {% for i in page_range %}
       {% if i == page_obj.number %}
       <li class="page-item active">
-        <a class="page-link" href="{% relative_url i 'page' request.GET.urlencode %}">{{i}}</a>
+        <a class="page-link" href="{% relative_url page=i %}">{{i}}</a>
       </li>
       {% else %}
-      <li class="page-item"><a class="page-link" href="{% relative_url i 'page' request.GET.urlencode %}">{{i}}</a></li>
+      <li class="page-item"><a class="page-link" href="{% relative_url page=i %}">{{i}}</a></li>
       {% endif %}
       {% endfor %}
 
       {% if page_obj.has_next %}
-      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page_obj.next_page_number 'page' request.GET.urlencode %}">&raquo;</a></li>
+      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page=page_obj.next_page_number %}">&raquo;</a></li>
       {% else %}
       <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&raquo;</a></li>
       {% endif %}
