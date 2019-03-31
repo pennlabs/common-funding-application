@@ -129,7 +129,7 @@ class TestEvents(TestCase):
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Current Applications')
-        self.assertContains(resp, "You do not have any current applications.")
+        self.assertContains(resp, "No applications.")
         resp = self.client.get('/1/')
         self.assertEqual(resp.status_code, 404)
 
@@ -183,7 +183,7 @@ class TestEvents(TestCase):
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Current Applications')
-        self.assertContains(resp, "You do not have any current applications.")
+        self.assertContains(resp, "No applications.")
         # Ensure event still exists
         resp = self.client.get('/1/')
         self.assertEqual(resp.status_code, 200)
