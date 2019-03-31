@@ -7,13 +7,9 @@ from collections import namedtuple
 from django import template
 from django.template.loader import render_to_string
 try:
-    from urllib.parse import urlparse, urlencode
-    from urllib.request import urlopen, Request
-    from urllib.error import HTTPError
+    from urllib.parse import urlencode
 except ImportError:
-    from urlparse import urlparse
     from urllib import urlencode
-    from urllib2 import urlopen, Request, HTTPError
 
 register = template.Library()
 
@@ -121,6 +117,7 @@ def event_details(context):
         return render_to_string('app/templatetags/event-details-show.html', new_context)
     else:
         return render_to_string('app/templatetags/event-details-form.html', new_context)
+
 
 @register.simple_tag(takes_context=True)
 def relative_url(context, **kwargs):
