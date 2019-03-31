@@ -129,7 +129,7 @@ class TestEvents(TestCase):
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Current Applications')
-        self.assertContains(resp, "You do not have any current applications.")
+        self.assertContains(resp, "No applications.")
         resp = self.client.get('/1/')
         self.assertEqual(resp.status_code, 404)
 
@@ -179,19 +179,14 @@ class TestEvents(TestCase):
         event = Event.objects.get(pk=1)
         event.date = '2000-01-01'
         event.save()
-        # Ensure event isn't on the current applications page
+        # Ensure event is on applications page
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Current Applications')
-        self.assertContains(resp, "You do not have any current applications.")
+        self.assertContains(resp, "Test Event")
         # Ensure event still exists
         resp = self.client.get('/1/')
         self.assertEqual(resp.status_code, 200)
-        # Ensure event is on the old applications page
-        resp = self.client.get('/old/')
-        self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, 'Past Applications')
-        self.assertContains(resp, 'Test Event')
 
 
 class TestFunder(TestCase):

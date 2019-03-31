@@ -6,6 +6,10 @@ from collections import namedtuple
 
 from django import template
 from django.template.loader import render_to_string
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 register = template.Library()
 
@@ -114,22 +118,10 @@ def event_details(context):
     else:
         return render_to_string('app/templatetags/event-details-form.html', new_context)
 
-@register.simple_tag
-def relative_url(value, field_name, urlencode=None):
-    url = '?{}={}'.format(field_name, value)
-    if urlencode:
-        querystring = urlencode.split('&')
-        filtered_querystring = filter(lambda p: p.split('=')[0] != field_name, querystring)
-        encoded_querystring = '&'.join(filtered_querystring)
-        url = '{}&{}'.format(url, encoded_querystring)
-    return url
 
-@register.simple_tag
-def relative_url_2(value1, field_name1, value2, field_name2, urlencode=None):
-    url = '?{}={}&{}={}'.format(field_name1, value1, field_name2, value2)
-    if urlencode:
-        querystring = urlencode.split('&')
-        filtered_querystring = filter(lambda p: (p.split('=')[0] != field_name1 and p.split('=')[0] != field_name2), querystring)
-        encoded_querystring = '&'.join(filtered_querystring)
-        url = '{}&{}'.format(url, encoded_querystring)
-    return url
+@register.simple_tag(takes_context=True)
+def relative_url(context, **kwargs):
+    existing_params = context.request.GET.dict()
+    for key, value in kwargs.items():
+        existing_params[key] = value
+    return '?' + urlencode(existing_params)

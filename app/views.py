@@ -23,7 +23,7 @@ from .models import (Event, Grant, Comment, User, FreeResponseQuestion,
                      FollowupQuestion, CommonFreeResponseQuestion, CFAUser)
 from .forms import EventForm
 
-from django.utils import timezone
+from django.db.models import Q
 
 EVENTS_HOME = 'events'
 
@@ -173,15 +173,16 @@ def events(request):
     }
     sort_by = query_dict[sorted_type] if sorted_type in query_dict else '-date'
     cfauser = user.profile
-    two_weeks_ago = timezone.now().date() - timedelta(days=14)
+    status_val = request.GET.get('status', '')
     filter_val = request.GET.get('filter', '')
-    app = Event.objects.filter()
-    if len(filter_val) != 0:
-        if filter_val == 'O':
-            app = Event.objects.filter(date__lt=datetime.date.today() - datetime.timedelta(days=14))
+    app = Event.objects.all()
+    if len(status_val) != 0:
+        if status_val == 'O':
+            app = Event.objects.filter(date__lt=datetime.date.today() - timedelta(days=14))
         else:
-            app = Event.objects.filter(date__gte=datetime.date.today() - datetime.timedelta(days=14))
-            app = app.filter(status__in=filter_val)
+            app = Event.objects.filter(date__gte=datetime.date.today() - timedelta(days=14))
+            app = app.filter(status__in=status_val)
+    app = app.filter(Q(name__icontains=filter_val) | Q(organizations__icontains=filter_val))
     app = app.order_by(sort_by)
     if 'page' in request.GET:
         page = request.GET['page']
@@ -194,14 +195,13 @@ def events(request):
         apps = app.filter(requester=cfauser)
     else:  # cfauser.is_funder
         apps = cfauser.event_applied_funders.order_by(sort_by)
-
     p = Paginator(apps, 10)
     return render(request, 'app/events.html',
                   {'apps': p.page(page).object_list,
                    'page_obj': p.page(page),
                    'page_range': p.page_range,
                    'page_length': len(p.page_range),
-                   'filter': filter_val})
+                   'status': status_val})
 
 
 # GET  /new

@@ -8,6 +8,8 @@ python:
 before_install:
   - nvm install 9
   - npm install --global mocha
+  - pip install flake8
 script:
+  - flake8 --ignore=E501 app/
   - python manage.py test -v2 app
   - mocha app/static/test/

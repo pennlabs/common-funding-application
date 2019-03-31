@@ -40,163 +40,177 @@
 {% endif %}
 
 <div id="main">
+  <form action="" method="get" style="margin-bottom: 30px">
+    <div class="input-group mb-3">
+      <input type="text" name="filter" id="filter" class="form-control" placeholder="Event or organation search query" aria-label="Event or organation search query" aria-describedby="basic-addon2">
+      <div class="input-group-append">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+      </div>
+    </div>
+  </form>
   <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-    {% with params=request.GET.urlencode %}
     <li class="nav-item">
       <a class="nav-link remove-page
-      {% ifequal filter ""%} active {% endifequal %}
-      " href="{% relative_url_2 '' 'filter' 1 'page' params %}">All</a>
+      {% ifequal status ""%} active {% endifequal %}
+      " href="{% relative_url status='' page=1 %}">All</a>
     </li>
     <li class="nav-item">
       <a class="nav-link remove-page
-      {% ifequal filter "B"%} active {% endifequal %}
-      " href="{% relative_url_2 'B' 'filter' 1 'page' params %}">Submitted</a>
+      {% ifequal status "B"%} active {% endifequal %}
+      " href="{% relative_url status='B' page=1 %}">Submitted</a>
     </li>
     <li class="nav-item">
       <a class="nav-link remove-page
-      {% ifequal filter "W"%} active {% endifequal %}
-      " href="{% relative_url_2 'W' 'filter' 1 'page' params %}">Followup</a>
+      {% ifequal status "W"%} active {% endifequal %}
+      " href="{% relative_url status='W' page=1 %}">Followup</a>
     </li>
     <li class="nav-item">
       <a class="nav-link remove-page
-      {% ifequal filter "O"%} active {% endifequal %}
-      " href="{% relative_url_2 'O' 'filter' 1 'page' params %}">Over</a>
+      {% ifequal status "O"%} active {% endifequal %}
+      " href="{% relative_url status='O' page=1 %}">Over</a>
     </li>
-    {% endwith %}
+    <li class="nav-item">
+      <a class="nav-link remove-page
+      {% ifequal status "S"%} active {% endifequal %}
+      " href="{% relative_url status='S' page=1 %}">Saved</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link remove-page
+      {% ifequal status "F"%} active {% endifequal %}
+      " href="{% relative_url status='F' page=1 %}">Funded/In Progress</a>
+    </li>
   </ul>
-      <table id="events" class="table table-hover showAll">
-        <thead>
-          <tr>
-            {% with params=request.GET.urlencode %}
-            <th><strong><a class="remove-page" href="{% relative_url_2 'event' 'sort' 1 'page' params %}">Event</a></strong></th>
-            <th><strong><a class="remove-page" href="{% relative_url_2 'date' 'sort' 1 'page' params %}">Event Date</a></strong></th>
-            <th><strong><a class="remove-page" href="{% relative_url_2 'org' 'sort' 1 'page' params %}">Organization</a></strong></th>
-            <th><strong><a class="remove-page" href="{% relative_url_2 'submit' 'sort' 1 'page' params %}">Submission Date</a></strong></th>
-            <th><strong>Status</strong></th>
-            <th></th>
-            {% endwith %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for app in apps %}
-          <tr class="event-row {% if app.date_passed %}
-          over
-          {% elif app.followup_needed %}
-          followup
-          {% elif app.submitted %}
-          submitted
-          {% elif app.funded and app.total_remaining > 0 %}
-          inprogress
-          {% elif app.funded and app.total_remaining <= 0 %}
-          funded
-          {% elif app.saved %}
-          saved
-          {% endif %}">
-            <td>
-              <span>{{ app.name }}</span>
-              <div class="funders" style="display:none">
-                <br />
-                <table>
-                  <tbody>
-                    {% for funder, amount in app.amounts.items %}
-                    <tr>
-                      <td>{{funder}}</td>
-                      {% if amount != None %}
-                      <td>$ {{ amount }}</td>
-                      {% else %}
-                      <td class="pending">pending</td>
-                      {% endif %}
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                      <td>Funds already received</td>
-                      <td>$ {{ app.total_funds_already_received }}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Received Total</b></td>
-                      <td>$ {{ app.total_funds_received }}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Remaining</b></td>
-                      <td>$ {{ app.total_remaining }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </td>
-            <td>
-              <span>{{ app.date }}</span>
-            </td>
-            <td>
-              <span>{{ app.organizations }}</span>
-            </td>
-            <td>
-              <span>{{ app.updated_at }}</span>
-            </td>
-            <td>
-              {% if app.date_passed %}
-              <span class="badge badge-default">OVER</span>
-              {% elif app.followup_needed %}
-              <span class="badge badge-danger">FOLLOWUP</span>
-              {% elif app.submitted %}
-              <span class="badge badge-success">SUBMITTED</span>
-              {% elif app.funded and app.total_remaining > 0 %}
-              <span class="badge badge-warning">IN PROGRESS</span>
-              {% elif app.funded and app.total_remaining <= 0 %}
-              <span class="badge badge-primary">FUNDED</span>
-              {% elif app.saved %}
-              <span class="badge badge-info">SAVED</span>
-              {% endif %}
-            </td>
-            <td>
-              <div class="buttons float-right">
-                {% if user.is_staff or event.over or user.profile.is_funder or old %}
-                <a class="btn btn-sm btn-info text-white" href="{% url 'event-show' app.id %}">
-                  <i class="icon-file icon-white"></i> View
-                </a>
-                {% elif not old %}
-                <a class="destroy-event btn btn-sm btn-danger" href="{% url 'event-destroy' app.id %}">
-                  <i class="icon-trash icon-white"></i> Delete
-                </a>
-                <a class="btn btn-sm btn-warning text-white" href="{% url 'event-edit' app.id %}">
-                  <i class="icon-edit icon-white"></i> Edit
-                </a>
+  <table id="events" class="table table-hover showAll">
+    <thead>
+      <tr>
+        <th><strong><a class="remove-page" href="{% relative_url sort='event' page=1 %}">Event</a></strong></th>
+        <th><strong><a class="remove-page" href="{% relative_url sort='date' page=1 %}">Event Date</a></strong></th>
+        <th><strong><a class="remove-page" href="{% relative_url sort='org' page=1 %}">Organization</a></strong></th>
+        <th><strong><a class="remove-page" href="{% relative_url sort='submit' page=1 %}">Submission Date</a></strong></th>
+        <th><strong>Status</strong></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for app in apps %}
+      <tr class="event-row {% if app.date_passed %}
+      over
+      {% elif app.followup_needed %}
+      followup
+      {% elif app.submitted %}
+      submitted
+      {% elif app.funded and app.total_remaining > 0 %}
+      inprogress
+      {% elif app.funded and app.total_remaining <= 0 %}
+      funded
+      {% elif app.saved %}
+      saved
+      {% endif %}">
+      <td>
+        <span>{{ app.name }}</span>
+        <div class="funders" style="display:none">
+          <br />
+          <table>
+            <tbody>
+              {% for funder, amount in app.amounts.items %}
+              <tr>
+                <td>{{funder}}</td>
+                {% if amount != None %}
+                <td>$ {{ amount }}</td>
+                {% else %}
+                <td class="pending">pending</td>
                 {% endif %}
-              </div>
-            </td>
-          </tr>
-          {% empty %}
-          <tr><td colspan="5">You do not have any {% if old %}old{% else %}current{% endif %} applications.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
+              </tr>
+              {% endfor %}
+              <tr>
+                <td>Funds already received</td>
+                <td>$ {{ app.total_funds_already_received }}</td>
+              </tr>
+              <tr>
+                <td><b>Received Total</b></td>
+                <td>$ {{ app.total_funds_received }}</td>
+              </tr>
+              <tr>
+                <td><b>Remaining</b></td>
+                <td>$ {{ app.total_remaining }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </td>
+      <td>
+        <span>{{ app.date }}</span>
+      </td>
+      <td>
+        <span>{{ app.organizations }}</span>
+      </td>
+      <td>
+        <span>{{ app.updated_at }}</span>
+      </td>
+      <td>
+        {% if app.date_passed %}
+        <span class="badge badge-default">OVER</span>
+        {% elif app.followup_needed %}
+        <span class="badge badge-danger">FOLLOWUP</span>
+        {% elif app.submitted %}
+        <span class="badge badge-success">SUBMITTED</span>
+        {% elif app.funded and app.total_remaining > 0 %}
+        <span class="badge badge-warning">IN PROGRESS</span>
+        {% elif app.funded and app.total_remaining <= 0 %}
+        <span class="badge badge-primary">FUNDED</span>
+        {% elif app.saved %}
+        <span class="badge badge-info">SAVED</span>
+        {% endif %}
+      </td>
+      <td>
+        <div class="buttons float-right">
+          {% if user.is_staff or event.over or user.profile.is_funder or old %}
+          <a class="btn btn-sm btn-info text-white" href="{% url 'event-show' app.id %}">
+            <i class="icon-file icon-white"></i> View
+          </a>
+          {% elif not old %}
+          <a class="destroy-event btn btn-sm btn-danger" href="{% url 'event-destroy' app.id %}">
+            <i class="icon-trash icon-white"></i> Delete
+          </a>
+          <a class="btn btn-sm btn-warning text-white" href="{% url 'event-edit' app.id %}">
+            <i class="icon-edit icon-white"></i> Edit
+          </a>
+          {% endif %}
+        </div>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">No applications.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
 
-  {% if page_length != 1 %}
-  <div class="center-pagination">
-    <ul class="pagination">
-      {% if page_obj.has_previous %}
-      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page_obj.previous_page_number 'page' request.GET.urlencode %}">&laquo;</a></li>
-      {% else %}
-      <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&laquo;</a></li>
-      {% endif %}
+{% if page_length != 1 %}
+<div class="center-pagination">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page=page_obj.previous_page_number %}">&laquo;</a></li>
+    {% else %}
+    <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&laquo;</a></li>
+    {% endif %}
 
-      {% for i in page_range %}
-      {% if i == page_obj.number %}
-      <li class="page-item active">
-        <a class="page-link" href="{% relative_url i 'page' request.GET.urlencode %}">{{i}}</a>
-      </li>
-      {% else %}
-      <li class="page-item"><a class="page-link" href="{% relative_url i 'page' request.GET.urlencode %}">{{i}}</a></li>
-      {% endif %}
-      {% endfor %}
+    {% for i in page_range %}
+    {% if i == page_obj.number %}
+    <li class="page-item active">
+      <a class="page-link" href="{% relative_url page=i %}">{{i}}</a>
+    </li>
+    {% else %}
+    <li class="page-item"><a class="page-link" href="{% relative_url page=i %}">{{i}}</a></li>
+    {% endif %}
+    {% endfor %}
 
-      {% if page_obj.has_next %}
-      <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page_obj.next_page_number 'page' request.GET.urlencode %}">&raquo;</a></li>
-      {% else %}
-      <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&raquo;</a></li>
-      {% endif %}
-    </ul>
-  </div>
-  {% endif %}
+    {% if page_obj.has_next %}
+    <li class="page-item" style="list-style-type: none;"><a class="page-link" href="{% relative_url page=page_obj.next_page_number %}">&raquo;</a></li>
+    {% else %}
+    <li class="page-item disabled" style="list-style-type: none;"><a class="page-link" href="#">&raquo;</a></li>
+    {% endif %}
+  </ul>
+</div>
+{% endif %}
 </div>
 {% endblock %}
