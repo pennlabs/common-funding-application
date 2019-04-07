@@ -59,6 +59,9 @@ class CFAUser(models.Model):
                                   blank=True)
     cc_emails = models.ManyToManyField("CCEmail", blank=True)
     mission_statement = models.TextField(blank=True)
+    email_template = models.TextField(blank=True)
+    email_subject= models.TextField(blank=True)
+    send_email_template = models.BooleanField(default=False)
 
     def __str__(self):
         if self.is_funder:
@@ -265,6 +268,18 @@ class Event(models.Model):
                                                              flat=True))
         if can_send_email():
             email.send()
+
+    def notify_requester_from_funders(self):
+        """Send automated email to requester from all selected funders"""
+        for funder in self.applied_funders.all():
+            if funder.send_email_template:
+                subject = funder.email_subject
+                message = funder.email_template
+                email = EmailMessage(subject=subject, body=message,
+                                     from_email=funder.user.username+"@penncfa.com",
+                                     to=[self.requester.user.email])
+                if can_send_email():
+                    email.send()
 
     def notify_requester(self, grants):
         """Notify a requester that an event has been funded."""

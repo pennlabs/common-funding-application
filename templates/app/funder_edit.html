@@ -24,132 +24,170 @@
     </div>
     <div class="section-content">
       <form action="{% url 'funder-edit' user.id %}"
-            method="post"
-            class="form-horizontal">
-        {% csrf_token %}
+      method="post"
+      class="form-horizontal">
+      {% csrf_token %}
 
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <div class="form-group">
+            <label for="fundername" class="control-label">Funder Name</label>
+            <div class="controls">
+              <input value="{{ user.profile.funder_name }}"
+              type="text"
+              name="fundername"
+              id="fundername"
+              class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="missionstatement"
+            class="control-label">Mission Statement</label>
+            <div class="controls">
+              <textarea type="text"
+              name="missionstatement"
+              class="form-control"
+              rows="5">{{user.profile.mission_statement}}</textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+          <label class="control-label">Funder Emails</label><br />
+          <p>You can add additional emails below. When an application is received, the emails below will be included in the notification.</p>
+          <ul id="cc-emails" class="list-group mb-3">
+            <li class="list-group-item">{{ user.email }} <span class="badge badge-secondary float-right mt-1">Primary</span></li>
+            {% for email in user.profile.cc_emails.all %}
+            <li class="list-group-item">
+              {{ email }}
+              <button class='close email-delete'>&times;</button>
+              <input type="hidden" name="cc_email" value="{{ email }}" />
+            </li>
+            {% endfor %}
+          </ul>
+          <div class="form-group">
+            <div class="input-group">
+              <input id="cc-email" type="email" class="form-control" />
+              <div class="input-group-append">
+                <button id="add-cc-email" class="btn btn-success">Add Email</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="funder-edit-subtable">
         <div class="row">
-            <div class="col-6">
-                <div class="form-group">
-                    <label for="fundername" class="control-label">Funder Name</label>
-                    <div class="controls">
-                        <input value="{{ user.profile.funder_name }}"
-                               type="text"
-                               name="fundername"
-                               id="fundername"
-                               class="form-control">
-                    </div>
-                </div>
+          <div class="col-xs-12 col-md-12">
+            <div class="form-group">
+              <label for="email-subject"
+              class="control-label">Email Template Subject </label><small> Fill out a custom automated email to send to clubs who request funding</small>
+              <div class="controls">
+                <input type="text"
+                name="email-subject"
+                class="form-control" value="{{user.profile.email_subject}}"></input>
+              </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="missionstatement"
-                           class="control-label">Mission Statement</label>
-                    <div class="controls">
-                        <textarea type="text"
-                                  name="missionstatement"
-                                  class="form-control"
-                                  rows="5">{{user.profile.mission_statement}}</textarea>
-                    </div>
-                </div>
+            <div class="form-group">
+              <label for="email-template"
+              class="control-label">Email Template Message</label>
+              <div class="controls">
+                <textarea type="text"
+                name="email-template"
+                class="form-control"
+                rows="5">{{user.profile.email_template}}</textarea>
+              </div>
             </div>
-            <div class="col-6">
-                <label class="control-label">Funder Emails</label><br />
-                <p>You can add additional emails below. When an application is received, the emails below will be included in the notification.</p>
-                <ul id="cc-emails" class="list-group mb-3">
-                    <li class="list-group-item">{{ user.email }} <span class="badge badge-secondary float-right mt-1">Primary</span></li>
-                    {% for email in user.profile.cc_emails.all %}
-                    <li class="list-group-item">
-                        {{ email }}
-                        <button class='close email-delete'>&times;</button>
-                        <input type="hidden" name="cc_email" value="{{ email }}" />
-                    </li>
-                    {% endfor %}
-                </ul>
-                <div class="form-group">
-                    <div class="input-group">
-                        <input id="cc-email" type="email" class="form-control" />
-                        <div class="input-group-append">
-                            <button id="add-cc-email" class="btn btn-success">Add Email</button>
-                        </div>
-                    </div>
-                </div>
+
+          </div>
+          <div class="col-xs-12 col-md-12">
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" name="send-email-template" id="send-email-template"
+              {% if user.profile.send_email_template %}checked{% endif %}>
+              <label class="custom-control-label" for="send-email-template">Send automated email</label>
             </div>
+          </div>
+          <hr>
         </div>
+        <hr>
+      </div>
 
-        <div class="funder-edit-subtable">
-          <p>
+      <div class="funder-edit-subtable">
+        <p>
           Free Response Questions
-          </p>
-          <table class="table">
-            <tbody>
-              {% for question in funder_questions %}
-              <tr>
-                <td>
-                  <textarea type="text"
-                            name="freeresponsequestion_{{question.id}}"
-                            data-qid="{{question.id}}"
-                            class="form-control">{{question.question}}</textarea>
-                </td>
-                <td>
-                  <button class="btn btn-danger remove-freeresponsequestion">
-                    Remove
-                  </button>
-                </td>
-              </tr>
-              {% endfor %}
-              <tr>
-                <td>
-                  <textarea type="text"
-                            class="form-control"
-                            rows="1">{{question.question}}</textarea>
-                </td>
-                <td>
-                  <button class="btn add-freeresponsequestion">Add</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        </p>
+        <table class="table">
+          <tbody>
+            {% for question in funder_questions %}
+            <tr>
+              <td>
+                <textarea type="text"
+                name="freeresponsequestion_{{question.id}}"
+                data-qid="{{question.id}}"
+                class="form-control">{{question.question}}</textarea>
+              </td>
+              <td>
+                <button class="btn btn-danger remove-freeresponsequestion">
+                  Remove
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td>
+                <textarea type="text"
+                class="form-control"
+                rows="1">{{question.question}}</textarea>
+              </td>
+              <td>
+                <button class="btn add-freeresponsequestion">Add</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <div class="funder-edit-subtable">
-          <p>
-            Eligibility Questions
-          </p>
-          <table class="table">
-            <tbody>
-              {% for question in eligibility_questions %}
-              <tr>
-                <td>
-                  {{question.question}}
-                </td>
-                <td>
-                  {% if user.profile in question.required_funders %}
-                  <button class="btn btn-danger remove-funderconstraint"
-                          data-qid="{{question.id}}"> Required</button>
-                  <input type="hidden"
-                         name="funderconstraint"
-                         value="{{question.id}}"/>
-                  {% else %}
-                  <button class="btn add-funderconstraint"
-                          data-qid="{{question.id}}">Not Required</button>
-                  <input type="hidden" name="funderconstraint" value=""/>
-                  {% endif %}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+      <div class="funder-edit-subtable">
+        <p>
+          Eligibility Questions
+        </p>
+        <table class="table">
+          <tbody>
+            {% for question in eligibility_questions %}
+            <tr>
+              <td>
+                {{question.question}}
+              </td>
+              <td>
+                {% if user.profile in question.required_funders %}
+                <button class="btn btn-danger remove-funderconstraint"
+                data-qid="{{question.id}}"> Required</button>
+                <input type="hidden"
+                name="funderconstraint"
+                value="{{question.id}}"/>
+                {% else %}
+                <button class="btn add-funderconstraint"
+                data-qid="{{question.id}}">Not Required</button>
+                <input type="hidden" name="funderconstraint" value=""/>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
 
-        <div class="form-actions">
-          <a class="btn btn-secondary"
-             href="{% url 'events' %}">Cancel</a>
-          <button class="btn btn-primary"
-                  type="submit"
-                  name="submit-funder">Submit</button>
-        </div>
-      </form>
-    </div>
-  </section>
+      <div class="form-actions">
+        <a class="btn btn-secondary"
+        href="{% url 'events' %}">Cancel</a>
+        <button class="btn btn-primary"
+        type="submit"
+        name="submit-funder">Submit</button>
+      </div>
+    </form>
+  </div>
+</section>
 </div>
 {% endblock %}

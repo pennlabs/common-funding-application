@@ -116,7 +116,7 @@
               <tr>
                 <td>{{funder}}</td>
                 {% if amount != None %}
-                <td>$ {{ amount }}</td>
+                <td>${{amount}}</td>
                 {% else %}
                 <td class="pending">pending</td>
                 {% endif %}
@@ -124,15 +124,15 @@
               {% endfor %}
               <tr>
                 <td>Funds already received</td>
-                <td>$ {{ app.total_funds_already_received }}</td>
+                <td>${{ app.total_funds_already_received }}</td>
               </tr>
               <tr>
                 <td><b>Received Total</b></td>
-                <td>$ {{ app.total_funds_received }}</td>
+                <td>${{ app.total_funds_received }}</td>
               </tr>
               <tr>
                 <td><b>Remaining</b></td>
-                <td>$ {{ app.total_remaining }}</td>
+                <td>${{ app.total_remaining }}</td>
               </tr>
             </tbody>
           </table>

@@ -176,11 +176,18 @@ def events(request):
     status_val = request.GET.get('status', '')
     filter_val = request.GET.get('filter', '')
     app = Event.objects.all()
+    if user.is_staff and not user.username == "uacontingency":
+        app = app
+    elif cfauser.is_requester:
+        app = app.filter(requester=cfauser)
+    else:  # cfauser.is_funder
+        app = cfauser.event_applied_funders.order_by(sort_by)
+
     if len(status_val) != 0:
         if status_val == 'O':
-            app = Event.objects.filter(date__lt=datetime.date.today() - timedelta(days=14))
+            app = app.filter(date__lt=datetime.date.today() - timedelta(days=14))
         else:
-            app = Event.objects.filter(date__gte=datetime.date.today() - timedelta(days=14))
+            app = app.filter(date__gte=datetime.date.today() - timedelta(days=14))
             app = app.filter(status__in=status_val)
     app = app.filter(Q(name__icontains=filter_val) | Q(organizations__icontains=filter_val))
     app = app.order_by(sort_by)
@@ -189,13 +196,7 @@ def events(request):
     else:
         page = 1
 
-    if user.is_staff and not user.username == "uacontingency":
-        apps = app
-    elif cfauser.is_requester:
-        apps = app.filter(requester=cfauser)
-    else:  # cfauser.is_funder
-        apps = cfauser.event_applied_funders.order_by(sort_by)
-    p = Paginator(apps, 10)
+    p = Paginator(app, 10)
     return render(request, 'app/events.html',
                   {'apps': p.page(page).object_list,
                    'page_obj': p.page(page),
@@ -220,6 +221,7 @@ def event_new(request):
                     event.save()
                     save_from_form(event, request.POST)
                 event.notify_funders(new=True)
+                event.notify_requester_from_funders()
                 msg = u"Scheduled {} for {}!".format(event.name, event.date.strftime("%b %d, %Y"))
                 messages.success(request, msg)
                 return redirect(EVENTS_HOME)
@@ -344,6 +346,16 @@ def funder_edit(request, user_id):
         # edit funder basic info.
         funder.funder_name = request.POST['fundername']
         funder.mission_statement = request.POST['missionstatement']
+        funder.email_subject = request.POST['email-subject']
+        funder.email_template = request.POST['email-template']
+        checkbox = request.POST.get('send-email-template')
+        if checkbox=='on':
+            if len(funder.email_subject) == 0 or len(funder.email_template) ==0:
+                messages.error(request, 'Please fill out both email subject and body.')
+                return redirect(EVENTS_HOME)
+            funder.send_email_template = True
+        else:
+            funder.send_email_template = False
         funder.save()
 
         # delete removed free response questions.
