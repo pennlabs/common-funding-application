@@ -1,6 +1,6 @@
 contextlib2==0.5.5
 dj-database-url==0.5.0
-Django==1.11.8
+Django==1.11.20
 django-extensions==1.9.9
 django-localflavor==1.3
 django-registration==2.2
