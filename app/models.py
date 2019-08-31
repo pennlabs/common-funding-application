@@ -60,7 +60,7 @@ class CFAUser(models.Model):
     cc_emails = models.ManyToManyField("CCEmail", blank=True)
     mission_statement = models.TextField(blank=True)
     email_template = models.TextField(blank=True)
-    email_subject= models.TextField(blank=True)
+    email_subject = models.TextField(blank=True)
     send_email_template = models.BooleanField(default=False)
 
     def __str__(self):
@@ -276,7 +276,7 @@ class Event(models.Model):
                 subject = funder.email_subject
                 message = funder.email_template
                 email = EmailMessage(subject=subject, body=message,
-                                     from_email=funder.user.username+"@penncfa.com",
+                                     from_email=funder.user.username + "@penncfa.com",
                                      to=[self.requester.user.email])
                 if can_send_email():
                     email.send()

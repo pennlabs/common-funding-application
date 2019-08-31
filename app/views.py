@@ -349,8 +349,8 @@ def funder_edit(request, user_id):
         funder.email_subject = request.POST['email-subject']
         funder.email_template = request.POST['email-template']
         checkbox = request.POST.get('send-email-template')
-        if checkbox=='on':
-            if len(funder.email_subject) == 0 or len(funder.email_template) ==0:
+        if checkbox == 'on':
+            if len(funder.email_subject) == 0 or len(funder.email_template) == 0:
                 messages.error(request, 'Please fill out both email subject and body.')
                 return redirect(EVENTS_HOME)
             funder.send_email_template = True
