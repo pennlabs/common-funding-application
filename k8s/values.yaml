@@ -1,0 +1,16 @@
+deploy_version: 0.1.15
+image_tag: latest
+
+applications:
+  - name: django
+    image: pennlabs/common-funding-application
+    secret: common-funding-application
+    ingress:
+      hosts:
+        - host: penncfa.com
+          paths: ["/"]
+    extraEnv:
+      - name: DOMAIN
+        value: penncfa.com
+      - name: DJANGO_SETTINGS_MODULE
+        value: settings
