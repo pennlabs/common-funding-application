@@ -14,8 +14,6 @@ workflows:
   build-and-deploy:
     jobs:
       - docker/publish:
-          requires:
-            - django-tools/check
           cache_from: "pennlabs/common-funding-application:latest"
           image: pennlabs/common-funding-application
           tag: "${CIRCLE_SHA1},latest"
