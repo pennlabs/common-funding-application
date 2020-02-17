@@ -1,7 +1,8 @@
 Common Funding Application
 =============================
 
-[![Build Status](https://travis-ci.org/pennlabs/common-funding-application.svg?branch=master)](https://travis-ci.org/pennlabs/common-funding-application)
+[![CircleCI](https://circleci.com/gh/pennlabs/common-funding-application.svg?style=shield)](https://circleci.com/gh/pennlabs/common-funding-application)
+[![Coverage Status](https://codecov.io/gh/pennlabs/common-funding-application/branch/master/graph/badge.svg)](https://codecov.io/gh/pennlabs/common-funding-application)
 
 The [Common Funding Application](https://penncfa.com) is an online application that allows student groups and organizations to request funding from various funding sources at the [University of Pennsylvania](http://www.upenn.edu).
 
@@ -12,7 +13,7 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Create a virtualenv (`virtualenv env`) and activate it (`source env/bin/activate`). You will need to re-activate the virtualenv in every new terminal you use.
 
-* Install python dependencies (`pip install -r requirements.txt`)
+* Install python dependencies (`pipenv install -d`)
 
 * Migrate database (`python manage.py migrate`)
 
@@ -51,4 +52,4 @@ However, in production, there are a few that need to be set:
 
 ## Contributors
 
-* The development team at [Penn Labs](http://pennlabs.org/#team)
+* The development team at [Penn Labs](https://pennlabs.org/)
