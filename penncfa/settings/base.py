@@ -40,14 +40,9 @@ MANAGERS = ADMINS
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'cfa-db.sqlite3'),
-    }
+    "default": dj_database_url.config(default="sqlite:///" + os.path.join(BASE_DIR, "cfa-db.sqlite3"))
 }
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

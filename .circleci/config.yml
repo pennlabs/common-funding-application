@@ -15,7 +15,9 @@ workflows:
   build-and-deploy:
     jobs:
       - django-tools/check:
-          project-name: "common-funding-application"
+          project-name: "penncfa"
+          black: false
+          flake8: false
       - docker/publish:
           requires:
             - django-tools/check
