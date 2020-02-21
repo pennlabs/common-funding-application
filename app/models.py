@@ -2,7 +2,6 @@ from hashlib import sha1
 import datetime
 
 from django.contrib.auth.models import User
-from localflavor.us.forms import USPhoneNumberField
 from django.core import mail
 from django.core.mail import EmailMessage
 from django.db import models
@@ -49,7 +48,7 @@ class CFAUser(models.Model):
                                 related_name='profile',
                                 on_delete=models.CASCADE)
     user_type = models.CharField(max_length=1, choices=REQUESTER_OR_FUNDER)
-    phone = USPhoneNumberField()
+    phone = models.CharField(max_length=15)
     # The e-mail of the contact in OSA
     osa_email = models.EmailField('OSA Contact Email', null=True,
                                   help_text='The email address for contacting '

@@ -150,7 +150,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'app',
     'registration',
-    'localflavor',
     'raven.contrib.django.raven_compat',
     'django_extensions'
 )
