@@ -7,9 +7,9 @@ name = "pypi"
 
 [packages]
 dj-database-url = "*"
-Django = "==1.11.28"
+Django = "*"
 django-extensions = "*"
-django-registration = "==2.2"
+django-registration = "*"
 mysqlclient = "*"
 raven = "*"
 uwsgi = "*"

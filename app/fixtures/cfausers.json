@@ -1,1 +1,350 @@
-[{"fields": {"username": "spectrum", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-22T13:20:58.296", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$L0yYXBwhuwA4$MYHYAaNI4/N9h3VSVXGTo3lN1D8YigGzVg47pIoqv4Y=", "email": "", "date_joined": "2016-06-22T13:20:58.296"}, "model": "auth.user", "pk": 1}, {"fields": {"username": "connaissance", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-22T13:20:58.781", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$ZjmRNDa57aMo$kaK/8xoPkSv3Km8VdMClBQzOcoCa7N7QYGTEXNAScmI=", "email": "", "date_joined": "2016-06-22T13:20:58.781"}, "model": "auth.user", "pk": 2}, {"fields": {"username": "fullyplanned", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-22T13:20:59.292", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$JpaEo1MUucWJ$i/hZqWHV+YFQL1d3L0WZSTIf9AwIsUX8g7ZkjgemfBc=", "email": "", "date_joined": "2016-06-22T13:20:59.292"}, "model": "auth.user", "pk": 3}, {"fields": {"username": "icf", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-22T13:20:59.866", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$u7OO5iW6bj36$mgckJKA882Nyc3zrLN+PFFj3IvuU034dXVf/GbloeO0=", "email": "", "date_joined": "2016-06-22T13:20:59.866"}, "model": "auth.user", "pk": 4}, {"fields": {"username": "faithfund", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-28T18:32:29.791", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$y15zJqAwBQuj$yKHPtSrHi7HBoBVivDm/vxyzFPeXDG0aGFzgFxg2okk=", "email": "", "date_joined": "2016-06-22T13:21:00.814"}, "model": "auth.user", "pk": 5}, {"fields": {"username": "tchange", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-22T13:21:01.527", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$EkvVHh8Hh6bb$Abj/wbX2tDvbjInfuJ8TocAJBQeZW4FzjgkERG3FMoE=", "email": "", "date_joined": "2016-06-22T13:21:01.527"}, "model": "auth.user", "pk": 6}, {"fields": {"username": "uacontingency", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-28T17:40:44.353", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$znu3IgMcfrsC$zdEGUWUmreePf7vf4g6p3I/K1Ie+bzfLnvo69gZvcM4=", "email": "", "date_joined": "2016-06-22T13:21:02.578"}, "model": "auth.user", "pk": 7}, {"fields": {"username": "philo", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-29T16:07:24.157", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$12000$2aM2W8yj2FBM$1lAjwJkiZjju0ATX6aKAWRyQQQfksWLNlGo3YuQC9lk=", "email": "", "date_joined": "2016-06-22T13:21:03.039"}, "model": "auth.user", "pk": 8}, {"fields": {"username": "testrequester1", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-22T13:21:03.376", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$zAnEy03VKI4E$FBho4WkXUkvKGriPj39P9U8wLAtaPQw6vO/1jI5t+20=", "email": "", "date_joined": "2016-06-22T13:21:03.376"}, "model": "auth.user", "pk": 9}, {"fields": {"username": "testrequester2", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-22T13:21:03.719", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$qRXZpPHz2NUV$/XHMkWOzt3U/zalE8bkuKRO9WDM91Fd+vyCPVchvnu0=", "email": "", "date_joined": "2016-06-22T13:21:03.719"}, "model": "auth.user", "pk": 10}, {"fields": {"username": "testrequester3", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-22T13:21:04.054", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$10000$WOYOc9wmexBg$aZYXjDNVeHF0nYYppsrSD8muYp5AGfPfshTzhn0RnAI=", "email": "", "date_joined": "2016-06-22T13:21:04.054"}, "model": "auth.user", "pk": 11}, {"fields": {"username": "msa", "first_name": "", "last_name": "", "is_active": true, "is_superuser": false, "is_staff": false, "last_login": "2016-06-29T03:38:08.365", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$12000$mbYDDLQ581It$/NNU2HRomSZ2/9Uefe0EoQ4CxqPE/jSZzg/i1suJBRY=", "email": "msa@upenn.edu", "date_joined": "2016-06-29T03:37:47.047"}, "model": "auth.user", "pk": 12}, {"pk": 1, "model": "app.cfauser", "fields": {"mission_statement": "Host events serving multitude of minority interests on campus.", "cc_emails": [], "user_type": "F", "funder_name": "", "osa_email": "", "user": 1}}, {"pk": 2, "model": "app.cfauser", "fields": {"mission_statement": "Bring awesome speakers.", "cc_emails": [], "user_type": "F", "funder_name": "", "osa_email": "", "user": 2}}, {"pk": 3, "model": "app.cfauser", "fields": {"mission_statement": "Fund events that are ready to go but need financial assistance to be viable.", "cc_emails": [], "user_type": "F", "funder_name": "", "osa_email": "", "user": 3}}, {"pk": 4, "model": "app.cfauser", "fields": {"mission_statement": "Fund events where at least one group sponsoring event must be 5B.", "cc_emails": [], "user_type": "F", "funder_name": "", "osa_email": "", "user": 4}}, {"pk": 5, "model": "app.cfauser", "fields": {"mission_statement": "Promote and support faith-based events that are educational in nature and not exclusive", "cc_emails": [], "user_type": "F", "funder_name": "", "osa_email": "", "user": 5}}, {"pk": 6, "model": "app.cfauser", "fields": {"mission_statement": "Fund collaborative events that promote interaction among disparate audiences.", "cc_emails": [], "user_type": "F", "funder_name": "", "osa_email": "", "user": 6}}, {"pk": 7, "model": "app.cfauser", "fields": {"mission_statement": "Fund events that need funding and have exhausted their other alternatives.", "cc_emails": [], "user_type": "F", "funder_name": "", "osa_email": "", "user": 7}}, {"pk": 8, "model": "app.cfauser", "fields": {"mission_statement": "", "cc_emails": [], "user_type": "R", "funder_name": "", "osa_email": null, "user": 8}}, {"pk": 9, "model": "app.cfauser", "fields": {"mission_statement": "", "cc_emails": [], "user_type": "R", "funder_name": "", "osa_email": null, "user": 9}}, {"pk": 10, "model": "app.cfauser", "fields": {"mission_statement": "", "cc_emails": [], "user_type": "R", "funder_name": "", "osa_email": null, "user": 10}}, {"pk": 11, "model": "app.cfauser", "fields": {"mission_statement": "", "cc_emails": [], "user_type": "R", "funder_name": "", "osa_email": null, "user": 11}}]
+[
+    {
+        "fields": {
+            "username": "spectrum",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-22T13:20:58.296",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$L0yYXBwhuwA4$MYHYAaNI4/N9h3VSVXGTo3lN1D8YigGzVg47pIoqv4Y=",
+            "email": "",
+            "date_joined": "2016-06-22T13:20:58.296"
+        },
+        "model": "auth.user",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "username": "connaissance",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-22T13:20:58.781",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$ZjmRNDa57aMo$kaK/8xoPkSv3Km8VdMClBQzOcoCa7N7QYGTEXNAScmI=",
+            "email": "",
+            "date_joined": "2016-06-22T13:20:58.781"
+        },
+        "model": "auth.user",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "username": "fullyplanned",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-22T13:20:59.292",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$JpaEo1MUucWJ$i/hZqWHV+YFQL1d3L0WZSTIf9AwIsUX8g7ZkjgemfBc=",
+            "email": "",
+            "date_joined": "2016-06-22T13:20:59.292"
+        },
+        "model": "auth.user",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "username": "icf",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-22T13:20:59.866",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$u7OO5iW6bj36$mgckJKA882Nyc3zrLN+PFFj3IvuU034dXVf/GbloeO0=",
+            "email": "",
+            "date_joined": "2016-06-22T13:20:59.866"
+        },
+        "model": "auth.user",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "username": "faithfund",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-28T18:32:29.791",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$y15zJqAwBQuj$yKHPtSrHi7HBoBVivDm/vxyzFPeXDG0aGFzgFxg2okk=",
+            "email": "",
+            "date_joined": "2016-06-22T13:21:00.814"
+        },
+        "model": "auth.user",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "username": "tchange",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-22T13:21:01.527",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$EkvVHh8Hh6bb$Abj/wbX2tDvbjInfuJ8TocAJBQeZW4FzjgkERG3FMoE=",
+            "email": "",
+            "date_joined": "2016-06-22T13:21:01.527"
+        },
+        "model": "auth.user",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "username": "uacontingency",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-28T17:40:44.353",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$znu3IgMcfrsC$zdEGUWUmreePf7vf4g6p3I/K1Ie+bzfLnvo69gZvcM4=",
+            "email": "",
+            "date_joined": "2016-06-22T13:21:02.578"
+        },
+        "model": "auth.user",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "username": "philo",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-29T16:07:24.157",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$12000$2aM2W8yj2FBM$1lAjwJkiZjju0ATX6aKAWRyQQQfksWLNlGo3YuQC9lk=",
+            "email": "",
+            "date_joined": "2016-06-22T13:21:03.039"
+        },
+        "model": "auth.user",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "username": "testrequester1",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-22T13:21:03.376",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$zAnEy03VKI4E$FBho4WkXUkvKGriPj39P9U8wLAtaPQw6vO/1jI5t+20=",
+            "email": "",
+            "date_joined": "2016-06-22T13:21:03.376"
+        },
+        "model": "auth.user",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "username": "testrequester2",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-22T13:21:03.719",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$qRXZpPHz2NUV$/XHMkWOzt3U/zalE8bkuKRO9WDM91Fd+vyCPVchvnu0=",
+            "email": "",
+            "date_joined": "2016-06-22T13:21:03.719"
+        },
+        "model": "auth.user",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "username": "testrequester3",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-22T13:21:04.054",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$10000$WOYOc9wmexBg$aZYXjDNVeHF0nYYppsrSD8muYp5AGfPfshTzhn0RnAI=",
+            "email": "",
+            "date_joined": "2016-06-22T13:21:04.054"
+        },
+        "model": "auth.user",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "username": "msa",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2016-06-29T03:38:08.365",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$12000$mbYDDLQ581It$/NNU2HRomSZ2/9Uefe0EoQ4CxqPE/jSZzg/i1suJBRY=",
+            "email": "msa@upenn.edu",
+            "date_joined": "2016-06-29T03:37:47.047"
+        },
+        "model": "auth.user",
+        "pk": 12
+    },
+    {
+        "pk": 1,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "Host events serving multitude of minority interests on campus.",
+            "cc_emails": [],
+            "user_type": "F",
+            "funder_name": "",
+            "osa_email": "",
+            "user": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "Bring awesome speakers.",
+            "cc_emails": [],
+            "user_type": "F",
+            "funder_name": "",
+            "osa_email": "",
+            "user": 2
+        }
+    },
+    {
+        "pk": 3,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "Fund events that are ready to go but need financial assistance to be viable.",
+            "cc_emails": [],
+            "user_type": "F",
+            "funder_name": "",
+            "osa_email": "",
+            "user": 3
+        }
+    },
+    {
+        "pk": 4,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "Fund events where at least one group sponsoring event must be 5B.",
+            "cc_emails": [],
+            "user_type": "F",
+            "funder_name": "",
+            "osa_email": "",
+            "user": 4
+        }
+    },
+    {
+        "pk": 5,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "Promote and support faith-based events that are educational in nature and not exclusive",
+            "cc_emails": [],
+            "user_type": "F",
+            "funder_name": "",
+            "osa_email": "",
+            "user": 5
+        }
+    },
+    {
+        "pk": 6,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "Fund collaborative events that promote interaction among disparate audiences.",
+            "cc_emails": [],
+            "user_type": "F",
+            "funder_name": "",
+            "osa_email": "",
+            "user": 6
+        }
+    },
+    {
+        "pk": 7,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "Fund events that need funding and have exhausted their other alternatives.",
+            "cc_emails": [],
+            "user_type": "F",
+            "funder_name": "",
+            "osa_email": "",
+            "user": 7
+        }
+    },
+    {
+        "pk": 8,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "",
+            "cc_emails": [],
+            "user_type": "R",
+            "funder_name": "",
+            "osa_email": null,
+            "user": 8
+        }
+    },
+    {
+        "pk": 9,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "",
+            "cc_emails": [],
+            "user_type": "R",
+            "funder_name": "",
+            "osa_email": null,
+            "user": 9
+        }
+    },
+    {
+        "pk": 10,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "",
+            "cc_emails": [],
+            "user_type": "R",
+            "funder_name": "",
+            "osa_email": null,
+            "user": 10
+        }
+    },
+    {
+        "pk": 11,
+        "model": "app.cfauser",
+        "fields": {
+            "mission_statement": "",
+            "cc_emails": [],
+            "user_type": "R",
+            "funder_name": "",
+            "osa_email": null,
+            "user": 11
+        }
+    }
+]
