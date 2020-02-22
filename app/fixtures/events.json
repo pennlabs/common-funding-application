@@ -15,10 +15,10 @@
             "date_joined": "2016-06-22T13:21:03.039"
         },
         "model": "auth.user",
-        "pk": 1337
+        "pk": 1
     },
     {
-        "pk": 1337,
+        "pk": 1,
         "model": "app.cfauser",
         "fields": {
             "mission_statement": "Cool coding stuff.",
@@ -26,7 +26,7 @@
             "user_type": "R",
             "funder_name": "",
             "osa_email": "",
-            "user": 1337
+            "user": 1
         }
     },
     {
@@ -46,7 +46,7 @@
             "advisor_email": "admin@pennlabs.org",
             "contact_email": "contact@pennlabs.org",
             "location": "Houston Hall",
-            "requester": 1337,
+            "requester": 1,
             "date": "2050-01-01",
             "contact_name": "Penn Labs",
             "contact_phone": "310-915-4081"

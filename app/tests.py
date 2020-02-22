@@ -85,6 +85,7 @@ class TestRegistrationViews(TestCase):
 
 class TestLoginViews(TestCase):
     def setUp(self):
+        super().setUp()
         self.user = User.objects.create_user(username='philo',
                                              email='philo@upenn.edu',
                                              password='we<3literature')
@@ -115,6 +116,7 @@ class TestEvents(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
+        super().setUp()
         self.client.login(username='philo', password='we<3literature')
 
     def test_index(self):
@@ -193,6 +195,7 @@ class TestFunder(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
+        super().setUp()
         self.user = User.objects.get(username='philo')
         self.funder = create_funder()
         self.client.login(username='spec', password='we<3money$$$')
@@ -218,6 +221,7 @@ class TestShare(TestCase):
     key = "a96055ddf995cce98469884fa202d3c40032e039"
 
     def setUp(self):
+        super().setUp()
         self.event = Event.objects.get(pk=1)
 
     def test_event_secret_key(self):
@@ -252,6 +256,7 @@ class TestEmailFunders(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
+        super().setUp()
         self.funder = create_funder()
         self.event = Event.objects.get(pk=1)
         self.event.applied_funders.add(self.funder.profile)
@@ -276,6 +281,7 @@ class TestItemGrant(TestCase):
                                      revenue=0)
 
     def setUp(self):
+        super().setUp()
         self.funder = create_funder()
         self.event = Event.objects.get(pk=1)
 
@@ -299,6 +305,7 @@ class TestHelpers(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
+        super().setUp()
         self.funder = create_funder()
         self.event = Event.objects.get(pk=1)
         self.item = TestItemGrant.create_item(self.event)
