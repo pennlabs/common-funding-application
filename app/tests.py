@@ -277,7 +277,7 @@ class TestItemGrant(TestCase):
                                      quantity=10,
                                      price_per_unit=100,
                                      funding_already_received=0,
-                                     category="Honoraria/Services",
+                                     category="H",
                                      revenue=0)
 
     def setUp(self):
