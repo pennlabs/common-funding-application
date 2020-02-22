@@ -105,9 +105,9 @@ class CFAUser(models.Model):
 
 
 @receiver(sender=User, signal=post_save)
-def create_profile(sender, instance, signal, created, **kwargs):
+def create_profile(sender, instance, signal, created, raw, **kwargs):
     """Create a CFAUser whenever a user is created."""
-    if created:
+    if created and not raw:
         CFAUser.objects.create(user=instance, user_type='R')
 
 
