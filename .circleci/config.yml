@@ -1,0 +1,33 @@
+version: 2.1
+orbs:
+  django-tools: pennlabs/django-tools@0.0.3
+  docker: circleci/docker@0.5.19
+  helm-tools: pennlabs/helm-tools@0.1.8
+
+branch-filters: &branch-filters
+  filters:
+    branches:
+      only:
+        - master
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - django-tools/check:
+          project-name: "penncfa"
+          black: false
+          flake8: false
+      - docker/publish:
+          requires:
+            - django-tools/check
+          cache_from: "pennlabs/common-funding-application:latest"
+          image: pennlabs/common-funding-application
+          tag: "${CIRCLE_SHA1},latest"
+          context: docker-publish
+          <<: *branch-filters
+      - helm-tools/deploy:
+          requires:
+            - docker/publish
+          context: k8s-deploy
+          <<: *branch-filters

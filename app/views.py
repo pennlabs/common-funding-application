@@ -5,8 +5,8 @@ import json
 import re
 
 import smtplib
+from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import login
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from django.http import HttpResponse, HttpResponseNotAllowed
@@ -161,7 +161,7 @@ def save_from_form(event, POST):
 @require_http_methods(["GET", "POST"])
 def events(request):
     if not request.user.is_authenticated:
-        return login(request)
+        return LoginView.as_view()(request)
 
     user = request.user
     # if the request type has GET query type, set it as the parameter

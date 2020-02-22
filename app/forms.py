@@ -3,7 +3,7 @@ from django.contrib.auth.forms import (PasswordChangeForm as BasePasswordChangeF
                                        PasswordResetForm as BasePasswordResetForm,
                                        SetPasswordForm as BaseSetPasswordForm)
 from django.core.validators import RegexValidator
-from registration.forms import RegistrationForm as BaseRegistrationForm
+from django_registration.forms import RegistrationForm as BaseRegistrationForm
 
 from .models import Event
 

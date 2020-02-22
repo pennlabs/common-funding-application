@@ -27,12 +27,12 @@ class Migration(migrations.Migration):
             name='CFAUser',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('funder_name', models.CharField(default=b'', max_length=256, blank=True)),
-                ('user_type', models.CharField(max_length=1, choices=[(b'R', b'REQUESTER'), (b'F', b'FUNDER')])),
-                ('osa_email', models.EmailField(help_text=b'The email address for contacting OSA when an app is funded.', max_length=75, null=True, verbose_name=b'OSA Contact Email', blank=True)),
+                ('funder_name', models.CharField(default='', max_length=256, blank=True)),
+                ('user_type', models.CharField(max_length=1, choices=[('R', 'REQUESTER'), ('F', 'FUNDER')])),
+                ('osa_email', models.EmailField(help_text='The email address for contacting OSA when an app is funded.', max_length=75, null=True, verbose_name='OSA Contact Email', blank=True)),
                 ('mission_statement', models.TextField(max_length=256, blank=True)),
                 ('cc_emails', models.ManyToManyField(to='app.CCEmail', null=True, blank=True)),
-                ('user', models.OneToOneField(related_name=b'profile', to=settings.AUTH_USER_MODEL, help_text=b'You must first create a user before adding them to the CFA.', on_delete=models.CASCADE)),
+                ('user', models.OneToOneField(related_name='profile', to=settings.AUTH_USER_MODEL, help_text='You must first create a user before adding them to the CFA.', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'CFA Users',
@@ -99,7 +99,7 @@ class Migration(migrations.Migration):
             name='EligibilityAnswer',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('answer', models.CharField(max_length=1, choices=[(b'Y', b'YES'), (b'N', b'NO')])),
+                ('answer', models.CharField(max_length=1, choices=[('Y', 'YES'), ('N', 'NO')])),
             ],
             options={
             },
@@ -132,11 +132,11 @@ class Migration(migrations.Migration):
                 ('advisor_phone', models.CharField(max_length=15, blank=True)),
                 ('organizations', models.CharField(max_length=256)),
                 ('funding_already_received', models.DecimalField(default=0, max_digits=17, decimal_places=2)),
-                ('status', models.CharField(max_length=1, choices=[(b'S', b'SAVED'), (b'B', b'SUBMITTED'), (b'F', b'FUNDED'), (b'W', b'FOLLOWUP'), (b'O', b'OVER')])),
+                ('status', models.CharField(max_length=1, choices=[('S', 'SAVED'), ('', 'SUBMITTED'), ('F', 'FUNDED'), ('W', 'FOLLOWUP'), ('O', 'OVER')])),
                 ('created_at', models.DateTimeField(default=datetime.datetime.now)),
                 ('updated_at', models.DateTimeField(default=datetime.datetime.now)),
-                ('applied_funders', models.ManyToManyField(related_name=b'event_applied_funders', to='app.CFAUser')),
-                ('requester', models.ForeignKey(null=True, related_name=b'event_requester', to='app.CFAUser', on_delete=models.SET_NULL)),
+                ('applied_funders', models.ManyToManyField(related_name='event_applied_funders', to='app.CFAUser')),
+                ('requester', models.ForeignKey(null=True, related_name='event_requester', to='app.CFAUser', on_delete=models.SET_NULL)),
             ],
             options={
             },
@@ -194,7 +194,7 @@ class Migration(migrations.Migration):
             name='FunderConstraint',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('answer', models.CharField(max_length=1, choices=[(b'Y', b'YES'), (b'N', b'NO')])),
+                ('answer', models.CharField(max_length=1, choices=[('Y', 'YES'), ('N', 'NO')])),
                 ('funder', models.ForeignKey(to='app.CFAUser', on_delete=models.CASCADE)),
                 ('question', models.ForeignKey(to='app.EligibilityQuestion', on_delete=models.CASCADE)),
             ],
@@ -221,7 +221,7 @@ class Migration(migrations.Migration):
                 ('quantity', models.IntegerField()),
                 ('price_per_unit', models.DecimalField(max_digits=17, decimal_places=2)),
                 ('funding_already_received', models.DecimalField(max_digits=17, decimal_places=2)),
-                ('category', models.CharField(max_length=1, choices=[(b'H', b'Honoraria/Services'), (b'E', b'Equipment/Supplies'), (b'F', b'Food/Drinks'), (b'S', b'Facilities/Security'), (b'T', b'Travel/Conference'), (b'P', b'Photocopies/Printing/Publicity'), (b'O', b'Other')])),
+                ('category', models.CharField(max_length=1, choices=[('H', 'Honoraria/Services'), ('E', 'Equipment/Supplies'), ('F', 'Food/Drinks'), ('S', 'Facilities/Security'), ('T', 'Travel/Conference'), ('P', 'Photocopies/Printing/Publicity'), ('O', 'Other')])),
                 ('revenue', models.BooleanField()),
                 ('event', models.ForeignKey(to='app.Event', on_delete=models.CASCADE)),
             ],

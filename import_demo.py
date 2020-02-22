@@ -4,7 +4,7 @@ import os
 import sys
 from django.core.wsgi import get_wsgi_application
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'penncfa.settings.development'
 application = get_wsgi_application()
 
 from django.contrib.auth.models import User
@@ -13,7 +13,7 @@ from django.contrib.sites.models import Site
 from app.models import (FreeResponseQuestion, FollowupQuestion, CFAUser, EligibilityQuestion, FunderConstraint,
                         CommonFreeResponseQuestion, CommonFollowupQuestion)
 
-from settings import TEST_EMAIL
+from penncfa.settings.development import TEST_EMAIL
 
 
 QUESTIONS = [

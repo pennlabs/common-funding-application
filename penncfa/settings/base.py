@@ -5,7 +5,7 @@ import dj_database_url
 
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SITE_NAME = "https://penncfa.com"
 
 # Number of days a user has to activate his account after registration
@@ -40,14 +40,9 @@ MANAGERS = ADMINS
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_ROOT, 'cfa-db.sqlite3'),
-    }
+    "default": dj_database_url.config(default="sqlite:///" + os.path.join(BASE_DIR, "cfa-db.sqlite3"))
 }
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -85,7 +80,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -113,7 +108,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(PROJECT_ROOT, "templates"),
+            "penncfa/templates",
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -133,16 +128,15 @@ TEMPLATES = [
 ]
 
 MIDDLEWARE = (
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'penncfa.urls'
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -155,8 +149,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'app',
-    'registration',
-    'localflavor',
+    'django_registration',
     'raven.contrib.django.raven_compat',
     'django_extensions'
 )

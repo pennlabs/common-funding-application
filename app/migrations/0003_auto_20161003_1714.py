@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cfauser',
             name='osa_email',
-            field=models.EmailField(help_text=b'The email address for contacting OSA when an app is funded.', max_length=254, null=True, verbose_name=b'OSA Contact Email', blank=True),
+            field=models.EmailField(help_text='The email address for contacting OSA when an app is funded.', max_length=254, null=True, verbose_name=b'OSA Contact Email', blank=True),
         ),
         migrations.AlterField(
             model_name='event',

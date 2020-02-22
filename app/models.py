@@ -2,7 +2,6 @@ from hashlib import sha1
 import datetime
 
 from django.contrib.auth.models import User
-from localflavor.us.forms import USPhoneNumberField
 from django.core import mail
 from django.core.mail import EmailMessage
 from django.db import models
@@ -11,9 +10,7 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from settings import DEFAULT_FROM_EMAIL
-from settings import DEBUG
-from settings import SITE_NAME
+from django.conf import settings
 
 
 YES_OR_NO = (
@@ -33,7 +30,7 @@ def can_send_email():
     To check if in testing, we see if mail has an outbox, which is part of
     Django's testing tools.
     """
-    return not DEBUG or hasattr(mail, 'outbox')
+    return not settings.DEBUG or hasattr(mail, 'outbox')
 
 
 class CFAUser(models.Model):
@@ -51,7 +48,7 @@ class CFAUser(models.Model):
                                 related_name='profile',
                                 on_delete=models.CASCADE)
     user_type = models.CharField(max_length=1, choices=REQUESTER_OR_FUNDER)
-    phone = USPhoneNumberField()
+    phone = models.CharField(max_length=15)
     # The e-mail of the contact in OSA
     osa_email = models.EmailField('OSA Contact Email', null=True,
                                   help_text='The email address for contacting '
@@ -93,7 +90,7 @@ class CFAUser(models.Model):
         recipients = [str(self.osa_email)]
         headers = {'Reply-To': self.user.email}
         email = EmailMessage(subject, message,
-                             DEFAULT_FROM_EMAIL, recipients, headers)
+                             settings.DEFAULT_FROM_EMAIL, recipients, headers)
         if can_send_email():
             email.send()
 
@@ -108,9 +105,9 @@ class CFAUser(models.Model):
 
 
 @receiver(sender=User, signal=post_save)
-def create_profile(sender, instance, signal, created, **kwargs):
+def create_profile(sender, instance, signal, created, raw, **kwargs):
     """Create a CFAUser whenever a user is created."""
-    if created:
+    if created and not raw:
         CFAUser.objects.create(user=instance, user_type='R')
 
 
@@ -262,7 +259,7 @@ class Event(models.Model):
         assert funder.is_funder
         email = EmailMessage(subject=subject,
                              body=message,
-                             from_email=DEFAULT_FROM_EMAIL,
+                             from_email=settings.DEFAULT_FROM_EMAIL,
                              to=[funder.user.email],
                              cc=funder.cc_emails.values_list('email',
                                                              flat=True))
@@ -295,13 +292,13 @@ class Event(models.Model):
         Notify a requester that his event is over
         and he needs to answer followup questions
         """
-        context = {'event': self, 'SITE_NAME': SITE_NAME}
+        context = {'event': self, 'SITE_NAME': settings.SITE_NAME}
         subject = render_to_string('app/over_event_email_subject.txt',
                                    context=context).strip()
         html_content = render_to_string('app/over_event_email.txt', context=context)
         email = EmailMessage(subject=subject,
                              body=html_content,
-                             from_email=DEFAULT_FROM_EMAIL,
+                             from_email=settings.DEFAULT_FROM_EMAIL,
                              to=[self.requester.user.email],
                              cc=self.requester.cc_emails
                                     .values_list('email', flat=True))

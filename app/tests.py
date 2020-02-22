@@ -85,6 +85,7 @@ class TestRegistrationViews(TestCase):
 
 class TestLoginViews(TestCase):
     def setUp(self):
+        super().setUp()
         self.user = User.objects.create_user(username='philo',
                                              email='philo@upenn.edu',
                                              password='we<3literature')
@@ -115,6 +116,7 @@ class TestEvents(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
+        super().setUp()
         self.client.login(username='philo', password='we<3literature')
 
     def test_index(self):
@@ -138,7 +140,8 @@ class TestEvents(TestCase):
         with open('app/fixtures/event_edit.json', 'r') as f:
             resp = self.client.post('/new/', json.load(f))
         self.assertEqual(resp.status_code, 302)
-        resp = self.client.get('/2/')
+        event_id = Event.objects.get(name='Test').id
+        resp = self.client.get('/{}/'.format(event_id))
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'First Round')
 
@@ -157,7 +160,8 @@ class TestEvents(TestCase):
             data["name"] = unicode_string
             resp = self.client.post('/new/', data)
         self.assertEqual(resp.status_code, 302)
-        resp = self.client.get('/2/')
+        event_id = Event.objects.get(name=unicode_string).id
+        resp = self.client.get('/{}/'.format(event_id))
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, unicode_string)
 
@@ -193,6 +197,7 @@ class TestFunder(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
+        super().setUp()
         self.user = User.objects.get(username='philo')
         self.funder = create_funder()
         self.client.login(username='spec', password='we<3money$$$')
@@ -218,6 +223,7 @@ class TestShare(TestCase):
     key = "a96055ddf995cce98469884fa202d3c40032e039"
 
     def setUp(self):
+        super().setUp()
         self.event = Event.objects.get(pk=1)
 
     def test_event_secret_key(self):
@@ -252,6 +258,7 @@ class TestEmailFunders(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
+        super().setUp()
         self.funder = create_funder()
         self.event = Event.objects.get(pk=1)
         self.event.applied_funders.add(self.funder.profile)
@@ -272,10 +279,11 @@ class TestItemGrant(TestCase):
                                      quantity=10,
                                      price_per_unit=100,
                                      funding_already_received=0,
-                                     category="Honoraria/Services",
+                                     category="H",
                                      revenue=0)
 
     def setUp(self):
+        super().setUp()
         self.funder = create_funder()
         self.event = Event.objects.get(pk=1)
 
@@ -299,6 +307,7 @@ class TestHelpers(TestCase):
     fixtures = ['events.json']
 
     def setUp(self):
+        super().setUp()
         self.funder = create_funder()
         self.event = Event.objects.get(pk=1)
         self.item = TestItemGrant.create_item(self.event)
@@ -317,14 +326,18 @@ class TestHelpers(TestCase):
         self.assertEqual((None, self.item.id), item_tuple)
 
     def test_funders_grant_data_to_item(self):
+        self.assertEqual(self.item.grant_set.count(), 1)
+
         item_tuple = helpers.funders_grant_data_to_item(
-            self.item, self.funder.id)
+            self.item, self.funder.profile.id)
         self.assertEqual((50, self.item.id), item_tuple)
 
     def test_funder_item_data(self):
-        result = helpers.funder_item_data(self.item, [self.funder])
+        self.assertEqual(self.item.grant_set.count(), 1)
+
+        result = helpers.funder_item_data(self.item, [self.funder.profile])
         # funder data - funder id, amount = 50, grant id = 1
-        expected = (self.item, [(self.funder.id, 50, 1)])
+        expected = (self.item, [(self.funder.profile.id, 50, 1)])
         self.assertEqual(expected, result)
 
     def test_get_or_none_exists(self):
