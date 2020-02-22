@@ -140,7 +140,8 @@ class TestEvents(TestCase):
         with open('app/fixtures/event_edit.json', 'r') as f:
             resp = self.client.post('/new/', json.load(f))
         self.assertEqual(resp.status_code, 302)
-        resp = self.client.get('/2/')
+        event_id = Event.objects.get(name='Test').id
+        resp = self.client.get('/{}/'.format(event_id))
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'First Round')
 
@@ -159,7 +160,8 @@ class TestEvents(TestCase):
             data["name"] = unicode_string
             resp = self.client.post('/new/', data)
         self.assertEqual(resp.status_code, 302)
-        resp = self.client.get('/2/')
+        event_id = Event.objects.get(name=unicode_string).id
+        resp = self.client.get('/{}/'.format(event_id))
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, unicode_string)
 
