@@ -337,7 +337,7 @@ class TestHelpers(TestCase):
 
         result = helpers.funder_item_data(self.item, [self.funder.profile])
         # funder data - funder id, amount = 50, grant id = 1
-        expected = (self.item, [(self.funder.id, 50, 1)])
+        expected = (self.item, [(self.funder.profile.id, 50, 1)])
         self.assertEqual(expected, result)
 
     def test_get_or_none_exists(self):
