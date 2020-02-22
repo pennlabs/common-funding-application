@@ -326,11 +326,15 @@ class TestHelpers(TestCase):
         self.assertEqual((None, self.item.id), item_tuple)
 
     def test_funders_grant_data_to_item(self):
+        self.assertEqual(self.item.grant_set.count(), 1)
+
         item_tuple = helpers.funders_grant_data_to_item(
             self.item, self.funder.id)
         self.assertEqual((50, self.item.id), item_tuple)
 
     def test_funder_item_data(self):
+        self.assertEqual(self.item.grant_set.count(), 1)
+
         result = helpers.funder_item_data(self.item, [self.funder])
         # funder data - funder id, amount = 50, grant id = 1
         expected = (self.item, [(self.funder.id, 50, 1)])
