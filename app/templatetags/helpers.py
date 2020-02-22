@@ -3,7 +3,7 @@ from app.models import Grant
 
 def funders_grant_data_to_item(item, funder):
     grant = Grant.objects.filter(item=item, funder=funder)
-    return (grant[0].amount, item.id) if grant else (None, item.id)
+    return (float(grant.first().amount), item.id) if grant else (None, item.id)
 
 
 def funder_item_data(item, funders):
