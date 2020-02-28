@@ -11,9 +11,9 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Install `mysql_config` (`apt-get install libmysqlclient-dev`)
 
-* Create a virtualenv (`virtualenv env`) and activate it (`source env/bin/activate`). You will need to re-activate the virtualenv in every new terminal you use.
+* Install python dependencies (`pipenv install --dev`)
 
-* Install python dependencies (`pipenv install -d`)
+* Enter the python virtual environment (`pipenv shell`)
 
 * Migrate database (`python manage.py migrate`)
 
