@@ -18,3 +18,5 @@ uwsgi = "*"
 codecov = "*"
 unittest-xml-reporting = "*"
 
+[requires]
+python_version = "3"
