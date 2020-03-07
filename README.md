@@ -9,7 +9,7 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 ## Local Backend Setup
 * Install [pip](https://pip.pypa.io/en/latest/installing/)
 
-* Install `mysql_config` (`apt-get install libmysqlclient-dev`)
+* Install `mysql_config` (Ubuntu: `apt install libmysqlclient-dev` / MacOS: `brew install mysql-connector-c`)
 
 * Install python dependencies (`pipenv install --dev`)
 
