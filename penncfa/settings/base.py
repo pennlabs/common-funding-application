@@ -12,16 +12,10 @@ SITE_NAME = "https://penncfa.com"
 ACCOUNT_ACTIVATION_DAYS = 7
 
 # Email address to use for automated registration emails
-DEFAULT_FROM_EMAIL = "cfa-bot@penncfa.com"
+DEFAULT_FROM_EMAIL = "Common Funding Application <contact@penncfa.com>"
 # The e-mail assigned to all the users in `import_demo`. For testing only.
 TEST_EMAIL = 'cfa-test@penncfa.com'
 
-# Email client info, for registration and notification emails
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = os.getenv("SENDGRID_USERNAME")
-EMAIL_HOST_PASSWORD = os.getenv("SENDGRID_PASSWORD")
-EMAIL_USE_TLS = True
 
 URL_ROOT = "/"
 LOGIN_URL = URL_ROOT
