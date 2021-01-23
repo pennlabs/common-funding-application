@@ -1,9 +1,7 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
-
 
 [packages]
 dj-database-url = "*"
@@ -17,6 +15,7 @@ uwsgi = "*"
 [dev-packages]
 codecov = "*"
 unittest-xml-reporting = "*"
+tblib = "*"
 
 [requires]
 python_version = "3"
