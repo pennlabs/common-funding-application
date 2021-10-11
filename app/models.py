@@ -60,6 +60,8 @@ class CFAUser(models.Model):
     email_subject = models.TextField(blank=True)
     send_email_template = models.BooleanField(default=False)
 
+    map(lambda x: x.name, user.groups.all())
+
     def __str__(self):
         if self.is_funder:
             # some funders might not have funder_names
