@@ -234,9 +234,11 @@
     {% empty %}
     There are no comments yet.
     {% endfor %}
-    {% if user.profile.is_funder %}
+    {% if user and user.profile.is_funder %}
     <p>Specify any conditions and stipulations here.</p>
-    <textarea name="new-comment" class="span8 form-control"></textarea>
+    {% else %}
+    <p>Leave a comment for your funder here.</p>
     {% endif %}
+    <textarea name="new-comment" class="span8 form-control"></textarea> 
   </div>
 </section>
