@@ -247,6 +247,7 @@ def event_new(request):
 @requester_only
 @require_http_methods(["GET", "POST"])
 def event_edit(request, event_id):
+    user = request.user
     event = Event.objects.get(pk=event_id)
     if event.over:
         return redirect('event-show', event_id)
@@ -254,6 +255,11 @@ def event_edit(request, event_id):
         form = EventForm(request.POST, instance=event)
         if form.is_valid():
             try:
+                if request.POST.get('new-comment'):
+                    messages.success(request, "Saved comment!")
+                    comment = Comment(comment=request.POST['new-comment'],
+                                funder=user.profile, event=event)
+                    comment.save()
                 with transaction.atomic():
                     event = form.save()
                     save_from_form(event, request.POST)
@@ -279,6 +285,11 @@ def event_show(request, event_id):
     user = request.user
     event = Event.objects.get(pk=event_id)
     if request.method == 'POST':  # TODO: should really be PUT
+        if request.POST.get('new-comment'):
+                messages.success(request, "Saved comment!")
+                comment = Comment(comment=request.POST['new-comment'],
+                                  funder=user.profile, event=event)
+                comment.save()
         if user.profile.is_funder:
             grants = []
             for item in event.item_set.all():
@@ -312,11 +323,6 @@ def event_show(request, event_id):
                     user.profile.notify_osa(event, grants)
                 except smtplib.SMTPException:
                     pass
-            if request.POST.get('new-comment'):
-                messages.success(request, "Saved comment!")
-                comment = Comment(comment=request.POST['new-comment'],
-                                  funder=user.profile, event=event)
-                comment.save()
             return redirect('event-show', event_id)
         else:
             return redirect(EVENTS_HOME)
