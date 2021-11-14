@@ -234,7 +234,7 @@
     {% empty %}
     There are no comments yet.
     {% endfor %}
-    {% if user == event.requester.user %}
+    {% if user == event.requester.user or user.profile.is_funder %}
     {% if user and user.profile.is_funder %}
     <p>Specify any conditions and stipulations here.</p>
     {% else %}
