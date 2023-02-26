@@ -200,6 +200,7 @@ def events(request):
     elif cfauser.is_requester:
         app = app.filter(requester=cfauser)
     else:  # cfauser.is_funder
+        app = app.exclude(status="S")
         app = cfauser.event_applied_funders.order_by(sort_by)
 
     if len(status_val) != 0:
