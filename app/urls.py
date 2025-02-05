@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^(\d+)/destroy/$', views.event_destroy, name='event-destroy'),
     # url(r'^(\d+)/download/$', views.event_download, name='event-download'),
     url(r'^funders/(\d+)/edit/$', views.funder_edit, name='funder-edit'),
+    url(r'^health/', views.HealthView.as_view(), name='health'),
 ]

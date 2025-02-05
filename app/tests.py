@@ -6,6 +6,7 @@ import json
 from django.test import TestCase
 from unittest import skip
 from django.core import mail
+from django.urls import reverse
 
 from django.contrib.auth.models import User
 from .models import CFAUser, Event, Grant
@@ -345,3 +346,9 @@ class TestHelpers(TestCase):
 
     def test_get_or_none_does_not_exist(self):
         self.assertEqual(None, helpers.get_or_none(Event, pk=2))
+
+class HealthTestCase(TestCase):
+    def test_health(self):
+        resp = self.client.get("/health/")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.data, {"message": "OK"})

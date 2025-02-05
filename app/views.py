@@ -3,6 +3,9 @@ import datetime
 from datetime import timedelta
 import json
 import re
+from http import HTTPStatus
+from django.http import JsonResponse
+from django.views.generic import View
 
 import smtplib
 from django.contrib.auth.views import LoginView
@@ -463,3 +466,23 @@ def funder_edit(request, user_id):
         )
     else:
         return HttpResponseNotAllowed(["GET"])
+
+class HealthView(View):
+    def get(self, request):
+        """
+        Health check endpoint to confirm the backend is running.
+        ---
+        summary: Health Check
+        responses:
+            "200":
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                message:
+                                    type: string
+                                    enum: ["OK"]
+        ---
+        """
+        return JsonResponse({"message": "OK"}, status=HTTPStatus.OK) 
