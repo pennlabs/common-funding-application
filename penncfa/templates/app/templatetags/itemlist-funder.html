@@ -13,7 +13,7 @@
   </h3>
 </div> 
 {% endif %}
-<table class='table table-striped' id='item-table'>
+<table class="table table-striped" id="item-table">
   <thead>
     {% if items_data %}
     <tr>
@@ -24,43 +24,41 @@
   </thead>
   <tbody>
     {% for item, grant_datas in items_data %}
-    <tr class='{% if is_revenue %} revenue-item {% else %} expense-item {% endif %}'>
+    <tr class="{% if is_revenue %}revenue-item{% else %}expense-item{% endif %}">
       <td>{{ item.name }}</td>
       <td>{{ item.get_category_display }}</td>
       <td>{{ item.quantity }}</td>
       <td>${{ item.price_per_unit }}</td>
       <td>
-        $<span class="item-amount">{{item.total}}</span>
+        $<span class="item-amount">{{ item.total }}</span>
       </td>
-
       {% if not is_revenue %}
       <td>
         $<span class="item-received">{{ item.total_received }}</span>
       </td>
       {% endif %}
-
       {% for funder_id, grant_amount, item_id in grant_datas %}
-      {% ifequal funder_id current_funder %}
-        <td style="min-width:125px">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">$</span>
+        {% if funder_id == current_funder %}
+          <td style="min-width:125px">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <input class="funding-given form-control" name="item_{{ item_id }}"
+                     type="text"
+                     {% if grant_amount != None %}
+                     value="{{ grant_amount }}"
+                     {% endif %}
+                     pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?">
             </div>
-            <input class="funding-given form-control" name="item_{{ item_id }}"
-              type='text'
-              {% ifnotequal grant_amount None %}
-              value="{{ grant_amount }}"
-              {% endifnotequal %}
-              pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
-          </div>
-        </td>
-      {% else %}
-        {% ifnotequal grant_amount None %}
-          <td>${{ grant_amount }}</td>
+          </td>
+        {% else %}
+          {% if grant_amount != None %}
+            <td>${{ grant_amount }}</td>
           {% else %}
-          <td><em>pending</em></td>
-        {% endifnotequal %}
-      {% endifequal %}
+            <td><em>pending</em></td>
+          {% endif %}
+        {% endif %}
       {% endfor %}
     </tr>
     {% endfor %}

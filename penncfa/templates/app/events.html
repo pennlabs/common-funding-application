@@ -50,34 +50,22 @@
   </form>
   <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link remove-page
-      {% ifequal status ""%} active {% endifequal %}
-      " href="{% relative_url status='' page=1 %}">All</a>
+      <a class="nav-link remove-page {% if status == "" %} active {% endif %}" href="{% relative_url status='' page=1 %}">All</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link remove-page
-      {% ifequal status "B"%} active {% endifequal %}
-      " href="{% relative_url status='B' page=1 %}">Submitted</a>
+      <a class="nav-link remove-page {% if status == "B" %} active {% endif %}" href="{% relative_url status='B' page=1 %}">Submitted</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link remove-page
-      {% ifequal status "W"%} active {% endifequal %}
-      " href="{% relative_url status='W' page=1 %}">Followup</a>
+      <a class="nav-link remove-page {% if status == "W" %} active {% endif %}" href="{% relative_url status='W' page=1 %}">Followup</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link remove-page
-      {% ifequal status "O"%} active {% endifequal %}
-      " href="{% relative_url status='O' page=1 %}">Over</a>
+      <a class="nav-link remove-page {% if status == "O" %} active {% endif %}" href="{% relative_url status='O' page=1 %}">Over</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link remove-page
-      {% ifequal status "S"%} active {% endifequal %}
-      " href="{% relative_url status='S' page=1 %}">Saved</a>
+      <a class="nav-link remove-page {% if status == "S" %} active {% endif %}" href="{% relative_url status='S' page=1 %}">Saved</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link remove-page
-      {% ifequal status "F"%} active {% endifequal %}
-      " href="{% relative_url status='F' page=1 %}">Funded/In Progress</a>
+      <a class="nav-link remove-page {% if status == "F" %} active {% endif %}" href="{% relative_url status='F' page=1 %}">Funded/In Progress</a>
     </li>
   </ul>
   <table id="events" class="table table-hover showAll">
@@ -114,9 +102,9 @@
             <tbody>
               {% for funder, amount in app.amounts.items %}
               <tr>
-                <td>{{funder}}</td>
+                <td>{{ funder }}</td>
                 {% if amount != None %}
-                <td>${{amount}}</td>
+                <td>${{ amount }}</td>
                 {% else %}
                 <td class="pending">pending</td>
                 {% endif %}
@@ -197,10 +185,10 @@
     {% for i in page_range %}
     {% if i == page_obj.number %}
     <li class="page-item active">
-      <a class="page-link" href="{% relative_url page=i %}">{{i}}</a>
+      <a class="page-link" href="{% relative_url page=i %}">{{ i }}</a>
     </li>
     {% else %}
-    <li class="page-item"><a class="page-link" href="{% relative_url page=i %}">{{i}}</a></li>
+    <li class="page-item"><a class="page-link" href="{% relative_url page=i %}">{{ i }}</a></li>
     {% endif %}
     {% endfor %}
 

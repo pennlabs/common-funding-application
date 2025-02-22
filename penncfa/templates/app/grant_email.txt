@@ -1,4 +1,4 @@
-{{grant.funder}} has granted the following to {{event.name}}:
+{{ grant.funder }} has granted the following to {{ event.name }}:
 {% for grant in grants %}
-- ${% ifequal grant.amount None %} {{0}} {% else %} {{grant.amount}} {% endifequal %} for {{grant.item}}
+- ${% if grant.amount == None %}0{% else %}{{ grant.amount }}{% endif %} for {{ grant.item }}
 {% endfor %}
