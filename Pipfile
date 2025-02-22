@@ -16,6 +16,7 @@ uwsgi = "*"
 codecov = "*"
 unittest-xml-reporting = "*"
 tblib = "*"
+coverage = "*"
 
 [requires]
 python_version = "3"
