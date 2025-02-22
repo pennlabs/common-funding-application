@@ -11,6 +11,7 @@ django-registration = "*"
 psycopg2 = "*"
 raven = "*"
 uwsgi = "*"
+coverage = "*"
 
 [dev-packages]
 codecov = "*"
