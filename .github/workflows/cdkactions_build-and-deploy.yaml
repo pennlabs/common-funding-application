@@ -18,7 +18,6 @@ jobs:
           cd .
           pip install pipenv
           pipenv install --deploy --dev
-          pipenv install coverage # adding for debugging purposes
       - name: Test (run in parallel)
         run: |-
           cd .
