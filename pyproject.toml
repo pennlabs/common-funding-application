@@ -1,0 +1,22 @@
+[project]
+name = "common-funding-application"
+version = "1.0.0"
+requires-python = ">=3.12"
+dependencies = [
+    "dj-database-url",
+    "Django",
+    "django-extensions",
+    "django-registration",
+    "psycopg2",
+    "raven",
+    "uwsgi",
+]
+
+[dependency-groups]
+dev = [
+    "codecov",
+    "unittest-xml-reporting",
+    "tblib",
+    "django>=5.1.6",
+]
+
