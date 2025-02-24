@@ -26,7 +26,7 @@ jobs:
           cd .
           uv run codecov --root $ROOT --flags backend
     container:
-      image: shroominic/python-uv:3.12
+      image: ghcr.io/astral-sh/uv:python3.12-alpine
     env:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
     services:
