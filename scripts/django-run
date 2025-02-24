@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Django Migrate
+uv run /app/manage.py migrate --noinput
+
+# Switch to project folder
+cd /app/
+
+# Run uwsgi
+uwsgi --ini ./setup.cfg --listen 1000
