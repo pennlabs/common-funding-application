@@ -11,5 +11,7 @@ RUN uv sync --frozen
 ENV DJANGO_SETTINGS_MODULE penncfa.settings.production
 ENV SECRET_KEY 'temporary key just to build the docker image'
 
-# Implicitly sync dependencies and collect static files
+COPY ./scripts/asgi-run /usr/local/bin/
+
+# Collect static files
 RUN uv run /app/manage.py collectstatic --noinput

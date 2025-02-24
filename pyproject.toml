@@ -10,6 +10,8 @@ dependencies = [
     "psycopg2",
     "raven",
     "uwsgi",
+    "uvicorn[standard]",
+    "gunicorn",
 ]
 
 [dependency-groups]
