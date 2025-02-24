@@ -1,4 +1,4 @@
-FROM ghcr.io/astral-sh/uv:python3.12-bookworm
+FROM ghcr.io/astral-sh/uv:0.6.2-python3.12-bookworm
 
 LABEL maintainer="Penn Labs"
 
