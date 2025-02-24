@@ -1,12 +1,12 @@
-FROM shroominic/python-uv:3.12
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm
 
 LABEL maintainer="Penn Labs"
 
-# Copy project dependencies
-COPY uv.lock /app/
-
 # Copy project files
 COPY . /app/
+
+WORKDIR /app
+RUN uv sync --frozen
 
 ENV DJANGO_SETTINGS_MODULE penncfa.settings.production
 ENV SECRET_KEY 'temporary key just to build the docker image'
