@@ -97,8 +97,6 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = os.getenv("SECRET_KEY", 'cfa-secret-key')
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 # New Django TEMPLATE settings that supersedes all
 TEMPLATES = [
     {

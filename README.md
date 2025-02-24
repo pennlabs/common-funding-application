@@ -7,27 +7,27 @@ Common Funding Application
 The [Common Funding Application](https://penncfa.com) is an online application that allows student groups and organizations to request funding from various funding sources at the [University of Pennsylvania](http://www.upenn.edu).
 
 ## Local Backend Setup
-* Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
+* Install [pip](https://pip.pypa.io/en/latest/installing/)
 
 * Install `mysql_config` (Ubuntu: `apt install libmysqlclient-dev` / MacOS: `brew install mysql-connector-c`)
 
-* Install python dependencies (`uv sync`)
+* Install python dependencies (`pipenv install --dev`)
 
-* Migrate database (`uv run manage.py migrate`)
+* Enter the python virtual environment (`pipenv shell`)
 
-* Import dummy data (`uv run import_demo.py`)
+* Migrate database (`python manage.py migrate`)
 
-* Run the server (`uv run manage.py runserver`)
+* Import dummy data (`python import_demo.py`)
+
+* Run the server (`python manage.py runserver`)
 
 * Navigate to the [app](http://localhost:8000/)
 
-* Example login credntials: `philo / philo` for requester, `spectrum / spectrum` for funder
-
 ## Front-End Setup
 
-* Install [Bun](https://bun.sh/docs/installation)
+* Install [node.js](http://nodejs.org/)
 
-* Install [Mocha](https://mochajs.org/#installation) (`bun install -g mocha`)
+* Install [Mocha](https://mochajs.org/#installation) (`sudo npm install -g mocha`)
 
 * Run tests (`mocha app/static/test/`)
 
@@ -35,9 +35,9 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 
 * Edit models.py
 
-* `uv run manage.py makemigrations`
+* `python manage.py makemigrations`
 
-* `uv run manage.py migrate`
+* `python manage.py migrate`
 
 ## Environment Variables
 
