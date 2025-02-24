@@ -1,12 +1,9 @@
-FROM pennlabs/django-base:3cadd22f7ad51359c5e86b6a3cba2fc155c1c6ab
+FROM shroominic/python-uv:3.12
 
 LABEL maintainer="Penn Labs"
 
 # Copy project dependencies
-COPY Pipfile* /app/
-
-# Install project dependencies
-RUN pipenv install --system
+COPY uv.lock /app/
 
 # Copy project files
 COPY . /app/
@@ -14,5 +11,5 @@ COPY . /app/
 ENV DJANGO_SETTINGS_MODULE penncfa.settings.production
 ENV SECRET_KEY 'temporary key just to build the docker image'
 
-# Collect static files
-RUN python3 /app/manage.py collectstatic --noinput
+# Implicitly sync dependencies and collect static files
+RUN uv run /app/manage.py collectstatic --noinput
