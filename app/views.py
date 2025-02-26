@@ -96,6 +96,7 @@ def admin_only(view):
             return redirect(EVENTS_HOME)
 
     return protected_view
+
 def save_from_form(event, POST):
     """Save an event from form data."""
     # save items
