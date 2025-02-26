@@ -42,7 +42,7 @@ from django.db.models import Q
 EVENTS_HOME = "events"
 
 
-def authorization_required(view, require_event=True):
+def authorization_required(view):
     """Ensure only a permitted user can access an event.
     A user is permitted if:
       * They requested the event
@@ -70,7 +70,7 @@ def authorization_required(view, require_event=True):
             else:
                 return redirect(EVENTS_HOME)
             
-    return protected_view if require_event else lambda request: request.user.is_staff
+    return protected_view
 
 
 def requester_only(view):
@@ -86,7 +86,16 @@ def requester_only(view):
 
     return protected_view
 
+def admin_only(view): 
+    """Ensure only admins can access a page."""
 
+    def protected_view(request, *args, **kwargs):
+        if request.user.is_staff:
+            return view(request, *args, **kwargs)
+        else:
+            return redirect(EVENTS_HOME)
+
+    return protected_view
 def save_from_form(event, POST):
     """Save an event from form data."""
     # save items
@@ -467,10 +476,9 @@ def funder_edit(request, user_id):
     else:
         return HttpResponseNotAllowed(["GET"])
 
-@authorization_required(require_event=False)
+@admin_only
 @require_http_methods(["GET"])
-@authorization_required(require_event=False)
-def export_funding_requests(request):
+def export_requests(request):
     """
     Export funding requests submitted in the last 2 years to a CSV file.
     """
@@ -493,7 +501,7 @@ def export_funding_requests(request):
         'Funding Already Received', 'Status', 'Created At', 'Updated At',
         'Total Funds Already Received', 'Total Funds Granted', 'Total Funds Received',
         'Total Expense', 'Total Additional Funds', 'Total Remaining',
-        'Secret Key', 'Applied Funders'
+        'Applied Funders'
     ])
 
     for event in qs:
@@ -542,7 +550,6 @@ def export_funding_requests(request):
             total_expense,
             total_additional_funds,
             total_remaining,
-            event.secret_key,
             applied_funders,
         ])
 
