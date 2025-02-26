@@ -11,5 +11,5 @@ urlpatterns = [
     re_path(r'^(\d+)/destroy/$', views.event_destroy, name='event-destroy'),
     # re_path(r'^(\d+)/download/$', views.event_download, name='event-download'),
     re_path(r'^funders/(\d+)/edit/$', views.funder_edit, name='funder-edit'),
-    re_path(r'^export-funding-requests/$', views.export_funding_requests, name='export-funding-requests'),
+    re_path(r'^export-requests/$', views.export_requests, name='export-requests'),
 ]
