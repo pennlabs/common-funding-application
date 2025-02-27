@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
 import csv
 import datetime
-
-from django.test import TestCase
+import json
 from unittest import skip
-from django.core import mail
 
 from django.contrib.auth.models import User
+from django.core import mail
+from django.test import TestCase
+
 from .models import CFAUser, Event, Grant
 from .templatetags import helpers
 

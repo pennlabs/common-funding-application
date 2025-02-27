@@ -1,43 +1,40 @@
-from decimal import Decimal
+import csv
 import datetime
-from datetime import timedelta
+import io
 import json
 import re
-
 import smtplib
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
+from datetime import timedelta
+from decimal import Decimal
+
 from django.contrib import messages
-from django.http import HttpResponse, HttpResponseNotAllowed
-from django.db import transaction, IntegrityError
-from django.shortcuts import redirect, render
-from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from django.core.validators import validate_email
-
-import io
-import csv
-
-from .models import (
-    Event,
-    Grant,
-    Comment,
-    User,
-    FreeResponseQuestion,
-    EligibilityQuestion,
-    Item,
-    CATEGORIES,
-    CommonFollowupQuestion,
-    FollowupQuestion,
-    CommonFreeResponseQuestion,
-    CFAUser,
-)
-from .forms import EventForm
-
+from django.db import IntegrityError, transaction
 from django.db.models import Q
+from django.http import HttpResponse, HttpResponseNotAllowed
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_http_methods
+
+from .forms import EventForm
+from .models import (
+    CATEGORIES,
+    CFAUser,
+    Comment,
+    CommonFollowupQuestion,
+    CommonFreeResponseQuestion,
+    EligibilityQuestion,
+    Event,
+    FollowupQuestion,
+    FreeResponseQuestion,
+    Grant,
+    Item,
+    User,
+)
+
 
 EVENTS_HOME = "events"
 
@@ -272,12 +269,18 @@ def event_new(request):
             except IntegrityError:
                 messages.error(
                     request,
-                    "Please make sure your event name, date, and requester ID are UNIQUE!",
+                    (
+                        "Please make sure your event name, date, and requester ID"
+                        "are UNIQUE!"
+                    ),
                 )
             except ValueError:
                 messages.error(
                     request,
-                    "Please make sure you have entered valid values for all numeric fields!",
+                    (
+                        "Please make sure you have entered valid values"
+                        "for all numeric fields!"
+                    ),
                 )
         else:
             messages.error(request, "You have one or more errors in your application.")
@@ -311,12 +314,18 @@ def event_edit(request, event_id):
             except IntegrityError:
                 messages.error(
                     request,
-                    "Please make sure your event name, date, and requester ID are UNIQUE!",
+                    (
+                        "Please make sure your event name, date, and requester ID"
+                        "are UNIQUE!"
+                    ),
                 )
             except ValueError:
                 messages.error(
                     request,
-                    "Please make sure you have entered valid values for all numeric fields!",
+                    (
+                        "Please make sure you have entered valid values"
+                        "for all numeric fields!"
+                    ),
                 )
         else:
             messages.error(

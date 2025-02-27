@@ -1,6 +1,7 @@
-from hashlib import sha1
 import datetime
+from hashlib import sha1
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import mail
 from django.core.mail import EmailMessage
@@ -9,8 +10,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.urls import reverse
-
-from django.conf import settings
 
 
 YES_OR_NO = (

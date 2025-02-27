@@ -1,7 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import (
     PasswordChangeForm as BasePasswordChangeForm,
+)
+from django.contrib.auth.forms import (
     PasswordResetForm as BasePasswordResetForm,
+)
+from django.contrib.auth.forms import (
     SetPasswordForm as BaseSetPasswordForm,
 )
 from django.core.validators import EmailValidator
@@ -104,7 +108,9 @@ class EventForm(forms.ModelForm):
             "contact_name": "Primary contact's name",
             "contact_email": "Primary contact's email address",
             "contact_phone": "Primary contact's phone number",
-            "anticipated_attendance": "Anticipated number of people attending the event",
+            "anticipated_attendance": (
+                "Anticipated number of people attending the event"
+            ),
             "advisor_email": "Advisor's email address",
             "advisor_phone": "Advisor's phone number",
             "organizations": "Organization(s) involved with the event",

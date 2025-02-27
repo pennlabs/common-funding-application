@@ -1,6 +1,8 @@
 # Django settings for the Common Funding Application project.
 import os
+
 import dj_database_url
+
 
 DEBUG = os.getenv("DEBUG", "True") == "True"
 

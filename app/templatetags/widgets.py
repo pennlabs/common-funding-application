@@ -1,22 +1,24 @@
-from app.templatetags.helpers import funder_item_data, get_or_none
-from app.models import (
-    CATEGORIES,
-    FreeResponseAnswer,
-    FreeResponseQuestion,
-    EligibilityAnswer,
-    EligibilityQuestion,
-    CommonFreeResponseAnswer,
-    CommonFreeResponseQuestion,
-    CFAUser,
-    CommonFollowupAnswer,
-    CommonFollowupQuestion,
-    FollowupAnswer,
-    FollowupQuestion,
-)
 from collections import namedtuple
 
 from django import template
 from django.template.loader import render_to_string
+
+from app.models import (
+    CATEGORIES,
+    CFAUser,
+    CommonFollowupAnswer,
+    CommonFollowupQuestion,
+    CommonFreeResponseAnswer,
+    CommonFreeResponseQuestion,
+    EligibilityAnswer,
+    EligibilityQuestion,
+    FollowupAnswer,
+    FollowupQuestion,
+    FreeResponseAnswer,
+    FreeResponseQuestion,
+)
+from app.templatetags.helpers import funder_item_data, get_or_none
+
 
 try:
     from urllib.parse import urlencode

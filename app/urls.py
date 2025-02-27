@@ -2,6 +2,7 @@ from django.urls import re_path
 
 from . import views
 
+
 urlpatterns = [
     re_path(r"^$", views.events, name="events"),
     # re_path(r'^old/$', views.events_old, name='old-events'),

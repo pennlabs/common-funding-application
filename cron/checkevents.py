@@ -4,7 +4,9 @@
 import os
 import sys
 from datetime import date, timedelta
+
 from app.models import Event
+
 
 PROJECT_ROOT = os.path.realpath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 sys.path.append(PROJECT_ROOT)

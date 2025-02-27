@@ -1,17 +1,17 @@
-from django.urls import include, re_path
 from django.contrib import admin
-
-from django_registration.backends.activation.views import RegistrationView
 from django.contrib.auth.views import (
     PasswordChangeView,
-    PasswordResetView,
-    PasswordResetConfirmView,
     PasswordResetCompleteView,
+    PasswordResetConfirmView,
+    PasswordResetView,
 )
+from django.urls import include, re_path
+from django_registration.backends.activation.views import RegistrationView
+
 from app.forms import (
-    RegistrationForm,
     PasswordChangeForm,
     PasswordResetForm,
+    RegistrationForm,
     SetPasswordForm,
 )
 
