@@ -12,6 +12,7 @@ dependencies = [
     "uwsgi",
     "uvicorn[standard]",
     "gunicorn",
+    "ruff>=0.9.7",
 ]
 
 [dependency-groups]

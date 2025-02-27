@@ -1,23 +1,31 @@
 from django.contrib import admin
 
-from .models import (CFAUser, CommonFreeResponseQuestion, EligibilityQuestion,
-                     FreeResponseQuestion, FunderConstraint, Event,
-                     CommonFollowupQuestion, FollowupQuestion, CCEmail)
+from .models import (
+    CFAUser,
+    CommonFreeResponseQuestion,
+    EligibilityQuestion,
+    FreeResponseQuestion,
+    FunderConstraint,
+    Event,
+    CommonFollowupQuestion,
+    FollowupQuestion,
+    CCEmail,
+)
 
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import Group
 
 
 class CFAUserAdmin(admin.ModelAdmin):
-    filter_horizontal = ('cc_emails',)
-    search_fields = ('user__username',)
-    list_display = ('user', 'user_type', 'osa_email')
-    list_filter = ('user_type',)
+    filter_horizontal = ("cc_emails",)
+    search_fields = ("user__username",)
+    list_display = ("user", "user_type", "osa_email")
+    list_filter = ("user_type",)
 
 
 class EventAdmin(admin.ModelAdmin):
-    search_fields = ('name', 'requester__user__username')
-    list_filter = ('status', 'created_at')
+    search_fields = ("name", "requester__user__username")
+    list_filter = ("status", "created_at")
 
 
 admin.site.unregister(Group)

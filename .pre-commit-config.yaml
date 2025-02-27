@@ -1,7 +1,18 @@
 repos:
-  - repo: https://github.com/pennlabs/pre-commit-hooks
-    rev: stable
+  - repo: local
     hooks:
-        - id: black
-        - id: isort
-        - id: flake8
+      - id: ruff-format
+        name: Ruff Formatter
+        entry: uv run ruff format .
+        language: python
+        types: [python]
+        require_serial: true
+        files: /
+        pass_filenames: false
+      - id: ruff-lint-fix
+        name: Ruff Lint (Apply Fixes)
+        entry: uv run ruff check . --fix
+        language: python
+        types: [python]
+        require_serial: true
+        files: /

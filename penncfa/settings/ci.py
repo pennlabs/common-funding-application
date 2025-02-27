@@ -1,4 +1,4 @@
-from penncfa.settings.base import *
+from penncfa.settings.base import *  # noqa
 
 
 TEST_RUNNER = "xmlrunner.extra.djangotestrunner.XMLTestRunner"

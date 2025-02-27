@@ -14,13 +14,13 @@ from django.conf import settings
 
 
 YES_OR_NO = (
-    ('Y', 'YES'),
-    ('N', 'NO'),
+    ("Y", "YES"),
+    ("N", "NO"),
 )
 
 REQUESTER_OR_FUNDER = (
-    ('R', 'REQUESTER'),
-    ('F', 'FUNDER'),
+    ("R", "REQUESTER"),
+    ("F", "FUNDER"),
 )
 
 
@@ -30,7 +30,7 @@ def can_send_email():
     To check if in testing, we see if mail has an outbox, which is part of
     Django's testing tools.
     """
-    return not settings.DEBUG or hasattr(mail, 'outbox')
+    return not settings.DEBUG or hasattr(mail, "outbox")
 
 
 class CFAUser(models.Model):
@@ -42,18 +42,23 @@ class CFAUser(models.Model):
     >>> cfau.is_requester
     True
     """
-    funder_name = models.CharField(max_length=256, default='', blank=True)
-    user = models.OneToOneField(User, help_text='You must first create a user '
-                                'before adding them to the CFA.',
-                                related_name='profile',
-                                on_delete=models.CASCADE)
+
+    funder_name = models.CharField(max_length=256, default="", blank=True)
+    user = models.OneToOneField(
+        User,
+        help_text="You must first create a user before adding them to the CFA.",
+        related_name="profile",
+        on_delete=models.CASCADE,
+    )
     user_type = models.CharField(max_length=1, choices=REQUESTER_OR_FUNDER)
     phone = models.CharField(max_length=15)
     # The e-mail of the contact in OSA
-    osa_email = models.EmailField('OSA Contact Email', null=True,
-                                  help_text='The email address for contacting '
-                                  'OSA when an app is funded.',
-                                  blank=True)
+    osa_email = models.EmailField(
+        "OSA Contact Email",
+        null=True,
+        help_text="The email address for contacting OSA when an app is funded.",
+        blank=True,
+    )
     cc_emails = models.ManyToManyField("CCEmail", blank=True)
     mission_statement = models.TextField(blank=True)
     email_template = models.TextField(blank=True)
@@ -69,7 +74,7 @@ class CFAUser(models.Model):
 
     @property
     def is_funder(self):
-        return self.user_type == 'F'
+        return self.user_type == "F"
 
     @property
     def is_requester(self):
@@ -83,41 +88,40 @@ class CFAUser(models.Model):
     def notify_osa(self, event, grants):
         """Notify OSA that an event has been funded."""
         assert self.is_funder
-        context = {'funder': self, 'event': event, 'grants': grants}
-        subject =\
-            render_to_string('app/osa_email_subject.txt', context=context).strip()
-        message = render_to_string('app/osa_email.txt', context=context)
+        context = {"funder": self, "event": event, "grants": grants}
+        subject = render_to_string("app/osa_email_subject.txt", context=context).strip()
+        message = render_to_string("app/osa_email.txt", context=context)
         recipients = [str(self.osa_email)]
-        headers = {'Reply-To': self.user.email}
-        email = EmailMessage(subject, message,
-                             settings.DEFAULT_FROM_EMAIL, recipients, headers)
+        headers = {"Reply-To": self.user.email}
+        email = EmailMessage(
+            subject, message, settings.DEFAULT_FROM_EMAIL, recipients, headers
+        )
         if can_send_email():
             email.send()
 
     def required_eligibility_question_ids(self):
-        question_ids =\
-            self.funderconstraint_set.values_list("question_id", flat=True)
-        return ','.join(str(id) for id in question_ids)
+        question_ids = self.funderconstraint_set.values_list("question_id", flat=True)
+        return ",".join(str(id) for id in question_ids)
 
     class Meta:
-        verbose_name = 'CFA Users'
-        verbose_name_plural = 'CFA Users'
+        verbose_name = "CFA Users"
+        verbose_name_plural = "CFA Users"
 
 
 @receiver(sender=User, signal=post_save)
 def create_profile(sender, instance, signal, created, raw, **kwargs):
     """Create a CFAUser whenever a user is created."""
     if created and not raw:
-        CFAUser.objects.create(user=instance, user_type='R')
+        CFAUser.objects.create(user=instance, user_type="R")
 
 
 class Event(models.Model):
     STATUS = (
-        ('S', 'SAVED'),
-        ('B', 'SUBMITTED'),
-        ('F', 'FUNDED'),
-        ('W', 'FOLLOWUP'),
-        ('O', 'OVER')
+        ("S", "SAVED"),
+        ("B", "SUBMITTED"),
+        ("F", "FUNDED"),
+        ("W", "FOLLOWUP"),
+        ("O", "OVER"),
     )
     """An Event object."""
     name = models.CharField(max_length=256)
@@ -125,10 +129,7 @@ class Event(models.Model):
     time = models.TimeField()
     location = models.CharField(max_length=256)
     requester = models.ForeignKey(
-        CFAUser,
-        related_name='event_requester',
-        on_delete=models.SET_NULL,
-        null=True
+        CFAUser, related_name="event_requester", on_delete=models.SET_NULL, null=True
     )
     contact_name = models.CharField(max_length=256, blank=True)
     contact_email = models.EmailField()
@@ -138,13 +139,10 @@ class Event(models.Model):
     advisor_phone = models.CharField(max_length=15, blank=True)
     organizations = models.CharField(max_length=256)
     applied_funders = models.ManyToManyField(
-        CFAUser,
-        related_name='event_applied_funders'
+        CFAUser, related_name="event_applied_funders"
     )
     funding_already_received = models.DecimalField(
-        max_digits=17,
-        decimal_places=2,
-        default=0
+        max_digits=17, decimal_places=2, default=0
     )
     status = models.CharField(max_length=1, choices=STATUS)
     created_at = models.DateTimeField(default=datetime.datetime.now)
@@ -160,19 +158,19 @@ class Event(models.Model):
 
     @property
     def over(self):
-        return self.status == 'O'
+        return self.status == "O"
 
     @property
     def saved(self):
-        return self.status == 'S'
+        return self.status == "S"
 
     @property
     def followup_needed(self):
-        return self.status == 'W'
+        return self.status == "W"
 
     @property
     def submitted(self):
-        return self.status == 'B'
+        return self.status == "B"
 
     @property
     def locked(self):
@@ -185,8 +183,9 @@ class Event(models.Model):
         The total amount of money already received
         (before grants) for an event.
         """
-        return self.funding_already_received +\
-            sum(item.funding_already_received for item in self.item_set.all())
+        return self.funding_already_received + sum(
+            item.funding_already_received for item in self.item_set.all()
+        )
 
     @property
     def amounts(self):
@@ -211,7 +210,7 @@ class Event(models.Model):
     @property
     def funded(self):
         """Whether or not an event has been funded."""
-        return self.status == 'F'
+        return self.status == "F"
 
     @property
     def total_funds_received(self):
@@ -230,7 +229,9 @@ class Event(models.Model):
 
     @property
     def total_remaining(self):
-        return (self.total_expense - self.total_funds_received - self.total_additional_funds)
+        return (
+            self.total_expense - self.total_funds_received - self.total_additional_funds
+        )
 
     @property
     def date_passed(self):
@@ -238,18 +239,16 @@ class Event(models.Model):
 
     @property
     def comments(self):
-        return self.comment_set.order_by('created')
+        return self.comment_set.order_by("created")
 
     def notify_funders(self, new=False):
         """Notify all the funders of an event that they have been applied to"""
-        context = {'requester': self.requester, 'event': self}
+        context = {"requester": self.requester, "event": self}
 
-        template =\
-            'app/application_email' if new else 'app/application_changed'
+        template = "app/application_email" if new else "app/application_changed"
 
-        subject =\
-            render_to_string('%s_subject.txt' % template, context=context).strip()
-        message = render_to_string('%s.txt' % template, context=context)
+        subject = render_to_string("%s_subject.txt" % template, context=context).strip()
+        message = render_to_string("%s.txt" % template, context=context)
 
         for funder in self.applied_funders.all():
             self.notify_funder(subject, message, funder)
@@ -257,12 +256,13 @@ class Event(models.Model):
     def notify_funder(self, subject, message, funder):
         """Notify a funder that the requester has applied to them."""
         assert funder.is_funder
-        email = EmailMessage(subject=subject,
-                             body=message,
-                             from_email=settings.DEFAULT_FROM_EMAIL,
-                             to=[funder.user.email],
-                             cc=funder.cc_emails.values_list('email',
-                                                             flat=True))
+        email = EmailMessage(
+            subject=subject,
+            body=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[funder.user.email],
+            cc=funder.cc_emails.values_list("email", flat=True),
+        )
         if can_send_email():
             email.send()
 
@@ -272,18 +272,22 @@ class Event(models.Model):
             if funder.send_email_template:
                 subject = funder.email_subject
                 message = funder.email_template
-                email = EmailMessage(subject=subject, body=message,
-                                     from_email=funder.user.username + "@penncfa.com",
-                                     to=[self.requester.user.email])
+                email = EmailMessage(
+                    subject=subject,
+                    body=message,
+                    from_email=funder.user.username + "@penncfa.com",
+                    to=[self.requester.user.email],
+                )
                 if can_send_email():
                     email.send()
 
     def notify_requester(self, grants):
         """Notify a requester that an event has been funded."""
-        context = {'event': self, 'grants': grants}
-        subject = render_to_string('app/grant_email_subject.txt',
-                                   context=context).strip()
-        message = render_to_string('app/grant_email.txt', context=context)
+        context = {"event": self, "grants": grants}
+        subject = render_to_string(
+            "app/grant_email_subject.txt", context=context
+        ).strip()
+        message = render_to_string("app/grant_email.txt", context=context)
         if can_send_email():
             self.requester.user.email_user(subject, message)
 
@@ -292,16 +296,18 @@ class Event(models.Model):
         Notify a requester that his event is over
         and he needs to answer followup questions
         """
-        context = {'event': self, 'SITE_NAME': settings.SITE_NAME}
-        subject = render_to_string('app/over_event_email_subject.txt',
-                                   context=context).strip()
-        html_content = render_to_string('app/over_event_email.txt', context=context)
-        email = EmailMessage(subject=subject,
-                             body=html_content,
-                             from_email=settings.DEFAULT_FROM_EMAIL,
-                             to=[self.requester.user.email],
-                             cc=self.requester.cc_emails
-                                    .values_list('email', flat=True))
+        context = {"event": self, "SITE_NAME": settings.SITE_NAME}
+        subject = render_to_string(
+            "app/over_event_email_subject.txt", context=context
+        ).strip()
+        html_content = render_to_string("app/over_event_email.txt", context=context)
+        email = EmailMessage(
+            subject=subject,
+            body=html_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[self.requester.user.email],
+            cc=self.requester.cc_emails.values_list("email", flat=True),
+        )
         email.content_subtype = "html"  # main content is not text/html
         if can_send_email():
             email.send()
@@ -318,12 +324,10 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         if self.id:
-            return reverse('event-show', args=[str(self.id)])
+            return reverse("event-show", args=[str(self.id)])
 
     def __str__(self):
-        return "%s: %s, %s" % (str(self.requester),
-                               self.name,
-                               self.date.isoformat())
+        return "%s: %s, %s" % (str(self.requester), self.name, self.date.isoformat())
 
     class Meta:
         unique_together = ("name", "date", "requester")
@@ -331,6 +335,7 @@ class Event(models.Model):
 
 class Comment(models.Model):
     """A comment, made by a funder, on an event application."""
+
     funder = models.ForeignKey(CFAUser, models.CASCADE)
     event = models.ForeignKey(Event, models.CASCADE)
     comment = models.TextField()
@@ -343,14 +348,20 @@ class Comment(models.Model):
 @receiver(sender=Comment, signal=post_save)
 def notify_requester(sender, instance, signal, created, **kwargs):
     if created:
-        subject = 'You have a new comment on your funding application'
-        message = ('%s left a comment on your application for an event on %s.'
-                   '%s said "%s" See the full application at %s.') %\
-                  (instance.funder, instance.event.date, instance.funder,
-                   instance.comment, 'link here')
+        subject = "You have a new comment on your funding application"
+        message = (
+            "%s left a comment on your application for an event on %s."
+            '%s said "%s" See the full application at %s.'
+        ) % (
+            instance.funder,
+            instance.event.date,
+            instance.funder,
+            instance.comment,
+            "link here",
+        )
         sender = "no-reply@pennlabs.org"
         recipients = [instance.event.contact_email]
-        headers = {'Reply-To': instance.funder.user.email}
+        headers = {"Reply-To": instance.funder.user.email}
         email = EmailMessage(subject, message, sender, recipients, headers)
         if can_send_email():
             email.send()
@@ -378,27 +389,28 @@ class Answer(models.Model):
 
 class EligibilityQuestion(Question):
     def recs(self, answer):
-        return self.funderconstraint_set.filter(
-            answer=answer).values_list("funder_id", flat=True)
+        return self.funderconstraint_set.filter(answer=answer).values_list(
+            "funder_id", flat=True
+        )
 
     def required_funders(self):
         return map(lambda fc: fc.funder, self.funderconstraint_set.all())
 
     def required_funder_ids(self):
         funder_ids = self.funderconstraint_set.values_list("funder_id", flat=True)
-        return ','.join(str(id) for id in funder_ids)
+        return ",".join(str(id) for id in funder_ids)
 
     @property
     def recs_yes(self):
         """Return the funder ids that want Yes on the question"""
-        funder_ids = self.recs('Y')
-        return ','.join(str(a) for a in funder_ids)
+        funder_ids = self.recs("Y")
+        return ",".join(str(a) for a in funder_ids)
 
     @property
     def recs_no(self):
         """Return the funder ids that want No on the question"""
-        funder_ids = self.recs('N')
-        return ','.join(str(a) for a in funder_ids)
+        funder_ids = self.recs("N")
+        return ",".join(str(a) for a in funder_ids)
 
 
 class EligibilityAnswer(Answer):
@@ -411,6 +423,7 @@ class EligibilityAnswer(Answer):
 
 class CommonFollowupQuestion(Question):
     """A followup question common to all funders."""
+
     pass
 
 
@@ -421,6 +434,7 @@ class CommonFollowupAnswer(Answer):
 
 class FollowupQuestion(Question):
     """A followup question specific to a funder."""
+
     funder = models.ForeignKey(CFAUser, models.CASCADE)
 
 
@@ -431,17 +445,20 @@ class FollowupAnswer(Answer):
 
 class CommonFreeResponseQuestion(Question):
     """A free response question common to all funders."""
+
     pass
 
 
 class CommonFreeResponseAnswer(Answer):
     """An answer to a common free response question."""
+
     question = models.ForeignKey(CommonFreeResponseQuestion, models.CASCADE)
     answer = models.TextField()
 
 
 class FreeResponseQuestion(Question):
     """A unique free response question specified by a single funder."""
+
     funder = models.ForeignKey(CFAUser, models.CASCADE)
 
 
@@ -451,18 +468,19 @@ class FreeResponseAnswer(Answer):
 
 
 CATEGORIES = (
-    ('H', 'Honoraria/Services'),
-    ('E', 'Equipment/Supplies'),
-    ('F', 'Food/Drinks'),
-    ('S', 'Facilities/Security'),
-    ('T', 'Travel/Conference'),
-    ('P', 'Photocopies/Printing/Publicity'),
-    ('O', 'Other'),
+    ("H", "Honoraria/Services"),
+    ("E", "Equipment/Supplies"),
+    ("F", "Food/Drinks"),
+    ("S", "Facilities/Security"),
+    ("T", "Travel/Conference"),
+    ("P", "Photocopies/Printing/Publicity"),
+    ("O", "Other"),
 )
 
 
 class Item(models.Model):
     """An item for an event."""
+
     event = models.ForeignKey(Event, models.CASCADE)
     name = models.CharField(max_length=256)
     # number of items
@@ -470,8 +488,7 @@ class Item(models.Model):
     # cost per item
     price_per_unit = models.DecimalField(max_digits=17, decimal_places=2)
     # funding already received before applications
-    funding_already_received = models.DecimalField(max_digits=17,
-                                                   decimal_places=2)
+    funding_already_received = models.DecimalField(max_digits=17, decimal_places=2)
     category = models.CharField(max_length=1, choices=CATEGORIES)
     revenue = models.BooleanField(default=False)
 
@@ -497,9 +514,7 @@ class Grant(models.Model):
     amount = models.DecimalField(max_digits=17, decimal_places=2, null=True)
 
     def __str__(self):
-        return "%s, %s, %d" % (str(self.item),
-                               str(self.funder),
-                               self.amount)
+        return "%s, %s, %d" % (str(self.item), str(self.funder), self.amount)
 
     class Meta:
         unique_together = ("funder", "item")
@@ -510,14 +525,13 @@ class FunderConstraint(models.Model):
     Questions which funders require (yes/no/don't care) answers to
     by the requesters in order to be eligible to recieve money
     """
+
     funder = models.ForeignKey(CFAUser, on_delete=models.CASCADE)
     question = models.ForeignKey(EligibilityQuestion, on_delete=models.CASCADE)
     answer = models.CharField(max_length=1, choices=YES_OR_NO)
 
     def __str__(self):
-        return "%s, %s %s" % (str(self.funder),
-                              str(self.question),
-                              self.answer)
+        return "%s, %s %s" % (str(self.funder), str(self.question), self.answer)
 
     class Meta:
         unique_together = ("funder", "question")
@@ -525,6 +539,7 @@ class FunderConstraint(models.Model):
 
 class CCEmail(models.Model):
     """Emails which can be CCd for every funder"""
+
     email = models.EmailField()
 
     def __str__(self):
