@@ -13,6 +13,7 @@ dependencies = [
     "uvicorn[standard]",
     "gunicorn",
     "ruff>=0.9.7",
+    "pre-commit>=4.1.0",
 ]
 
 [dependency-groups]
