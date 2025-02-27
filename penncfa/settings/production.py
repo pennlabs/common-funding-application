@@ -1,4 +1,5 @@
-from penncfa.settings.base import *
+from penncfa.settings.base import *  # noqa
+import os
 
 # Email client information
 EMAIL_HOST = os.getenv("EMAIL_HOST")

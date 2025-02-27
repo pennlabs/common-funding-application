@@ -1,8 +1,14 @@
 from django import forms
-from django.contrib.auth.forms import (PasswordChangeForm as BasePasswordChangeForm,
-                                       PasswordResetForm as BasePasswordResetForm,
-                                       SetPasswordForm as BaseSetPasswordForm)
-from django.core.validators import RegexValidator, EmailValidator
+from django.contrib.auth.forms import (
+    PasswordChangeForm as BasePasswordChangeForm,
+)
+from django.contrib.auth.forms import (
+    PasswordResetForm as BasePasswordResetForm,
+)
+from django.contrib.auth.forms import (
+    SetPasswordForm as BaseSetPasswordForm,
+)
+from django.core.validators import EmailValidator
 from django_registration.forms import RegistrationForm as BaseRegistrationForm
 
 from .models import Event
@@ -75,8 +81,19 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ["name", "date", "time", "location", "contact_name", "contact_email", "contact_phone", "anticipated_attendance",
-                  "advisor_email", "advisor_phone", "organizations"]
+        fields = [
+            "name",
+            "date",
+            "time",
+            "location",
+            "contact_name",
+            "contact_email",
+            "contact_phone",
+            "anticipated_attendance",
+            "advisor_email",
+            "advisor_phone",
+            "organizations",
+        ]
         labels = {
             "name": "Event Name",
             "date": "Event Date",
@@ -91,8 +108,10 @@ class EventForm(forms.ModelForm):
             "contact_name": "Primary contact's name",
             "contact_email": "Primary contact's email address",
             "contact_phone": "Primary contact's phone number",
-            "anticipated_attendance": "Anticipated number of people attending the event",
+            "anticipated_attendance": (
+                "Anticipated number of people attending the event"
+            ),
             "advisor_email": "Advisor's email address",
             "advisor_phone": "Advisor's phone number",
-            "organizations": "Organization(s) involved with the event"
+            "organizations": "Organization(s) involved with the event",
         }

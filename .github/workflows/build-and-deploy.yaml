@@ -15,6 +15,14 @@ jobs:
         run: |-
           cd .
           uv sync --frozen
+      - name: Lint
+        run: |-
+          cd .
+          uv run ruff check .
+      - name: Format
+        run: |-
+          cd .
+          uv run ruff format .
       - name: Test (run in parallel)
         run: |-
           cd .
