@@ -18,6 +18,9 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
+import io
+import csv
+
 from .models import (
     Event,
     Grant,
@@ -66,7 +69,7 @@ def authorization_required(view):
                 return view(request, event_id, *args, **kwargs)
             else:
                 return redirect(EVENTS_HOME)
-
+            
     return protected_view
 
 
@@ -83,6 +86,16 @@ def requester_only(view):
 
     return protected_view
 
+def admin_only(view): 
+    """Ensure only admins can access a page."""
+
+    def protected_view(request, *args, **kwargs):
+        if request.user.is_staff:
+            return view(request, *args, **kwargs)
+        else:
+            return redirect(EVENTS_HOME)
+
+    return protected_view
 
 def save_from_form(event, POST):
     """Save an event from form data."""
@@ -463,3 +476,84 @@ def funder_edit(request, user_id):
         )
     else:
         return HttpResponseNotAllowed(["GET"])
+
+@admin_only
+@require_http_methods(["GET"])
+def export_requests(request):
+    """
+    Export funding requests submitted in the last 2 years to a CSV file.
+    """
+    # Query the last two years of submitted funding requests
+    cutoff_date = datetime.datetime.now() - datetime.timedelta(days=730)
+    qs = (
+        Event.objects.filter(created_at__gte=cutoff_date, status="B")
+        .select_related("requester", "requester__user")
+        .prefetch_related("applied_funders", "item_set", "item_set__grant_set")
+    )
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+    
+    writer.writerow([
+        'Event ID', 'Event Name', 'Event Date', 'Event Time', 'Location',
+        'Requester', 'Requester Email',
+        'Contact Name', 'Contact Email', 'Contact Phone', 'Anticipated Attendance',
+        'Advisor Email', 'Advisor Phone', 'Organizations',
+        'Funding Already Received', 'Status', 'Created At', 'Updated At',
+        'Total Funds Already Received', 'Total Funds Granted', 'Total Funds Received',
+        'Total Expense', 'Total Additional Funds', 'Total Remaining',
+        'Applied Funders'
+    ])
+
+    for event in qs:
+        total_funds_already_received = event.funding_already_received
+        for item in event.item_set.all():
+            total_funds_already_received += item.funding_already_received
+
+        total_funds_granted = sum(
+            sum(grant.amount for grant in item.grant_set.all() if grant.amount is not None)
+            for item in event.item_set.all()
+        )
+        total_funds_received = total_funds_already_received + total_funds_granted
+
+        total_expense = sum(
+            item.price_per_unit * item.quantity for item in event.item_set.all() if not item.revenue
+        )
+        total_additional_funds = sum(
+            item.price_per_unit * item.quantity for item in event.item_set.all() if item.revenue
+        )
+        total_remaining = total_expense - total_funds_received - total_additional_funds
+
+        applied_funders = ", ".join([str(f) for f in event.applied_funders.all()])
+
+        writer.writerow([
+            event.id,
+            event.name,
+            event.date,
+            event.time,
+            event.location,
+            str(event.requester),
+            event.requester.user.email,
+            event.contact_name,
+            event.contact_email,
+            event.contact_phone,
+            event.anticipated_attendance,
+            event.advisor_email,
+            event.advisor_phone,
+            event.organizations,
+            event.funding_already_received,
+            event.get_status_display(),
+            event.created_at,
+            event.updated_at,
+            total_funds_already_received,
+            total_funds_granted,
+            total_funds_received,
+            total_expense,
+            total_additional_funds,
+            total_remaining,
+            applied_funders,
+        ])
+
+    response = HttpResponse(output.getvalue(), content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="funding_requests.csv"'
+    return response
