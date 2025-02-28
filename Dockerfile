@@ -1,18 +1,19 @@
-FROM pennlabs/django-base:3cadd22f7ad51359c5e86b6a3cba2fc155c1c6ab
+FROM ghcr.io/astral-sh/uv:0.6.2-python3.12-bookworm
 
 LABEL maintainer="Penn Labs"
 
-# Copy project dependencies
-COPY Pipfile* /app/
-
-# Install project dependencies
-RUN pipenv install --system
-
 # Copy project files
 COPY . /app/
+COPY ./scripts/mime.types /etc/mime.types
+COPY ./scripts/django-run /usr/local/bin/
+
+WORKDIR /app
+RUN uv sync --frozen
 
 ENV DJANGO_SETTINGS_MODULE penncfa.settings.production
 ENV SECRET_KEY 'temporary key just to build the docker image'
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Collect static files
-RUN python3 /app/manage.py collectstatic --noinput
+RUN uv run /app/manage.py collectstatic --noinput
+CMD ["/usr/local/bin/django-run"]

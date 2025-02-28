@@ -40,7 +40,7 @@
       {% endif %}
 
       {% for funder_id, grant_amount, item_id in grant_datas %}
-      {% ifequal funder_id current_funder %}
+      {% if funder_id == current_funder %}
         <td style="min-width:125px">
           <div class="input-group">
             <div class="input-group-prepend">
@@ -48,19 +48,19 @@
             </div>
             <input class="funding-given form-control" name="item_{{ item_id }}"
               type='text'
-              {% ifnotequal grant_amount None %}
+              {% if grant_amount is not None %}
               value="{{ grant_amount }}"
-              {% endifnotequal %}
+              {% endif %}
               pattern="^(?!Fund Amount\.\.\.)^\d*(\.\d{2}$)?"
           </div>
         </td>
       {% else %}
-        {% ifnotequal grant_amount None %}
+        {% if grant_amount is not None %}
           <td>${{ grant_amount }}</td>
           {% else %}
           <td><em>pending</em></td>
-        {% endifnotequal %}
-      {% endifequal %}
+        {% endif %}
+      {% endif %}
       {% endfor %}
     </tr>
     {% endfor %}

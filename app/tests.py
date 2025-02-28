@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import json
+import csv
+import datetime
 
 from django.test import TestCase
 from unittest import skip
@@ -352,3 +354,99 @@ class HealthTestCase(TestCase):
         resp = self.client.get("/health/")
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.data, {"message": "OK"})
+
+class TestExportRequests(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.admin_user = User.objects.create_user(username='admin', email='admin@upenn.edu', password='adminpassword', is_staff=True)
+        self.requester = User.objects.create_user(username='requester', email='requester@upenn.edu', password='requesterpassword')
+        self.requester_profile = self.requester.profile
+        self.requester_profile.user_type = 'R'
+        self.requester_profile.save()
+        self.funder = create_funder()
+
+        self.event1 = Event.objects.create(
+            name="Test Event 1", date="2023-01-01", time="15:30:00", location="Houston Hall",
+            requester=self.requester_profile, contact_name="Test Contact", contact_email="contact@upenn.edu",
+            contact_phone="123-456-7890", anticipated_attendance=100, advisor_email="advisor@upenn.edu",
+            advisor_phone="098-765-4321", organizations="Test Organization", funding_already_received=50.00, status="B"
+        )
+        self.event1.applied_funders.add(self.funder.profile)
+
+        self.event2 = Event.objects.create(
+            name="Test Event 2", date="2023-02-01", time="16:30:00", location="College Hall",
+            requester=self.requester_profile, contact_name="Test Contact 2", contact_email="contact2@upenn.edu",
+            contact_phone="123-456-7891", anticipated_attendance=200, advisor_email="advisor2@upenn.edu",
+            advisor_phone="098-765-4322", organizations="Test Organization 2", funding_already_received=100.00, status="F"
+        )
+        self.event2.applied_funders.add(self.funder.profile)
+
+        self.event3 = Event.objects.create(
+            name="Test Event 3", date="2023-03-01", time="17:30:00", location="Van Pelt Library",
+            requester=self.requester_profile, contact_name="Test Contact 3", contact_email="contact3@upenn.edu",
+            contact_phone="123-456-7892", anticipated_attendance=300, advisor_email="advisor3@upenn.edu",
+            advisor_phone="098-765-4323", organizations="Test Organization 3", funding_already_received=150.00, status="S"
+        )
+
+        self.item1 = self.event1.item_set.create(name="Item 1", quantity=10, price_per_unit=20.00, funding_already_received=0.00, category="H", revenue=False)
+        self.item2 = self.event1.item_set.create(name="Item 2", quantity=5, price_per_unit=30.00, funding_already_received=25.00, category="F", revenue=False)
+        self.item3 = self.event2.item_set.create(name="Item 3", quantity=15, price_per_unit=40.00, funding_already_received=50.00, category="E", revenue=False)
+        self.item4 = self.event2.item_set.create(name="Item 4 (Revenue)", quantity=20, price_per_unit=10.00, funding_already_received=0.00, category="O", revenue=True)
+
+        self.grant1 = Grant.objects.create(funder=self.funder.profile, item=self.item1, amount=100.00)
+        self.grant2 = Grant.objects.create(funder=self.funder.profile, item=self.item3, amount=200.00)
+
+    def test_export_requests_access(self):
+        self.client.login(username='requester', password='requesterpassword')
+        self.assertEqual(self.client.get('/export-requests/').status_code, 302)
+        
+        self.client.login(username='admin', password='adminpassword')
+        resp = self.client.get('/export-requests/')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'text/csv')
+        self.assertEqual(resp['Content-Disposition'], 'attachment; filename="funding_requests.csv"')
+
+    def test_export_requests_content(self):
+        self.client.login(username='admin', password='adminpassword')
+        resp = self.client.get('/export-requests/')
+        content = resp.content.decode('utf-8')
+        rows = list(csv.reader(content.strip().split('\n')))
+        
+        self.assertEqual(len(rows[0]), 25)
+        self.assertEqual(rows[0][0], 'Event ID')
+        self.assertEqual(len(rows), 2)
+        
+        event_row = rows[1]
+        self.assertEqual(event_row[1], 'Test Event 1')
+        self.assertEqual(event_row[4], 'Houston Hall')
+        self.assertEqual(event_row[5], str(self.requester_profile))
+        self.assertEqual(event_row[6], 'requester@upenn.edu')
+        self.assertEqual(event_row[14], '50.00')
+        self.assertEqual(event_row[15], 'SUBMITTED')
+        
+        self.assertEqual(float(event_row[18]), 75.00)
+        self.assertEqual(float(event_row[19]), 100.00)
+        self.assertEqual(float(event_row[20]), 175.00)
+        self.assertEqual(float(event_row[21]), 350.00)
+        self.assertEqual(float(event_row[22]), 0.00)
+        self.assertEqual(float(event_row[23]), 175.00)
+        self.assertIn(str(self.funder.profile), event_row[24])
+
+    def test_export_requests_date_filter(self):
+        old_date = datetime.datetime.now() - datetime.timedelta(days=731)
+        Event.objects.create(
+            name="Old Test Event", date="2020-01-01", time="12:30:00", location="Old Location",
+            requester=self.requester_profile, contact_name="Old Contact", contact_email="old@upenn.edu",
+            contact_phone="111-222-3333", anticipated_attendance=50, advisor_email="oldadvisor@upenn.edu",
+            advisor_phone="444-555-6666", organizations="Old Organization", funding_already_received=25.00,
+            status="B", created_at=old_date, updated_at=old_date
+        )
+        
+        self.client.login(username='admin', password='adminpassword')
+        resp = self.client.get('/export-requests/')
+        rows = list(csv.reader(resp.content.decode('utf-8').strip().split('\n')))
+        
+        self.assertEqual(len(rows), 2)
+        event_names = [row[1] for row in rows[1:]]
+        self.assertIn('Test Event 1', event_names)
+        self.assertNotIn('Old Test Event', event_names)

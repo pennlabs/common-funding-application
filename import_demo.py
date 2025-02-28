@@ -206,6 +206,14 @@ def import_users():
     User.objects.filter(is_staff=False).delete()
     FreeResponseQuestion.objects.all().delete()
 
+    # Create admin user
+    User.objects.create_user(
+        username='bfranklin',
+        password='test',
+        email=TEST_EMAIL,
+        is_staff=True
+    )
+
     # Import funders
     for funder in FUNDERS:
         add_funder(**funder)

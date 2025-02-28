@@ -12,15 +12,13 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
-            {% if user.is_staff %}
-            <li class="nav-item mr-1">
-                <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
-            </li>
-            {% endif %}
             {% if user.is_authenticated %}
             <li class="nav-item dropdown mr-1">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Settings</a>
                 <div class="dropdown-menu dropdown-menu-right">
+                    {% if user.is_staff %}
+                    <a class="dropdown-item" href="{% url 'export-requests' %}"><i class="fa fa-download fa-fw"></i> Export Data</a>
+                    {% endif %}
                     <a class="dropdown-item" href="{% url 'auth_password_change' %}"><i class="fa fa-key fa-fw"></i> Change Password</a>
                 </div>
             </li>

@@ -1,6 +1,7 @@
 # Docker
 Dockerfile
 .dockerignore
+.venv
 
 # git
 .circleci
