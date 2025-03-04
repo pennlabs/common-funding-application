@@ -408,9 +408,15 @@ class TestExportRequests(TestCase):
         
         self.assertEqual(len(rows[0]), 25)
         self.assertEqual(rows[0][0], 'Event ID')
-        self.assertEqual(len(rows), 2)
+        self.assertEqual(len(rows), 3)
         
-        event_row = rows[1]
+        # Only submitted events should be included (not saved ones)
+        event_names = [row[1] for row in rows[1:]]
+        self.assertIn('Test Event 2', event_names)  # sort in descending order of created_at
+        self.assertIn('Test Event 1', event_names)
+        self.assertNotIn('Test Event 3', event_names)
+        
+        event_row = rows[2]     # grab row for test event 1
         self.assertEqual(event_row[1], 'Test Event 1')
         self.assertEqual(event_row[4], 'Houston Hall')
         self.assertEqual(event_row[5], str(self.requester_profile))
@@ -425,22 +431,3 @@ class TestExportRequests(TestCase):
         self.assertEqual(float(event_row[22]), 0.00)
         self.assertEqual(float(event_row[23]), 175.00)
         self.assertIn(str(self.funder.profile), event_row[24])
-
-    def test_export_requests_date_filter(self):
-        old_date = datetime.datetime.now() - datetime.timedelta(days=731)
-        Event.objects.create(
-            name="Old Test Event", date="2020-01-01", time="12:30:00", location="Old Location",
-            requester=self.requester_profile, contact_name="Old Contact", contact_email="old@upenn.edu",
-            contact_phone="111-222-3333", anticipated_attendance=50, advisor_email="oldadvisor@upenn.edu",
-            advisor_phone="444-555-6666", organizations="Old Organization", funding_already_received=25.00,
-            status="B", created_at=old_date, updated_at=old_date
-        )
-        
-        self.client.login(username='admin', password='adminpassword')
-        resp = self.client.get('/export-requests/')
-        rows = list(csv.reader(resp.content.decode('utf-8').strip().split('\n')))
-        
-        self.assertEqual(len(rows), 2)
-        event_names = [row[1] for row in rows[1:]]
-        self.assertIn('Test Event 1', event_names)
-        self.assertNotIn('Old Test Event', event_names)

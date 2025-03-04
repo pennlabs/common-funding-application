@@ -483,12 +483,11 @@ def export_requests(request):
     """
     Export funding requests submitted in the last 2 years to a CSV file.
     """
-    # Query the last two years of submitted funding requests
-    cutoff_date = datetime.datetime.now() - datetime.timedelta(days=730)
     qs = (
-        Event.objects.filter(created_at__gte=cutoff_date, status="B")
+        Event.objects.filter(~Q(status="S"))
         .select_related("requester", "requester__user")
         .prefetch_related("applied_funders", "item_set", "item_set__grant_set")
+        .order_by("-created_at")
     )
 
     output = io.StringIO()
