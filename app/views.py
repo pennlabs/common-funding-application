@@ -3,13 +3,10 @@ import datetime
 import io
 import json
 import re
-from http import HTTPStatus
-from django.http import JsonResponse
-from django.views.generic import View
-
 import smtplib
 from datetime import timedelta
 from decimal import Decimal
+from http import HTTPStatus
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -19,9 +16,10 @@ from django.core.paginator import Paginator
 from django.core.validators import validate_email
 from django.db import IntegrityError, transaction
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
+from django.views.generic import View
 
 from .forms import EventForm
 from .models import (
@@ -492,6 +490,7 @@ def funder_edit(request, user_id):
     else:
         return HttpResponseNotAllowed(["GET"])
 
+
 class HealthView(View):
     def get(self, request):
         """
@@ -510,7 +509,8 @@ class HealthView(View):
                                     enum: ["OK"]
         ---
         """
-        return JsonResponse({"message": "OK"}, status=HTTPStatus.OK) 
+        return JsonResponse({"message": "OK"}, status=HTTPStatus.OK)
+
 
 @admin_only
 @require_http_methods(["GET"])
