@@ -6,20 +6,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('app', '0005_auto_20171225_1441'),
+        ("app", "0005_auto_20171225_1441"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cfauser',
-            name='email_template',
+            model_name="cfauser",
+            name="email_template",
             field=models.TextField(blank=True),
         ),
         migrations.AddField(
-            model_name='cfauser',
-            name='send_email_template',
+            model_name="cfauser",
+            name="send_email_template",
             field=models.BooleanField(default=False),
         ),
     ]
