@@ -3,6 +3,10 @@ import datetime
 import io
 import json
 import re
+from http import HTTPStatus
+from django.http import JsonResponse
+from django.views.generic import View
+
 import smtplib
 from datetime import timedelta
 from decimal import Decimal
@@ -488,6 +492,25 @@ def funder_edit(request, user_id):
     else:
         return HttpResponseNotAllowed(["GET"])
 
+class HealthView(View):
+    def get(self, request):
+        """
+        Health check endpoint to confirm the backend is running.
+        ---
+        summary: Health Check
+        responses:
+            "200":
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                message:
+                                    type: string
+                                    enum: ["OK"]
+        ---
+        """
+        return JsonResponse({"message": "OK"}, status=HTTPStatus.OK) 
 
 @admin_only
 @require_http_methods(["GET"])
@@ -495,12 +518,11 @@ def export_requests(request):
     """
     Export funding requests submitted in the last 2 years to a CSV file.
     """
-    # Query the last two years of submitted funding requests
-    cutoff_date = datetime.datetime.now() - datetime.timedelta(days=730)
     qs = (
-        Event.objects.filter(created_at__gte=cutoff_date, status="B")
+        Event.objects.filter(~Q(status="S"))
         .select_related("requester", "requester__user")
         .prefetch_related("applied_funders", "item_set", "item_set__grant_set")
+        .order_by("-created_at")
     )
 
     output = io.StringIO()
