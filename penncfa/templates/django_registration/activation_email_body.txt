@@ -1,5 +1,5 @@
 Thanks for creating an account at {{site.name}}!
 
-Just go to https://{{site}}/accounts/activate/{{activation_key}}/ to activate your account.
+Just go to https://{{site}}/accounts/activate/?activation_key={{activation_key}} to activate your account.
 
-The key will expire in {{expiration_days}} days.
+This link will expire in {{expiration_days}} days.

@@ -1,0 +1,31 @@
+{% extends "base-page.html" %}
+
+{% load static %}
+
+{% block htmllink-styles %}
+<link rel="stylesheet" href="{% static "/css/form.css" %}">
+{% endblock %}
+
+{% block container %}
+<div id="main">
+  <div id="register">
+    <div class="box">
+      <h2>Activate your account</h2>
+      
+      {% if activation_error.message %}
+        <div class="alert alert-danger">
+            {{ activation_error.message }}
+        </div>
+      {% endif %}
+      
+    <form id="register-form" method="post" class="form-horizotal">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit" name="submit">Activate</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
