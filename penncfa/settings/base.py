@@ -25,10 +25,7 @@ LOGIN_REDIRECT_URL = URL_ROOT
 
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
-ADMINS = (
-    ("Penn Labs", "admin+cfaprod@pennlabs.org"),
-    ("Avi Upadhyayula", "aviu@seas.upenn.edu"),
-)
+ADMINS = (("Penn Clubs", "contact@pennclubs.com"))
 
 MANAGERS = ADMINS
 
