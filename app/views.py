@@ -587,15 +587,15 @@ def export_requests(request):
 
         applied_funders = ", ".join([str(f) for f in event.applied_funders.all()])
 
-        writer.writerow(
-            [
+        try:
+            row_data = [
                 event.id,
                 event.name,
                 event.date,
                 event.time,
                 event.location,
                 str(event.requester),
-                event.requester.user.email,
+                event.requester.user.email if hasattr(event, 'requester') and event.requester and hasattr(event.requester, 'user') and event.requester.user else "",
                 event.contact_name,
                 event.contact_email,
                 event.contact_phone,
@@ -615,7 +615,10 @@ def export_requests(request):
                 total_remaining,
                 applied_funders,
             ]
-        )
+            row_data = [field if field is not None else "" for field in row_data]
+            writer.writerow(row_data)
+        except (Exception, TypeError) as e:
+            continue
 
     response = HttpResponse(output.getvalue(), content_type="text/csv")
     response["Content-Disposition"] = 'attachment; filename="funding_requests.csv"'
