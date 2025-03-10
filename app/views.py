@@ -595,7 +595,12 @@ def export_requests(request):
                 event.time,
                 event.location,
                 str(event.requester),
-                event.requester.user.email if hasattr(event, 'requester') and event.requester and hasattr(event.requester, 'user') and event.requester.user else "",
+                event.requester.user.email
+                if hasattr(event, "requester")
+                and event.requester
+                and hasattr(event.requester, "user")
+                and event.requester.user
+                else "",
                 event.contact_name,
                 event.contact_email,
                 event.contact_phone,
@@ -617,7 +622,7 @@ def export_requests(request):
             ]
             row_data = [field if field is not None else "" for field in row_data]
             writer.writerow(row_data)
-        except (Exception, TypeError) as e:
+        except (Exception, TypeError):
             continue
 
     response = HttpResponse(output.getvalue(), content_type="text/csv")
