@@ -16,7 +16,7 @@ The [Common Funding Application](https://penncfa.com) is an online application t
 * Import dummy data (`uv run import_demo.py`)
 * Run the server (`uv run manage.py runserver`)
 * Navigate to the [app](http://localhost:8000/)
-* Example login credntials: `philo / philo` for requester, `spectrum / spectrum` for funder
+* Example login credentials: `philo / philo` for requester, `spectrum / spectrum` for funder
 
 ## Front-End Setup
 
