@@ -3,13 +3,14 @@ from __future__ import unicode_literals
 
 import csv
 import json
+from decimal import Decimal
 from unittest import skip
 
 from django.contrib.auth.models import User
 from django.core import mail
 from django.test import TestCase
 
-from .models import CFAUser, Event, Grant
+from .models import CATEGORIES, CFAUser, Event, Grant
 from .templatetags import helpers
 
 
@@ -19,6 +20,7 @@ def create_funder():
     )
     cfau = funder.profile
     cfau.user_type = "F"
+    cfau.funder_name = "SPEC"
     cfau.save()
     return funder
 
@@ -533,8 +535,27 @@ class TestExportRequests(TestCase):
         header = rows[0]
 
         all_funders = CFAUser.objects.filter(user_type="F").order_by("funder_name")
-        funder_names = [f.funder_name for f in all_funders]
-        self.assertEqual(header[25:], funder_names)
+        funder_names = [f"{f.funder_name}_granted" for f in all_funders]
+        base_header_len = 25
+        self.assertEqual(
+            header[base_header_len : base_header_len + len(all_funders)], funder_names
+        )
+
+        category_names = [name for _, name in CATEGORIES]
+        expense_headers = [f"Expense_{name}" for name in category_names]
+        received_headers = [f"Received_{name}" for name in category_names]
+        self.assertEqual(
+            header[
+                base_header_len + len(all_funders) : base_header_len
+                + len(all_funders)
+                + len(category_names)
+            ],
+            expense_headers,
+        )
+        self.assertEqual(
+            header[base_header_len + len(all_funders) + len(category_names) :],
+            received_headers,
+        )
 
         # check for event 1
         event1_row = None
@@ -543,8 +564,22 @@ class TestExportRequests(TestCase):
                 event1_row = row
                 break
         self.assertIsNotNone(event1_row)
-        funder_grant_amount = float(event1_row[25])
+        funder_grant_amount = float(event1_row[base_header_len])
         self.assertAlmostEqual(funder_grant_amount, 100.00, places=2)
+
+        # Check expense and received by category
+        # For event 1: item1 (cat H, total 200), item2 (cat F, total 150)
+        # item1 received: 100 (grant)
+        # item2 received: 25 (already)
+        expense_h_index = header.index("Expense_Honoraria/Services")
+        expense_f_index = header.index("Expense_Food/Drinks")
+        received_h_index = header.index("Received_Honoraria/Services")
+        received_f_index = header.index("Received_Food/Drinks")
+
+        self.assertAlmostEqual(Decimal(event1_row[expense_h_index]), Decimal("200.00"))
+        self.assertAlmostEqual(Decimal(event1_row[expense_f_index]), Decimal("150.00"))
+        self.assertAlmostEqual(Decimal(event1_row[received_h_index]), Decimal("100.00"))
+        self.assertAlmostEqual(Decimal(event1_row[received_f_index]), Decimal("25.00"))
 
         # check for event 2
         event2_row = None
@@ -553,5 +588,5 @@ class TestExportRequests(TestCase):
                 event2_row = row
                 break
         self.assertIsNotNone(event2_row)
-        funder_grant_amount = float(event2_row[25])
+        funder_grant_amount = float(event2_row[base_header_len])
         self.assertAlmostEqual(funder_grant_amount, 200.00, places=2)

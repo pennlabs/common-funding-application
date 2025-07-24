@@ -560,7 +560,10 @@ def export_requests(request):
     funders = []
     if detailed:
         funders = CFAUser.objects.filter(user_type="F").order_by("funder_name")
-        headers.extend([f.funder_name for f in funders])
+        headers.extend([f"{f.funder_name}_granted" for f in funders])
+        category_names = [name for _, name in CATEGORIES]
+        headers.extend([f"Expense_{name}" for name in category_names])
+        headers.extend([f"Received_{name}" for name in category_names])
 
     writer.writerow(headers)
 
@@ -634,6 +637,17 @@ def export_requests(request):
                         if grant.funder_id in funding_by_funder and grant.amount:
                             funding_by_funder[grant.funder_id] += grant.amount
                 row_data.extend([funding_by_funder[f.id] for f in funders])
+
+                expense_by_category = {code: Decimal(0) for code, _ in CATEGORIES}
+                received_by_category = {code: Decimal(0) for code, _ in CATEGORIES}
+
+                for item in event.item_set.all():
+                    if not item.revenue:
+                        expense_by_category[item.category] += item.total
+                    received_by_category[item.category] += item.total_received
+
+                row_data.extend([expense_by_category[code] for code, _ in CATEGORIES])
+                row_data.extend([received_by_category[code] for code, _ in CATEGORIES])
             writer.writerow(row_data)
         except (Exception, TypeError):
             continue
