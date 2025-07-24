@@ -25,7 +25,7 @@ LOGIN_REDIRECT_URL = URL_ROOT
 
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
 
-ADMINS = (("Penn Clubs", "contact@pennclubs.com"))
+ADMINS = ("Penn Clubs", "contact@pennclubs.com")
 
 MANAGERS = ADMINS
 

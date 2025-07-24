@@ -10,6 +10,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils import timezone
 
 
 YES_OR_NO = (
@@ -144,11 +145,11 @@ class Event(models.Model):
         max_digits=17, decimal_places=2, default=0
     )
     status = models.CharField(max_length=1, choices=STATUS)
-    created_at = models.DateTimeField(default=datetime.datetime.now)
-    updated_at = models.DateTimeField(default=datetime.datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
-        self.updated_at = datetime.datetime.now()
+        self.updated_at = timezone.now()
         return super(Event, self).save(*args, **kwargs)
 
     @property

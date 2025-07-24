@@ -518,45 +518,51 @@ def export_requests(request):
     """
     Export funding requests submitted in the last 2 years to a CSV file.
     """
+    detailed = request.GET.get("detailed", "false").lower() == "true"
     qs = (
         Event.objects.filter(~Q(status="S"))
         .select_related("requester", "requester__user")
-        .prefetch_related("applied_funders", "item_set", "item_set__grant_set")
+        .prefetch_related("applied_funders", "item_set", "item_set__grant_set__funder")
         .order_by("-created_at")
     )
 
     output = io.StringIO()
     writer = csv.writer(output)
 
-    writer.writerow(
-        [
-            "Event ID",
-            "Event Name",
-            "Event Date",
-            "Event Time",
-            "Location",
-            "Requester",
-            "Requester Email",
-            "Contact Name",
-            "Contact Email",
-            "Contact Phone",
-            "Anticipated Attendance",
-            "Advisor Email",
-            "Advisor Phone",
-            "Organizations",
-            "Funding Already Received",
-            "Status",
-            "Created At",
-            "Updated At",
-            "Total Funds Already Received",
-            "Total Funds Granted",
-            "Total Funds Received",
-            "Total Expense",
-            "Total Additional Funds",
-            "Total Remaining",
-            "Applied Funders",
-        ]
-    )
+    headers = [
+        "Event ID",
+        "Event Name",
+        "Event Date",
+        "Event Time",
+        "Location",
+        "Requester",
+        "Requester Email",
+        "Contact Name",
+        "Contact Email",
+        "Contact Phone",
+        "Anticipated Attendance",
+        "Advisor Email",
+        "Advisor Phone",
+        "Organizations",
+        "Funding Already Received",
+        "Status",
+        "Created At",
+        "Updated At",
+        "Total Funds Already Received",
+        "Total Funds Granted",
+        "Total Funds Received",
+        "Total Expense",
+        "Total Additional Funds",
+        "Total Remaining",
+        "Applied Funders",
+    ]
+
+    funders = []
+    if detailed:
+        funders = CFAUser.objects.filter(user_type="F").order_by("funder_name")
+        headers.extend([f.funder_name for f in funders])
+
+    writer.writerow(headers)
 
     for event in qs:
         total_funds_already_received = event.funding_already_received
@@ -621,10 +627,18 @@ def export_requests(request):
                 applied_funders,
             ]
             row_data = [field if field is not None else "" for field in row_data]
+            if detailed:
+                funding_by_funder = {f.id: Decimal(0) for f in funders}
+                for item in event.item_set.all():
+                    for grant in item.grant_set.all():
+                        if grant.funder_id in funding_by_funder and grant.amount:
+                            funding_by_funder[grant.funder_id] += grant.amount
+                row_data.extend([funding_by_funder[f.id] for f in funders])
             writer.writerow(row_data)
         except (Exception, TypeError):
             continue
 
+    filename = "funding_requests_detailed.csv" if detailed else "funding_requests.csv"
     response = HttpResponse(output.getvalue(), content_type="text/csv")
-    response["Content-Disposition"] = 'attachment; filename="funding_requests.csv"'
+    response["Content-Disposition"] = 'attachment; filename="{}"'.format(filename)
     return response

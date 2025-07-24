@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+import datetime
 import os
+import random
 import sys
 
 from django.core.wsgi import get_wsgi_application
@@ -17,9 +19,12 @@ from app.models import (
     CommonFollowupQuestion,
     CommonFreeResponseQuestion,
     EligibilityQuestion,
+    Event,
     FollowupQuestion,
     FreeResponseQuestion,
     FunderConstraint,
+    Grant,
+    Item,
 )
 from penncfa.settings.development import TEST_EMAIL
 
@@ -202,6 +207,7 @@ def add_funder(name, un, desc, qs, fqs):
     user.first_name = name[:30]
     profile = user.profile
     profile.user_type = "F"
+    profile.funder_name = name
     profile.mission_statement = desc
     profile.osa_email = TEST_EMAIL
     profile.save()
@@ -262,6 +268,153 @@ def import_questions():
         CommonFollowupQuestion.objects.create(question=common_followup_q)
 
 
+def import_events():
+    """Create a variety of historical events."""
+    Event.objects.all().delete()
+    requesters = {
+        r.user.username: r
+        for r in CFAUser.objects.filter(user_type="R").select_related("user")
+    }
+    funders = {
+        f.user.username: f
+        for f in CFAUser.objects.filter(user_type="F").select_related("user")
+    }
+
+    if not requesters or not funders:
+        print("No requesters or funders found. Run import_users first.")
+        return
+
+    events_data = [
+        {
+            "name": "Annual Philo Conference",
+            "requester": "philo",
+            "status": "F",
+            "applied_funders": ["tchange", "icf"],
+            "grants": {"tchange": {"Catering": 500, "Venue Rental": 200}},
+        },
+        {
+            "name": "Spring Fling Concert",
+            "requester": "testrequester1",
+            "status": "F",
+            "applied_funders": ["spectrum", "connaissance"],
+            "grants": {"spectrum": {"Catering": 1000}},
+        },
+        {
+            "name": "Debate Society Tournament",
+            "requester": "testrequester2",
+            "status": "B",
+            "applied_funders": ["fullyplanned", "uacontingency"],
+            "grants": {},
+        },
+        {
+            "name": "Charity Bake Sale",
+            "requester": "testrequester3",
+            "status": "F",
+            "applied_funders": ["faithfund"],
+            "grants": {"faithfund": {"Catering": 150}},
+        },
+        {
+            "name": "Cultural Night",
+            "requester": "philo",
+            "status": "F",
+            "applied_funders": ["icf", "faithfund", "spectrum"],
+            "grants": {
+                "icf": {"Catering": 700},
+                "spectrum": {"Venue Rental": 300},
+            },
+        },
+        {
+            "name": "Tech Talk Series",
+            "requester": "testrequester1",
+            "status": "B",
+            "applied_funders": ["tchange"],
+            "grants": {},
+        },
+        {
+            "name": "Film Screening",
+            "requester": "testrequester2",
+            "status": "F",
+            "applied_funders": ["connaissance", "fullyplanned"],
+            "grants": {"fullyplanned": {"Venue Rental": 250}},
+        },
+        {
+            "name": "Inter-club Sports Day",
+            "requester": "testrequester3",
+            "status": "B",
+            "applied_funders": ["uacontingency", "spectrum"],
+            "grants": {},
+        },
+        {
+            "name": "Fall Festival",
+            "requester": "philo",
+            "status": "F",
+            "applied_funders": ["tchange", "faithfund"],
+            "grants": {
+                "tchange": {"Catering": 600},
+                "faithfund": {"Venue Rental": 150},
+            },
+        },
+        {
+            "name": "Winter Gala",
+            "requester": "testrequester1",
+            "status": "F",
+            "applied_funders": ["icf", "uacontingency", "fullyplanned"],
+            "grants": {
+                "icf": {"Catering": 1200},
+                "uacontingency": {"Venue Rental": 400},
+            },
+        },
+    ]
+
+    for i, data in enumerate(events_data):
+        requester = requesters[data["requester"]]
+        event = Event.objects.create(
+            name=data["name"],
+            date=datetime.date.today() - datetime.timedelta(days=(i + 1) * 20),
+            time=datetime.time(18, 0),
+            location=random.choice(
+                ["Houston Hall", "DRL", "Williams Hall", "College Green"]
+            ),
+            requester=requester,
+            contact_name=requester.user.username,
+            contact_email=requester.user.email,
+            contact_phone="123-456-7890",
+            anticipated_attendance=random.randint(50, 500),
+            organizations=f"Org for {data['name']}",
+            funding_already_received=random.randint(0, 100),
+            status=data["status"],
+        )
+
+        applied_funders = [funders[f_un] for f_un in data["applied_funders"]]
+        event.applied_funders.add(*applied_funders)
+
+        item1 = Item.objects.create(
+            event=event,
+            name="Catering",
+            quantity=1,
+            price_per_unit=2000,
+            funding_already_received=0,
+            category="F",
+        )
+        item2 = Item.objects.create(
+            event=event,
+            name="Venue Rental",
+            quantity=1,
+            price_per_unit=500,
+            funding_already_received=0,
+            category="S",
+        )
+        items = {"Catering": item1, "Venue Rental": item2}
+
+        if data["status"] == "F":
+            for funder_un, item_grants in data["grants"].items():
+                funder = funders[funder_un]
+                for item_name, amount in item_grants.items():
+                    Grant.objects.create(
+                        funder=funder, item=items[item_name], amount=amount
+                    )
+
+
 def import_sites():
     Site.objects.create(domain="http://localhost:8000//", name="The Common Funding App")
 
@@ -270,6 +423,7 @@ def import_all():
     import_users()
     import_questions()
     import_sites()
+    import_events()
     return 0
 
 

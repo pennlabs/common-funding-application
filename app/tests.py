@@ -518,3 +518,40 @@ class TestExportRequests(TestCase):
         self.assertEqual(float(event_row[22]), 0.00)
         self.assertEqual(float(event_row[23]), 175.00)
         self.assertIn(str(self.funder.profile), event_row[24])
+
+    def test_export_requests_detailed_content(self):
+        self.client.login(username="admin", password="adminpassword")
+        resp = self.client.get("/export-requests/?detailed=true")
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(
+            resp["Content-Disposition"],
+            'attachment; filename="funding_requests_detailed.csv"',
+        )
+
+        content = resp.content.decode("utf-8")
+        rows = list(csv.reader(content.strip().splitlines()))
+        header = rows[0]
+
+        all_funders = CFAUser.objects.filter(user_type="F").order_by("funder_name")
+        funder_names = [f.funder_name for f in all_funders]
+        self.assertEqual(header[25:], funder_names)
+
+        # check for event 1
+        event1_row = None
+        for row in rows[1:]:
+            if row[1] == "Test Event 1":
+                event1_row = row
+                break
+        self.assertIsNotNone(event1_row)
+        funder_grant_amount = float(event1_row[25])
+        self.assertAlmostEqual(funder_grant_amount, 100.00, places=2)
+
+        # check for event 2
+        event2_row = None
+        for row in rows[1:]:
+            if row[1] == "Test Event 2":
+                event2_row = row
+                break
+        self.assertIsNotNone(event2_row)
+        funder_grant_amount = float(event2_row[25])
+        self.assertAlmostEqual(funder_grant_amount, 200.00, places=2)

@@ -18,6 +18,7 @@
                 <div class="dropdown-menu dropdown-menu-right">
                     {% if user.is_staff %}
                     <a class="dropdown-item" href="{% url 'export-requests' %}"><i class="fa fa-download fa-fw"></i> Export Data</a>
+                    <a class="dropdown-item" href="{% url 'export-requests' %}?detailed=true"><i class="fa fa-download fa-fw"></i> Export Detailed Data</a>
                     {% endif %}
                     <a class="dropdown-item" href="{% url 'auth_password_change' %}"><i class="fa fa-key fa-fw"></i> Change Password</a>
                 </div>
