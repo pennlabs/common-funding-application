@@ -98,7 +98,8 @@ def application(user, event, form):
             )
             for question in CommonFreeResponseQuestion.objects.all()
         ],
-        "funders": CFAUser.objects.filter(user_type="F"),
+        # Show only active funders by default; archived ones may be merged below
+        "funders": CFAUser.objects.filter(user_type="F", archived=False),
     }
 
     if event is None:
@@ -121,6 +122,16 @@ def application(user, event, form):
                 funder__event_applied_funders=event
             )
         ]
+
+    # Merge archived funders that are already applied to this event
+    archived_applied = CFAUser.objects.filter(
+        user_type="F", archived=True, event_applied_funders=event
+    ).order_by("funder_name")
+    if archived_applied.exists():
+        active = list(new_context["funders"].order_by("funder_name"))
+        active_ids = {f.id for f in active}
+        merged = active + [f for f in archived_applied if f.id not in active_ids]
+        new_context["funders"] = merged
 
     try:
         is_funder = user.profile.is_funder

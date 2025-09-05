@@ -4,6 +4,7 @@ from hashlib import sha1
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core import mail
+from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
 from django.db import models
 from django.db.models.signals import post_save
@@ -64,6 +65,7 @@ class CFAUser(models.Model):
     email_template = models.TextField(blank=True)
     email_subject = models.TextField(blank=True)
     send_email_template = models.BooleanField(default=False)
+    archived = models.BooleanField(default=False)
 
     def __str__(self):
         if self.is_funder:
@@ -515,6 +517,12 @@ class Grant(models.Model):
 
     def __str__(self):
         return "%s, %s, %d" % (str(self.item), str(self.funder), self.amount)
+
+    def save(self, *args, **kwargs):
+        # Invariant: Archived funders cannot create or update grants
+        if self.funder and getattr(self.funder, "archived", False):
+            raise ValidationError("Archived funders cannot grant funds.")
+        return super(Grant, self).save(*args, **kwargs)
 
     class Meta:
         unique_together = ("funder", "item")

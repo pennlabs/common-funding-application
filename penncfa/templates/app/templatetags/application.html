@@ -163,10 +163,12 @@
             data-funderid="{{funder.id}}"
             data-required-question-ids="{{funder.required_eligibility_question_ids}}"
             name="funder_{{ funder.id }}"
-            class="funder-checkbox"
+            class="funder-checkbox{% if funder.archived %} disable{% endif %}"
+            {% if funder.archived %}data-toggle="tooltip" title="This funder is no longer active on the platform and cannot be newly applied to."{% endif %}
             {% if funder in event.applied_funders.all %}checked{% endif %}
             type="checkbox" {{extra_attrs}} {{event_over_disable}}>
             {{funder}}
+            {% if funder.archived %}<span class="badge badge-secondary ml-1" title="No longer active on the platform">Archived</span>{% endif %}
         </label>
         <span class="text-secondary">(<a href="mailto:{{funder.osa_email}}">{{funder.osa_email}}</a>)</span>
         <p class="help-block">{{funder.mission_statement}}</p>

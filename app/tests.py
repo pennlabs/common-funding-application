@@ -8,9 +8,10 @@ from unittest import skip
 
 from django.contrib.auth.models import User
 from django.core import mail
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from .models import CATEGORIES, CFAUser, Event, Grant
+from .models import CATEGORIES, CFAUser, Event, Grant, Item
 from .templatetags import helpers
 
 
@@ -354,6 +355,92 @@ class TestHelpers(TestCase):
 
     def test_get_or_none_does_not_exist(self):
         self.assertEqual(None, helpers.get_or_none(Event, pk=2))
+
+
+class TestArchivedFunder(TestCase):
+    fixtures = ["events.json"]
+
+    def setUp(self):
+        super().setUp()
+        # Create one archived funder (spec)
+        self.funder = create_funder()
+        cfau = self.funder.profile
+        cfau.archived = True
+        cfau.save()
+        # Create an active funder
+        self.active = User.objects.create_user(
+            username="active",
+            email="active@upenn.edu",
+            password="pass1234",
+        )
+        activep = self.active.profile
+        activep.user_type = "F"
+        activep.funder_name = "ACTIVE"
+        activep.save()
+        # Event + item
+        self.event = Event.objects.get(pk=1)
+        self.item = Item.objects.create(
+            event=self.event,
+            name="Venue Rental",
+            quantity=1,
+            price_per_unit=100,
+            funding_already_received=0,
+            category="S",
+            revenue=False,
+        )
+
+    def test_archived_funder_redirects_home(self):
+        self.client.login(username="spec", password="we<3money$$$")
+        resp = self.client.get("/", follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "has been archived")
+
+    def test_archived_funder_not_listed_for_requester(self):
+        # Requester should not see archived funder (SPEC) but should see ACTIVE
+        self.client.login(username="philo", password="we<3literature")
+        resp = self.client.get("/new/")
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "ACTIVE")
+        self.assertNotContains(resp, "SPEC")
+
+    def test_archived_funder_cannot_grant_via_view(self):
+        self.client.login(username="spec", password="we<3money$$$")
+        resp = self.client.post(
+            f"/{self.event.id}/", {f"item_{self.item.id}": "50"}, follow=True
+        )
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "has been archived")
+        self.assertFalse(
+            Grant.objects.filter(funder=self.funder.profile, item=self.item).exists()
+        )
+
+    def test_archived_funder_cannot_grant_invariant(self):
+        # Direct creation should be blocked at the model level
+        with self.assertRaises(ValidationError):
+            Grant.objects.create(funder=self.funder.profile, item=self.item, amount=1)
+
+    def test_existing_event_shows_archived_funder_disabled_and_preserved(self):
+        # Attach archived funder to existing event (simulate pre-archive selection)
+        self.event.applied_funders.add(self.funder.profile)
+        # Requester edits event should see SPEC listed but uneditable
+        self.client.login(username="philo", password="we<3literature")
+        resp = self.client.get(f"/{self.event.id}/edit/")
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "SPEC")
+        # Checkbox should be present, checked, and disabled via class 'disable'
+        fid = self.funder.profile.id
+        self.assertContains(
+            resp,
+            f'id="funder-checkbox-{fid}"',
+        )
+        self.assertContains(resp, 'class="funder-checkbox disable')
+        # Submit an edit; archived funder should remain applied even if not posted
+        with open("app/fixtures/event_edit.json", "r") as f:
+            post_data = json.load(f)
+        resp = self.client.post(f"/{self.event.id}/edit/", post_data, follow=True)
+        self.assertEqual(resp.status_code, 200)
+        self.event.refresh_from_db()
+        self.assertIn(self.funder.profile, self.event.applied_funders.all())
 
 
 class HealthTestCase(TestCase):

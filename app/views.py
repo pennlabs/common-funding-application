@@ -152,7 +152,9 @@ def save_from_form(event, POST):
     event.commonfreeresponseanswer_set.all().delete()
     event.freeresponseanswer_set.all().delete()
 
-    # clear existing funders to re-add new ones
+    # Preserve archived funders already applied so they remain attached
+    preserved_archived_funders = list(event.applied_funders.filter(archived=True))
+    # clear existing funders to re-add new ones (non-archived only)
     event.applied_funders.clear()
 
     # create new answers and save funders
@@ -190,7 +192,13 @@ def save_from_form(event, POST):
         elif k.startswith("funder"):
             funder_id = re.search("[0-9]+", k).group(0)
             funder = CFAUser.objects.get(id=funder_id)
-            event.applied_funders.add(funder)
+            # Do not allow archived funders to be applied to
+            if not funder.archived:
+                event.applied_funders.add(funder)
+
+    # Re-attach preserved archived funders if any
+    if preserved_archived_funders:
+        event.applied_funders.add(*preserved_archived_funders)
 
 
 # GET  /
@@ -201,6 +209,12 @@ def events(request):
         return LoginView.as_view()(request)
 
     user = request.user
+    # If a funder is archived, redirect them to archived notice page
+    try:
+        if user.profile.is_funder and user.profile.archived:
+            return redirect("funder-archived")
+    except Exception:
+        pass
     # if the request type has GET query type, set it as the parameter
     sorted_type = request.GET.get("sort").strip() if "sort" in request.GET else "date"
     query_dict = {"event": "name", "org": "organizations", "submit": "-updated_at"}
@@ -347,6 +361,12 @@ def event_edit(request, event_id):
 def event_show(request, event_id):
     user = request.user
     event = Event.objects.get(pk=event_id)
+    # Archived funders are not allowed to view/grant
+    try:
+        if user.is_authenticated and user.profile.is_funder and user.profile.archived:
+            return redirect("funder-archived")
+    except Exception:
+        pass
     if request.method == "POST":  # TODO: should really be PUT
         if user.profile.is_funder:
             grants = []
@@ -415,6 +435,17 @@ def event_destroy(request, event_id):
 def funder_edit(request, user_id):
     user = User.objects.get(pk=user_id)
     funder = user.profile
+    # If signed in as this archived funder, redirect to archived notice page
+    try:
+        if (
+            request.user.is_authenticated
+            and request.user.id == user.id
+            and request.user.profile.is_funder
+            and request.user.profile.archived
+        ):
+            return redirect("funder-archived")
+    except Exception:
+        pass
     if request.method == "POST":
         # edit funder basic info.
         funder.funder_name = request.POST["fundername"]
@@ -489,6 +520,12 @@ def funder_edit(request, user_id):
         )
     else:
         return HttpResponseNotAllowed(["GET"])
+
+
+@login_required
+def funder_archived(request):
+    """Simple page shown to archived funders."""
+    return render(request, "app/funder_archived.html")
 
 
 class HealthView(View):
