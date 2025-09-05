@@ -13,6 +13,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
+            <li class="nav-item mr-2 d-flex align-items-center">
+                <span class="navbar-text">
+                    {{ user.username }}
+                    {% if user.profile.is_funder and user.profile.archived %}
+                    <span class="badge badge-secondary ml-1" title="No longer active on the platform">Archived</span>
+                    {% endif %}
+                </span>
+            </li>
+            {% endif %}
+            {% if user.is_authenticated %}
             <li class="nav-item dropdown mr-1">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Settings</a>
                 <div class="dropdown-menu dropdown-menu-right">
@@ -41,6 +51,14 @@
         </ul>
     </div>
 </div>
+
+{% if user.is_authenticated and user.profile.is_funder and user.profile.archived %}
+<div class="container mt-3">
+  <div class="alert alert-warning" role="alert">
+    This funding source is archived. New applications cannot apply for funding from this source. Existing applications may still display this funder but cannot add new grants.
+  </div>
+  </div>
+{% endif %}
 
 {{ block.super }}
 

@@ -44,8 +44,10 @@ def itemlist_requester(is_revenue, items, funded):
 
 
 @register.simple_tag
-def itemlist_funder(is_revenue, items, applied_funders, funder_id):
-    """Render the table of items in the funder view"""
+def itemlist_funder(is_revenue, items, applied_funders, funder_id, archived=False):
+    """Render the table of items in the funder view.
+    When archived=True, disable grant inputs for the current funder.
+    """
     items_data = []
     title_row = ["Name", "Category", "Quantity", "Price Per Unit", "Total Amount"]
     if not bool(is_revenue):
@@ -66,6 +68,7 @@ def itemlist_funder(is_revenue, items, applied_funders, funder_id):
         "titles": title_row,
         "current_funder": funder_id,
         "items_data": items_data,
+        "archived": archived,
     }
     return render_to_string(
         "app/templatetags/itemlist-funder.html", context=new_context

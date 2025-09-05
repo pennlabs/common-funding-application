@@ -117,8 +117,8 @@
       {% itemlist_requester 0 event.item_set.all event.funded %}
       {% itemlist_requester 1 event.item_set.all event.funded %}
       {% else %}
-      {% itemlist_funder 0 event.item_set.all event.applied_funders.all user.profile.id %}
-      {% itemlist_funder 1 event.item_set.all event.applied_funders.all user.profile.id %}
+      {% itemlist_funder 0 event.item_set.all event.applied_funders.all user.profile.id user.profile.archived %}
+      {% itemlist_funder 1 event.item_set.all event.applied_funders.all user.profile.id user.profile.archived %}
       {% endif %}
       <table class="items-total">
         <tr>
@@ -238,7 +238,7 @@
     {% endfor %}
     {% if user.profile.is_funder %}
     <p>Specify any conditions and stipulations here.</p>
-    <textarea name="new-comment" class="span8 form-control"></textarea>
+    <textarea name="new-comment" class="span8 form-control" {% if user.profile.archived %}disabled{% endif %}></textarea>
     {% endif %}
   </div>
 </section>

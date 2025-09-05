@@ -23,6 +23,11 @@
       </h2>
     </div>
     <div class="section-content">
+      {% if user.profile.is_funder and user.profile.archived %}
+      <div class="alert alert-warning">
+        This funding source is archived. Settings are read-only while archived.
+      </div>
+      {% endif %}
       <form action="{% url 'funder-edit' user.id %}"
       method="post"
       class="form-horizontal">
@@ -37,7 +42,7 @@
               type="text"
               name="fundername"
               id="fundername"
-              class="form-control">
+              class="form-control" {% if user.profile.archived %}disabled{% endif %}>
             </div>
           </div>
 
@@ -48,7 +53,7 @@
               <textarea type="text"
               name="missionstatement"
               class="form-control"
-              rows="5">{{user.profile.mission_statement}}</textarea>
+              rows="5" {% if user.profile.archived %}disabled{% endif %}>{{user.profile.mission_statement}}</textarea>
             </div>
           </div>
         </div>
@@ -67,9 +72,9 @@
           </ul>
           <div class="form-group">
             <div class="input-group">
-              <input id="cc-email" type="email" class="form-control" />
+              <input id="cc-email" type="email" class="form-control" {% if user.profile.archived %}disabled{% endif %} />
               <div class="input-group-append">
-                <button id="add-cc-email" class="btn btn-success">Add Email</button>
+                <button id="add-cc-email" class="btn btn-success" {% if user.profile.archived %}disabled{% endif %}>Add Email</button>
               </div>
             </div>
           </div>
@@ -86,7 +91,7 @@
               <div class="controls">
                 <input type="text"
                 name="email-subject"
-                class="form-control" value="{{user.profile.email_subject}}"></input>
+                class="form-control" value="{{user.profile.email_subject}}" {% if user.profile.archived %}disabled{% endif %}></input>
               </div>
             </div>
 
@@ -97,7 +102,7 @@
                 <textarea type="text"
                 name="email-template"
                 class="form-control"
-                rows="5">{{user.profile.email_template}}</textarea>
+                rows="5" {% if user.profile.archived %}disabled{% endif %}>{{user.profile.email_template}}</textarea>
               </div>
             </div>
 
@@ -105,7 +110,8 @@
           <div class="col-xs-12 col-md-12">
             <div class="custom-control custom-switch">
               <input type="checkbox" class="custom-control-input" name="send-email-template" id="send-email-template"
-              {% if user.profile.send_email_template %}checked{% endif %}>
+              {% if user.profile.send_email_template %}checked{% endif %}
+              {% if user.profile.archived %}disabled{% endif %}>
               <label class="custom-control-label" for="send-email-template">Send automated email</label>
             </div>
           </div>
@@ -126,10 +132,10 @@
                 <textarea type="text"
                 name="freeresponsequestion_{{question.id}}"
                 data-qid="{{question.id}}"
-                class="form-control">{{question.question}}</textarea>
+                class="form-control" {% if user.profile.archived %}disabled{% endif %}>{{question.question}}</textarea>
               </td>
               <td>
-                <button class="btn btn-danger remove-freeresponsequestion">
+                <button class="btn btn-danger remove-freeresponsequestion" {% if user.profile.archived %}disabled{% endif %}>
                   Remove
                 </button>
               </td>
@@ -139,10 +145,10 @@
               <td>
                 <textarea type="text"
                 class="form-control"
-                rows="1">{{question.question}}</textarea>
+                rows="1" {% if user.profile.archived %}disabled{% endif %}>{{question.question}}</textarea>
               </td>
               <td>
-                <button class="btn add-freeresponsequestion">Add</button>
+                <button class="btn add-freeresponsequestion" {% if user.profile.archived %}disabled{% endif %}>Add</button>
               </td>
             </tr>
           </tbody>
@@ -163,13 +169,13 @@
               <td>
                 {% if user.profile in question.required_funders %}
                 <button class="btn btn-danger remove-funderconstraint"
-                data-qid="{{question.id}}"> Required</button>
+                data-qid="{{question.id}}" {% if user.profile.archived %}disabled{% endif %}> Required</button>
                 <input type="hidden"
                 name="funderconstraint"
                 value="{{question.id}}"/>
                 {% else %}
                 <button class="btn add-funderconstraint"
-                data-qid="{{question.id}}">Not Required</button>
+                data-qid="{{question.id}}" {% if user.profile.archived %}disabled{% endif %}>Not Required</button>
                 <input type="hidden" name="funderconstraint" value=""/>
                 {% endif %}
               </td>
@@ -184,7 +190,7 @@
         href="{% url 'events' %}">Cancel</a>
         <button class="btn btn-primary"
         type="submit"
-        name="submit-funder">Submit</button>
+        name="submit-funder" {% if user.profile.archived %}disabled{% endif %}>Submit</button>
       </div>
     </form>
   </div>

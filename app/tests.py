@@ -389,11 +389,13 @@ class TestArchivedFunder(TestCase):
             revenue=False,
         )
 
-    def test_archived_funder_redirects_home(self):
+    def test_archived_funder_sees_banner_not_redirect(self):
         self.client.login(username="spec", password="we<3money$$$")
-        resp = self.client.get("/", follow=True)
+        resp = self.client.get("/")
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, "has been archived")
+        self.assertContains(
+            resp, "New applications cannot apply for funding from this source"
+        )
 
     def test_archived_funder_not_listed_for_requester(self):
         # Requester should not see archived funder (SPEC) but should see ACTIVE
@@ -409,7 +411,9 @@ class TestArchivedFunder(TestCase):
             f"/{self.event.id}/", {f"item_{self.item.id}": "50"}, follow=True
         )
         self.assertEqual(resp.status_code, 200)
-        self.assertContains(resp, "has been archived")
+        self.assertContains(
+            resp, "New applications cannot apply for funding from this source"
+        )
         self.assertFalse(
             Grant.objects.filter(funder=self.funder.profile, item=self.item).exists()
         )
@@ -418,6 +422,38 @@ class TestArchivedFunder(TestCase):
         # Direct creation should be blocked at the model level
         with self.assertRaises(ValidationError):
             Grant.objects.create(funder=self.funder.profile, item=self.item, amount=1)
+
+    def test_funder_edit_disabled_when_archived(self):
+        # Archived funder visits edit page; inputs should be disabled
+        self.client.login(username="spec", password="we<3money$$$")
+        resp = self.client.get(f"/funders/{self.funder.id}/edit/")
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, "Settings are read-only while archived")
+        self.assertContains(resp, 'name="fundername"')
+        self.assertContains(resp, "disabled")
+
+    def test_archived_funder_ui_disabled(self):
+        # Archived funder viewing event page should see disabled Save/No-Fund and inputs
+        self.client.login(username="spec", password="we<3money$$$")
+        resp = self.client.get(f"/{self.event.id}/")
+        self.assertEqual(resp.status_code, 200)
+        content = resp.content.decode("utf-8")
+        # Save button disabled
+        self.assertIn(
+            (
+                '<button class="btn btn-primary ml-1" type="submit" '
+                'name="submit" disabled>Save</button>'
+            ),
+            content,
+        )
+        # Do Not Fund button disabled
+        self.assertIn(
+            (
+                '<button id="no-fund" class="btn btn-danger ml-1" '
+                'type="submit" name="submit" disabled>Do Not Fund</button>'
+            ),
+            content,
+        )
 
     def test_existing_event_shows_archived_funder_disabled_and_preserved(self):
         # Attach archived funder to existing event (simulate pre-archive selection)

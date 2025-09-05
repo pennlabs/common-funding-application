@@ -48,6 +48,7 @@
             </div>
             <input class="funding-given form-control" name="item_{{ item_id }}"
               type='text'
+              {% if archived %}disabled{% endif %}
               {% if grant_amount is not None %}
               value="{{ grant_amount }}"
               {% endif %}
